@@ -1,4 +1,4 @@
-package com.hungry.pojo;
+package com.hungry.taskmanager.pojo;
 
 public class User {
 

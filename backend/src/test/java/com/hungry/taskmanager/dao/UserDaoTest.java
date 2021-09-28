@@ -1,7 +1,7 @@
-package com.hungry.dao;
+package com.hungry.taskmanager.dao;
 
-import com.hungry.pojo.User;
-import com.hungry.utils.MyBatisUtils;
+import com.hungry.taskmanager.pojo.User;
+import com.hungry.taskmanager.utils.MyBatisUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 

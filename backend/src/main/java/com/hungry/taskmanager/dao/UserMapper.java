@@ -1,6 +1,6 @@
-package com.hungry.dao;
+package com.hungry.taskmanager.dao;
 
-import com.hungry.pojo.User;
+import com.hungry.taskmanager.pojo.User;
 
 import java.util.List;
 
