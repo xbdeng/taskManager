@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Main from '../components/Main'
 import Login from '../components/Login'
+import register from "../components/register";
 
 
 Vue.use(VueRouter);
@@ -24,6 +25,11 @@ export default new VueRouter({
             path: '/login',
             component: Login,
             name: 'login'
+        },
+        {
+            path: '/register',
+            component: register,
+            name: 'register'
         }
     ]
 });
