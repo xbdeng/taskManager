@@ -4,7 +4,6 @@ import Main from '../components/Main'
 import Login from '../components/Login'
 import register from "../components/register";
 
-
 Vue.use(VueRouter);
 
 
@@ -17,9 +16,10 @@ export default new VueRouter({
             redirect: '/login'
         },
         {
-            path: '/main',
+            path: '/main/:username',
             component: Main,
-            name: 'main'
+            name: 'Main',
+            props:true
         },
         {
             path: '/login',

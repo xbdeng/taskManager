@@ -32,7 +32,7 @@
                     <el-form-item>
                       <el-col :span="12" :offset="3">
                         <el-button type="primary" @click="handleSubmit" :loading="logining">登录</el-button>
-                        <el-button>注册</el-button>
+                        <el-button @click="handleRegister">注册</el-button>
                       </el-col>
                     </el-form-item>
                 </el-form>
@@ -68,7 +68,7 @@ export default {
                        this.ruleForm2.password === '123456'){
                            this.logining = false;
                            sessionStorage.setItem('user', this.ruleForm2.username);
-                           this.$router.push({path: '/main'});
+                           this.$router.push({name: 'Main',params:{username:this.ruleForm2.username}});
                     }else{
                         this.logining = false;
                         this.$alert('username or password wrong!', 'info', {
@@ -80,6 +80,9 @@ export default {
                     return false;
                 }
             })
+        },
+        handleRegister(event){
+          this.$router.push({path: '/register'});
         }
     }
 };
