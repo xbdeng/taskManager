@@ -12,7 +12,7 @@ Vue.use(VueRouter);
 
 
 export default new VueRouter({
-    mode:'history',
+    mode: 'history',
     routes: [
         //default webpage: /login
         {
@@ -23,7 +23,7 @@ export default new VueRouter({
             path: '/main/:username',
             component: Main,
             name: 'Main',
-            props:true
+            props: true
         },
         {
             path: '/login',
@@ -36,17 +36,16 @@ export default new VueRouter({
             name: 'register'
         },
         {
-            path: '/profile',
+            path: '/profile/:username',
             component: profile,
-            name: 'profile',
-            children:[
+            name: 'Profile',
+            children: [{
+                    path: '/profile/:username/Info',
+                    component: profileInfo,
+                    name: 'profileInfo'
+                },
                 {
-                path: '/profile/Info',
-                component: profileInfo,
-                name: 'profileInfo'
-            },
-                {
-                    path: '/profile/ChangePasswd',
+                    path: '/profile/:username/ChangePasswd',
                     component: ChangePasswd,
                     name: 'ChangePasswd'
                 },
