@@ -8,11 +8,15 @@
 import router from './router'
 import Main from './components/Main'
 import Login from './components/Login'
+import register from './components/register'
+import Profile from './components/profile.vue'
 export default {
   name: 'App',
   components: {
     Main,
-    Login
+    Login,
+    register,
+    Profile
   },
   router
 }

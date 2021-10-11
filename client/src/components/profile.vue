@@ -12,10 +12,11 @@
 import profileContainer from './profileContainer'
 
 export default {
-  name: "Login",
+  name: "Profile",
   components:{
     profileContainer,
-  }
+  },
+  props:['username']
 
 }
 </script>

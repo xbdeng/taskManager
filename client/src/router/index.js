@@ -8,12 +8,11 @@ import profileInfo from "../components/profileInfo"
 import ChangePasswd from "../components/ChangePasswd"
 
 
-
 Vue.use(VueRouter);
 
 
 export default new VueRouter({
-    mode:'history',
+    mode: 'history',
     routes: [
         //default webpage: /login
         {
@@ -21,9 +20,10 @@ export default new VueRouter({
             redirect: '/login'
         },
         {
-            path: '/main',
+            path: '/main/:username',
             component: Main,
-            name: 'main'
+            name: 'Main',
+            props: true
         },
         {
             path: '/login',
@@ -36,17 +36,16 @@ export default new VueRouter({
             name: 'register'
         },
         {
-            path: '/profile',
+            path: '/profile/:username',
             component: profile,
-            name: 'profile',
-            children:[
+            name: 'Profile',
+            children: [{
+                    path: '/profile/:username/Info',
+                    component: profileInfo,
+                    name: 'profileInfo'
+                },
                 {
-                path: '/profile/Info',
-                component: profileInfo,
-                name: 'profileInfo'
-            },
-                {
-                    path: '/profile/ChangePasswd',
+                    path: '/profile/:username/ChangePasswd',
                     component: ChangePasswd,
                     name: 'ChangePasswd'
                 },
