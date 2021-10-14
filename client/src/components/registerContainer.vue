@@ -1,16 +1,19 @@
 <template>
   <div class="register-container">
+    <img src="https://github.githubassets.com/images/modules/site/home/hero-glow.svg" alt="Glowing universe" class="img_Test">
     <el-container>
       <el-header>Register</el-header>
       <el-container>
-        <el-main>
+        <el-main class="register-page">
           <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0px"
-                   class="demo-ruleForm register-page">
+                   class="demo-ruleForm">
 
-            <el-row class = "front-word">
+            <el-row class = "front-word text-gray-mktg typewriter">
+              <p>
               Welcome to Task Manager!
               <br>
               Let’s begin the adventure
+              </p>
             </el-row>
 
             <el-form-item prop="username">
@@ -19,7 +22,7 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input v-model="ruleForm.username" autocomplete="off" :disabled="checkList[0]" class="input-text" lang="scss"></el-input>
+                  <el-input v-model="ruleForm.username" autocomplete="off" :disabled="checkList[0]" class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[0] === false">
                   <el-button @click="setTrue(0)" :disabled="enable[0] === false" class="button_register">continue</el-button>
@@ -33,10 +36,10 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input v-model="ruleForm.email" autocomplete="off" :disabled="checkList[1]"></el-input>
+                  <el-input v-model="ruleForm.email" autocomplete="off" :disabled="checkList[1]" class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[1] === false">
-                  <el-button @click="setTrue(1)" :disabled="enable[1]  === false">continue</el-button>
+                  <el-button @click="setTrue(1)" :disabled="enable[1]  === false" class="button_register">continue</el-button>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -47,10 +50,10 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input type="password" v-model="ruleForm.pass" autocomplete="off" :disabled="checkList[2]"></el-input>
+                  <el-input type="password" v-model="ruleForm.pass" autocomplete="off" :disabled="checkList[2]" class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[2] === false">
-                  <el-button @click="setTrue(2)" :disabled="enable[2]  === false">continue</el-button>
+                  <el-button @click="setTrue(2)" :disabled="enable[2]  === false" class="button_register">continue</el-button>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -61,10 +64,10 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" :disabled="checkList[3]"></el-input>
+                  <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" :disabled="checkList[3]" class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[3] === false">
-                  <el-button @click="setTrue(3)" :disabled="enable[3]  === false">continue</el-button>
+                  <el-button @click="setTrue(3)" :disabled="enable[3]  === false" class="button_register">continue</el-button>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -75,18 +78,18 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input v-model.number="ruleForm.age" :disabled="checkList[4]"></el-input>
+                  <el-input v-model.number="ruleForm.age" :disabled="checkList[4]" class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[4] === false">
-                  <el-button @click="submitForm('ruleForm')">sign up</el-button>
+                  <el-button @click="submitForm('ruleForm')" class="button_register">sign up</el-button>
                 </el-col>
               </el-row>
             </el-form-item>
 
-            <el-form-item>
-              <el-button @click="resetForm('ruleForm')">重置</el-button>
-<!--              <el-button @click="print">test</el-button>-->
-            </el-form-item>
+<!--            <el-form-item>-->
+<!--              <el-button @click="resetForm('ruleForm')">重置</el-button>-->
+<!--&lt;!&ndash;              <el-button @click="print">test</el-button>&ndash;&gt;-->
+<!--            </el-form-item>-->
 
           </el-form>
         </el-main>
@@ -101,13 +104,16 @@ export default {
   data() {
     var checkAge = (rule, value, callback) => {
       if (!value) {
+        this.$set(this.enable, 4, false);
         return callback(new Error('年龄不能为空'));
       }
       setTimeout(() => {
         if (!Number.isInteger(value)) {
+          this.$set(this.enable, 4, false);
           callback(new Error('请输入数字值'));
         } else {
           if (value < 18) {
+            this.$set(this.enable, 4, false);
             callback(new Error('必须年满18岁'));
           } else {
             this.$set(this.enable, 4, true);
@@ -118,6 +124,7 @@ export default {
     };
     var validateName = (rule, value, callback) => {
       if(value === '') {
+        this.$set(this.enable, 0, false);
         callback(new Error('请输入名称'));
       } else {
         // this.enable[1] = true;
@@ -127,6 +134,7 @@ export default {
     };
     var validateEmail = (rule, value, callback) => {
       if (value === '') {
+        this.$set(this.enable, 1, false);
         callback(new Error('请输入email'));
       } else {
         if (this.ruleForm.email !== '') {
@@ -137,7 +145,8 @@ export default {
             this.$set(this.enable, 1, true)
             callback()
           } else {
-            callback(new Error('请输入正确的email'))
+            this.$set(this.enable, 1, false);
+            callback(new Error('请输入正确的email'));
           }
         }
         // this.enable[1] = true;
@@ -146,20 +155,23 @@ export default {
     };
     var validatePass = (rule, value, callback) => {
       if (value === '') {
+        this.$set(this.enable, 2, false);
         callback(new Error('请输入密码'));
       } else {
         if (this.ruleForm.checkPass !== '') {
           this.$refs.ruleForm.validateField('checkPass');
         }
         // this.enable[2] = true;
-        this.$set(this.enable, 2, true)
+        this.$set(this.enable, 2, true);
         callback();
       }
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
+        this.$set(this.enable, 3, false);
         callback(new Error('请再次输入密码'));
       } else if (value !== this.ruleForm.pass) {
+        this.$set(this.enable, 3, false);
         callback(new Error('两次输入密码不一致!'));
       } else {
         // this.enable[3] = true;
@@ -235,36 +247,73 @@ export default {
 }
 .register-page{
   -webkit-border-radius: 5px;
-  border-radius: 10px;
+  /*border-radius: 10px;*/
   margin: auto;
-  width: 500px;
-  height:300px;
-  padding: 35px 35px 35px;
-  background: transparent;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 0 25px #cac6c6;
+  max-width: 600px;
+  /*width: 300px;*/
+  /*height:600px;*/
+  /*padding: 35px 35px 35px;*/
+  /*border: 1px solid #eaeaea;*/
+  box-shadow: 0 0 25px #103154;
   text-align: left;
+  background-color: #0c162d;
+  border: 1px solid #202637;
+  padding: 24px !important;
+  border-radius: 6px !important;
+  box-sizing: border-box;
+  display: block;
 }
-.front-word{
-  color: #424242;
-  font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
-  letter-spacing:0.1em;
-  text-align:left;
-  text-transform: lowercase;
-  line-height: 145%;
-  font-size: 14pt;
-  font-variant: small-caps;
+/*.front-word{*/
+/*  color: #424242;*/
+/*  font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;*/
+/*  letter-spacing:0.1em;*/
+/*  text-align:left;*/
+/*  text-transform: lowercase;*/
+/*  line-height: 145%;*/
+/*  font-size: 14pt;*/
+/*  font-variant: small-caps;*/
+/*}*/
+
+.typewriter p {
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid orange; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation:
+      typing 3.5s steps(40, end),
+      blink-caret .75s step-end infinite;
 }
 
-.word{
-  font-style: normal;
-  font-variant: small-caps;
-  text-decoration: none;
-  color: rgb(19, 104, 155);
-  font-size: 17px;
-  text-align:left;
-  font-weight: bold;
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
 }
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange; }
+}
+
+.front-word {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace !important;
+}
+
+.text-gray-mktg {
+  color: #627597 !important;
+}
+
+/*.word{*/
+/*  font-style: normal;*/
+/*  font-variant: small-caps;*/
+/*  text-decoration: none;*/
+/*  color: rgb(19, 104, 155);*/
+/*  font-size: 17px;*/
+/*  text-align:left;*/
+/*  font-weight: bold;*/
+/*}*/
 .sword::after{
   content: '';
   display: inline-block;
@@ -288,6 +337,39 @@ export default {
 .el-form-item{
   margin-bottom: 0px;
 }
+
+.word {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace !important;
+  color: #00cfc8;
+  font-size: 16px !important;
+}
+.img_Test{
+  position: absolute !important;
+  overflow: hidden !important;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  transform: translate(-50%, -50%);
+}
+.input-text >>> .el-input__inner{
+  background-color: #0c162d;
+  -webkit-text-fill-color: #fff;
+  border: 0;
+  font-size: 17px;
+}
+.button_register {
+  border-radius: 6px;
+  background-color: transparent;
+  border: 1px solid rgba(119, 250, 0, 0.88);
+  color: rgba(119, 250, 0, 0.88);
+}
+
+.el-button.is-disabled{
+  background-color: transparent;
+  border: 1px solid rgba(175, 175, 175, 0.26);
+  color: rgba(175, 175, 175, 0.26);
+}
+
 
 </style>
 
