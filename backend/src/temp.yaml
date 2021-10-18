@@ -201,9 +201,9 @@ paths:
           required: true
           type: "integer"
           format: "int64"
-        - name: "name"
+        - name: "username"
           in: "formData"
-          description: "Updated name of the pet"
+          description: "Updated username of the pet"
           required: false
           type: "string"
         - name: "status"
@@ -455,7 +455,7 @@ paths:
       parameters:
         - name: "username"
           in: "query"
-          description: "The user name for login"
+          description: "The user username for login"
           required: true
           type: "string"
         - name: "password"
@@ -478,7 +478,7 @@ paths:
               format: "date-time"
               description: "date in UTC when token expires"
         "400":
-          description: "Invalid username/password supplied"
+          description: "Invalid userid/password supplied"
   /user/logout:
     get:
       tags:
@@ -497,7 +497,7 @@ paths:
     get:
       tags:
         - "user"
-      summary: "Get user by user name"
+      summary: "Get user by user username"
       description: ""
       operationId: "getUserByName"
       produces:
@@ -506,7 +506,7 @@ paths:
       parameters:
         - name: "username"
           in: "path"
-          description: "The name that needs to be fetched. Use user1 for testing. "
+          description: "The username that needs to be fetched. Use user1 for testing. "
           required: true
           type: "string"
       responses:
@@ -515,7 +515,7 @@ paths:
           schema:
             $ref: "#/definitions/User"
         "400":
-          description: "Invalid username supplied"
+          description: "Invalid userid supplied"
         "404":
           description: "User not found"
     put:
@@ -530,7 +530,7 @@ paths:
       parameters:
         - name: "username"
           in: "path"
-          description: "name that need to be updated"
+          description: "username that need to be updated"
           required: true
           type: "string"
         - in: "body"
@@ -556,12 +556,12 @@ paths:
       parameters:
         - name: "username"
           in: "path"
-          description: "The name that needs to be deleted"
+          description: "The username that needs to be deleted"
           required: true
           type: "string"
       responses:
         "400":
-          description: "Invalid username supplied"
+          description: "Invalid userid supplied"
         "404":
           description: "User not found"
 securityDefinitions:

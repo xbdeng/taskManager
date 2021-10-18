@@ -1,50 +1,34 @@
 package com.hungry.taskmanager.pojo;
 
-public class User {
+import lombok.Data;
 
-     int privateid;
-    private String name;
-    private String pwd;
+import java.io.Serializable;
+
+@Data //自动get set
+public class User implements Serializable {
+
+    private String userId;
+    private String password;
+    private String userName;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private String userRole;
+    private String userPermission;
 
     public User() {
     }
 
-    public User(int privateid, String name, String pwd) {
-        this.privateid = privateid;
-        this.name = name;
-        this.pwd = pwd;
-    }
-
-    public int getPrivateid() {
-        return privateid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPrivateid(int privateid) {
-        this.privateid = privateid;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "privateid=" + privateid +
-                ", name='" + name + '\'' +
-                ", pwd='" + pwd + '\'' +
-                '}';
-    }
+//    public User(String userName,String password,String firstName, String lastName, String email, String phone, String userRole, String userPermission) {
+//        this.userId = userId;
+//        this.password = password;
+//        this.userName = userName;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.email = email;
+//        this.phone = phone;
+//        this.userRole = userRole;
+//        this.userPermission = userPermission;
+//    }
 }
