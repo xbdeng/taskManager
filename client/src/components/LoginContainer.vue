@@ -2,87 +2,126 @@
     <div class="login-container">
         <el-container>
             <el-main>
-                <el-form :model="ruleForm2" :rules="rules2"
-                status-icon
-                ref="ruleForm2"
-                label-width="100px"
-                class="demo-ruleForm login-page">
+                <el-form :model="loginForm" :rules="loginRules" status-icon ref="loginForm" label-width="100px" class="demo-ruleForm login-page">
+                    <!-- 系统登录标题 -->
                     <el-row row type='flex' justify="center">
                         <h1 class="title">系统登录</h1>
                     </el-row>
+                    <!-- 用户名输入框 -->
                     <el-form-item prop="username" label='用户名'>
                         <el-input type="text"
-                            v-model="ruleForm2.username"
+                            v-model="loginForm.username"
                             auto-complete="off"
                             placeholder="请输入用户名"
                         ></el-input>
                     </el-form-item>
+                    <!-- 密码输入框 -->
                     <el-form-item prop="password" label='密码'>
-                        <el-input type="password"
-                                v-model="ruleForm2.password"
-                                auto-complete="off"
-                                placeholder="请输入密码"
-                                  show-password
-                        ></el-input>
+                        <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码" show-password ></el-input>
                     </el-form-item>
-                        <el-checkbox
-                            v-model="checked"
-                            class="rememberme"
-                        >记住密码</el-checkbox>
+                    <!-- 记住密码的单选框 -->
+                    <el-checkbox v-model="checked" class="rememberme">记住密码</el-checkbox>
+                    <!-- 登录注册按钮 -->
                     <el-form-item>
                       <el-col :span="12" :offset="3">
+                          <!-- loading表示显示加载效果 -->
                         <el-button type="primary" @click="handleSubmit" :loading="logining">登录</el-button>
                         <el-button @click="handleRegister">注册</el-button>
                       </el-col>
                     </el-form-item>
                 </el-form>
             </el-main>
-
         </el-container>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name:'LoginContainer',
     data(){
+
+        var checkUsername = (rule, value, callback)=>{
+            if(value === '') {
+                return callback(new Error("用户名不能为空"))
+            }
+            callback()
+        }
+        var checkPassword = (rule, value, callback)=>{
+            if(value === '') {
+                return callback(new Error("密码不能为空"))
+            }
+            let pwdRegExp = new RegExp('^[0-9a-zA-Z]+$')
+
+            if(!pwdRegExp.test(value)) {
+                return callback(new Error('密码只能为数字或者小写大写字母'))
+            }
+            callback()
+        }
+
         return {
             logining: false,
-            ruleForm2: {
-                username: 'admin',
-                password: '123456',
+            checked: false,
+            loginForm: {
+                // 登录表单数据的绑定对象
+                username: '',
+                password: ''
             },
-            rules2: {
-                username: [{required: true, message: 'please enter your account', trigger: 'blur'}],
-                password: [{required: true, message: 'enter your password', trigger: 'blur'}]
-            },
-            checked: false
+            loginRules: {
+                // 表单验证规则
+                username: [
+                    {required: true, message: '请输入用户名', trigger: 'blur'},
+                    { min: 3, max:10, message: '长度在3到10个字符', trigger: 'blur'}
+                ],
+
+                password: [
+                    { required: true, message: '请输入登录密码', trigger: 'blur' },
+                    { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+                ]
+            }
         }
     },
     methods: {
-        handleSubmit(event){
-            this.$refs.ruleForm2.validate((valid) => {
+        handleSubmit(event) {
+            const that = this
+            this.logining = true
+            this.$refs.loginForm.validate(async (valid) => {
+
                 if(valid){
-                    this.logining = true;
-                    if(this.ruleForm2.username === 'admin' &&
-                       this.ruleForm2.password === '123456'){
-                           this.logining = false;
-                           sessionStorage.setItem('user', this.ruleForm2.username);
-                           this.$router.push({name: 'Main',params:{username:this.ruleForm2.username}});
-                    }else{
-                        this.logining = false;
-                        this.$alert('username or password wrong!', 'info', {
-                            confirmButtonText: 'ok'
-                        })
-                    }
+                    axios.post(
+                        'http://localhost:8081',
+                        {
+                            username: this.loginForm.username,
+                            password: this.loginForm.password
+                        }
+                    ).then(
+                        function(response) {
+
+                            alert('登录成功')
+                            let token = response.data.token
+                            window.sessionStorage.setItem('token', token)
+                            // 清空表单数据
+                            that.loginForm.username = ''
+                            that.loginForm.password = ''
+                            that.logining = false
+                            that.$router.push({name:'Main', params:{username: that.loginForm.username}})
+                        },
+                        function(err) {
+                            alert('登录失败')
+                            that.logining = false
+                        }
+                    )
+                    
+                    
                 }else{
-                    console.log('error submit!');
-                    return false;
+                    this.loginForm.username = ''
+                    this.loginForm.password = ''
+                    return (this.logining = false)
                 }
             })
         },
-        handleRegister(event){
-          this.$router.push({path: '/register'});
+        handleRegister(event) {
+            this.$router.push('./register')
         }
     }
 };
