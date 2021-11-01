@@ -1,176 +1,155 @@
 <template>
   <div class='mainFrame'>
-    <el-container class='mainFrameContainer'>
+     <el-container>
+       <el-aside class = 'mainFrameAside' width='64px'>
+         <el-menu default-active="6" class="main-frame-menu"  :collapse="true" >
+           <!-- Profile -->
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-user-solid"></i>
+              <span slot="title">个人面板</span>`
+            </template>
+            <el-menu-item-group>
+              <span slot="title"></span>
+              <el-menu-item index="1-1" >个人主页</el-menu-item>
+              <el-menu-item index="1-2" >任务统计</el-menu-item>
+              <el-menu-item index="1-3" >页面设置</el-menu-item>
+              <el-menu-item index="1-4" >数据同步</el-menu-item>
+              <el-menu-item index="1-5" >账号登出</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
 
-      <!--Task Manager and hello username-->
-      <el-header class="head">
-        <el-row class="navigator">
-          <el-col :span="4">
-            <div class="title">Task Manager</div>
-          </el-col>
-          <el-col :span=4 :offset="16">
-            <div class="hello">Hi,{{username}}</div>
-          </el-col>
-        </el-row>
-      </el-header>
+          <!-- Add Tasks or Groups -->
+          <el-submenu index="2">
+            <template slot="title">
+              <i class="el-icon-plus"></i>
+              <span slot="title">添加任务/组别</span>
+            </template>
+            <el-menu-item-group>
+              <span slot="title">添加...</span>
+              <el-menu-item index="2-1" @click='addTask'>任务</el-menu-item>
+              <el-menu-item index="2-2" @click='addGroup'>组别</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
 
-      <!--Choose button to find project information-->
-      <el-header class='projectSelector'>
-        <el-row :gutter='90' class='projects'>
-          <el-col :span="2">
-            <el-button>Project1</el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button>Project2</el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button>Project3</el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button>Project4</el-button>
-          </el-col>
-        </el-row>
-      </el-header>
+          <!-- Show Personal Task -->
+          <el-menu-item index="3" @click='showPersonalTask'>
+            <i class="el-icon-user"></i>
+            <span slot="title">个人任务</span>
+          </el-menu-item>
 
-      <!--Asider of the main frame-->
-      <el-container>
-        <el-aside class="aside">
-          <el-menu>
-          <el-menu-item>Overview</el-menu-item>
-          <el-menu-item @click="toProfile">Personal Information</el-menu-item>
-          <el-menu-item>Announcement</el-menu-item>
-          <el-menu-item>Event Schedule</el-menu-item>
-          <el-menu-item>Team Forming</el-menu-item>
-          <el-menu-item>Arrangement</el-menu-item>
-          <el-menu-item>Submission</el-menu-item>
-          <el-menu-item>Gradebook</el-menu-item>
-          <el-menu-item>Others</el-menu-item>
-          </el-menu>
-        </el-aside>
+          <!-- Show Group Task -->
+          <el-menu-item index="4" @click="showGroupInfo">
+            <i class="el-icon-platform-eleme"></i>
+            <span slot="title">组队任务</span>
+          </el-menu-item>
 
-        <el-container>
-          <el-main>
-            <el-header>
-              <el-menu mode='horizontal'>
-                <el-menu-item>Team</el-menu-item>
-                <el-menu-item>Students</el-menu-item>
-              </el-menu>
-            </el-header>
+          <!-- Address Book -->
+          <el-menu-item index="5">
+            <i class="el-icon-s-management"></i>
+            <span slot="title">通讯录</span>
+          </el-menu-item>
 
-            <el-table border :data='tableData'>
-              <el-table-column label="ID" prop='id'></el-table-column>
-              <el-table-column label="Topic" prop='topic'></el-table-column>
-              <el-table-column label="Numbers" prop='numbers'></el-table-column>
-              <el-table-column label="Tags" prop='tags'></el-table-column>
-            </el-table>
+          <!-- View Tasks in Calendar View mode -->
+          <el-menu-item index="6" @click="showCalendar">
+            <i class="el-icon-date"></i>
+            <span slot="title">日历视图</span>
+          </el-menu-item>
 
-          </el-main>
-          <el-footer>
-            <el-row>
-              <el-col :span='20'>
-                <el-input placeholder="Please input something"></el-input>
-              </el-col>
-              <el-col :span='4'>
-                <el-button type='primary'>create</el-button>
-              </el-col>
-            </el-row>
-            
-          </el-footer>
-        </el-container>
-
-      </el-container>
-      
-
-      
-    </el-container>
+          <!-- Search Tasks according to taskName -->
+          <el-menu-item index="7">
+            <i class="el-icon-search"></i>
+            <span slot="title">任务搜索</span>
+          </el-menu-item>
+        </el-menu>
+       </el-aside>
+       <el-main>
+         <!-- Add Tasks -->
+         <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false'>
+            <AddTaskForm  v-on:taskFormData='addTask'></AddTaskForm>
+          </el-dialog>
+          <!-- Add Groups -->
+          <el-dialog :visible.sync='addGroupShow' width='1000px' height='1000px' :modal-append-to-body='false'>
+            <AddGroupForm v-on:groupFormData='addGroup'></AddGroupForm>
+          </el-dialog>
+          <!-- Personal Task -->
+          <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
+          <!-- Group Info -->
+          <GroupInfoPage v-show="groupInfoShow"></GroupInfoPage>
+          <!-- Calendar View -->
+          <el-calendar v-model='calendarValue' v-show='calendarShow'>
+          </el-calendar>
+       </el-main>
+     </el-container>
   </div>
 </template>
 
 <script>
+import PersonalTaskPage from './PersonalTaskPage.vue'
+import GroupInfoPage from './GroupInfoPage.vue'
+import AddTaskForm from './AddTaskForm.vue'
+import AddGroupForm from './AddGroupForm.vue'
 export default {
   name: "Main",
+  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, GroupInfoPage},
   props: ['username'],
   data() {
     return {
-      tableData: [
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        },
-        {
-          id:'1',
-          topic:'project1',
-          numbers:'2/5',
-          tags:'tag0,tag1'
-        }
-      ]
+      personalTaskShow:false,
+      groupInfoShow:false,
+      addTaskShow:false,
+      addGroupShow:false,
+      calendarShow:true,
+      calendarValue:new Date(),
+      taskForm:{
+          taskName:'',
+          taskTags: '',
+          taskDDL:'',
+          taskPriority:'',
+          taskType: '',
+          taskStartTime:'',
+          taskDescription:''
+      }
     }
   },
   methods:{
-    toProfile(event){
+    toProfile(event) {
       this.$router.push({name: 'Profile',params:{username:this.username}});
+    },
+    showPersonalTask() {
+      this.personalTaskShow = true
+      this.groupInfoShow = false
+      this.addTaskShow = false
+      this.addGroupShow = false
+      this.calendarShow = false
+    },
+    showGroupInfo() {
+      this.personalTaskShow = false
+      this.groupInfoShow = true
+      this.addTaskShow = false
+      this.addGroupShow = false
+      this.calendarShow = false
+    },
+    addTask() {
+      this.personalTaskShow = false
+      this.groupInfoShow = false
+      this.addTaskShow = true
+      this.addGroupShow = false
+      this.calendarShow = false
+    },
+    addGroup() {
+      this.personalTaskShow = false
+      this.groupInfoShow = false
+      this.addTaskShow = false
+      this.addGroupShow = true
+      this.calendarShow = false
+    },
+    showCalendar() {
+      this.personalTaskShow = false
+      this.groupInfoShow = false
+      this.addTaskShow = false
+      this.addGroupShow = false
+      this.calendarShow = true
     }
   }
 }
@@ -182,38 +161,7 @@ export default {
   height:100%;
   position:fixed;
 }
-.mainFrameContainer{
-  width: 100%;
-  height:100%;
-  position:fixed;
-}
-.head{
-  background: #0099ff;
-}
-.projectSelector{
-  background: whitesmoke;
-  box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
-}
-.projects{
-  top:10px;
-}
-.navigator{
-  top:10px;
-}
-.title{
-  font-size: 30px;
-  color:white;
-}
-.aside{
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 6px 0 6px rgba(0, 0, 0, .04);
-}
-
-.hello{
-  font-size: 30px;
-  color:white;
-}
-
-.pos{
-  top:10px;
+.main-frame-menu{
+  height: 900px;
 }
 </style>
