@@ -1,63 +1,92 @@
 package com.hungry.taskmanager.config;
 
-import com.hungry.taskmanager.shiro.ShiroAuthFilter;
-import com.hungry.taskmanager.shiro.ShiroRealm;
-import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
-import org.apache.shiro.mgt.DefaultSubjectDAO;
+
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import com.hungry.taskmanager.shiro.cache.RedisCacheManager;
+import com.hungry.taskmanager.shiro.realms.CustomerRealm;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.Filter;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * 用来整合shiro框架相关的配置类
+ */
 @Configuration
 public class ShiroConfig {
-    /** 使用自定义的 Realm 和关闭 Session 管理器
-     * @param realm 自定义的 Realm
-     * @return SecurityManager
-     */
-    @Bean
-    public DefaultWebSecurityManager securityManager(ShiroRealm realm) {
-        DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
-        // 使用自己的 realm
-        manager.setRealm(realm);
-        // 关闭 Session
-        // shiro.ini 方式参考 http://shiro.apache.org/session-management.html#disabling-subject-state-session-storage
-        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
-        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
-        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
-        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
-        manager.setSubjectDAO(subjectDAO);
-        return manager;
+
+    @Bean(name = "shiroDialect")
+    public ShiroDialect shiroDialect(){
+        return new ShiroDialect();
     }
 
-    /** 添加拦截器和配置拦截规则
-     * @param securityManager 安全管理器
-     * @return 拦截器和拦截规则
-     */
+
+    //1.创建shiroFilter  //负责拦截所有请求
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager) {
-        ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
-        factoryBean.setSecurityManager(securityManager);
-        Map<String, Filter> filters = new HashMap<>(2);
-        //  添加 shiroAuthFilter 的拦截器，不要使用 Spring 来管理 Bean
-        filters.put("authFilter", new ShiroAuthFilter());
-        factoryBean.setFilters(filters);
-        // 一定要用 LinkedHashMap，HashMap 顺序不一定按照 put 的顺序，拦截匹配规则是从上往下的
-        // 比如 /api/user/login ，已经匹配到了，即使用 anon 的拦截器，就不会再去匹配 /** 了
-        // anon 支持匿名访问的拦截器
-        LinkedHashMap<String, String> filterChainDefinitions = new LinkedHashMap<>(4);
-        // 登录接口和注册放开
-        filterChainDefinitions.put("/api/user/login", "anon");
-        filterChainDefinitions.put("/api/user/register", "anon");
-        // 其他请求通过自定义的 authFilter
-        filterChainDefinitions.put("/**", "authFilter");
-        factoryBean.setFilterChainDefinitionMap(filterChainDefinitions);
-        return factoryBean;
+    public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager){
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+
+        //给filter设置安全管理器
+        shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager);
+
+        //配置系统受限资源
+        //配置系统公共资源
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("/login.html","anon");//anon 设置为公共资源  放行资源放在下面
+        map.put("/user/getImage","anon");//anon 设置为公共资源  放行资源放在下面
+        map.put("/user/register","anon");//anon 设置为公共资源  放行资源放在下面
+        map.put("/user/registerview","anon");//anon 设置为公共资源  放行资源放在下面
+        map.put("/user/login","anon");//anon 设置为公共资源  放行资源放在下面
+
+//        map.put("/**","authc");//authc 请求这个资源需要认证和授权
+        map.put("/swagger-ui.html","anon");//anon 设置为公共资源  放行资源放在下面
+
+        //默认认证界面路径
+        shiroFilterFactoryBean.setLoginUrl("/user/loginview");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
+
+
+        return shiroFilterFactoryBean;
     }
+
+    //2.创建安全管理器
+    @Bean
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(Realm realm){
+        DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
+        //给安全管理器设置
+        defaultWebSecurityManager.setRealm(realm);
+
+        return defaultWebSecurityManager;
+    }
+
+    //3.创建自定义realm
+    @Bean
+    public Realm getRealm(){
+        CustomerRealm customerRealm = new CustomerRealm();
+
+        //修改凭证校验匹配器
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
+        //设置加密算法为md5
+        credentialsMatcher.setHashAlgorithmName("MD5");
+        //设置散列次数
+        credentialsMatcher.setHashIterations(1024);
+        customerRealm.setCredentialsMatcher(credentialsMatcher);
+
+
+        //开启缓存管理
+        customerRealm.setCacheManager(new RedisCacheManager());
+        customerRealm.setCachingEnabled(true);//开启全局缓存
+        customerRealm.setAuthenticationCachingEnabled(true);//认证认证缓存
+        customerRealm.setAuthenticationCacheName("authenticationCache");
+        customerRealm.setAuthorizationCachingEnabled(true);//开启授权缓存
+        customerRealm.setAuthorizationCacheName("authorizationCache");
+
+        return customerRealm;
+    }
+
 }
-
