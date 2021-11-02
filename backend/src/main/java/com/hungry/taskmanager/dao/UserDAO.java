@@ -1,17 +1,19 @@
-package com.hungry.taskmanager.service;
+package com.hungry.taskmanager.dao;
 
 
 import com.hungry.taskmanager.entity.Perms;
 import com.hungry.taskmanager.entity.User;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-public interface UserService {
-    //注册用户方法
-    void register(User user);
+@Mapper
+public interface UserDAO {
 
-    //根据用户名查询业务的方法
+    void save(User user);
+
     User findByUserName(String username);
+
 
     //根据用户名查询所有角色
     User findRolesByUserName(String username);
@@ -19,3 +21,4 @@ public interface UserService {
     //根据角色id查询权限集合
     List<Perms> findPermsByRoleId(String id);
 }
+
