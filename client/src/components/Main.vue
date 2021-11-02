@@ -45,7 +45,7 @@
           </el-menu-item>
 
           <!-- Address Book -->
-          <el-menu-item index="5">
+          <el-menu-item index="5" @click="showAddressBook">
             <i class="el-icon-s-management"></i>
             <span slot="title">通讯录</span>
           </el-menu-item>
@@ -57,13 +57,13 @@
           </el-menu-item>
 
           <!-- Search Tasks according to taskName -->
-          <el-menu-item index="7">
+          <el-menu-item index="7" @click="showSearchTask">
             <i class="el-icon-search"></i>
             <span slot="title">任务搜索</span>
           </el-menu-item>
         </el-menu>
        </el-aside>
-       <el-main>
+       <el-main class='main'>
          <!-- Add Tasks -->
          <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false'>
             <AddTaskForm  v-on:taskFormData='addTask'></AddTaskForm>
@@ -76,9 +76,13 @@
           <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
           <!-- Group Info -->
           <GroupInfoPage v-show="groupInfoShow"></GroupInfoPage>
+          <!-- Address Book -->
+          <AddressBookPage v-show="addressBookShow"></AddressBookPage>
           <!-- Calendar View -->
           <el-calendar v-model='calendarValue' v-show='calendarShow'>
           </el-calendar>
+          <!-- Search Task View -->
+          <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
        </el-main>
      </el-container>
   </div>
@@ -89,9 +93,11 @@ import PersonalTaskPage from './PersonalTaskPage.vue'
 import GroupInfoPage from './GroupInfoPage.vue'
 import AddTaskForm from './AddTaskForm.vue'
 import AddGroupForm from './AddGroupForm.vue'
+import AddressBookPage from './AddressBookPage.vue'
+import SearchTaskPage from './SearchTaskPage.vue'
 export default {
   name: "Main",
-  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, GroupInfoPage},
+  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, GroupInfoPage, AddressBookPage, SearchTaskPage},
   props: ['username'],
   data() {
     return {
@@ -99,7 +105,9 @@ export default {
       groupInfoShow:false,
       addTaskShow:false,
       addGroupShow:false,
+      addressBookShow:false,
       calendarShow:true,
+      searchTaskShow:false,
       calendarValue:new Date(),
       taskForm:{
           taskName:'',
@@ -121,35 +129,63 @@ export default {
       this.groupInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
+      this.addressBookShow = false
       this.calendarShow = false
+      this.searchTaskShow = false
     },
     showGroupInfo() {
       this.personalTaskShow = false
       this.groupInfoShow = true
       this.addTaskShow = false
       this.addGroupShow = false
+      this.addressBookShow = false
       this.calendarShow = false
+      this.searchTaskShow = false
     },
     addTask() {
       this.personalTaskShow = false
       this.groupInfoShow = false
       this.addTaskShow = true
       this.addGroupShow = false
+      this.addressBookShow = false
       this.calendarShow = false
+      this.searchTaskShow = false
     },
     addGroup() {
       this.personalTaskShow = false
       this.groupInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = true
+      this.addressBookShow = false
       this.calendarShow = false
+      this.searchTaskShow = false
     },
     showCalendar() {
       this.personalTaskShow = false
       this.groupInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
+      this.addressBookShow = false
       this.calendarShow = true
+      this.searchTaskShow = false
+    },
+    showAddressBook() {
+      this.personalTaskShow = false
+      this.groupInfoShow = false
+      this.addTaskShow = false
+      this.addGroupShow = false
+      this.addressBookShow = true
+      this.calendarShow = false
+      this.searchTaskShow = false
+    },
+    showSearchTask() {
+      this.personalTaskShow = false
+      this.groupInfoShow = false
+      this.addTaskShow = false
+      this.addGroupShow = false
+      this.addressBookShow = false
+      this.calendarShow = false
+      this.searchTaskShow = true
     }
   }
 }
@@ -160,6 +196,12 @@ export default {
   width: 100%;
   height:100%;
   position:fixed;
+  padding: 0%;
+  margin: 0%;
+}
+
+.main{
+  padding: 0%;
 }
 .main-frame-menu{
   height: 900px;
