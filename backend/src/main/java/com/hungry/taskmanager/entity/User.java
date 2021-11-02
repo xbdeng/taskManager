@@ -13,13 +13,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    private String  id;
+    private Integer userId;
     private String username;
     private String password;
     private String salt;
 
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+
     //定义角色集合
     private List<Role> roles;
+    private List<Task> tasks;
 
 
 }

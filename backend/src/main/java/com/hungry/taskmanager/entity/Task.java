@@ -5,20 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
-//角色
+
 @Data
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role implements Serializable {
-    private String id;
-    private String name;
+public class Task {
+    private BigInteger taskId;
+    private BigInteger userId;
+    private String title;
+    private String description;
 
-
-    //定义权限的集合
-    private List<Perms> perms;
-
-
+    private List<Tag> tags;
+    private List<Task> subTask;
 }
