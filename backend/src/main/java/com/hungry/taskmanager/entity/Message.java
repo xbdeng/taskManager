@@ -5,14 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-//权限
+import java.math.BigInteger;
+
 @Data
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Perms implements Serializable {
-    private String id;
-    private String name;
-    private String url;
+public class Message {
+    private BigInteger messageId;
+    private User sender;
+    private User receiver;
+    private String content;
+    private Boolean isRead;
 }

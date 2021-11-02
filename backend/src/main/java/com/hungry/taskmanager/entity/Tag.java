@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
-//权限
+import java.math.BigInteger;
+
 @Data
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Perms implements Serializable {
-    private String id;
-    private String name;
-    private String url;
+public class Tag {
+    private BigInteger tagId;
+    private String tagName;
+    private BigInteger userId;
 }
