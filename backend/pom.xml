@@ -4,12 +4,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.baizhi</groupId>
-  <artifactId>springboot_thymeleaf_shiro</artifactId>
+  <groupId>com.hungry</groupId>
+  <artifactId>taskmanager</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>springboot_thymeleaf_shiro Maven Webapp</name>
+  <name>taskmanager Maven Webapp</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -68,26 +68,27 @@
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-spring-boot-starter</artifactId>
-      <version>1.5.3</version>
+      <version>1.7.1</version>
     </dependency>
 
-    <!--引入mybatis-->
+
+    <!--引入mybatis plus-->
     <dependency>
-      <groupId>org.mybatis.spring.boot</groupId>
-      <artifactId>mybatis-spring-boot-starter</artifactId>
-      <version>2.1.2</version>
+      <groupId>com.baomidou</groupId>
+      <artifactId>mybatis-plus-boot-starter</artifactId>
+      <version>3.4.3.4</version>
     </dependency>
 
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.38</version>
+      <version>8.0.25</version>
     </dependency>
     <!--druid-->
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>druid</artifactId>
-      <version>1.1.19</version>
+      <version>1.2.8</version>
     </dependency>
 
     <!--shiro-thymeleaf-->
@@ -103,7 +104,7 @@
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-ehcache</artifactId>
-      <version>1.5.3</version>
+      <version>1.7.1</version>
     </dependency>
 
 
@@ -113,26 +114,19 @@
       <artifactId>spring-boot-starter-data-redis</artifactId>
     </dependency>
 
-    <!--    swagger-->
-    <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <version>2.9.2</version>
-    </dependency>
 
-    <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+    <!--    swagger-->
     <dependency>
       <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger-ui</artifactId>
-      <version>2.9.2</version>
+      <artifactId>springfox-boot-starter</artifactId>
+      <version>3.0.0</version>
     </dependency>
 
 
   </dependencies>
 
   <build>
-    <finalName>springboot_thymeleaf_shiro</finalName>
+    <finalName>taskmanager</finalName>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
         <plugin>

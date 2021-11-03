@@ -11,8 +11,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * 用来整合shiro框架相关的配置类
@@ -21,14 +20,14 @@ import java.util.Map;
 public class ShiroConfig {
 
     @Bean(name = "shiroDialect")
-    public ShiroDialect shiroDialect(){
+    public ShiroDialect shiroDialect() {
         return new ShiroDialect();
     }
 
 
     //1.创建shiroFilter  //负责拦截所有请求
     @Bean
-    public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager){
+    public ShiroFilterFactoryBean getShiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 
         //给filter设置安全管理器
@@ -36,27 +35,33 @@ public class ShiroConfig {
 
         //配置系统受限资源
         //配置系统公共资源
-        Map<String,String> map = new HashMap<String,String>();
-        map.put("/login.html","anon");//anon 设置为公共资源  放行资源放在下面
-        map.put("/user/getImage","anon");//anon 设置为公共资源  放行资源放在下面
-        map.put("/user/register","anon");//anon 设置为公共资源  放行资源放在下面
-        map.put("/user/registerview","anon");//anon 设置为公共资源  放行资源放在下面
-        map.put("/user/login","anon");//anon 设置为公共资源  放行资源放在下面
+//        Map<String,String> map = new HashMap<String,String>();
+//        map.put("/login.html","anon");//anon 设置为公共资源  放行资源放在下面
+//        map.put("/user/getImage","anon");//anon 设置为公共资源  放行资源放在下面
+//        map.put("/user/register","anon");//anon 设置为公共资源  放行资源放在下面
+//        map.put("/user/registerview","anon");//anon 设置为公共资源  放行资源放在下面
+//        map.put("/user/login","anon");//anon 设置为公共资源  放行资源放在下面
+//
+////        map.put("/**","authc");//authc 请求这个资源需要认证和授权
+//        map.put("/swagger-ui.html","anon");//anon 设置为公共资源  放行资源放在下面
+        LinkedHashMap<String, String> filterChainDefinitions = new LinkedHashMap<>(10); //设置容量
 
-//        map.put("/**","authc");//authc 请求这个资源需要认证和授权
-        map.put("/swagger-ui.html","anon");//anon 设置为公共资源  放行资源放在下面
+        // 登录接口和注册放开
+        filterChainDefinitions.put("/api/user/login", "anon");
+        filterChainDefinitions.put("/api/user/register", "anon");
+        filterChainDefinitions.put("swagger-ui.html", "anon");
+        // 其他请求拦截 （认证授权）
+//        filterChainDefinitions.put("/**", "authc");
 
         //默认认证界面路径
-        shiroFilterFactoryBean.setLoginUrl("/user/loginview");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
-
-
+//        shiroFilterFactoryBean.setLoginUrl("/user/loginview");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitions);
         return shiroFilterFactoryBean;
     }
 
     //2.创建安全管理器
     @Bean
-    public DefaultWebSecurityManager getDefaultWebSecurityManager(Realm realm){
+    public DefaultWebSecurityManager getDefaultWebSecurityManager(Realm realm) {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
         //给安全管理器设置
         defaultWebSecurityManager.setRealm(realm);
@@ -66,7 +71,7 @@ public class ShiroConfig {
 
     //3.创建自定义realm
     @Bean
-    public Realm getRealm(){
+    public Realm getRealm() {
         CustomerRealm customerRealm = new CustomerRealm();
 
         //修改凭证校验匹配器
