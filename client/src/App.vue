@@ -6,10 +6,10 @@
 
 <script>
 import router from './router'
-import Main from './components/Main'
-import Login from './components/Login'
-import register from './components/register'
-import Profile from './components/profile.vue'
+import Main from './components/main-frame/Main'
+import Login from './components/login-register/Login'
+import register from './components/login-register/register'
+import Profile from './components/profile/profile.vue'
 export default {
   name: 'App',
   components: {

@@ -25,7 +25,7 @@ export default {
 <style scoped>
 
 #login {
-  background: url("../assets/login_background.gif");
+  background: url("../../assets/login_background.gif");
   width: 100%;
   height: 100%;
   position: fixed;

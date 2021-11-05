@@ -19,7 +19,7 @@
 <!--            :size="size">-->
           <el-aside width="15vw">
             <div class="up-icon">
-              <img src="../assets/task-icon.jpg" class="up-icon">
+              <img src="../../assets/task-icon.jpg" class="up-icon">
             </div>
             <div class="aside-page">
               <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"

@@ -10,7 +10,7 @@
 
             <el-form-item>
               <div class="avatardiv">
-                <img src="../assets/Test.png" alt="" class="up-icon">
+                <img src="../../assets/Test.png" alt="" class="up-icon">
               </div>
             </el-form-item>
 
