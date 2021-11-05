@@ -11,7 +11,7 @@
             </template>
             <el-menu-item-group>
               <span slot="title"></span>
-              <el-menu-item index="1-1" >个人主页</el-menu-item>
+              <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
               <el-menu-item index="1-2" >任务统计</el-menu-item>
               <el-menu-item index="1-3" >页面设置</el-menu-item>
               <el-menu-item index="1-4" >数据同步</el-menu-item>
@@ -79,7 +79,15 @@
           <!-- Address Book -->
           <AddressBookPage v-show="addressBookShow"></AddressBookPage>
           <!-- Calendar View -->
-          <el-calendar v-model='calendarValue' v-show='calendarShow'>
+          <el-calendar v-show='calendarShow'>
+            <template slot="dateCell" slot-scope="{data}">
+                {{ data.day.split('-').slice(1).join('-') }}
+                  <div v-for="(task,index) in formCalendarData(data)" :key="index">
+                    <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
+                      <el-link slot='reference'>{{ task[0] }}</el-link>
+                    </el-popover>
+                  </div> 
+            </template>
           </el-calendar>
           <!-- Search Task View -->
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
@@ -100,6 +108,7 @@ export default {
   components:{AddTaskForm, AddGroupForm, PersonalTaskPage, GroupInfoPage, AddressBookPage, SearchTaskPage},
   props: ['username'],
   data() {
+
     return {
       personalTaskShow:false,
       groupInfoShow:false,
@@ -117,7 +126,39 @@ export default {
           taskType: '',
           taskStartTime:'',
           taskDescription:''
-      }
+      },
+      calendarTasks:[
+        {
+          taskName:'OOAD',
+          taskDDL:'11-05',
+          taskDescription:'An OOAD Project'
+        },
+        {
+          taskName:'AI Project',
+          taskDDL:'11-27',
+          taskDescription:'An AI Project'
+        },
+        {
+          taskName:'Complier',
+          taskDDL:'11-30',
+          taskDescription:'Design a Complier'
+        },
+        {
+          taskName:'Computer Network',
+          taskDDL:'11-30',
+          taskDescription:'Midterm Exam'
+        },
+        {
+          taskName:'PAT',
+          taskDDL:'11-30',
+          taskDescription:'PAT Context'
+        },
+        {
+          taskName:'CCF',
+          taskDDL:'11-30',
+          taskDescription:'CCF Context'
+        }
+      ]
     }
   },
   methods:{
@@ -186,6 +227,21 @@ export default {
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = true
+    },
+    formCalendarData(data) {
+      let currentDate = data.day.split('-').slice(1).join('-')
+      let calendarData = []
+      this.calendarTasks.forEach(
+        function (task) {
+          if (currentDate === task.taskDDL) {
+            let list = []
+            list.push(task.taskName)
+            list.push(task.taskDescription)
+            calendarData.push(list)
+          }
+        }
+      )
+      return calendarData
     }
   }
 }
@@ -206,4 +262,5 @@ export default {
 .main-frame-menu{
   height: 900px;
 }
+
 </style>

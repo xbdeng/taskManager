@@ -3,8 +3,8 @@
         <el-container>
             <!-- Group Overview -->
             <el-aside>
-                <el-menu default-active="1" class="main-frame-menu"  :collapse="false">
-                    <el-submenu  v-for='(group, groupIndex) in groupInfo' :key="groupIndex" index= toString(groupIndex) >
+                <el-menu  class="main-frame-menu">
+                    <el-submenu  v-for='(group, groupIndex) in groupInfo' :key="groupIndex" :index= group.groupName >
                         <template slot="title">
                             <i class="el-icon-apple"></i>
                             <span slot="title" @click="showSelectedGroup(groupIndex)">{{ group.groupName }}</span>
@@ -19,7 +19,7 @@
             <!-- Different Group Tasks in the selected Group-->
             <el-aside>
                 <el-menu default-active="1" class="main-frame-menu"  :collapse="false">
-                    <el-submenu v-for='(task, taskIndex) in groupInfo[this.selectedGroup].groupTasks' :key="taskIndex" index="1">
+                    <el-submenu v-for='(task, taskIndex) in groupInfo[this.selectedGroup].groupTasks' :key="taskIndex" :index="task.taskName">
                         <template slot="title">
                             <i class="el-icon-apple"></i>
                             <span slot="title"  @click="showSelectedTask(taskIndex)">{{ task.taskName }}</span>

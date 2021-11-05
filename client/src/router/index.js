@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Main from '../components/Main'
-import Login from '../components/Login'
-import register from "../components/register";
-import profile from "../components/profile";
-import profileInfo from "../components/profileInfo"
-import ChangePasswd from "../components/ChangePasswd"
+import Main from '../components/main-frame/Main'
+import Login from '../components/login-register/Login'
+import register from "../components/login-register/register";
+import profile from "../components/profile/profile";
+import profileInfo from "../components/profile/profileInfo"
+import ChangePasswd from "../components/login-register/ChangePasswd"
 
 
 Vue.use(VueRouter);
