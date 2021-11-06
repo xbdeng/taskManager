@@ -95,11 +95,21 @@ public class UserController {
 //        }
 //        return "redirect:/user/loginview";
 //    }
-
     @PostMapping("login")
-    public MyResponse login(String username, String password, HttpSession httpSession){
+    public MyResponse login(String username, String password, HttpSession httpSession) {
         Subject subject = SecurityUtils.getSubject();
-        subject.login(new UsernamePasswordToken(username,password));
+        try {
+            subject.login(new UsernamePasswordToken(username, password));
+        } catch (UnknownAccountException e) {
+//            e.printStackTrace();
+            System.out.println("用户名错误");
+        } catch (IncorrectCredentialsException e) {
+//            e.printStackTrace();
+            System.out.println("密码错误!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
         return new MyResponse("todo");
     }
 }

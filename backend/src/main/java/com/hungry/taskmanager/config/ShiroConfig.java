@@ -2,7 +2,7 @@ package com.hungry.taskmanager.config;
 
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-import com.hungry.taskmanager.shiro.cache.RedisCacheManager;
+//import com.hungry.taskmanager.shiro.cache.RedisCacheManager;
 import com.hungry.taskmanager.shiro.realms.CustomerRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
@@ -49,9 +49,9 @@ public class ShiroConfig {
         // 登录接口和注册放开
         filterChainDefinitions.put("/api/user/login", "anon");
         filterChainDefinitions.put("/api/user/register", "anon");
-        filterChainDefinitions.put("swagger-ui.html", "anon");
+        filterChainDefinitions.put("swagger-ui/index.html", "anon");
         // 其他请求拦截 （认证授权）
-//        filterChainDefinitions.put("/**", "authc");
+        filterChainDefinitions.put("/**", "authc");
 
         //默认认证界面路径
 //        shiroFilterFactoryBean.setLoginUrl("/user/loginview");
@@ -84,12 +84,12 @@ public class ShiroConfig {
 
 
         //开启缓存管理
-        customerRealm.setCacheManager(new RedisCacheManager());
-        customerRealm.setCachingEnabled(true);//开启全局缓存
-        customerRealm.setAuthenticationCachingEnabled(true);//认证认证缓存
-        customerRealm.setAuthenticationCacheName("authenticationCache");
-        customerRealm.setAuthorizationCachingEnabled(true);//开启授权缓存
-        customerRealm.setAuthorizationCacheName("authorizationCache");
+//        customerRealm.setCacheManager(new RedisCacheManager());
+//        customerRealm.setCachingEnabled(true);//开启全局缓存
+//        customerRealm.setAuthenticationCachingEnabled(true);//认证认证缓存
+//        customerRealm.setAuthenticationCacheName("authenticationCache");
+//        customerRealm.setAuthorizationCachingEnabled(true);//开启授权缓存
+//        customerRealm.setAuthorizationCacheName("authorizationCache");
 
         return customerRealm;
     }

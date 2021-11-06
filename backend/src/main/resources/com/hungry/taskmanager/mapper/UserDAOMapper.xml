@@ -8,10 +8,10 @@
 <!--    </insert>-->
 
 
-<!--    <select id="findByUserName" parameterType="String" resultType="User">-->
-<!--        select id,username,password,salt from t_user-->
-<!--        where username = #{username}-->
-<!--    </select>-->
+    <select id="findByUserName" parameterType="String" resultType="User">
+        select user_id,username,password,salt from user
+        where username = #{username}
+    </select>
 
 
 <!--    <resultMap id="userMap" type="User">-->
