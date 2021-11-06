@@ -1,14 +1,17 @@
 <template>
+<!-- 这个页面用于显示组队任务 -->
     <div class='groupInfo'>
         <el-container>
-            <!-- Group Overview -->
+            <!-- 侧边栏，用于显示所有组的信息 -->
             <el-aside>
                 <el-menu  class="main-frame-menu">
+                    <!-- 子菜单，用于显示所有的组 -->
                     <el-submenu  v-for='(group, groupIndex) in groupInfo' :key="groupIndex" :index= group.groupName >
                         <template slot="title">
                             <i class="el-icon-apple"></i>
                             <span slot="title" @click="showSelectedGroup(groupIndex)">{{ group.groupName }}</span>
                         </template>
+                        <!-- 根据组的下标获取member，遍历memberList并显示成员 -->
                         <el-menu-item v-for='(member, memberIndex) in group.groupMembers' :key="memberIndex">
                             {{ member.memberName }}
                         </el-menu-item>
@@ -16,44 +19,39 @@
                 </el-menu>
             </el-aside>
 
-            <!-- Different Group Tasks in the selected Group-->
+            <!-- 侧边栏，用于显示组别任务 -->
             <el-aside>
-                <el-menu default-active="1" class="main-frame-menu"  :collapse="false">
-                    <el-submenu v-for='(task, taskIndex) in groupInfo[this.selectedGroup].groupTasks' :key="taskIndex" :index="task.taskName">
-                        <template slot="title">
-                            <i class="el-icon-apple"></i>
-                            <span slot="title"  @click="showSelectedTask(taskIndex)">{{ task.taskName }}</span>
-                        </template>
-                    </el-submenu>
+                <el-menu>
+                    <TaskTree :taskData="groupInfo[this.selectedGroup].groupTasks" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                 </el-menu>
             </el-aside>
 
-            <!-- The detailed Info of the given tasks-->
+            <!-- 用于显示任务信息 -->
             <el-main>
-                <el-container>
-                    <el-header>头部栏</el-header>
-                    <el-main>
-                        {{ this.groupInfo[selectedGroup].groupTasks[selectedTask].taskName }}
-                    </el-main>
-                </el-container>
+                <TaskShow :singleTaskData="getTaskById(groupInfo[this.selectedGroup].groupTasks, chosenTaskId)"></TaskShow>
             </el-main>
         </el-container>
     </div>
 </template>
 
 <script>
-
+import TaskTree from '../sub-components/TaskTree.vue'
+import TaskShow from '../sub-components/TaskShow.vue'
 export default {
 
   name: "GroupInfoPage",
   components: {
-    
+    TaskTree,
+    TaskShow
   },
   data() {
         
         return {
+            // 唯一标识任务的key
+            chosenTaskId:'-1',
+            // 用户点击的组的编号
             selectedGroup:0,
-            selectedTask:0,
+            //用户的所有组的信息
             groupInfo:[
             {
                 groupName:'菜鸡学生组',
@@ -75,10 +73,22 @@ export default {
                 ],
                 groupTasks:[
                     {
-                        taskName:'Database'
+                        taskName:'Database',
+                        taskDescriptions:'Very busy'
                     },
                     {
-                        taskName:'Computer Architecture'
+                        taskName:'Computer Architecture',
+                        taskDescriptions:'Easy',
+                        subTasks:[
+                            {
+                                taskName:'ALU',
+                                taskDescriptions:'ababaab',
+                            },
+                            {
+                                taskName:'Controller',
+                                taskDescriptions:'hhh'
+                            }
+                        ]
                     }
                 ]
             },
@@ -105,10 +115,18 @@ export default {
                 ],
                 groupTasks:[
                     {
-                        taskName:'AI Project'
+                        taskName:'AI Project',
+                        taskDescriptions:'aaaaaaaaaa'
                     },
                     {
-                        taskName:'OS Project'
+                        taskName:'OS Project',
+                        taskDescriptions:'A little hard',
+                        subTasks:[
+                            {
+                                taskName:'fork function',
+                                taskDescriptions:'easiest'
+                            }
+                        ]
                     }
                 ]
             },
@@ -116,12 +134,24 @@ export default {
     }
   },
   methods: {
-
+    // 用于根据用户的点击，显示特定的组别
     showSelectedGroup(groupId) {
         this.selectedGroup = groupId
     },
-    showSelectedTask(taskId) {
-        this.selectedTask = taskId
+    // 接收子组件传递的任务的key
+    chooseTasks(id) {
+          this.chosenTaskId = id;
+    },
+    // 根据任务数组和子组件的key找到任务对象并返回
+    getTaskById(taskList, id) {
+        if (id === '-1') return {
+            taskName:'Please choose your task'
+        }
+        if (parseInt(id[0]) >= taskList.length) return {
+            taskName:'Please choose your task'
+        }
+        if (id.length == 1) return taskList[parseInt(id)];
+        return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
     }
 }
 
