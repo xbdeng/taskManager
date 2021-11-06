@@ -1,9 +1,11 @@
 <template>
+<!-- 这个页面是个人主页面 -->
   <div class='mainFrame'>
      <el-container>
+       <!-- 侧边栏 -->
        <el-aside class = 'mainFrameAside' width='64px'>
          <el-menu default-active="6" class="main-frame-menu"  :collapse="true" >
-           <!-- Profile -->
+           <!-- 个人面板弹框 -->
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-user-solid"></i>
@@ -19,7 +21,7 @@
             </el-menu-item-group>
           </el-submenu>
 
-          <!-- Add Tasks or Groups -->
+          <!-- 添加任务或者组别 -->
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-plus"></i>
@@ -32,31 +34,31 @@
             </el-menu-item-group>
           </el-submenu>
 
-          <!-- Show Personal Task -->
+          <!-- 展示个人任务 -->
           <el-menu-item index="3" @click='showPersonalTask'>
             <i class="el-icon-user"></i>
             <span slot="title">个人任务</span>
           </el-menu-item>
 
-          <!-- Show Group Task -->
+          <!-- 展示组别任务 -->
           <el-menu-item index="4" @click="showGroupInfo">
             <i class="el-icon-platform-eleme"></i>
             <span slot="title">组队任务</span>
           </el-menu-item>
 
-          <!-- Address Book -->
+          <!-- 通讯录 -->
           <el-menu-item index="5" @click="showAddressBook">
             <i class="el-icon-s-management"></i>
             <span slot="title">通讯录</span>
           </el-menu-item>
 
-          <!-- View Tasks in Calendar View mode -->
+          <!-- 以日历视图展示任务 -->
           <el-menu-item index="6" @click="showCalendar">
             <i class="el-icon-date"></i>
             <span slot="title">日历视图</span>
           </el-menu-item>
 
-          <!-- Search Tasks according to taskName -->
+          <!-- 搜索任务 -->
           <el-menu-item index="7" @click="showSearchTask">
             <i class="el-icon-search"></i>
             <span slot="title">任务搜索</span>
@@ -64,21 +66,21 @@
         </el-menu>
        </el-aside>
        <el-main class='main'>
-         <!-- Add Tasks -->
+         <!-- 添加task的表单 -->
          <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false'>
             <AddTaskForm  v-on:taskFormData='addTask'></AddTaskForm>
           </el-dialog>
-          <!-- Add Groups -->
+          <!-- 添加组别的表单 -->
           <el-dialog :visible.sync='addGroupShow' width='1000px' height='1000px' :modal-append-to-body='false'>
             <AddGroupForm v-on:groupFormData='addGroup'></AddGroupForm>
           </el-dialog>
-          <!-- Personal Task -->
+          <!-- 个人任务页面 -->
           <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
-          <!-- Group Info -->
+          <!-- 组队任务页面 -->
           <GroupInfoPage v-show="groupInfoShow"></GroupInfoPage>
-          <!-- Address Book -->
+          <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow"></AddressBookPage>
-          <!-- Calendar View -->
+          <!-- 日历视图 -->
           <el-calendar v-show='calendarShow'>
             <template slot="dateCell" slot-scope="{data}">
                 {{ data.day.split('-').slice(1).join('-') }}
@@ -89,7 +91,7 @@
                   </div> 
             </template>
           </el-calendar>
-          <!-- Search Task View -->
+          <!-- 任务搜索 -->
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
        </el-main>
      </el-container>
@@ -162,6 +164,7 @@ export default {
     }
   },
   methods:{
+    // 跳转到个人主页
     toProfile(event) {
       this.$router.push({name: 'Profile',params:{username:this.username}});
     },
@@ -228,6 +231,7 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = true
     },
+    // 将任务名称展示在日历中
     formCalendarData(data) {
       let currentDate = data.day.split('-').slice(1).join('-')
       let calendarData = []
