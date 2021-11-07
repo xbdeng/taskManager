@@ -25,7 +25,7 @@
                     <el-form-item>
                       <el-col :span="12" :offset="3">
                           <!-- loading表示显示加载效果 -->
-                        <el-button type="primary" @click="handleSubmit" :loading="logining">登录</el-button>
+                        <el-button type="primary" @click="handleSubmit">登录</el-button>
                         <el-button @click="handleRegister">注册</el-button>
                       </el-col>
                     </el-form-item>
@@ -89,16 +89,19 @@ export default {
 
                 if(valid){
                     axios.post(
-                        'http://localhost:8081',
+                        'http://localhost:8081/login',
                         {
                             username: this.loginForm.username,
                             password: this.loginForm.password
-                        }
+                        },
                     ).then(
                         function(response) {
-
-                            alert('登录成功')
+                            that.$message({
+                                message:'登录成功',
+                                type:'success'
+                            })
                             let token = response.data.token
+                            // 保存token
                             window.sessionStorage.setItem('token', token)
                             // 清空表单数据
                             that.loginForm.username = ''
@@ -107,7 +110,7 @@ export default {
                             that.$router.push({name:'Main', params:{username: that.loginForm.username}})
                         },
                         function(err) {
-                            alert('登录失败')
+                            that.$message.error('登录失败')
                             that.logining = false
                         }
                     )

@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: "registerContainer",
   data() {
@@ -214,9 +215,39 @@ export default {
       this.$set(this.checkList, index, true)
     },
     submitForm(formName) {
+      let that = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          // 向后端提交登录数据
+          
+          this.axios.post(
+            'http://localhost:8081/register',
+            {
+              username:that.ruleForm.username,
+              email:that.ruleForm.email,
+              password:that.ruleForm.pass,
+              age:that.ruleForm.age
+            }
+          ).then(
+            function(response) {
+              this.$message({
+                message:'注册成功',
+                type:'success'
+              })
+              // 清空表单
+              let username = that.ruleForm.username
+              that.ruleForm.username = ''
+              that.ruleForm.pass = ''
+              that.ruleForm.email = ''
+              that.ruleForm.age = ''
+
+              // 跳转路由
+              that.$routerrouter.push('/main/' + username)
+            },
+            function(err) {
+              that.$message.error('注册失败')
+            }
+          )
         } else {
           console.log('error submit!!');
           return false;
