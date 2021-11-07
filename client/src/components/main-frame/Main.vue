@@ -29,8 +29,8 @@
             </template>
             <el-menu-item-group>
               <span slot="title">添加...</span>
-              <el-menu-item index="2-1" @click='addTask'>任务</el-menu-item>
-              <el-menu-item index="2-2" @click='addGroup'>组别</el-menu-item>
+              <el-menu-item index="2-1" @click='showTask'>任务</el-menu-item>
+              <el-menu-item index="2-2" @click='showGroup'>组别</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -68,11 +68,11 @@
        <el-main class='main'>
          <!-- 添加task的表单 -->
          <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false'>
-            <AddTaskForm  v-on:taskFormData='addTask'></AddTaskForm>
+            <AddTaskForm  v-on:taskFormData='addTask($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
           <el-dialog :visible.sync='addGroupShow' width='1000px' height='1000px' :modal-append-to-body='false'>
-            <AddGroupForm v-on:groupFormData='addGroup'></AddGroupForm>
+            <AddGroupForm v-on:groupFormData='addGroup($event)'></AddGroupForm>
           </el-dialog>
           <!-- 个人任务页面 -->
           <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
@@ -105,6 +105,7 @@ import AddTaskForm from './AddTaskForm.vue'
 import AddGroupForm from './AddGroupForm.vue'
 import AddressBookPage from './AddressBookPage.vue'
 import SearchTaskPage from './SearchTaskPage.vue'
+import axios from 'axios'
 export default {
   name: "Main",
   components:{AddTaskForm, AddGroupForm, PersonalTaskPage, GroupInfoPage, AddressBookPage, SearchTaskPage},
@@ -186,7 +187,7 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
-    addTask() {
+    showTask() {
       this.personalTaskShow = false
       this.groupInfoShow = false
       this.addTaskShow = true
@@ -194,8 +195,9 @@ export default {
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = false
+
     },
-    addGroup() {
+    showGroup() {
       this.personalTaskShow = false
       this.groupInfoShow = false
       this.addTaskShow = false
@@ -246,6 +248,51 @@ export default {
         }
       )
       return calendarData
+    },
+    addTask(newTask) {
+      // 向后端发送创建的任务数据
+      axios.post(
+        'http://localhost:8081/',
+        {
+          taskName:newTask.taskName,
+          taskTags:newTask.taskTags,
+          taskDDL:newTask.taskDDL,
+          taskPriority:newTask.taskPriority,
+          taskType:newTask.taskType,
+          taskGroups:newTask.taskGroups,
+          taskStartTime:newTask.taskStartTime,
+          taskDescription:newTask.taskDescription
+        }
+      ).then(
+        function(response) {
+          this.$message(
+            {
+              message:'创建任务成功',
+              type:'success'
+            }
+          );
+        },
+        function(err) {
+          that.$message.error('创建任务失败')
+        }
+      )
+    },
+    addGroup(newGroup) {
+      // 向后端发送创建的组别数据
+      axios.post(
+        'http://localhost:8081/',
+        {
+          groupName:newGroup.groupName,
+          groupMembers:newGroup.groupMembers
+        }
+      ).then(
+        function(response) {
+
+        },
+        function(err) {
+          that.$message.error('创建组别失败')
+        }
+      )
     }
   }
 }
