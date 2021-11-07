@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: taskmanager
+  datasource:
+    url: jdbc:mysql://rm-wz968x73ihm8kx49jqo.mysql.rds.aliyuncs.com:3306/task_manager?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: db_manager
+    password: ooad2021
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  type-aliases-package: com.hungry.taskmanager.entity
+  mapper-locations: classpath:com/hungry/taskmanager/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

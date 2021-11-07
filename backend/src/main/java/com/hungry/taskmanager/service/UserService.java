@@ -2,13 +2,17 @@ package com.hungry.taskmanager.service;
 
 
 import com.hungry.taskmanager.entity.Perms;
+import com.hungry.taskmanager.entity.RegisterInfo;
+import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.User;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 public interface UserService {
     //注册用户方法
-    void register(User user);
+    MyResponse register(RegisterInfo registerInfo);
+
 
     //根据用户名查询业务的方法
     User findByUserName(String username);
