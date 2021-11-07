@@ -89,7 +89,7 @@ export default {
 
                 if(valid){
                     axios.post(
-                        'http://localhost:8081/login',
+                        'http://localhost:8081/api/user/login',
                         {
                             username: this.loginForm.username,
                             password: this.loginForm.password
@@ -110,7 +110,7 @@ export default {
                             that.$router.push({name:'Main', params:{username: that.loginForm.username}})
                         },
                         function(err) {
-                            that.$message.error('登录失败')
+                            that.$message.error('用户名或密码错误')
                             that.logining = false
                         }
                     )

@@ -219,9 +219,8 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 向后端提交登录数据
-          
-          this.axios.post(
-            'http://localhost:8081/register',
+          axios.post(
+            'http://localhost:8081/api/user/register',
             {
               username:that.ruleForm.username,
               email:that.ruleForm.email,
@@ -230,10 +229,7 @@ export default {
             }
           ).then(
             function(response) {
-              this.$message({
-                message:'注册成功',
-                type:'success'
-              })
+              alert('注册成功')
               // 清空表单
               let username = that.ruleForm.username
               that.ruleForm.username = ''
@@ -242,10 +238,10 @@ export default {
               that.ruleForm.age = ''
 
               // 跳转路由
-              that.$routerrouter.push('/main/' + username)
+              that.$router.push('/login')
             },
             function(err) {
-              that.$message.error('注册失败')
+              alert('注册失败');
             }
           )
         } else {
