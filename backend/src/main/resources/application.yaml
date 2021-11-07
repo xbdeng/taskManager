@@ -11,3 +11,5 @@ mybatis-plus:
   mapper-locations: classpath:com/hungry/taskmanager/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+server:
+  port: 8081

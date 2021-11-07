@@ -1,5 +1,6 @@
 package com.hungry.taskmanager.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +13,10 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class RegisterInfo {
     @NonNull
+    @ApiModelProperty(required = true)
     private String username;
     @NonNull
+    @ApiModelProperty(required = true)
     private String password;
     private String salt;
     private String email;

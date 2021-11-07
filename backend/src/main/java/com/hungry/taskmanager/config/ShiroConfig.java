@@ -51,7 +51,7 @@ public class ShiroConfig {
         filterChainDefinitions.put("/api/user/register", "anon");
         filterChainDefinitions.put("swagger-ui/index.html", "anon");
         // 其他请求拦截 （认证授权）
-        filterChainDefinitions.put("/**", "authc");
+//        filterChainDefinitions.put("/**", "authc");
 
         //默认认证界面路径
 //        shiroFilterFactoryBean.setLoginUrl("/user/loginview");

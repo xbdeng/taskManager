@@ -5,6 +5,7 @@ import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.service.UserService;
 import com.hungry.taskmanager.utils.VerifyCodeUtils;
+import io.swagger.annotations.ApiParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -22,7 +23,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/user")
-//@CrossOrigin(origins = "*")
+@CrossOrigin
 public class UserController {
 
     @Resource
@@ -96,7 +97,7 @@ public class UserController {
 //        return "redirect:/user/loginview";
 //    }
     @PostMapping("login")
-    public MyResponse login(String username, String password, HttpSession httpSession) {
+    public MyResponse login(@ApiParam(required = true) String username, String password, HttpSession httpSession) {
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(new UsernamePasswordToken(username, password));
