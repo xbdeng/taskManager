@@ -65,11 +65,13 @@
 
 
     <!--引入shiro整合springboot依赖-->
+    <!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-spring-boot-starter -->
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-spring-boot-starter</artifactId>
-      <version>1.7.1</version>
+      <version>1.8.0</version>
     </dependency>
+
 
 
     <!--引入mybatis plus-->
@@ -79,11 +81,13 @@
       <version>3.4.3.4</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.25</version>
+      <version>8.0.27</version>
     </dependency>
+
     <!--druid-->
     <dependency>
       <groupId>com.alibaba</groupId>
