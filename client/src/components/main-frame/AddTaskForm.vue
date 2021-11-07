@@ -9,52 +9,89 @@
                 <el-form label-width="150px" ref='taskForm' :model='taskForm' :rules="rules" status-icon>
                     <!--Task Name-->
                     <el-form-item label='任务名称:' prop='taskName'>
-                        <el-col :span='14'>
-                            <el-input placeholder='请输入任务名...' clearable v-model='taskForm.taskName'></el-input>
-                        </el-col>
+                        <el-row>
+                            <el-col :span='14'>
+                                <el-input placeholder='请输入任务名...' clearable v-model='taskForm.taskName'></el-input>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                     <!--Task Tags-->
                     <el-form-item label='任务标签:' prop='taskTags'>
-                        <el-col :span='16'>
-                            <el-select placeholder='请选择任务标签' v-model='taskForm.taskTags'>
-                                <el-option v-for='item in tagArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
-                            </el-select>
-                        </el-col>
+                        <el-row>
+                            <el-col :span='14' >
+                                <el-select placeholder='请选择任务标签' multiple v-model='taskForm.taskTags'>
+                                    <el-option v-for='item in tagArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
+                                </el-select>
+                                <!-- 文字提示：提示用户可以自定义任务标签 -->
+                                <el-popover placement="top" width="200" trigger="click" title="自定义任务标签">
+                                    <el-row>
+                                        <el-col>
+                                            <el-input placeholder="请输入自定义的任务标签..." clearable v-model="addedTag"></el-input>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col :offset="8">
+                                            <el-button type='primary' plain size="small" @click="addTag">确定</el-button>
+                                        </el-col>
+                                    </el-row>
+                                    <el-button type='primary' icon='el-icon-plus' circle slot="reference"></el-button>
+                                </el-popover>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                     <!--Task DDL-->
                     <el-form-item label='任务截止时间:' prop='taskDDL'>
-                        <el-col :span='8'>
-                            <el-date-picker type='date' placeholder="请选择任务的截止时间" v-model="taskForm.taskDDL"></el-date-picker>
-                        </el-col>
+                        <el-row>
+                            <el-col :span='8'>
+                                <el-date-picker type='date' placeholder="请选择任务的截止时间" v-model="taskForm.taskDDL"></el-date-picker>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                     <!--Task Priority-->
                     <el-form-item label='任务优先级：' prop='taskPriority'>
-                        <el-col :span='16'>
-                            <el-select placeholder='请选择任务优先级' v-model='taskForm.taskPriority'>
-                                <el-option v-for='item in priorityArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
-                            </el-select>
-                        </el-col>
+                        <el-row>
+                            <el-col :span='11'>
+                                <el-select placeholder='请选择任务优先级' v-model='taskForm.taskPriority'>
+                                    <el-option v-for='item in priorityArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                     <!--Task Type-->
                     <el-form-item label='任务类型:' prop='taskType'>
-                        <el-col :span='16'>
-                            <el-radio-group v-model='taskForm.taskType' >
-                                <el-radio label='personal'>个人任务</el-radio>
-                                <el-radio label='group'>组队任务</el-radio>
-                            </el-radio-group>
+                        <el-row>
+                            <el-col :span='10'>
+                                <el-radio-group v-model='taskForm.taskType' >
+                                    <el-radio label='personal'>个人任务</el-radio>
+                                    <el-radio label='group'>组队任务</el-radio>
+                                </el-radio-group>
+                            </el-col>
+                        </el-row>
+                    </el-form-item>
+                    <!-- 如果选择了组队任务，会多出一个多选框，选择给哪个队伍分配任务 -->
+                    <el-form-item label='分配组别:' prop='taskGroups' v-if="taskForm.taskType === 'group'">
+                        <el-col :span='10'>
+                            <el-select placeholder='请选择任务分配的组别' multiple v-model='taskForm.taskGroups'>
+                                <el-option v-for="(group, gIndex) in groupInfo" :key="gIndex" :label="group.groupName" :value="group.groupName">
+                                </el-option>
+                            </el-select>
                         </el-col>
                     </el-form-item>
                     <!--Task Start Time-->
                     <el-form-item label='开始时间:' prop='taskStartTime'>
-                        <el-col :span='8'>
-                            <el-date-picker type='date' placeholder="请选择任务的开始时间" v-model="taskForm.taskStartTime"></el-date-picker>
-                        </el-col>
+                        <el-row>
+                            <el-col :span='8'>
+                                <el-date-picker type='date' placeholder="请选择任务的开始时间" v-model="taskForm.taskStartTime"></el-date-picker>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                     <!-- Task Description -->
                     <el-form-item label='任务描述:' prop='taskDescription'>
-                        <el-col :span='14'>
-                            <el-input placeholder='请输入任务的描述信息' clearable v-model='taskForm.taskDescription' type='textarea'></el-input>
-                        </el-col>
+                        <el-row>
+                            <el-col :span='14'>
+                                <el-input placeholder='请输入任务的描述信息' clearable v-model='taskForm.taskDescription' type='textarea'></el-input>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                 </el-form> 
             </el-main>
@@ -121,13 +158,14 @@ export default {
     };
 
     return {
-        
+        addedTag:'',
         taskForm:{
             taskName:'',
             taskTags: '',
             taskDDL:'',
             taskPriority:'',
             taskType: '',
+            taskGroups:'',
             taskStartTime:'',
             taskDescription:''
         },
@@ -139,6 +177,14 @@ export default {
             {label:'高', value:'high_priority'},
             {label:'中', value:'medium_priority'},
             {label:'低', value:'low_priority'}
+        ],
+        groupInfo:[
+            {
+                groupName:'嘻嘻嘻嘻嘻',
+            },
+            {
+                groupName:'OOAD摸鱼划水'
+            }
         ],
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
@@ -152,11 +198,38 @@ export default {
     }
   },
   methods:{
-      
-
+    //   用户自定义标签
+      addTag() {
+        //   判断要添加的标签是否已经存在
+          let flag = false
+          for(let i in this.tagArray) {
+              let item = this.tagArray[i]
+              if(item.label === this.addedTag) {
+                  flag = true
+                  break
+              }
+          }
+          if(flag) {
+              this.$message.error('添加失败，已有该标签')
+              return ;
+          }
+          this.tagArray.push(
+              {
+                  label:this.addedTag,
+                  value:this.addedTag
+              }
+          )
+          this.$message(
+              {
+                  message:'添加成功!',
+                  type:'success'
+              }
+          )
+      },
       submitForm(formName) {
 
           this.$refs[formName].validate((valid)=>{
+              
               if(valid) {
                   this.$emit('taskFormData',{
                       taskName:this.taskForm.taskName,
@@ -164,6 +237,7 @@ export default {
                       taskDDL:this.taskForm.taskDDL,
                       taskPriority:this.taskForm.taskPriority,
                       taskType:this.taskForm.taskType,
+                      taskGroups:this.taskForm.taskGroups,
                       taskStartTime:this.taskForm.taskStartTime,
                       taskDescription:this.taskForm.taskDescription
                   })
