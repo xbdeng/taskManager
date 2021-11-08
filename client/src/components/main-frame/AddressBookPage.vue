@@ -18,14 +18,14 @@
             <!-- 侧边栏，用于显示所有好友 -->
             <el-aside class='address_aside'>
                 <el-menu >
-                    <el-menu-item v-for="(friend, index) in Friends" :key="index" @click="changeSelectedFriend(index)">
-                        {{ friend.name }}
+                    <el-menu-item v-for="(friend, index) in friends" :key="index" @click="changeSelectedFriend(index)">
+                        {{ friend.username }}
                     </el-menu-item>
                 </el-menu>
             </el-aside>
             <!-- 主页面，用于显示好友信息 -->
             <el-main class='address_main'>
-                <FriendShow :friend="Friends[this.selectedFriend]"></FriendShow>
+                <FriendShow :friend="friends[this.selectedFriend]"></FriendShow>
             </el-main>
         </el-container>
     </el-container>
@@ -40,35 +40,10 @@ export default {
   components: {
       FriendShow
   },
+  props:['friends'],
   data() {
       return {
           selectedFriend:0,
-          Friends:[
-              {
-                  name:'Lee',
-                  email:'11913003@mail.sustech.edu.cn',
-                  telephone:'19861251006',
-                  personalSign:'Eclipse first, the rest nowhere'
-              },
-              {
-                  name:'Mike',
-                  email:'chlijiaao@163.com',
-                  telephone:'10086',
-                  personalSign:"躺平不香吗?"
-              },
-              {
-                  name:'Smith',
-                  email:'2381446488@qq.com',
-                  telephone:'120',
-                  personalSign:"我是个傻逼"
-              },
-              {
-                  name:'Jack',
-                  email:'ababa@mail.sustech.edu.cn',
-                  telephone:'119',
-                  personalSign:"哥只是个传说"
-              }
-          ]
       }
   },
   methods:{

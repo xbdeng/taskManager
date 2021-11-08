@@ -99,13 +99,18 @@ export default {
               }
           ).then(
               function(response) {
-                  alert('搜索信息提交成功')
+                  that.$message(
+                      {
+                          message:'查询成功',
+                          type:'success'
+                      }
+                  )
                   // Clear content in el-input
                   that.searchTaskName = ''
                   that.searchedResult = response.data.searchedResult
               },
               function(err) {
-                  alert('搜索失败')
+                  that.$message.error('查询失败')
                   that.searchTaskName = ''
               }
           )

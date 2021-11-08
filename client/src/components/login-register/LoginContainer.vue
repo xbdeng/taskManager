@@ -88,6 +88,8 @@ export default {
             this.$refs.loginForm.validate(async (valid) => {
 
                 if(valid){
+                    this.loginForm.password = this.$md5(this.loginForm.password)
+                    alert(this.loginForm.password)
                     axios.post(
                         'http://localhost:8081/api/user/login',
                         {
@@ -117,6 +119,7 @@ export default {
                     
                     
                 }else{
+                    
                     this.loginForm.username = ''
                     this.loginForm.password = ''
                     return (this.logining = false)

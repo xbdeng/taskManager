@@ -44,93 +44,14 @@ export default {
     TaskTree,
     TaskShow
   },
+  props:['groupInfo'],
   data() {
-        
-        return {
-            // 唯一标识任务的key
-            chosenTaskId:'-1',
-            // 用户点击的组的编号
-            selectedGroup:0,
-            //用户的所有组的信息
-            groupInfo:[
-            {
-                groupName:'菜鸡学生组',
-                groupMembers:[
-                    {
-                        memberName:'八云紫',
-                        memberRole:'Master'
-                    },
-                    {
-                        memberName:'八云蓝',
-                        memberRole:'Manager'
-                    },
-                    {
-                        memberName:'橙',
-                        memberRole:'none'
-                    }
-                        
-                    
-                ],
-                groupTasks:[
-                    {
-                        taskName:'Database',
-                        taskDescriptions:'Very busy'
-                    },
-                    {
-                        taskName:'Computer Architecture',
-                        taskDescriptions:'Easy',
-                        subTasks:[
-                            {
-                                taskName:'ALU',
-                                taskDescriptions:'ababaab',
-                            },
-                            {
-                                taskName:'Controller',
-                                taskDescriptions:'hhh'
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                groupName:'菜鸡教师组',
-                groupMembers:[
-                    {
-                        memberName:'古明地觉',
-                        memberRole:'Master'
-                    },
-                    {
-                        memberName:'古明地恋',
-                        memberRole:'Manager'
-                    },
-                    {
-                        memberName:'Olen',
-                        memberRole:'none'
-                    },
-                    {
-                        memberName:'灵乌路空',
-                        memberRole:'none'
-                    }  
-                    
-                ],
-                groupTasks:[
-                    {
-                        taskName:'AI Project',
-                        taskDescriptions:'aaaaaaaaaa'
-                    },
-                    {
-                        taskName:'OS Project',
-                        taskDescriptions:'A little hard',
-                        subTasks:[
-                            {
-                                taskName:'fork function',
-                                taskDescriptions:'easiest'
-                            }
-                        ]
-                    }
-                ]
-            },
-        ]
+
+    return {
+        // 唯一标识任务的key
+        chosenTaskId:'-1',
+        // 用户点击的组的编号
+        selectedGroup:0       
     }
   },
   methods: {
