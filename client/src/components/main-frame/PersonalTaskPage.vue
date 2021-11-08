@@ -56,6 +56,7 @@ export default {
     TaskTree,
     TaskShow
   },
+  props:['todayTasks', 'recentSevenDaysTasks'],
   data() {
         
         return {
@@ -65,38 +66,6 @@ export default {
             today:false,
             // 是否显示最近七天的数据
             recentSevenDays:false,
-            // 今天的任务数据
-            todayTasks:[
-                {
-                    taskName:'OOAD',
-                    taskDescriptions:'nnnnnn',
-                    subTasks:[
-                        {
-                            taskName:'jjj',
-                            taskDescriptions:'6666'
-                        }
-                    ]
-                },
-                {
-                    taskName:'Principle of Compiler',
-                    taskDescriptions:'82371'
-                }
-            ],
-            // 最近七天的任务数据
-            recentSevenDaysTasks:[
-                {
-                    taskName:'OOAD',
-                    taskDescriptions:'0000'
-                },
-                {
-                    taskName:'Principle of Complier',
-                    taskDescriptions:'1111'
-                },
-                {
-                    taskName:'AI Project',
-                    taskDescriptions:'999'
-                }
-            ]
         }
   },
   methods: {
