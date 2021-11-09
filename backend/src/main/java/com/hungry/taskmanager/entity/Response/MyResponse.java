@@ -12,4 +12,12 @@ import lombok.experimental.Accessors;
 public class MyResponse {
     String temp;
 
+    public static MyResponse success() {
+        return new MyResponse("success");
+    }
+
+    public static MyResponse permissionDenied() {
+        return new MyResponse("permission denied");
+    }
+
 }
