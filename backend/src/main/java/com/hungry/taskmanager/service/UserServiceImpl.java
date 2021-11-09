@@ -2,17 +2,15 @@ package com.hungry.taskmanager.service;
 
 import com.hungry.taskmanager.dao.UserDAO;
 import com.hungry.taskmanager.entity.Perms;
-import com.hungry.taskmanager.entity.RegisterInfo;
+import com.hungry.taskmanager.entity.Request.RegisterInfo;
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.utils.SaltUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service("userService")

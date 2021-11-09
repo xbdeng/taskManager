@@ -2,10 +2,9 @@ package com.hungry.taskmanager.dao;
 
 
 import com.hungry.taskmanager.entity.Perms;
-import com.hungry.taskmanager.entity.RegisterInfo;
+import com.hungry.taskmanager.entity.Request.RegisterInfo;
 import com.hungry.taskmanager.entity.User;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
