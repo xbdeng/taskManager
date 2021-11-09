@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.dao;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hungry.taskmanager.entity.Perms;
 import com.hungry.taskmanager.entity.Request.RegisterInfo;
 import com.hungry.taskmanager.entity.User;
@@ -8,7 +9,7 @@ import org.apache.ibatis.annotations.Insert;
 
 import java.util.List;
 
-public interface UserDAO {
+public interface UserDAO extends BaseMapper<User> {
     @Insert("insert into user(username, password, salt, first_name, last_name, email, phone) values(#{username}," +
             "#{password}," +
             "#{salt}," +
