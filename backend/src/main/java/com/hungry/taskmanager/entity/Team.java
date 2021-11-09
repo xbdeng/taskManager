@@ -14,7 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Group {
+public class Team {
     private BigInteger groupId;
     @NonNull
     private String groupName;

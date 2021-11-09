@@ -1,32 +1,26 @@
-package com.hungry.taskmanager.entity;
+package com.hungry.taskmanager.entity.Request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
-
-import java.io.Serializable;
-import java.util.List;
 
 @Data
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
-    private Integer userId;
+public class RegisterInfo {
+    @NonNull
+    @ApiModelProperty(required = true)
     private String username;
+    @NonNull
+    @ApiModelProperty(required = true)
     private String password;
     private String salt;
-
-    private String firstName;
-    private String lastName;
     private String email;
     private String phone;
-
-    //定义角色集合
-    private List<Role> roles;
-    private List<Task> tasks;
-
-
+    private String firstName;
+    private String lastName;
 }
