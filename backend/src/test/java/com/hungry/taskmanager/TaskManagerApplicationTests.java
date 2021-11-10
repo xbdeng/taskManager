@@ -19,10 +19,13 @@ class TaskManagerApplicationTests {
         List<String> tags = new ArrayList<>();
         tags.add("tom");
         tags.add("jerry");
-        List<Task> tasks = taskServiceImpl.queryTask("ddd", 0, "jerry",LocalDateTime.now());
-        for(Task task : tasks){
-            System.out.println(task.toString());
-        }
+//        List<Task> tasks = taskServiceImpl.queryTask("ddd", 0, "jerry",LocalDateTime.now());
+//        for(Task task : tasks){
+//            System.out.println(task.toString());
+//        }
+        Task task =taskServiceImpl.getInfo(19);
+        System.out.println(task.toString());
+
 
     }
 

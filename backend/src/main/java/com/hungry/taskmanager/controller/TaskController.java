@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.controller;
 
 import com.hungry.taskmanager.entity.Response.MyResponse;
+import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
 import com.hungry.taskmanager.entity.post_entities.QueryTaskFilter;
 import com.hungry.taskmanager.service.TaskServiceImpl;
@@ -52,6 +53,28 @@ public class TaskController {
             DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
             taskServiceImpl.queryTask(params.getUsername(), params.getPrivilege(),params.getTag(),
                     LocalDateTime.parse(params.getDueDate(),df));
+        }catch(Exception e){
+            e.printStackTrace();
+            return new MyResponse("server error");
+        }
+        return new MyResponse("success");
+    }
+
+    @PostMapping("/info")
+    public MyResponse getInfo(long taskId){
+        try{
+            Task task = taskServiceImpl.getInfo(taskId);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new MyResponse("server error");
+        }
+        return new MyResponse("success");
+    }
+
+    @PostMapping("/edittask")
+    public MyResponse editTask(@RequestParam("taskId") long id, @RequestBody CreateTaskParams params){
+        try{
+            taskServiceImpl.editTask(id, params);
         }catch(Exception e){
             e.printStackTrace();
             return new MyResponse("server error");

@@ -6,6 +6,7 @@ import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.Tag;
 import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.User;
+import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
 import com.hungry.taskmanager.entity.relation_entity.TaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.lang.NonNull;
@@ -128,5 +129,32 @@ public class TaskServiceImpl implements TaskService{
             tasks.add(task);
         }
         return tasks;
+    }
+
+    /**
+     * get task information
+     */
+    public Task getInfo(long taskId) {
+        BigInteger id = BigInteger.valueOf(taskId);
+        Task task = taskMapper.selectById(id);
+        task.setTags(tagMapper.selectTagsByTaskId(id));
+        // append subtask information
+//            task.setSubTask(taskMapper.selectList());
+        return task;
+    }
+
+    /**
+     *  modify status of a task
+     * @param params
+     */
+    public void editTask(long id, CreateTaskParams params) {
+        // get userId
+        BigInteger userId = userDAO.getIdByName(params.getUsername());
+        // get task object
+        Task task = getInfo(id);
+        // copy information from original task
+        // insert new task record
+        // insert father task relationship`
+
     }
 }
