@@ -3,6 +3,7 @@ package com.hungry.taskmanager.controller;
 import com.hungry.taskmanager.dto.RegisterInfoDTO;
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.service.UserService;
+import com.hungry.taskmanager.shiro.JWTToken;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -94,7 +95,7 @@ public class UserController {
     public MyResponse login(@ApiParam(required = true) String username, String password, HttpSession httpSession) {
         Subject subject = SecurityUtils.getSubject();
         try {
-            subject.login(new UsernamePasswordToken(username, password));
+            subject.login(new JWTToken(username));//todo
         } catch (UnknownAccountException e) {
 //            e.printStackTrace();
             System.out.println("用户名错误");

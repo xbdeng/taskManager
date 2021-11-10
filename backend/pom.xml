@@ -105,11 +105,11 @@
 
 
     <!--引入shiro和ehcache-->
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-ehcache</artifactId>
-      <version>1.7.1</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.shiro</groupId>-->
+<!--      <artifactId>shiro-ehcache</artifactId>-->
+<!--      <version>1.7.1</version>-->
+<!--    </dependency>-->
 
 
     <!--redis整合springboot-->
@@ -125,6 +125,15 @@
       <artifactId>springfox-boot-starter</artifactId>
       <version>3.0.0</version>
     </dependency>
+
+    <!--    JWT-->
+    <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+    <dependency>
+      <groupId>com.auth0</groupId>
+      <artifactId>java-jwt</artifactId>
+      <version>3.18.2</version>
+    </dependency>
+
 
 
   </dependencies>

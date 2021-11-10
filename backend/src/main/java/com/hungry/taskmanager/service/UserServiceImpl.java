@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-//    @Override //todo
+    @Override //todo
     public MyResponse register(RegisterInfoDTO registerInfoDTO) {
         //1.生成随机盐
         String salt = SaltUtils.getSalt(8);

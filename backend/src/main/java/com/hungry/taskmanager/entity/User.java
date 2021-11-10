@@ -26,6 +26,7 @@ public class User implements Serializable {
 
     //定义角色集合
     private List<Role> roles;
+    private List<Perms> perms;
     private List<Task> tasks;
 
 
