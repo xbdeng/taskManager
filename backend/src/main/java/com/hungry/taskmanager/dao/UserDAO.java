@@ -2,7 +2,7 @@ package com.hungry.taskmanager.dao;
 
 
 import com.hungry.taskmanager.entity.Perms;
-import com.hungry.taskmanager.entity.Request.RegisterInfo;
+import com.hungry.taskmanager.dto.RegisterInfoDTO;
 import com.hungry.taskmanager.entity.User;
 import org.apache.ibatis.annotations.Insert;
 
@@ -16,7 +16,7 @@ public interface UserDAO {
             "#{lastName}," +
             "#{email}," +
             "#{phone})")
-    void register(RegisterInfo registerInfo);//todo 异常处理
+    void register(RegisterInfoDTO registerInfoDTO);//todo 异常处理
 
     User findByUserName(String username);
 

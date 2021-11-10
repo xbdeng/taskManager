@@ -1,7 +1,7 @@
 package com.hungry.taskmanager.service;
 
-import com.hungry.taskmanager.entity.Request.CreateTeamInfo;
-import com.hungry.taskmanager.entity.Request.OppoTeamMemberInfo;
+import com.hungry.taskmanager.dto.CreateTeamDTO;
+import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import org.springframework.stereotype.Service;
 
@@ -10,22 +10,22 @@ import java.math.BigInteger;
 @Service
 public class TeamServiceImpl implements TeamService{
     @Override
-    public MyResponse createTeam(CreateTeamInfo createTeamInfo) {
+    public MyResponse createTeam(CreateTeamDTO createTeamDTO) {
         return null;
     }
 
     @Override
-    public MyResponse addMember(OppoTeamMemberInfo oppoTeamMemberInfo) {
+    public MyResponse addMember(OppoTeamMemberDTO oppoTeamMemberDTO) {
         return null;
     }
 
     @Override
-    public MyResponse setAdmin(OppoTeamMemberInfo oppoTeamMemberInfo) {
+    public MyResponse setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO) {
         return null;
     }
 
     @Override
-    public MyResponse removeMember(OppoTeamMemberInfo oppoTeamMemberInfo) {
+    public MyResponse removeMember(OppoTeamMemberDTO oppoTeamMemberDTO) {
         return null;
     }
 
@@ -35,7 +35,7 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
-    public MyResponse removeAdmin(OppoTeamMemberInfo oppoTeamMemberInfo) {
+    public MyResponse removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO) {
         return null;
     }
 }

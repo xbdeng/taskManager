@@ -35,26 +35,18 @@ public class ShiroConfig {
 
         //配置系统受限资源
         //配置系统公共资源
-//        Map<String,String> map = new HashMap<String,String>();
-//        map.put("/login.html","anon");//anon 设置为公共资源  放行资源放在下面
-//        map.put("/user/getImage","anon");//anon 设置为公共资源  放行资源放在下面
-//        map.put("/user/register","anon");//anon 设置为公共资源  放行资源放在下面
-//        map.put("/user/registerview","anon");//anon 设置为公共资源  放行资源放在下面
-//        map.put("/user/login","anon");//anon 设置为公共资源  放行资源放在下面
-//
-////        map.put("/**","authc");//authc 请求这个资源需要认证和授权
-//        map.put("/swagger-ui.html","anon");//anon 设置为公共资源  放行资源放在下面
         LinkedHashMap<String, String> filterChainDefinitions = new LinkedHashMap<>(10); //设置容量
 
         // 登录接口和注册放开
         filterChainDefinitions.put("/api/user/login", "anon");
         filterChainDefinitions.put("/api/user/register", "anon");
-        filterChainDefinitions.put("swagger-ui/index.html", "anon");
+        filterChainDefinitions.put("/swagger-ui/**", "anon");
+        filterChainDefinitions.put("/swagger-resources/**", "anon");
+        filterChainDefinitions.put("/v2/api-docs", "anon");
         // 其他请求拦截 （认证授权）
-//        filterChainDefinitions.put("/**", "authc");
+        filterChainDefinitions.put("/**", "authc");
 
         //默认认证界面路径
-//        shiroFilterFactoryBean.setLoginUrl("/user/loginview");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitions);
         return shiroFilterFactoryBean;
     }

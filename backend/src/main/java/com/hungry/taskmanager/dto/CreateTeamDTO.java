@@ -1,4 +1,4 @@
-package com.hungry.taskmanager.entity.Request;
+package com.hungry.taskmanager.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateTeamInfo {
+public class CreateTeamDTO {
     @ApiModelProperty(required = true)
     String teamName;
     @ApiModelProperty(required = true)

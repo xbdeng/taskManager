@@ -2,7 +2,7 @@ package com.hungry.taskmanager.service;
 
 
 import com.hungry.taskmanager.entity.Perms;
-import com.hungry.taskmanager.entity.Request.RegisterInfo;
+import com.hungry.taskmanager.dto.RegisterInfoDTO;
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.User;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserService {
     //注册用户方法
-    MyResponse register(RegisterInfo registerInfo);
+    MyResponse register(RegisterInfoDTO registerInfoDTO);
 
 
     //根据用户名查询业务的方法

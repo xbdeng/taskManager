@@ -1,4 +1,4 @@
-package com.hungry.taskmanager.entity.Request;
+package com.hungry.taskmanager.dto;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,7 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class OppoTeamMemberInfo {
+public class OppoTeamMemberDTO {
     @ApiModelProperty(required = true)
     BigInteger teamId;
     @ApiModelProperty(required = true)
