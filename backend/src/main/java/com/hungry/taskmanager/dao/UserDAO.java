@@ -6,7 +6,9 @@ import com.hungry.taskmanager.entity.Perms;
 import com.hungry.taskmanager.entity.Request.RegisterInfo;
 import com.hungry.taskmanager.entity.User;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface UserDAO extends BaseMapper<User> {
@@ -27,5 +29,9 @@ public interface UserDAO extends BaseMapper<User> {
 
     //根据角色id查询权限集合
     List<Perms> findPermsByRoleId(String id);
+
+    // query id by username
+    @Select("SELECT user_id FROM user WHERE username = #{username}")
+    BigInteger getIdByName(String username);
 }
 

@@ -1,5 +1,6 @@
 package com.hungry.taskmanager;
 
+import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,9 +19,10 @@ class TaskManagerApplicationTests {
         List<String> tags = new ArrayList<>();
         tags.add("tom");
         tags.add("jerry");
-        taskServiceImpl.addTask("ddd", "test", "just for test", tags, 0, 0,
-                LocalDateTime.now(), LocalDateTime.now());
-        taskServiceImpl.deleteTask(15);
+        List<Task> tasks = taskServiceImpl.queryTask("ddd", 0, "jerry",LocalDateTime.now());
+        for(Task task : tasks){
+            System.out.println(task.toString());
+        }
 
     }
 

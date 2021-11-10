@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Task {
+    @TableId
     private BigInteger taskId;
     private BigInteger userId;
     private String title;

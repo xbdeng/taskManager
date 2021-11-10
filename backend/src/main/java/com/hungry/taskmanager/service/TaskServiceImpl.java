@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TaskServiceImpl implements TaskService{
@@ -95,5 +98,35 @@ public class TaskServiceImpl implements TaskService{
             throw new Exception("server error");
         }
         return MyResponse.success();
+    }
+
+    /**
+     * query tasks
+     */
+    public List<Task> queryTask(@NonNull String username, Integer privilege, String tag, LocalDateTime dueDate) {
+        // get userid
+        BigInteger userId = userDAO.getIdByName(username);
+        QueryWrapper<Task> wrapper = new QueryWrapper<Task>().eq("task.user_id", userId);
+        if (privilege != null){
+            wrapper = wrapper.eq("privilege", privilege);
+        }
+        if (tag != null){
+            wrapper = wrapper.eq("tag_name", tag);
+        }
+        if (dueDate != null){
+            wrapper = wrapper.ge("dueDate", dueDate);
+        }
+        List<BigInteger> taskIds = taskMapper.queryTask(wrapper);
+        List<Task> tasks = new ArrayList<>();
+        for (int  i = 0; i < taskIds.size() ; i++){
+            BigInteger id = taskIds.get((int)i);
+            Task task = taskMapper.selectById(id);
+            // append tags information
+            task.setTags(tagMapper.selectTagsByTaskId(id));
+            // append subtask information
+//            task.setSubTask(taskMapper.selectList());
+            tasks.add(task);
+        }
+        return tasks;
     }
 }

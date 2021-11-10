@@ -2,6 +2,7 @@ package com.hungry.taskmanager.controller;
 
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
+import com.hungry.taskmanager.entity.post_entities.QueryTaskFilter;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,4 +46,16 @@ public class TaskController {
         return MyResponse.success();
     }
 
+    @PostMapping("/query")
+    public MyResponse query(@RequestBody QueryTaskFilter params){
+        try{
+            DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
+            taskServiceImpl.queryTask(params.getUsername(), params.getPrivilege(),params.getTag(),
+                    LocalDateTime.parse(params.getDueDate(),df));
+        }catch(Exception e){
+            e.printStackTrace();
+            return new MyResponse("server error");
+        }
+        return new MyResponse("success");
+    }
 }
