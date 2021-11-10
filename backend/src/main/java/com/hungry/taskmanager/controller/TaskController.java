@@ -34,4 +34,15 @@ public class TaskController {
         return new MyResponse("success");
     }
 
+    @PostMapping("/deletetask")
+    public MyResponse deleteTask(@RequestParam("id") long taskId){
+        try{
+            taskServiceImpl.deleteTask(taskId);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new MyResponse("server error");
+        }
+        return MyResponse.success();
+    }
+
 }

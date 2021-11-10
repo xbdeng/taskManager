@@ -14,12 +14,13 @@ class TaskManagerApplicationTests {
     @Resource
     TaskServiceImpl taskServiceImpl;
     @Test
-    void contextLoads() {
+    void contextLoads() throws Exception {
         List<String> tags = new ArrayList<>();
         tags.add("tom");
         tags.add("jerry");
         taskServiceImpl.addTask("ddd", "test", "just for test", tags, 0, 0,
                 LocalDateTime.now(), LocalDateTime.now());
+        taskServiceImpl.deleteTask(15);
 
     }
 
