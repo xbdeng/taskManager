@@ -1,5 +1,6 @@
 package com.hungry.taskmanager.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 
 @Data
@@ -14,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    private Integer userId;
+    private BigInteger userId;
     private String username;
     private String password;
     private String salt;
@@ -25,8 +27,13 @@ public class User implements Serializable {
     private String phone;
 
     //定义角色集合
+    @TableField(exist=false)
     private List<Role> roles;
+  
+    @TableField(exist=false)
     private List<Perms> perms;
+
+    @TableField(exist=false)
     private List<Task> tasks;
 
 

@@ -14,6 +14,7 @@ create table if not exists task(
     user_id bigint(20),
     title varchar(200),
     description text,
+    privilege int,
     type int,
     create_date datetime,
     due_date datetime,

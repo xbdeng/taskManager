@@ -1,14 +1,17 @@
 package com.hungry.taskmanager.dao;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hungry.taskmanager.entity.Perms;
 import com.hungry.taskmanager.dto.RegisterInfoDTO;
 import com.hungry.taskmanager.entity.User;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
 
+import java.math.BigInteger;
 import java.util.List;
 
-public interface UserDAO {
+public interface UserDAO extends BaseMapper<User> {
     @Insert("insert into user(username, password, salt, first_name, last_name, email, phone) values(#{username}," +
             "#{password}," +
             "#{salt}," +
@@ -26,5 +29,9 @@ public interface UserDAO {
 
     //根据角色id查询权限集合
     List<Perms> findPermsByRoleId(String id);
+
+    // query id by username
+    @Select("SELECT user_id FROM user WHERE username = #{username}")
+    BigInteger getIdByName(String username);
 }
 
