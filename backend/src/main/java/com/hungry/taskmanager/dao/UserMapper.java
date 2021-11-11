@@ -13,9 +13,8 @@ import java.math.BigInteger;
 import java.util.List;
 
 public interface UserMapper extends BaseMapper<User> {
-    @Insert("insert into user(username, password, salt, first_name, last_name, email, phone) values(#{username}," +
+    @Insert("insert into user(username, password, first_name, last_name, email, phone) values(#{username}," +
             "#{password}," +
-            "#{salt}," +
             "#{firstName}," +
             "#{lastName}," +
             "#{email}," +

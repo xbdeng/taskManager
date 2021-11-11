@@ -105,6 +105,7 @@ export default {
                             let token = response.data.token
                             // 保存token
                             window.sessionStorage.setItem('token', token)
+                            console.log(response.data)
                             // 清空表单数据
                             that.loginForm.username = ''
                             that.loginForm.password = ''

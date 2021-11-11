@@ -218,13 +218,14 @@ export default {
       let that = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          //todo 登录注册验证方式同步
           // 向后端提交登录数据
           axios.post(
             'http://localhost:8081/api/user/register',
             {
               username:that.ruleForm.username,
               email:that.ruleForm.email,
-              password:that.ruleForm.pass,
+              password:that.$md5(that.ruleForm.pass),
               age:that.ruleForm.age
             }
           ).then(
