@@ -4,8 +4,6 @@ import Main from '../components/main-frame/Main'
 import Login from '../components/login-register/Login'
 import register from "../components/login-register/register";
 import profile from "../components/profile/profile";
-import profileInfo from "../components/profile/profileInfo"
-import ChangePasswd from "../components/login-register/ChangePasswd"
 
 
 Vue.use(VueRouter);
@@ -39,17 +37,7 @@ export default new VueRouter({
             path: '/profile/:username',
             component: profile,
             name: 'Profile',
-            children: [{
-                    path: '/profile/:username/Info',
-                    component: profileInfo,
-                    name: 'profileInfo'
-                },
-                {
-                    path: '/profile/:username/ChangePasswd',
-                    component: ChangePasswd,
-                    name: 'ChangePasswd'
-                },
-            ]
+            props: true
         },
     ]
 });

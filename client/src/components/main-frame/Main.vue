@@ -88,7 +88,7 @@
                     <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
                       <el-link slot='reference'>{{ task[0] }}</el-link>
                     </el-popover>
-                  </div> 
+                  </div>
             </template>
           </el-calendar>
           <!-- 任务搜索 -->
@@ -180,8 +180,8 @@ export default {
                         memberName:'橙',
                         memberRole:'none'
                     }
-                        
-                    
+
+
                 ],
                 groupTasks:[
                     {
@@ -222,8 +222,8 @@ export default {
                     {
                         memberName:'灵乌路空',
                         memberRole:'none'
-                    }  
-                    
+                    }
+
                 ],
                 groupTasks:[
                     {
@@ -412,7 +412,7 @@ export default {
               message:'创建任务成功',
               type:'success'
             }
-            
+
           );
         },
         function(err) {
