@@ -1,19 +1,19 @@
 package com.hungry.taskmanager.controller;
 
+import com.hungry.taskmanager.dto.LoginDTO;
 import com.hungry.taskmanager.dto.RegisterInfoDTO;
-import com.hungry.taskmanager.entity.Response.MyResponse;
+import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.service.UserService;
-import com.hungry.taskmanager.shiro.JWTToken;
-import io.swagger.annotations.ApiParam;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
+import com.hungry.taskmanager.utils.JWTUtil;
+import com.hungry.taskmanager.utils.RedisUtil;
+import com.hungry.taskmanager.entity.Result;
+import io.swagger.annotations.*;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/user")
@@ -22,6 +22,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     /**
      * 验证码方法
@@ -43,76 +46,34 @@ public class UserController {
      * 用户注册
      */
     @PostMapping("/register")
-    public MyResponse register(@RequestBody RegisterInfoDTO registerInfoDTO) {
+    @ApiOperation(value = "用户注册",notes = "后端已测试通过")
+    public Result register(@RequestBody RegisterInfoDTO registerInfoDTO) {
         return userService.register(registerInfoDTO);
     }
 
 
-    /**
-     * 退出登录
-     */
-//    @RequestMapping("logout") //todo
-//    public String logout() {
-//        Subject subject = SecurityUtils.getSubject();
-//        subject.logout();//退出用户
-//        return "redirect:/user/loginview";
-//    }
 
-    /**
-     * 用来处理身份认证
-     *
-     * @param username
-     * @param password
-     * @return
-     */
-//    @RequestMapping("login") //todo
-//    public String login(String username, String password,String code,HttpSession session) {
-//        //比较验证码
-//        String codes = (String) session.getAttribute("code");
-//        try {
-//            if (codes.equalsIgnoreCase(code)){
-//                //获取主体对象
-//                Subject subject = SecurityUtils.getSubject();
-//                    subject.login(new UsernamePasswordToken(username, password));
-//                    return "redirect:/index";
-//            }else{
-//                throw new RuntimeException("验证码错误!");
-//            }
-//        } catch (UnknownAccountException e) {
-//            e.printStackTrace();
-//            System.out.println("用户名错误!");
-//        } catch (IncorrectCredentialsException e) {
-//            e.printStackTrace();
-//            System.out.println("密码错误!");
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            System.out.println(e.getMessage());
-//        }
-//        return "redirect:/user/loginview";
-//    }
-    @PostMapping("login")
-    //todo head -> body
-    public MyResponse login(@ApiParam(required = true) String username, String password, HttpSession httpSession) {
-        Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.login(new JWTToken(username));//todo
-        } catch (UnknownAccountException e) {
-//            e.printStackTrace();
-            System.out.println("用户名错误");
-            return new MyResponse("用户名错误");
-        } catch (IncorrectCredentialsException e) {
-//            e.printStackTrace();
-            System.out.println("密码错误!");
-            return new MyResponse("密码错误");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-        return new MyResponse("登录成功");
+
+    @PostMapping("/login")
+    @ApiResponse(code = 200,message = "若登录成功，data直接是一个token字符串")
+    @ApiOperation(value = "用户登录",notes = "后端已测试通过")
+    public Result<String> login(@RequestBody LoginDTO loginDTO){
+        User user=userService.getUserByPass(loginDTO.getUsername(), loginDTO.getPassword());
+        Assert.notNull(user,"用户名或密码错误");
+        long currentTimeMillis = System.currentTimeMillis();
+        String token= JWTUtil.createToken(user.getUsername(),currentTimeMillis);
+        redisUtil.set(loginDTO.getUsername(),currentTimeMillis,60*30); //放入缓存（登录）
+        return new Result<String>(200,"登陆成功",token);
     }
 
-//    @PostMapping("addressbook")
-//    public MyResponse addressBook(){
-//
-//    }
+    @PostMapping("/logout")
+    @RequiresAuthentication //需要登录才能操作
+    @ApiOperation(value = "用户登出",notes = "后端已测试通过")
+    public Result logout(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        redisUtil.del(username);
+        return Result.succ("登出成功");
+    }
+
 }

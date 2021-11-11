@@ -16,16 +16,14 @@ import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class TaskServiceImpl implements TaskService{
     @Resource
     private TaskMapper taskMapper;
     @Resource
-    private UserDAO userDAO;
+    private UserMapper userMapper;
     @Resource
     private TagMapper tagMapper;
     @Resource
@@ -42,7 +40,7 @@ public class TaskServiceImpl implements TaskService{
         BigInteger id = taskMapper.newId();
         try {
             // 2. access userid using username
-            User user = userDAO.selectOne(new QueryWrapper<User>().eq("username", username));
+            User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
             if (user == null) {
                 throw new Exception("could not find user");
             }
@@ -106,7 +104,7 @@ public class TaskServiceImpl implements TaskService{
      */
     public List<Task> queryTask(@NonNull String username, Integer privilege, String tag, LocalDateTime dueDate) {
         // get userid
-        BigInteger userId = userDAO.getIdByName(username);
+        BigInteger userId = userMapper.getIdByName(username);
         QueryWrapper<Task> wrapper = new QueryWrapper<Task>().eq("task.user_id", userId);
         if (privilege != null){
             wrapper = wrapper.eq("privilege", privilege);
@@ -149,7 +147,7 @@ public class TaskServiceImpl implements TaskService{
      */
     public void editTask(long id, CreateTaskParams params) {
         // get userId
-        BigInteger userId = userDAO.getIdByName(params.getUsername());
+        BigInteger userId = userMapper.getIdByName(params.getUsername());
         // get task object
         Task task = getInfo(id);
         // copy information from original task

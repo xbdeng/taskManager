@@ -2,7 +2,7 @@ package com.hungry.taskmanager.config;
 
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.hungry.taskmanager.utils.Result;
+import com.hungry.taskmanager.entity.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authz.UnauthenticatedException;
