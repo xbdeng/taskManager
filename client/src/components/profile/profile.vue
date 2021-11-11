@@ -2,7 +2,7 @@
   <div id="profile">
     <el-row  type="flex"  justify="center" id="profile_container_pos">
       <el-col :span="24">
-        <profileContainer></profileContainer>
+        <profileContainer :username="username"></profileContainer>
       </el-col>
     </el-row>
   </div>
@@ -13,11 +13,10 @@ import profileContainer from './profileContainer'
 
 export default {
   name: "Profile",
+  props:['username'],
   components:{
     profileContainer,
-  },
-  props:['username']
-
+  }
 }
 </script>
 

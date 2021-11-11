@@ -4,29 +4,22 @@
       <el-header>
         <el-row>
           <el-col :span="1">
-<!--            <el-button type="primary" @click="drawer = true" icon="el-icon-more" circle>-->
-<!--            </el-button>-->
+            <el-button type="primary" @click="push_back" icon="el-icon-back" circle>
+            </el-button>
           </el-col>
         </el-row>
       </el-header>
       <el-container>
-<!--        <el-drawer-->
-<!--            title="侧边栏"-->
-<!--            :modal-append-to-body=false-->
-<!--            :direction="direction"-->
-<!--            :visible.sync="drawer"-->
-<!--            :with-header="false"-->
-<!--            :size="size">-->
           <el-aside width="15vw">
             <div class="up-icon">
               <img src="../../assets/task-icon.jpg" class="up-icon">
             </div>
             <div class="aside-page">
-              <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+              <el-menu :default-active="page" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
                        :collapse="isCollapse" @select="handleSelect">
                   <el-menu-item-group>
-                    <el-menu-item index="/profile/admin/Info">个人信息</el-menu-item>
-                    <el-menu-item index="/profile/admin/ChangePasswd">修改信息</el-menu-item>
+                    <el-menu-item index="0">个人信息</el-menu-item>
+                    <el-menu-item index="1">修改信息</el-menu-item>
                   </el-menu-item-group>
               </el-menu>
             </div>
@@ -39,10 +32,10 @@
         <el-container>
           <el-main>
             <div class="main-page">
-              <router-view></router-view>
+              <profile-info v-show="this.page === '0'"></profile-info>
+              <changePasswd v-show="this.page === '1'"></changePasswd>
             </div>
           </el-main>
-          <!--          <el-footer>Footer</el-footer>-->
         </el-container>
       </el-container>
     </el-container>
@@ -50,10 +43,16 @@
 </template>
 
 <script>
+import profileInfo from "./profileInfo";
+import changePasswd from "./ChangePasswd";
+
 export default {
   name: "profileContainer",
+  components: {profileInfo, changePasswd},
+  props: ['username'],
   data() {
     return {
+      page: "0",
       isCollapse: false,
       drawer: false,
       direction: 'ltr',
@@ -69,11 +68,16 @@ export default {
       console.log(key, keyPath);
     },
     handleSelect(key, keyPath){
-        if("/profile/admin/Info" === key && this.$route.path !== '/profile/admin/Info'){
-          this.$router.push('/profile/admin/Info');
-        }else if("/profile/admin/ChangePasswd" === key && this.$route.path !== '/profile/admin/ChangePasswd'){
-          this.$router.push('/profile/admin/ChangePasswd');
-        }
+      if(key === "0" && this.page !== "0"){
+        this.page = "0";
+      }
+      if(key === "1" && this.page !== "1"){
+        this.page = "1";
+      }
+    },
+    push_back(event){
+      console.log(this.username)
+      this.$router.push({name: 'Main',params:{username:this.username}});
     }
   }
 }
@@ -87,7 +91,7 @@ export default {
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
+  width: 15vw;
   min-height: 400px;
 }
 
