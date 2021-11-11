@@ -1,7 +1,7 @@
 package com.hungry.taskmanager.controller;
 
-import com.hungry.taskmanager.entity.Request.CreateTeamInfo;
-import com.hungry.taskmanager.entity.Request.OppoTeamMemberInfo;
+import com.hungry.taskmanager.dto.CreateTeamDTO;
+import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.service.TeamService;
 import org.springframework.web.bind.annotation.*;
@@ -17,26 +17,26 @@ public class TeamController {
     TeamService teamService;
 
     @PostMapping("/createteam")
-    public MyResponse createTeam(@RequestBody CreateTeamInfo createTeamInfo) {
-        teamService.createTeam(createTeamInfo);
+    public MyResponse createTeam(@RequestBody CreateTeamDTO createTeamDTO) {
+        teamService.createTeam(createTeamDTO);
         return new MyResponse("todo");
     }
 
     @PostMapping("/addmember")
-    public MyResponse addMember(@RequestBody OppoTeamMemberInfo oppoTeamMemberInfo) {
-        teamService.addMember(oppoTeamMemberInfo);
+    public MyResponse addMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+        teamService.addMember(oppoTeamMemberDTO);
         return new MyResponse("todo");
     }
 
     @PostMapping("/setadmin")
-    public MyResponse setAdmin(@RequestBody OppoTeamMemberInfo oppoTeamMemberInfo) {
-        teamService.setAdmin(oppoTeamMemberInfo);
+    public MyResponse setAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+        teamService.setAdmin(oppoTeamMemberDTO);
         return new MyResponse("todo");
     }
 
     @PostMapping("/removemember")
-    public MyResponse removeMember(@RequestBody OppoTeamMemberInfo oppoTeamMemberInfo) {
-        teamService.removeMember(oppoTeamMemberInfo);
+    public MyResponse removeMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+        teamService.removeMember(oppoTeamMemberDTO);
         return new MyResponse("todo");
     }
 
@@ -47,8 +47,8 @@ public class TeamController {
     }
 
     @PostMapping("/removeadmin")
-    public MyResponse removeAdmin(@RequestBody OppoTeamMemberInfo oppoTeamMemberInfo) {
-        teamService.removeAdmin(oppoTeamMemberInfo);
+    public MyResponse removeAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+        teamService.removeAdmin(oppoTeamMemberDTO);
         return new MyResponse("todo");
     }
 

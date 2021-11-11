@@ -1,4 +1,4 @@
-package com.hungry.taskmanager.entity.Request;
+package com.hungry.taskmanager.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterInfo {
+public class RegisterInfoDTO {
     @NonNull
     @ApiModelProperty(required = true)
     private String username;

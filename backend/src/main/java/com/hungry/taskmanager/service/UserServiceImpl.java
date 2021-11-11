@@ -2,7 +2,7 @@ package com.hungry.taskmanager.service;
 
 import com.hungry.taskmanager.dao.UserDAO;
 import com.hungry.taskmanager.entity.Perms;
-import com.hungry.taskmanager.entity.Request.RegisterInfo;
+import com.hungry.taskmanager.dto.RegisterInfoDTO;
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.utils.SaltUtils;
@@ -39,17 +39,17 @@ public class UserServiceImpl implements UserService {
     }
 
 
-//    @Override //todo
-    public MyResponse register(RegisterInfo registerInfo) {
+    @Override //todo
+    public MyResponse register(RegisterInfoDTO registerInfoDTO) {
         //1.生成随机盐
         String salt = SaltUtils.getSalt(8);
         //2.将随机盐保存到数据
-        registerInfo.setSalt(salt);
+        registerInfoDTO.setSalt(salt);
         //3.明文密码进行md5 + salt + hash散列
-        Md5Hash md5Hash = new Md5Hash(registerInfo.getPassword(),salt,1024);
-        registerInfo.setPassword(md5Hash.toHex());
+        Md5Hash md5Hash = new Md5Hash(registerInfoDTO.getPassword(),salt,1024);
+        registerInfoDTO.setPassword(md5Hash.toHex());
 
-        userDAO.register(registerInfo);
+        userDAO.register(registerInfoDTO);
         return new MyResponse("todo");
     }
 

@@ -1,8 +1,9 @@
 package com.hungry.taskmanager.controller;
 
-import com.hungry.taskmanager.entity.Request.RegisterInfo;
+import com.hungry.taskmanager.dto.RegisterInfoDTO;
 import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.service.UserService;
+import com.hungry.taskmanager.shiro.JWTToken;
 import io.swagger.annotations.ApiParam;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -42,8 +43,8 @@ public class UserController {
      * 用户注册
      */
     @PostMapping("/register")
-    public MyResponse register(@RequestBody RegisterInfo registerInfo) {
-        return userService.register(registerInfo);
+    public MyResponse register(@RequestBody RegisterInfoDTO registerInfoDTO) {
+        return userService.register(registerInfoDTO);
     }
 
 
@@ -90,20 +91,28 @@ public class UserController {
 //        return "redirect:/user/loginview";
 //    }
     @PostMapping("login")
+    //todo head -> body
     public MyResponse login(@ApiParam(required = true) String username, String password, HttpSession httpSession) {
         Subject subject = SecurityUtils.getSubject();
         try {
-            subject.login(new UsernamePasswordToken(username, password));
+            subject.login(new JWTToken(username));//todo
         } catch (UnknownAccountException e) {
 //            e.printStackTrace();
             System.out.println("用户名错误");
+            return new MyResponse("用户名错误");
         } catch (IncorrectCredentialsException e) {
 //            e.printStackTrace();
             System.out.println("密码错误!");
+            return new MyResponse("密码错误");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
-        return new MyResponse("todo");
+        return new MyResponse("登录成功");
     }
+
+//    @PostMapping("addressbook")
+//    public MyResponse addressBook(){
+//
+//    }
 }

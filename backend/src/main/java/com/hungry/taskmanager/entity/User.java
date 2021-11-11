@@ -29,6 +29,10 @@ public class User implements Serializable {
     //定义角色集合
     @TableField(exist=false)
     private List<Role> roles;
+  
+    @TableField(exist=false)
+    private List<Perms> perms;
+
     @TableField(exist=false)
     private List<Task> tasks;
 
