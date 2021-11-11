@@ -2,7 +2,6 @@ create table if not exists user(
     user_id bigint(20) primary key auto_increment,
     username varchar(50) unique,
     password varchar(300),  # modified
-    salt varchar(300), # modified
     first_name varchar(30),
     last_name varchar(30),
     email varchar(50), #modified

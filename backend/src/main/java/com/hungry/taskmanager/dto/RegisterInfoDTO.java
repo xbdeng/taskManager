@@ -16,7 +16,6 @@ public class RegisterInfoDTO {
     private String username;
     @ApiModelProperty(required = true)
     private String password;
-    private String salt;
     private String email;
     private String phone;
     private String firstName;
