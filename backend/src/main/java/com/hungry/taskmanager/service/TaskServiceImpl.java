@@ -2,10 +2,8 @@ package com.hungry.taskmanager.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hungry.taskmanager.dao.*;
+import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.entity.Response.MyResponse;
-import com.hungry.taskmanager.entity.Tag;
-import com.hungry.taskmanager.entity.Task;
-import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
 import com.hungry.taskmanager.entity.relation_entity.TaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,54 +29,76 @@ public class TaskServiceImpl implements TaskService{
     private TaskTagMapper taskTagMapper;
     @Resource
     private UserTaskMapper userTaskMapper;
+    @Resource
+    private TeamMapper teamMapper;
 
     /**
      * create a new task and insert insert into database
      */
-    public MyResponse addTask(String username, String title, String description, List<String> tags, Integer privilege,
-                              Integer type, LocalDateTime createDate, LocalDateTime dueDate){
-        // 1. get id for new task
+    public int addTask(CreateTaskParams params) throws Exception{
+        // generate new taskId
         BigInteger id = taskMapper.newId();
-        try {
-            // 2. access userid using username
-            User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
-            if (user == null) {
-                throw new Exception("could not find user");
+        // get userId by username
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", params.getUsername()));
+        BigInteger creator = user.getUserId();
+        // operations according to different types
+            // individual task set type column -1
+            // team task find id of the team set type id of the team
+        BigInteger type = null;
+        switch(params.getType()){
+            case(0):{
+                type = BigInteger.valueOf(-1);
+                break;
             }
-            BigInteger userId = user.getUserId();
-            Task task = new Task();
-            task.setTaskId(id).setUserId(userId).setTitle(title).setDescription(description).setCreateDate(createDate).
-                    setDueDate(dueDate).setStatus(0).setPrivilege(privilege).setType(type);
-            // 3. insert task record into database
-            taskMapper.insert(task);
-            // 4. insert tag
-            BigInteger tagId = tagMapper.newId();
-            Tag tag = new Tag().setUserId(userId);
-            if (tags!=null && tags.size() > 0) {
-                for (int i = 0; i < tags.size(); i++) {
-                    tag.setTagId(tagId).setTagName(tags.get(i));
-                    tagMapper.insert(tag);
-                    tagId = tagId.add(BigInteger.valueOf(1));
-                }
+            case(1):{
+                Team team = teamMapper.selectOne(new QueryWrapper<Team>().eq("team_id", params.getTeamName()));
+                type = team.getGroupId();
+                break;
             }
-            // 5. insert relationship between tag and task
-            TaskTag tt = new TaskTag().setTaskId(id);
-            BigInteger ttId = taskTagMapper.newId();
-            List<Tag> addedTags = tagMapper.selectList(new QueryWrapper<Tag>().in("tag_name", tags).eq("user_id", userId));
-            for (int i = 0 ; i < addedTags.size() ; i++){
-                tt.setTtId(ttId).setTagId(addedTags.get(i).getTagId());
-                taskTagMapper.insert(tt);
-                ttId = ttId.add(BigInteger.valueOf(1));
+            default:{
+                throw new Exception();
             }
-            // 6. insert relationship between user and task
-            UserTask ut = new UserTask().setUtId(userId).setTaskId(id);
-            userTaskMapper.insert(ut);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            return new MyResponse("server error");
         }
-        return MyResponse.success();
+        // set date
+        DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
+        LocalDateTime createDate = LocalDateTime.parse(params.getCreateDate(), df);
+        LocalDateTime dueDate = LocalDateTime.parse(params.getDueDate(), df);
+        // set state
+        Integer status = 0;
+        // set father task
+        BigInteger fatherTask = null;
+        // create new task
+        Task task = new Task().setTaskId(id).setCreator(creator).setTaskName(params.getTaskName())
+                .setDescription(params.getDescription()).setType(type).setCreateDate(createDate).setDueDate(dueDate)
+                .setStatus(status).setFatherTask(fatherTask).setPrivilege(params.getPrivilege());
+        // insert task into database
+        taskMapper.insert(task);
+        // insert tag
+        BigInteger tagId = tagMapper.newId();
+        Tag tag = new Tag().setUserId(creator);
+        List<String> tags = params.getTags();
+        if (tags != null && tags.size() > 0){
+            for(int i = 0 ; i < tags.size() ; i++){
+                tag.setTagId(tagId).setTagName(tags.get(i));
+                tagMapper.insert(tag);
+                tagId = tagId.add(BigInteger.valueOf(1));
+            }
+        }
+        // insert relationship between tag and task
+        TaskTag tt = new TaskTag() .setTaskId(id);
+        BigInteger ttId = taskTagMapper.newId();
+        List<Tag> addedTags = tagMapper.selectList(new QueryWrapper<Tag>().in("tag_name", tags).eq("user_id", creator));
+        for (int i = 0 ; i < addedTags.size(); i++){
+            tt.setTtId(ttId).setTagId(addedTags.get(i).getTagId());
+            taskTagMapper.insert(tt);
+            ttId = ttId.add(BigInteger.valueOf(1));
+        }
+        // insert user task relationship if the type is individual
+        if (type.equals(BigInteger.valueOf(-1))){
+            UserTask ut = new UserTask().setUtId(creator).setTaskId(id);
+            userTaskMapper.insert(ut);
+        }
+        return 200;
     }
 
     /**

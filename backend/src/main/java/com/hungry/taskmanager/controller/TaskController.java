@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.controller;
 
 import com.hungry.taskmanager.entity.Response.MyResponse;
+import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
 import com.hungry.taskmanager.entity.post_entities.QueryTaskFilter;
@@ -23,17 +24,14 @@ public class TaskController {
 //    }
 
     @PostMapping("/addtask")
-    public MyResponse addTask(@RequestBody CreateTaskParams params){
+    public Result<String> addTask(@RequestBody CreateTaskParams params){
         try{
-            DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
-            taskServiceImpl.addTask(params.getUsername(), params.getTitle(), params.getDescription(), params.getTags(),
-                    params.getPrivilege(), params.getType(), LocalDateTime.parse(params.getCreateTime(), df),
-                    LocalDateTime.parse(params.getDueTime(), df));
+            taskServiceImpl.addTask(params);
         }catch(Exception e){
             e.printStackTrace();
-            return new MyResponse("server error");
+            return new Result<String>(500, "server error", "");
         }
-        return new MyResponse("success");
+        return new Result<String>(200, "successfully add a task", "");
     }
 
     @PostMapping("/deletetask")
