@@ -162,9 +162,14 @@ export default {
         if (this.ruleForm.checkPass !== '') {
           this.$refs.ruleForm.validateField('checkPass');
         }
-        // this.enable[2] = true;
-        this.$set(this.enable, 2, true);
-        callback();
+        if (!(value.length >= 6 && value.length <= 15)) {
+          this.$set(this.enable, 2, false);
+          callback(new Error('密码需要在6到15个字符长度之间'))
+        }
+        else {
+          this.$set(this.enable, 2, true);
+          callback();
+        }
       }
     };
     var validatePass2 = (rule, value, callback) => {
@@ -198,10 +203,10 @@ export default {
           {validator: validateEmail, trigger: 'change'}
         ],
         pass: [
-          {validator: validatePass, trigger: 'change'}
+          {validator: validatePass, trigger: 'change'},
         ],
         checkPass: [
-          {validator: validatePass2, trigger: 'change'}
+          {validator: validatePass2, trigger: 'change'},
         ],
         age: [
           {validator: checkAge, trigger: 'change'}
