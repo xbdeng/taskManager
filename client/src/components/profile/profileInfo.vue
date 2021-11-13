@@ -65,7 +65,7 @@
                 <div>
                   全名
                   <br>
-                  <el-input placeholder="Admin"></el-input>
+                  <el-input placeholder="Admin" v-model="name"></el-input>
                 </div>
               </el-col>
 
@@ -73,7 +73,7 @@
                 <div>
                   Email
                   <br>
-                  <el-input placeholder="example@.com"></el-input>
+                  <el-input placeholder="example@.com" v-model="email"></el-input>
                 </div>
               </el-col>
 
@@ -81,7 +81,7 @@
                 <div>
                   Passwd
                   <br>
-                  <el-input placeholder="123456"></el-input>
+                  <el-input placeholder="123456" v-model="passwd"></el-input>
                 </div>
               </el-col>
 
@@ -95,7 +95,14 @@
 
 <script>
 export default {
-  name: "profileInfo"
+  name: "profileInfo",
+  data(){
+  return {
+    name : '',
+    email : '',
+    passwd : ''
+  }
+}
 }
 </script>
 
