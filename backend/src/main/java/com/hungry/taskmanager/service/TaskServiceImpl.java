@@ -1,11 +1,11 @@
 package com.hungry.taskmanager.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.entity.*;
-import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
-import com.hungry.taskmanager.entity.relation_entity.TaskTag;
+import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class TaskServiceImpl implements TaskService{
     @Resource
     private TagMapper tagMapper;
     @Resource
-    private TaskTagMapper taskTagMapper;
+    private UserTaskTagMapper userTaskTagMapper;
     @Resource
     private UserTaskMapper userTaskMapper;
     @Resource
@@ -44,25 +44,10 @@ public class TaskServiceImpl implements TaskService{
         // operations according to different types
             // individual task set type column -1
             // team task find id of the team set type id of the team
-        BigInteger type = null;
-        switch(params.getType()){
-            case(0):{
-                type = BigInteger.valueOf(-1);
-                break;
-            }
-            case(1):{
-                Team team = teamMapper.selectOne(new QueryWrapper<Team>().eq("team_id", params.getTeamName()));
-                type = team.getGroupId();
-                break;
-            }
-            default:{
-                throw new Exception();
-            }
-        }
+        BigInteger type = assignType(params);
         // set date
-        DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
-        LocalDateTime createDate = LocalDateTime.parse(params.getCreateDate(), df);
-        LocalDateTime dueDate = LocalDateTime.parse(params.getDueDate(), df);
+        LocalDateTime createDate = convertGMT(params.getCreateDate());
+        LocalDateTime dueDate = convertGMT(params.getDueDate());
         // set state
         Integer status = 0;
         // set father task
@@ -78,25 +63,19 @@ public class TaskServiceImpl implements TaskService{
         Tag tag = new Tag().setUserId(creator);
         List<String> tags = params.getTags();
         if (tags != null && tags.size() > 0){
-            for(int i = 0 ; i < tags.size() ; i++){
-                tag.setTagId(tagId).setTagName(tags.get(i));
+            for (String s : tags) {
+                tag.setTagId(tagId).setTagName(s);
                 tagMapper.insert(tag);
                 tagId = tagId.add(BigInteger.valueOf(1));
             }
         }
-        // insert relationship between tag and task
-        TaskTag tt = new TaskTag() .setTaskId(id);
-        BigInteger ttId = taskTagMapper.newId();
-        List<Tag> addedTags = tagMapper.selectList(new QueryWrapper<Tag>().in("tag_name", tags).eq("user_id", creator));
-        for (int i = 0 ; i < addedTags.size(); i++){
-            tt.setTtId(ttId).setTagId(addedTags.get(i).getTagId());
-            taskTagMapper.insert(tt);
-            ttId = ttId.add(BigInteger.valueOf(1));
-        }
         // insert user task relationship if the type is individual
         if (type.equals(BigInteger.valueOf(-1))){
-            UserTask ut = new UserTask().setUtId(creator).setTaskId(id);
+            BigInteger utId = userTaskMapper.newId();
+            UserTask ut = new UserTask().setUserId(creator).setTaskId(id).setUtId(utId);
             userTaskMapper.insert(ut);
+            // insert user task tag relationship
+            return insertUserTaskTag(creator, id, tags);
         }
         return 200;
     }
@@ -104,11 +83,11 @@ public class TaskServiceImpl implements TaskService{
     /**
      * delete a existing task
      */
-    public MyResponse deleteTask(@NonNull long taskId) throws Exception {
+    public int deleteTask(@NonNull long taskId) throws Exception {
         BigInteger id = BigInteger.valueOf(taskId);
         try{
             // remove entity in task_tag
-            taskTagMapper.delete(new QueryWrapper<TaskTag>().eq("task_id", id));
+            userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("task_id", id));
             // remove entity in user_tag
             userTaskMapper.delete(new QueryWrapper<UserTask>().eq("task_id", id));
             // disable task in task
@@ -117,7 +96,7 @@ public class TaskServiceImpl implements TaskService{
             e.printStackTrace();
             throw new Exception("server error");
         }
-        return MyResponse.success();
+        return 200;
     }
 
     /**
@@ -143,8 +122,6 @@ public class TaskServiceImpl implements TaskService{
             Task task = taskMapper.selectById(id);
             // append tags information
             task.setTags(tagMapper.selectTagsByTaskId(id));
-            // append subtask information
-//            task.setSubTask(taskMapper.selectList());
             tasks.add(task);
         }
         return tasks;
@@ -164,16 +141,74 @@ public class TaskServiceImpl implements TaskService{
 
     /**
      *  modify status of a task
-     * @param params
      */
-    public void editTask(long id, CreateTaskParams params) {
-        // get userId
-        BigInteger userId = userMapper.getIdByName(params.getUsername());
+    public int editTask(long id, CreateTaskParams params) throws Exception {
         // get task object
         Task task = getInfo(id);
+        UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", task.getTaskId());
+        // configuration
+        if (params.getUsername() != null) {
+            BigInteger userId = userMapper.getIdByName(params.getUsername());
+            wrapper.set("creator", userId);
+        }
+        if (params.getTaskName() != null) wrapper.set("task_name", params.getTaskName());
+        if (params.getDescription() != null) wrapper.set("description", params.getDescription());
+        if (params.getType() != null){
+            BigInteger type = assignType(params);
+            wrapper.set("type", type);
+        }
+        if (params.getCreateDate() != null) wrapper.set("create_date", convertGMT(params.getCreateDate()));
+        if (params.getDueDate() != null) wrapper.set("due_date", convertGMT(params.getDueDate()));
+        if (params.getStatus() != null) wrapper.set("status", params.getStatus());
+        if (params.getFatherTask() != null) wrapper.set("father_task", params.getFatherTask());
+        if (params.getPrivilege() != null) wrapper.set("privilege", params.getPrivilege());
+        if (params.getTags() != null){
+
+        }
         // copy information from original task
         // insert new task record
         // insert father task relationship`
+        return 200;
+    }
 
+    private BigInteger assignType(CreateTaskParams params) throws Exception{
+        BigInteger type;
+        switch(params.getType()){
+            case(0):{
+                type = BigInteger.valueOf(-1);
+                break;
+            }
+            case(1):{
+                Team team = teamMapper.selectOne(new QueryWrapper<Team>().eq("team_id", params.getTeamName()));
+                type = team.getGroupId();
+                break;
+            }
+            default:{
+                throw new Exception();
+            }
+        }
+        return type;
+    }
+
+    private LocalDateTime convertGMT(String date){
+        DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
+        return LocalDateTime.parse(date, df);
+    }
+
+    private int insertUserTaskTag(BigInteger userId, BigInteger taskId, List<String> tagNames){
+        // get usertasktag id
+        BigInteger uttId = userTaskTagMapper.newId();
+        // get usertask id
+        UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id", userId).eq("task_id", taskId));
+        // get tag id
+        List<Tag> tags = tagMapper.selectList(new QueryWrapper<Tag>().eq("user_id", userId).in("tag_name", tagNames));
+        UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
+        for (Tag tag : tags){
+            utt.setUttId(uttId);
+            utt.setTagId(tag.getTagId());
+            userTaskTagMapper.insert(utt);
+            uttId = uttId.add(BigInteger.valueOf(1));
+        }
+        return 200;
     }
 }

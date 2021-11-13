@@ -1,6 +1,5 @@
 package com.hungry.taskmanager.controller;
 
-import com.hungry.taskmanager.entity.Response.MyResponse;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/task")
@@ -18,16 +18,11 @@ public class TaskController {
     @Resource
     private TaskServiceImpl taskServiceImpl;
 
-//    @PostMapping("/query")
-//    public MyResponse getTasks(@RequestParam("token") String token, @RequestParam("username") String username){
-//        return null;
-//    }
-
     @PostMapping("/addtask")
-    public Result<String> addTask(@RequestBody CreateTaskParams params){
-        try{
+    public Result<String> addTask(@RequestBody CreateTaskParams params) {
+        try {
             taskServiceImpl.addTask(params);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
         }
@@ -35,48 +30,50 @@ public class TaskController {
     }
 
     @PostMapping("/deletetask")
-    public MyResponse deleteTask(@RequestParam("id") long taskId){
-        try{
-            taskServiceImpl.deleteTask(taskId);
-        }catch(Exception e){
+    public Result<String> deleteTask(@RequestParam("id") long taskId) {
+        try {
+            int result = taskServiceImpl.deleteTask(taskId);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new MyResponse("server error");
+            return new Result<String>(500, "server error", "");
         }
-        return MyResponse.success();
+        return new Result<String>(200, "successfully add a task", "");
     }
 
     @PostMapping("/query")
-    public MyResponse query(@RequestBody QueryTaskFilter params){
-        try{
+    public Result<List<Task>> query(@RequestBody QueryTaskFilter params) {
+        try {
             DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
-            taskServiceImpl.queryTask(params.getUsername(), params.getPrivilege(),params.getTag(),
-                    LocalDateTime.parse(params.getDueDate(),df));
-        }catch(Exception e){
+            taskServiceImpl.queryTask(params.getUsername(), params.getPrivilege(), params.getTag(),
+                    LocalDateTime.parse(params.getDueDate(), df));
+        } catch (Exception e) {
             e.printStackTrace();
-            return new MyResponse("server error");
+            return null;
         }
-        return new MyResponse("success");
+        return null;
     }
 
     @PostMapping("/info")
-    public MyResponse getInfo(long taskId){
-        try{
-            Task task = taskServiceImpl.getInfo(taskId);
-        }catch(Exception e){
+    public Result<Task> getInfo(long taskId) {
+        Task task = null;
+        try {
+            task = taskServiceImpl.getInfo(taskId);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new MyResponse("server error");
+            return new Result<Task>(500, "server error", null);
         }
-        return new MyResponse("success");
+        return new Result<Task>(200, "successfully add a task", task);
     }
 
     @PostMapping("/edittask")
-    public MyResponse editTask(@RequestParam("taskId") long id, @RequestBody CreateTaskParams params){
-        try{
-            taskServiceImpl.editTask(id, params);
-        }catch(Exception e){
+    public Result<String> editTask(@RequestParam("taskId") long id, @RequestBody CreateTaskParams params) {
+        try {
+            int result = taskServiceImpl.editTask(id, params);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new MyResponse("server error");
+            return new Result<String>(500, "server error", null);
         }
-        return new MyResponse("success");
+        return new Result<String>(200, "successfully add a task", null);
     }
 }
+

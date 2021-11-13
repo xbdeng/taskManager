@@ -20,7 +20,7 @@ class TaskManagerApplicationTests {
         List<String> tags = new ArrayList<>();
         tags.add("tom");
         tags.add("jerry");
-        CreateTaskParams params = new CreateTaskParams().setUsername("ddd").setTaskName("testcase").setDescription("try")
+        CreateTaskParams params = new CreateTaskParams().setUsername("ddd").setTaskName("try").setDescription("try")
                 .setTags(tags).setPrivilege(1).setType(0).setCreateDate("Tue, 30 Oct 2018 07:33:48 GMT").setDueDate("Tue, 30 Oct 2018 07:33:48 GMT");
         int result =taskServiceImpl.addTask(params);
 
