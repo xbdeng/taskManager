@@ -146,11 +146,8 @@ public class TaskServiceImpl implements TaskService{
      */
     public int editTask(long id, CreateTaskParams params) throws Exception {
         // get task object
-        UpdateWrapper<Task> wrapper = new UpdateWrapper<>();
-        BigInteger userId = userMapper.getIdByName(params.getUsername());
-        wrapper.set("creator", userId);
-        Task task = getInfo(id, userId.longValue());
-        wrapper = wrapper.eq("task_id", task.getTaskId());
+        BigInteger taskId = BigInteger.valueOf(id);
+        UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", taskId);
         // configuration
         if (params.getTaskName() != null) wrapper.set("task_name", params.getTaskName());
         if (params.getDescription() != null) wrapper.set("description", params.getDescription());
@@ -163,12 +160,11 @@ public class TaskServiceImpl implements TaskService{
         if (params.getStatus() != null) wrapper.set("status", params.getStatus());
         if (params.getFatherTask() != null) wrapper.set("father_task", params.getFatherTask());
         if (params.getPrivilege() != null) wrapper.set("privilege", params.getPrivilege());
-        if (params.getTags() != null){
-
+        if (params.getUsername() != null) {
+            BigInteger userId = userMapper.getIdByName(params.getUsername());
+            wrapper.set("creator", userId);
         }
-        // copy information from original task
-        // insert new task record
-        // insert father task relationship`
+        taskMapper.update(null, wrapper);
         return 200;
     }
 

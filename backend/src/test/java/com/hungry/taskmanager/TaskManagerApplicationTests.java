@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,10 @@ class TaskManagerApplicationTests {
         tags.add("tom");
         tags.add("jerry");
         CreateTaskParams params = new CreateTaskParams().setUsername("ddd").setTaskName("try").setDescription("try")
-                .setTags(tags).setPrivilege(1).setType(0).setCreateDate("Tue, 30 Oct 2018 07:33:48 GMT").setDueDate("Tue, 30 Oct 2018 07:33:48 GMT");
-        int result =taskServiceImpl.deleteTask(26);
-        System.out.println(taskServiceImpl.getInfo(31,3).toString());
+                .setTags(tags).setPrivilege(1).setType(0).setCreateDate("Sat, 13 Nov 2021 07:33:48 GMT").setDueDate("Tue, 30 Oct 2018 07:33:48 GMT");
+        int result =taskServiceImpl.editTask(23, params.setFatherTask(BigInteger.valueOf(11)));
+//        System.out.println(taskServiceImpl.getInfo(31,3).toString());
+
 
     }
 

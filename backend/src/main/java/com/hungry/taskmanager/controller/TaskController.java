@@ -21,7 +21,10 @@ public class TaskController {
     @PostMapping("/addtask")
     public Result<String> addTask(@RequestBody CreateTaskParams params) {
         try {
-            taskServiceImpl.addTask(params);
+            int result = taskServiceImpl.addTask(params);
+            if (result != 200){
+                throw new Exception("server error");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
@@ -33,6 +36,9 @@ public class TaskController {
     public Result<String> deleteTask(@RequestParam("id") long taskId) {
         try {
             int result = taskServiceImpl.deleteTask(taskId);
+            if (result != 200){
+                throw new Exception("server error");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
@@ -40,24 +46,27 @@ public class TaskController {
         return new Result<String>(200, "successfully add a task", "");
     }
 
-    @PostMapping("/query")
-    public Result<List<Task>> query(@RequestBody QueryTaskFilter params) {
-        try {
-            DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
-            taskServiceImpl.queryTask(params.getUsername(), params.getPrivilege(), params.getTag(),
-                    LocalDateTime.parse(params.getDueDate(), df));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return null;
-    }
+//    @PostMapping("/query")
+//    public Result<List<Task>> query(@RequestBody QueryTaskFilter params) {
+//        try {
+//            DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
+//            taskServiceImpl.queryTask(params.getUsername(), params.getPrivilege(), params.getTag(),
+//                    LocalDateTime.parse(params.getDueDate(), df));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//        return null;
+//    }
 
     @PostMapping("/info")
     public Result<Task> getInfo(long taskId, long userId) {
         Task task = null;
         try {
             task = taskServiceImpl.getInfo(taskId, userId);
+            if (task == null){
+                throw new Exception("server error");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<Task>(500, "server error", null);
@@ -69,6 +78,9 @@ public class TaskController {
     public Result<String> editTask(@RequestParam("taskId") long id, @RequestBody CreateTaskParams params) {
         try {
             int result = taskServiceImpl.editTask(id, params);
+            if (result != 200){
+                throw new Exception("server error");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", null);
