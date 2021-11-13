@@ -19,7 +19,6 @@ public class User implements Serializable {
     private BigInteger userId;
     private String username;
     private String password;
-//    private String salt;
 
     private String firstName;
     private String lastName;

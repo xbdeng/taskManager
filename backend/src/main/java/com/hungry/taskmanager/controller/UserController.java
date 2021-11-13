@@ -2,6 +2,8 @@ package com.hungry.taskmanager.controller;
 
 import com.hungry.taskmanager.dto.LoginDTO;
 import com.hungry.taskmanager.dto.RegisterInfoDTO;
+import com.hungry.taskmanager.dto.TeamDTO;
+import com.hungry.taskmanager.dto.UserDTO;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.service.UserService;
 import com.hungry.taskmanager.utils.JWTUtil;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -74,6 +77,43 @@ public class UserController {
         String username = JWTUtil.getUsername(token);
         redisUtil.del(username);
         return Result.succ("登出成功");
+    }
+
+
+    @PostMapping("addressbook")
+    @ApiOperation(value = "请求用户的通信录")
+    public Result<List<UserDTO>> addressbook(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        List<UserDTO> friends = userService.getAddressBook(username);
+        return new Result<>(200,"请求成功",friends);
+    }
+
+    @PostMapping("myteams")
+    @ApiOperation(value = "请求用户加入的组")
+    public Result<List<TeamDTO>> myteams(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        List<TeamDTO> teams = userService.getTeams(username);
+        return new Result<>(200,"请求成功",teams);
+    }
+
+    @PostMapping("myteams/admin")
+    @ApiOperation(value = "请求用户创建和管理的组")
+    public Result<List<TeamDTO>> adminTeams(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        List<TeamDTO> teams = userService.getAdminTeams(username);
+        return new Result<>(200,"请求成功",teams);
+    }
+
+    @PostMapping("profile")
+    @ApiOperation(value = "请求用户主页信息")
+    public Result<UserDTO> profile(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        UserDTO me = userService.getProfile(username);
+        return new Result<>(200,"请求成功",me);
     }
 
 }
