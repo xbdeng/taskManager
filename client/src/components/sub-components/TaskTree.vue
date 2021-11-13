@@ -39,16 +39,16 @@
       <!-- 如果任务没有子任务，就不用el-submenu递归显示，直接用el-menu-item显示 -->
       <el-menu-item :key="task.taskName" :index="taskLevel + String(tIndex)" v-else>
           <span slot="title" @click="changeTaskId(taskLevel + String(tIndex))">
-            <el-tooltip effect="dark" content="优先级：很高" placement="top-end">
+            <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="task.taskPriority == 3">
               <i class="el-icon-s-flag" style="color:red" v-if="task.taskPriority == 3"></i>
             </el-tooltip>
-            <el-tooltip effect="dark" content="优先级：高" placement="top-end">
+            <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="task.taskPriority == 2">
               <i class="el-icon-s-flag" style="color:#FFA500" v-if="task.taskPriority == 2"></i>
             </el-tooltip>
-            <el-tooltip effect="dark" content="优先级：中" placement="top-end">
+            <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="task.taskPriority == 1">
               <i class="el-icon-s-flag" style="color:#00BFFF" v-if="task.taskPriority == 1"></i>
             </el-tooltip>
-            <el-tooltip effect="dark" content="优先级：低" placement="top-end">
+            <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="task.taskPriority == 0">
               <i class="el-icon-s-flag" style="color:#7CFC00" v-if="task.taskPriority == 0"></i>
             </el-tooltip>
             {{ task.taskName }}
