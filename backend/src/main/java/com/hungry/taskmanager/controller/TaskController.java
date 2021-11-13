@@ -5,6 +5,7 @@ import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
 import com.hungry.taskmanager.entity.post_entities.QueryTaskFilter;
 import com.hungry.taskmanager.service.TaskServiceImpl;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,7 +18,7 @@ import java.util.List;
 public class TaskController {
     @Resource
     private TaskServiceImpl taskServiceImpl;
-
+    @ApiOperation(value = "create a task",notes = "username, type, taskName, privilege and createDate is required\n father task, members, status is unnecessary")
     @PostMapping("/addtask")
     public Result<String> addTask(@RequestBody CreateTaskParams params) {
         try {
@@ -43,7 +44,7 @@ public class TaskController {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
         }
-        return new Result<String>(200, "successfully add a task", "");
+        return new Result<String>(200, "successfully delete a task", "");
     }
 
 //    @PostMapping("/query")
@@ -71,10 +72,11 @@ public class TaskController {
             e.printStackTrace();
             return new Result<Task>(500, "server error", null);
         }
-        return new Result<Task>(200, "successfully add a task", task);
+        return new Result<Task>(200, "successfully get a task", task);
     }
 
     @PostMapping("/edittask")
+    @ApiOperation(value = "create a task",notes = "modified information is required only")
     public Result<String> editTask(@RequestParam("taskId") long id, @RequestBody CreateTaskParams params) {
         try {
             int result = taskServiceImpl.editTask(id, params);
@@ -85,7 +87,7 @@ public class TaskController {
             e.printStackTrace();
             return new Result<String>(500, "server error", null);
         }
-        return new Result<String>(200, "successfully add a task", null);
+        return new Result<String>(200, "successfully edit a task", null);
     }
 }
 
