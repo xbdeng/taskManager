@@ -81,17 +81,19 @@ public class TaskServiceImpl implements TaskService{
     }
 
     /**
-     * delete a existing task
+     * delete an existing task
      */
     public int deleteTask(@NonNull long taskId) throws Exception {
         BigInteger id = BigInteger.valueOf(taskId);
+        if (id == null){
+            return 404;
+        }
         try{
-            // remove entity in task_tag
-            userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("task_id", id));
-            // remove entity in user_tag
-            userTaskMapper.delete(new QueryWrapper<UserTask>().eq("task_id", id));
-            // disable task in task
-            taskMapper.deleteTask(new Task().setTaskId(id));
+            // remove user task tag
+            BigInteger utId = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("task_id", taskId)).getUtId();
+            userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", utId));
+            userTaskMapper.delete(new QueryWrapper<UserTask>().eq("ut_id", utId));
+            taskMapper.delete(new QueryWrapper<Task>().eq("task_id", id));
         }catch(Exception e){
             e.printStackTrace();
             throw new Exception("server error");
