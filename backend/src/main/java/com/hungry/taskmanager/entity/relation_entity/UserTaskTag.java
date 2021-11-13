@@ -11,8 +11,8 @@ import java.math.BigInteger;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskTag {
-    private BigInteger ttId;
-    private BigInteger taskId;
+public class UserTaskTag {
+    private BigInteger uttId;
+    private BigInteger utId;
     private BigInteger tagId;
 }
