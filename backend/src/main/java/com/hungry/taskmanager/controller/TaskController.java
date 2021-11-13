@@ -54,10 +54,10 @@ public class TaskController {
     }
 
     @PostMapping("/info")
-    public Result<Task> getInfo(long taskId) {
+    public Result<Task> getInfo(long taskId, long userId) {
         Task task = null;
         try {
-            task = taskServiceImpl.getInfo(taskId);
+            task = taskServiceImpl.getInfo(taskId, userId);
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<Task>(500, "server error", null);

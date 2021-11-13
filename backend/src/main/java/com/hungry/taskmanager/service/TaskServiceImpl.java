@@ -85,12 +85,11 @@ public class TaskServiceImpl implements TaskService{
      */
     public int deleteTask(@NonNull long taskId) throws Exception {
         BigInteger id = BigInteger.valueOf(taskId);
-        if (id == null){
-            return 404;
-        }
         try{
             // remove user task tag
-            BigInteger utId = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("task_id", taskId)).getUtId();
+            UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("task_id", taskId));
+            if (ut == null) return 404;
+            BigInteger utId = ut.getUtId();
             userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", utId));
             userTaskMapper.delete(new QueryWrapper<UserTask>().eq("ut_id", utId));
             taskMapper.delete(new QueryWrapper<Task>().eq("task_id", id));
@@ -123,7 +122,7 @@ public class TaskServiceImpl implements TaskService{
             BigInteger id = taskIds.get((int)i);
             Task task = taskMapper.selectById(id);
             // append tags information
-            task.setTags(tagMapper.selectTagsByTaskId(id));
+//            task.setTags(tagMapper.selectTagsByTaskId(id));
             tasks.add(task);
         }
         return tasks;
@@ -132,12 +131,13 @@ public class TaskServiceImpl implements TaskService{
     /**
      * get task information
      */
-    public Task getInfo(long taskId) {
-        BigInteger id = BigInteger.valueOf(taskId);
-        Task task = taskMapper.selectById(id);
-        task.setTags(tagMapper.selectTagsByTaskId(id));
+    public Task getInfo(long taskId, long userId) {
+        BigInteger tId = BigInteger.valueOf(taskId);
+        BigInteger uId = BigInteger.valueOf(userId);
+        Task task = taskMapper.selectById(tId);
+        task.setTags(tagMapper.selectTags(tId, uId));
         // append subtask information
-//            task.setSubTask(taskMapper.selectList());
+        task.setSubTask(taskMapper.selectList(new QueryWrapper<Task>().eq("father_task", tId)));
         return task;
     }
 
@@ -146,13 +146,12 @@ public class TaskServiceImpl implements TaskService{
      */
     public int editTask(long id, CreateTaskParams params) throws Exception {
         // get task object
-        Task task = getInfo(id);
-        UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", task.getTaskId());
+        UpdateWrapper<Task> wrapper = new UpdateWrapper<>();
+        BigInteger userId = userMapper.getIdByName(params.getUsername());
+        wrapper.set("creator", userId);
+        Task task = getInfo(id, userId.longValue());
+        wrapper = wrapper.eq("task_id", task.getTaskId());
         // configuration
-        if (params.getUsername() != null) {
-            BigInteger userId = userMapper.getIdByName(params.getUsername());
-            wrapper.set("creator", userId);
-        }
         if (params.getTaskName() != null) wrapper.set("task_name", params.getTaskName());
         if (params.getDescription() != null) wrapper.set("description", params.getDescription());
         if (params.getType() != null){

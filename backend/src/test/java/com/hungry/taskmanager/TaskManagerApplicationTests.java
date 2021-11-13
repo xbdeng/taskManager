@@ -23,7 +23,7 @@ class TaskManagerApplicationTests {
         CreateTaskParams params = new CreateTaskParams().setUsername("ddd").setTaskName("try").setDescription("try")
                 .setTags(tags).setPrivilege(1).setType(0).setCreateDate("Tue, 30 Oct 2018 07:33:48 GMT").setDueDate("Tue, 30 Oct 2018 07:33:48 GMT");
         int result =taskServiceImpl.deleteTask(26);
-
+        System.out.println(taskServiceImpl.getInfo(31,3).toString());
 
     }
 
