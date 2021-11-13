@@ -168,6 +168,15 @@
                 <el-input v-model="subTaskName" placeholder="请输入子任务的名称" @keyup.enter.native="addSubTask"></el-input>
               </el-col>
             </el-row>
+            <!-- 两个按钮，一个是修改完成，一个是删除任务 -->
+            <el-row type="flex" justify="start">
+              <el-col>
+                <el-button type="primary" round>确认修改</el-button>
+              </el-col>
+              <el-col>
+                <el-button type="danger" round>删除任务</el-button>
+              </el-col>
+            </el-row>
           </el-main>
       </el-container>
     </template>

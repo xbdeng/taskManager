@@ -52,6 +52,7 @@
             direction="rtl"
             :before-close="handleClose"
             :modal-append-to-body='false'
+            size='50%'
             >
                 <TaskShow :singleTaskData="getTask(chosenTaskId)"></TaskShow>
             </el-drawer>

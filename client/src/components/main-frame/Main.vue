@@ -75,7 +75,7 @@
           <!-- 搜索任务 -->
           <el-menu-item index="7" @click="showSearchTask">
             <i class="el-icon-search"></i>
-            <span slot="title">任务搜索</span>
+            <span slot="title">任务过滤器</span>
           </el-menu-item>
         </el-menu>
        </el-aside>
