@@ -102,8 +102,27 @@
               <el-col :span="4">
                 <span style="font-weight:bold">任务开始时间：</span>
               </el-col>
-              <el-col :span="20">
+              <el-col :span="15">
                 {{ singleTaskData.taskStartTime }}
+              </el-col>
+              <el-col :span="3">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务开始时间">
+                    <el-row type="flex" justify="start">
+                        <el-col>
+                            <el-date-picker v-model="editedStartTime" type="datetime" placeholder="请选择任务的开始时间"></el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small" @click="editStartTime">确定</el-button>
+                      </el-col>
+                    </el-row>
+                    <el-tooltip content="点击可修改任务的开始时间" slot="reference">
+                      <el-link type='primary'>
+                        <i class="el-icon-edit"></i>
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
               </el-col>
             </el-row>
             <!-- 显示任务的结束时间 -->
@@ -111,8 +130,27 @@
               <el-col :span="4">
                 <span style="font-weight:bold">任务结束时间：</span>
               </el-col>
-              <el-col :span="20">
+              <el-col :span="15">
                 {{ singleTaskData.taskDDL }}
+              </el-col>
+              <el-col :span="3">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务结束时间">
+                    <el-row type="flex" justify="start">
+                        <el-col>
+                            <el-date-picker v-model="editedDDL" type="datetime" placeholder="请选择任务的结束时间"></el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small" @click="editDDL">确定</el-button>
+                      </el-col>
+                    </el-row>
+                    <el-tooltip content="点击可修改任务的结束时间" slot="reference">
+                      <el-link type='primary'>
+                        <i class="el-icon-edit"></i>
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
               </el-col>
             </el-row>
             <!-- 显示任务描述信息 -->
@@ -122,6 +160,12 @@
               </el-col>
               <el-col :span="20">
                 {{ singleTaskData.taskDescriptions }}
+              </el-col>
+            </el-row>
+            <!-- 输入框，可以输入子任务的名称，输入后摁下回车可以创建子任务，之后可以通过本界面进行修改 -->
+            <el-row type="flex" justify="start">
+              <el-col>
+                <el-input v-model="subTaskName" placeholder="请输入子任务的名称" @keyup.enter.native="addSubTask"></el-input>
               </el-col>
             </el-row>
           </el-main>
@@ -144,6 +188,9 @@ export default {
       addedTag:'',
       texts:['低','中','高','很高'],
       editedPriority:null,
+      editedStartTime:null,
+      editedDDL:null,
+      subTaskName:null
     }
   },
   methods:{
@@ -196,6 +243,27 @@ export default {
         this.singleTaskData.taskPriority = this.editedPriority - 1
       }
       this.editedPriority = null
+    },
+    editStartTime() {
+      let value = this.editedStartTime
+      if(value != null) {
+        this.singleTaskData.taskStartTime = value
+      }
+      this.editedStartTime = null
+    },
+    editDDL() {
+      let value = this.editedDDL
+      if(value != null) {
+        this.singleTaskData.taskDDL = value
+      }
+      this.editedDDL = null
+    },
+    addSubTask() {
+      let value = this.subTaskName
+      if(value != null) {
+        this.singleTaskData.subTasks.push(value)
+      }
+      this.subTaskName = null
     }
   }
   
