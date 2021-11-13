@@ -5,11 +5,13 @@
        <!-- 侧边栏 -->
        <el-aside class = 'mainFrameAside' width='64px'>
          <el-menu default-active="6" class="main-frame-menu"  :collapse="true" >
+           <!-- TODO:怎么用头像取代个人面板中的el-icon-user-solid -->
+           <el-avatar src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>
            <!-- 个人面板弹框 -->
           <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-user-solid"></i>
-              <span slot="title">个人面板</span>`
+              <span slot="title">个人面板</span>
             </template>
             <el-menu-item-group>
               <span slot="title"></span>
@@ -75,7 +77,7 @@
             <AddGroupForm v-on:groupFormData='addGroup($event)'></AddGroupForm>
           </el-dialog>
           <!-- 个人任务页面 -->
-          <PersonalTaskPage v-show="personalTaskShow" :todayTasks="this.todayTasks" :recentSevenDaysTasks="this.recentSevenDaysTasks"></PersonalTaskPage>
+          <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
           <!-- 组队任务页面 -->
           <GroupInfoPage v-show="groupInfoShow" :groupInfo="this.groupInfo"></GroupInfoPage>
           <!-- 通讯录 -->
