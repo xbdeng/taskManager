@@ -1,12 +1,24 @@
 <template>
 <!-- 这个页面是个人主页面 -->
   <div class='mainFrame'>
+    <el-container>
+      <el-header class="mainFrameHeader">
+        <el-row type="flex" align="middle" justify="start">
+          <el-col :span="20">
+            <span class="taskManager">Task Manager</span>
+          </el-col>
+          <el-col :span="10" :offset="19">
+            <span>你好, {{ username }}</span>
+          </el-col>
+          <el-col :span="2" :offset="1">
+            <el-avatar src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>
+          </el-col>
+        </el-row>
+      </el-header>
      <el-container>
        <!-- 侧边栏 -->
        <el-aside class = 'mainFrameAside' width='64px'>
          <el-menu default-active="6" class="main-frame-menu"  :collapse="true" >
-           <!-- TODO:怎么用头像取代个人面板中的el-icon-user-solid -->
-           <el-avatar src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>
            <!-- 个人面板弹框 -->
           <el-submenu index="1">
             <template slot="title">
@@ -96,6 +108,7 @@
           <!-- 任务搜索 -->
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
        </el-main>
+     </el-container>
      </el-container>
   </div>
 </template>
@@ -525,7 +538,6 @@ export default {
 </script>
 
 <style scoped>
-
 .mainFrame{
   width: 100%;
   height:100%;
@@ -533,12 +545,21 @@ export default {
   padding: 0%;
   margin: 0%;
 }
-
+.taskManager {
+  font-weight: bold;
+  font-size: 20px;
+}
+.mainFrameAside {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
 .main{
   padding: 0%;
 }
 .main-frame-menu{
   height: 900px;
+}
+.mainFrameHeader {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }
 
 </style>

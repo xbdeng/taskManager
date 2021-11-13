@@ -49,7 +49,7 @@
             <el-drawer 
             title="查看或编辑任务"
             :visible.sync="drawer"
-            :direction="rtl"
+            direction="rtl"
             :before-close="handleClose"
             :modal-append-to-body='false'
             >
