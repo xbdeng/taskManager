@@ -91,7 +91,7 @@
           <!-- 个人任务页面 -->
           <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
           <!-- 组队任务页面 -->
-          <GroupInfoPage v-show="groupInfoShow" :groupInfo="this.groupInfo"></GroupInfoPage>
+          <TeamInfoPage v-show="teamInfoShow" :teamInfo="this.teamInfo"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :friends="this.friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -115,7 +115,7 @@
 
 <script>
 import PersonalTaskPage from './PersonalTaskPage.vue'
-import GroupInfoPage from './GroupInfoPage.vue'
+import TeamInfoPage from './TeamInfoPage.vue'
 import AddTaskForm from './AddTaskForm.vue'
 import AddGroupForm from './AddGroupForm.vue'
 import AddressBookPage from './AddressBookPage.vue'
@@ -123,13 +123,13 @@ import SearchTaskPage from './SearchTaskPage.vue'
 import axios from 'axios'
 export default {
   name: "Main",
-  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, GroupInfoPage, AddressBookPage, SearchTaskPage},
+  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, TeamInfoPage, AddressBookPage, SearchTaskPage},
   props: ['username'],
   data() {
 
     return {
       personalTaskShow:false,
-      groupInfoShow:false,
+      teamInfoShow:false,
       addTaskShow:false,
       addGroupShow:false,
       addressBookShow:false,
@@ -179,84 +179,47 @@ export default {
         }
       ],
       // 后端返回的组队任务数据
-      groupInfo:[
+      teamInfo:[
+        {
+          teamId:0,
+          teamName:'OOAD',
+          description:'An OOAD team',
+          createTime:'创建时间',
+          creator:'seven',
+          admins:['RX','Amazon','OOO'],
+          members:['1','2','www'],
+          teamTasks:[
             {
-                groupName:'菜鸡学生组',
-                groupMembers:[
-                    {
-                        memberName:'八云紫',
-                        memberRole:'Master'
-                    },
-                    {
-                        memberName:'八云蓝',
-                        memberRole:'Manager'
-                    },
-                    {
-                        memberName:'橙',
-                        memberRole:'none'
-                    }
-
-
-                ],
-                groupTasks:[
-                    {
-                        taskName:'Database',
-                        taskDescriptions:'Very busy'
-                    },
-                    {
-                        taskName:'Computer Architecture',
-                        taskDescriptions:'Easy',
-                        subTasks:[
-                            {
-                                taskName:'ALU',
-                                taskDescriptions:'ababaab',
-                            },
-                            {
-                                taskName:'Controller',
-                                taskDescriptions:'hhh'
-                            }
-                        ]
-                    }
-                ]
+              taskName:'Front End',
+              taskTags: ['摸鱼','划水'],
+              taskDDL:'11-22',
+              taskPriority:3,
+              taskType: 1,
+              taskStartTime:'9-7',
+              taskDescription:'前端',
+              subTasks:[
+                {
+                  taskName:'Vue',
+                  taskTags: ['学习','划水'],
+                  taskDDL:'11-22',
+                  taskPriority:2,
+                  taskType: 1,
+                  taskStartTime:'9-7',
+                  taskDescription:'前端Vue'
+                }
+              ]
             },
             {
-                groupName:'菜鸡教师组',
-                groupMembers:[
-                    {
-                        memberName:'古明地觉',
-                        memberRole:'Master'
-                    },
-                    {
-                        memberName:'古明地恋',
-                        memberRole:'Manager'
-                    },
-                    {
-                        memberName:'Olen',
-                        memberRole:'none'
-                    },
-                    {
-                        memberName:'灵乌路空',
-                        memberRole:'none'
-                    }
-
-                ],
-                groupTasks:[
-                    {
-                        taskName:'AI Project',
-                        taskDescriptions:'aaaaaaaaaa'
-                    },
-                    {
-                        taskName:'OS Project',
-                        taskDescriptions:'A little hard',
-                        subTasks:[
-                            {
-                                taskName:'fork function',
-                                taskDescriptions:'easiest'
-                            }
-                        ]
-                    }
-                ]
-            },
+              taskName:'Back End',
+              taskTags:['摸摸摸'],
+              taskDDL:'11-22',
+              taskPriority:3,
+              taskType:1,
+              taskStartTime:'9-7',
+              taskDescription:'后端',
+            }
+          ]
+        }
       ],
       // 后端返回的通讯录数据
       friends:[
@@ -327,7 +290,7 @@ export default {
     },
     showPersonalTask() {
       this.personalTaskShow = true
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false
@@ -336,7 +299,7 @@ export default {
     },
     showGroupInfo() {
       this.personalTaskShow = false
-      this.groupInfoShow = true
+      this.teamInfoShow = true
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false
@@ -345,7 +308,7 @@ export default {
     },
     showTask() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = true
       this.addGroupShow = false
       this.addressBookShow = false
@@ -355,7 +318,7 @@ export default {
     },
     showGroup() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = true
       this.addressBookShow = false
@@ -364,7 +327,7 @@ export default {
     },
     showCalendar() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false
@@ -373,7 +336,7 @@ export default {
     },
     showAddressBook() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = true
@@ -382,7 +345,7 @@ export default {
     },
     showSearchTask() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false

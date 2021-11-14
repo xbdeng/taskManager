@@ -1,30 +1,35 @@
 <template>
 <!-- 这个页面用于显示组队任务 -->
-    <div class='groupInfo'>
+    <div class='teamInfo'>
         <el-container>
             <!-- 侧边栏，用于显示所有组的信息 -->
             <el-aside>
                 <el-menu  class="main-frame-menu">
-                    <!-- 子菜单，用于显示所有的组 -->
-                    <el-submenu  v-for='(group, groupIndex) in groupInfo' :key="groupIndex" :index= group.groupName >
+                    <!-- 显示所有的组 -->
+                    <el-menu-item  v-for='(team, teamIndex) in teamInfo' :key="teamIndex" :index= team.teamName >
                         <template slot="title">
-                            <span slot="title" @click="showSelectedGroup(groupIndex)">{{ group.groupName }}</span>
+                            <span slot="title" @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
                         </template>
-                        <!-- 根据组的下标获取member，遍历memberList并显示成员 -->
-                        <el-menu-item v-for='(member, memberIndex) in group.groupMembers' :key="memberIndex">
-                            {{ member.memberName }}
-                        </el-menu-item>
-                    </el-submenu>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
-
-            <!-- 侧边栏，用于显示组别任务 -->
+            <!-- 侧边栏，用于显示这个组的所有任务 -->
             <el-main>
                 <el-menu>
-                    <TaskTree :taskData="groupInfo[this.selectedGroup].groupTasks" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                    <TaskTree :taskData="teamInfo[this.selectedTeam].teamTasks" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                 </el-menu>
             </el-main>
 
+            <!-- 用于显示组内任务的抽屉组件 -->
+            <el-drawer 
+            title="查看或编辑组内信息"
+            :visible.sync="teamInfoDrawer"
+            direction="ltr"
+            :before-close="handleTeamInfoClose"
+            :modal-append-to-body='false'
+            size='50%'>
+                <TeamShow :singleTeamData="teamInfo[selectedTeam]"></TeamShow>
+            </el-drawer>
             <!-- 用于显示任务信息 -->
             <el-drawer 
             title="查看或编辑任务"
@@ -32,10 +37,12 @@
             direction="rtl"
             :before-close="handleTaskInfoClose"
             :modal-append-to-body='false'
-            size='50%'
-            >
-                <TaskShow :singleTaskData="getTaskById(groupInfo[this.selectedGroup].groupTasks, chosenTaskId)"></TaskShow>
+            size='50%'>
+                <TaskShow :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"></TaskShow>
             </el-drawer>
+
+            <!-- 用于显示组的信息 -->
+
         </el-container>
     </div>
 </template>
@@ -43,28 +50,32 @@
 <script>
 import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
+import TeamShow from '../sub-components/TeamShow.vue'
 export default {
 
-  name: "GroupInfoPage",
+  name: "TeamInfoPage",
   components: {
     TaskTree,
-    TaskShow
+    TaskShow,
+    TeamShow
   },
-  props:['groupInfo'],
+  props:['teamInfo'],
   data() {
 
     return {
         // 唯一标识任务的key
         chosenTaskId:'-1',
         // 用户点击的组的编号
-        selectedGroup:0,
-        taskInfoDrawer:false
+        selectedTeam:0,
+        taskInfoDrawer:false,
+        teamInfoDrawer:false
     }
   },
   methods: {
     // 用于根据用户的点击，显示特定的组别
-    showSelectedGroup(groupId) {
-        this.selectedGroup = groupId
+    showSelectedTeam(teamId) {
+        this.teamInfoDrawer = true
+        this.selectedTeam = teamId
     },
     // 接收子组件传递的任务的key
     chooseTasks(id) {
@@ -84,6 +95,9 @@ export default {
     },
     handleTaskInfoClose() {
         this.taskInfoDrawer = false
+    },
+    handleTeamInfoClose() {
+        this.teamInfoDrawer = false
     }
 }
 
