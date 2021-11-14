@@ -8,7 +8,6 @@
                     <!-- 子菜单，用于显示所有的组 -->
                     <el-submenu  v-for='(group, groupIndex) in groupInfo' :key="groupIndex" :index= group.groupName >
                         <template slot="title">
-                            <i class="el-icon-apple"></i>
                             <span slot="title" @click="showSelectedGroup(groupIndex)">{{ group.groupName }}</span>
                         </template>
                         <!-- 根据组的下标获取member，遍历memberList并显示成员 -->
@@ -20,16 +19,23 @@
             </el-aside>
 
             <!-- 侧边栏，用于显示组别任务 -->
-            <el-aside>
+            <el-main>
                 <el-menu>
                     <TaskTree :taskData="groupInfo[this.selectedGroup].groupTasks" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                 </el-menu>
-            </el-aside>
+            </el-main>
 
             <!-- 用于显示任务信息 -->
-            <el-main>
+            <el-drawer 
+            title="查看或编辑任务"
+            :visible.sync="taskInfoDrawer"
+            direction="rtl"
+            :before-close="handleTaskInfoClose"
+            :modal-append-to-body='false'
+            size='50%'
+            >
                 <TaskShow :singleTaskData="getTaskById(groupInfo[this.selectedGroup].groupTasks, chosenTaskId)"></TaskShow>
-            </el-main>
+            </el-drawer>
         </el-container>
     </div>
 </template>
@@ -51,7 +57,8 @@ export default {
         // 唯一标识任务的key
         chosenTaskId:'-1',
         // 用户点击的组的编号
-        selectedGroup:0       
+        selectedGroup:0,
+        taskInfoDrawer:false
     }
   },
   methods: {
@@ -61,6 +68,7 @@ export default {
     },
     // 接收子组件传递的任务的key
     chooseTasks(id) {
+          this.taskInfoDrawer = true
           this.chosenTaskId = id;
     },
     // 根据任务数组和子组件的key找到任务对象并返回
@@ -73,6 +81,9 @@ export default {
         }
         if (id.length == 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
+    },
+    handleTaskInfoClose() {
+        this.taskInfoDrawer = false
     }
 }
 
