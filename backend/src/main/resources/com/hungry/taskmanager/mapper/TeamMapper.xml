@@ -1,0 +1,22 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hungry.taskmanager.dao.TeamMapper">
+
+    <insert id="addMember">
+        insert into team_user(team_id, user_id, identity) values
+        <foreach collection="list" item="userid" separator=",">
+            (#{teamId},#{userid},{"member"})
+        </foreach>
+    </insert>
+
+    <insert id="addAdmin">
+        insert into team_user(team_id, user_id, identity) VALUES
+        <foreach collection="list" item="adminid" separator=",">
+            (#{teamId},#{adminid},{"admin"})
+        </foreach>
+    </insert>
+
+    <insert id="addCreator">
+        insert into team_user(team_id, user_id, identity) value (#{teamId}, #{creator}, #{"creator"})
+    </insert>
+
+</mapper>

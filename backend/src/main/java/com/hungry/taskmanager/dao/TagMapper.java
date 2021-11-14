@@ -15,6 +15,8 @@ public interface TagMapper extends BaseMapper<Tag> {
     @Insert("INSERT IGNORE INTO tag(tag_id, tag_name, user_id) VALUES(#{tagId}, #{tagName}, #{userId})")
     int insert(Tag entity);
 
-    @Select("SELECT tag.tag_id, tag_name, user_id FROM tag INNER JOIN task_tag ON task_tag.tag_id = tag.tag_id WHERE task_tag.task_id = #{taskId}")
-    List<Tag>  selectTagsByTaskId(BigInteger taskId);
+    @Select("SELECT tag.tag_id AS tag_id, tag.tag_name AS tag_name, tag.user_id AS user_id FROM tag INNER JOIN user_task_tag AS utt ON " +
+            "tag.tag_id = utt.tag_id INNER JOIN user_task AS ut ON ut.ut_id = utt.ut_id WHERE ut.user_id = #{userId} and ut.task_id = " +
+            "#{taskId}")
+    List<Tag>  selectTags(BigInteger taskId, BigInteger userId);
 }

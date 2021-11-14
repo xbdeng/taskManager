@@ -1,5 +1,6 @@
-package com.hungry.taskmanager.entity;
+package com.hungry.taskmanager.dto;
 
+import com.hungry.taskmanager.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,14 +15,12 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Team {
+public class TeamDTO {
     private BigInteger teamId;
-    @NonNull
     private String teamName;
     private String description;
-    private Timestamp creatTime; // 时间戳 可能有bug（import）
-    private User creator;
-
-    private List<User> members;
-
+    private String creatTime;
+    private String creator;
+    private List<String> admins;
+    private List<String> members;
 }

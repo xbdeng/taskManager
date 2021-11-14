@@ -17,20 +17,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Task {
-    @TableId
+    // attributes necessary for inserting a task
+    @TableId()
     private BigInteger taskId;
-    private BigInteger userId;
-    private String title;
+    private BigInteger creator;
+    private String taskName;
     private String description;
-    private Integer type;
-    @TableField(exist=false)
-    private List<Tag> tags;
-    private Integer privilege;
-    @TableField(exist=false)
-    private List<Task> subTask;
+    private BigInteger type;
     private LocalDateTime createDate;
     private LocalDateTime dueDate;
     private Integer status;
-    @TableField(exist=false)
     private BigInteger fatherTask;
+    private Integer privilege;
+    // other attributes
+    @TableField(exist=false)
+    private List<Task> subTask;
+    @TableField(exist=false)
+    private List<Tag> tags;
 }
