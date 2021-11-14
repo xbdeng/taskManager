@@ -113,16 +113,16 @@
                   </el-col>
                   <el-col>{{ singleTeamData.description }}</el-col>
                   <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
-                  <el-row>
-                      <el-col>
-                          <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"></el-input>
-                      </el-col>
-                  </el-row>
-                  <el-row>
-                      <el-col :offset="8">
-                          <el-button type='primary' plain size="small">确定</el-button>
-                      </el-col>
-                  </el-row>
+                    <el-row>
+                        <el-col>
+                            <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"></el-input>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :offset="8">
+                            <el-button type='primary' plain size="small">确定</el-button>
+                        </el-col>
+                    </el-row>
                     <el-tooltip content="点击可修改组的描述信息" slot="reference">
                       <el-link type='primary'>
                         <i class="el-icon-edit"></i>
