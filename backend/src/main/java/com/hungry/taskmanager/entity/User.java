@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.hungry.taskmanager.dto.UserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +35,10 @@ public class User implements Serializable {
 
     @TableField(exist=false)
     private List<Task> tasks;
+
+    public UserDTO toUserDTO(){
+        return new UserDTO(userId,username,firstName,lastName,email,phone);
+    }
 
 
 }

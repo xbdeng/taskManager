@@ -19,9 +19,7 @@ public class Team {
     @NonNull
     private String teamName;
     private String description;
-    private Timestamp creatTime; // 时间戳 可能有bug（import）
-    private User creator;
-
-    private List<User> members;
+    private String creatTime; // 时间戳 可能有bug（import）
+    private BigInteger creator;
 
 }
