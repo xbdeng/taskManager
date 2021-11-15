@@ -64,6 +64,7 @@
 <script>
 import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
+import axios from 'axios'
 export default {
 
   name: "PersonalTaskPage",
@@ -243,6 +244,7 @@ export default {
     },
     // 进行任务修改
     editTask(task) {
+        // TODO:向后端请求修改任务
         
     }
 }
