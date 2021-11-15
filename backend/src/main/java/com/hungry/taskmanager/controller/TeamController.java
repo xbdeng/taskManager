@@ -4,6 +4,8 @@ import com.hungry.taskmanager.dto.CreateTeamDTO;
 import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.service.TeamService;
+import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,12 +19,15 @@ public class TeamController {
     TeamService teamService;
 
     @PostMapping("/createteam")
+    @ApiOperation(value = "创建小组",notes = "后端已测试通过")
+    @RequiresAuthentication
     public Result<String> createTeam(@RequestBody CreateTeamDTO createTeamDTO) {
         teamService.createTeam(createTeamDTO);
         return Result.succ("创建成功");
     }
 
     @PostMapping("/addmember")
+    @RequiresAuthentication
     public Result<String> addMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.addMember(oppoTeamMemberDTO);
         return Result.succ("添加成功");
