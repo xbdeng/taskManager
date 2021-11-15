@@ -2,14 +2,18 @@
 <!-- 这个页面是个人主页面 -->
   <div class='mainFrame'>
     <el-container>
+      <!-- 头部栏 -->
       <el-header class="mainFrameHeader">
         <el-row type="flex" align="middle" justify="start">
+          <!-- 标题 -->
           <el-col :span="20">
             <span class="taskManager">Task Manager</span>
           </el-col>
+          <!-- 打招呼 -->
           <el-col :span="10" :offset="19">
             <span>你好, {{ username }}</span>
           </el-col>
+          <!-- 头像 -->
           <el-col :span="2" :offset="1">
             <el-avatar src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>
           </el-col>
@@ -28,10 +32,9 @@
             <el-menu-item-group>
               <span slot="title"></span>
               <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
-              <el-menu-item index="1-2" @click="toAnalysis">任务统计</el-menu-item>
-              <el-menu-item index="1-3" >页面设置</el-menu-item>
-              <el-menu-item index="1-4" >数据同步</el-menu-item>
-              <el-menu-item index="1-5" >账号登出</el-menu-item>
+              <el-menu-item index="1-2" >页面设置</el-menu-item>
+              <el-menu-item index="1-3" >数据同步</el-menu-item>
+              <el-menu-item index="1-4" >账号登出</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -39,35 +42,35 @@
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-plus"></i>
-              <span slot="title">添加任务/组别</span>
+              <span slot="title">新建任务/组别</span>
             </template>
             <el-menu-item-group>
-              <span slot="title">添加...</span>
+              <span slot="title">新建...</span>
               <el-menu-item index="2-1" @click='showTask'>任务</el-menu-item>
               <el-menu-item index="2-2" @click='showGroup'>组别</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
           <!-- 展示个人任务 -->
-          <el-menu-item index="3" @click='postPersonalTasks'>
+          <el-menu-item index="3" @click='showPersonalTask'>
             <i class="el-icon-user"></i>
             <span slot="title">个人任务</span>
           </el-menu-item>
 
           <!-- 展示组别任务 -->
-          <el-menu-item index="4" @click="postGroupInfo">
+          <el-menu-item index="4" @click="showTeamInfo">
             <i class="el-icon-platform-eleme"></i>
             <span slot="title">组队任务</span>
           </el-menu-item>
 
           <!-- 通讯录 -->
-          <el-menu-item index="5" @click="postAddressBook">
+          <el-menu-item index="5" @click="showAddressBook">
             <i class="el-icon-s-management"></i>
             <span slot="title">通讯录</span>
           </el-menu-item>
 
           <!-- 以日历视图展示任务 -->
-          <el-menu-item index="6" @click="postCalendar">
+          <el-menu-item index="6" @click="showCalendar">
             <i class="el-icon-date"></i>
             <span slot="title">日历视图</span>
           </el-menu-item>
@@ -81,19 +84,19 @@
        </el-aside>
        <el-main class='main'>
          <!-- 添加task的表单 -->
-         <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false'>
-            <AddTaskForm  v-on:taskFormData='addTask($event)'></AddTaskForm>
+         <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false' @close='showCalendar'>
+            <AddTaskForm  v-on:taskFormData='addTask($event)' :username='username' v-on:toCalendar='toCalendar($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
-          <el-dialog :visible.sync='addGroupShow' width='1000px' height='1000px' :modal-append-to-body='false'>
-            <AddGroupForm v-on:groupFormData='addGroup($event)'></AddGroupForm>
+          <el-dialog :visible.sync='addTeamShow' width='1000px' height='1000px' :modal-append-to-body='false' @close='showCalendar'>
+            <AddTeamForm v-on:teamFormData='addTeam($event)' v-on:toCalendar='toCalendar($event)'></AddTeamForm>
           </el-dialog>
           <!-- 个人任务页面 -->
           <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
           <!-- 组队任务页面 -->
           <TeamInfoPage v-show="teamInfoShow" :teamInfo="this.teamInfo"></TeamInfoPage>
           <!-- 通讯录 -->
-          <AddressBookPage v-show="addressBookShow" :friends="this.friends"></AddressBookPage>
+          <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
           <el-calendar v-show='calendarShow'>
             <template slot="dateCell" slot-scope="{data}">
@@ -117,169 +120,77 @@
 import PersonalTaskPage from './PersonalTaskPage.vue'
 import TeamInfoPage from './TeamInfoPage.vue'
 import AddTaskForm from './AddTaskForm.vue'
-import AddGroupForm from './AddGroupForm.vue'
+import AddTeamForm from './AddTeamForm.vue'
 import AddressBookPage from './AddressBookPage.vue'
 import SearchTaskPage from './SearchTaskPage.vue'
 import axios from 'axios'
 export default {
   name: "Main",
-  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, TeamInfoPage, AddressBookPage, SearchTaskPage},
+  components:{AddTaskForm, AddTeamForm, PersonalTaskPage, TeamInfoPage, AddressBookPage, SearchTaskPage},
   props: ['username'],
+  watch:{
+    // TODO:监听，如果显示组队任务界面，获取该成员加入的所有组放入teamInfo中
+    'teamInfoShow':{
+      
+    },
+    // TODO:监听，如果显示通讯录界面，获取该成员的所有好友放入Friends中
+    'addressBookShow' :{
+
+    },
+    // TODO:监听，如果显示日历界面，获取日历数据,放入calendarTasks中
+    'calendarShow' : {
+
+    }
+  },
   data() {
 
     return {
+      // 是否展示"个人任务"界面
       personalTaskShow:false,
+      // 是否展示“组队任务”界面
       teamInfoShow:false,
+      // 是否展示“添加任务”界面
       addTaskShow:false,
-      addGroupShow:false,
+      // 是否展示“添加组别”界面
+      addTeamShow:false,
+      // 是否展示“通讯录”界面
       addressBookShow:false,
+      // 是否展示“日历”界面
       calendarShow:true,
+      // 是否展示“任务过滤器”界面
       searchTaskShow:false,
+      // 获取当前时间，用于在日历中特殊显示
       calendarValue:new Date(),
       taskForm:{
+        // 任务名
           taskName:'',
-          taskTags: '',
-          taskDDL:'',
-          taskPriority:'',
-          taskType: '',
-          taskStartTime:'',
-          taskDescription:''
+          // 标签
+          tags: '',
+          // 截止时间
+          dueDate:'',
+          // 优先级
+          privilege:'',
+          // 任务类型：0是个人，1是组队
+          type: '',
+          // 子任务，对象类型数组
+          subtasks:[],
+          // 如果是组队任务，涉及的成员，对象类型的数组
+          members:[],
+          // 任务开始时间
+          createDate:'',
+          // 任务描述信息
+          description:'',
+          // 任务状态，0是未完成，1是已完成，2是已过期
+          status:0,
       },
       // 后端返回的日历数据
       calendarTasks:[
-        {
-          taskName:'OOAD',
-          taskDDL:'11-05',
-          taskDescription:'An OOAD Project'
-        },
-        {
-          taskName:'AI Project',
-          taskDDL:'11-27',
-          taskDescription:'An AI Project'
-        },
-        {
-          taskName:'Complier',
-          taskDDL:'11-30',
-          taskDescription:'Design a Complier'
-        },
-        {
-          taskName:'Computer Network',
-          taskDDL:'11-30',
-          taskDescription:'Midterm Exam'
-        },
-        {
-          taskName:'PAT',
-          taskDDL:'11-30',
-          taskDescription:'PAT Context'
-        },
-        {
-          taskName:'CCF',
-          taskDDL:'11-30',
-          taskDescription:'CCF Context'
-        }
       ],
       // 后端返回的组队任务数据
       teamInfo:[
-        {
-          teamId:0,
-          teamName:'OOAD',
-          description:'An OOAD team',
-          createTime:'创建时间',
-          creator:'seven',
-          admins:['RX','Amazon','OOO'],
-          members:['1','2','www'],
-          teamTasks:[
-            {
-              taskName:'Front End',
-              taskTags: ['摸鱼','划水'],
-              taskDDL:'11-22',
-              taskPriority:3,
-              taskType: 1,
-              taskStartTime:'9-7',
-              taskDescription:'前端',
-              subTasks:[
-                {
-                  taskName:'Vue',
-                  taskTags: ['学习','划水'],
-                  taskDDL:'11-22',
-                  taskPriority:2,
-                  taskType: 1,
-                  taskStartTime:'9-7',
-                  taskDescription:'前端Vue'
-                }
-              ]
-            },
-            {
-              taskName:'Back End',
-              taskTags:['摸摸摸'],
-              taskDDL:'11-22',
-              taskPriority:3,
-              taskType:1,
-              taskStartTime:'9-7',
-              taskDescription:'后端',
-            }
-          ]
-        }
       ],
       // 后端返回的通讯录数据
-      friends:[
-              {
-                  username:'Lee',
-                  email:'11913003@mail.sustech.edu.cn',
-                  telephone:'19861251006',
-                  personalSign:'Eclipse first, the rest nowhere'
-              },
-              {
-                  username:'Mike',
-                  email:'chlijiaao@163.com',
-                  telephone:'10086',
-                  personalSign:"躺平不香吗?"
-              },
-              {
-                  username:'Smith',
-                  email:'2381446488@qq.com',
-                  telephone:'120',
-                  personalSign:"我是个傻逼"
-              },
-              {
-                  username:'Jack',
-                  email:'ababa@mail.sustech.edu.cn',
-                  telephone:'119',
-                  personalSign:"哥只是个传说"
-              }
-      ],
-      // 后端返回的今日任务数据
-      todayTasks:[
-        {
-            taskName:'OOAD',
-            taskDescriptions:'nnnnnn',
-            subTasks:[
-                {
-                    taskName:'jjj',
-                    taskDescriptions:'6666'
-                }
-            ]
-        },
-        {
-            taskName:'Principle of Compiler',
-            taskDescriptions:'82371'
-        }
-      ],
-      // 后端返回的最近七天任务数据
-      recentSevenDaysTasks:[
-          {
-              taskName:'OOAD',
-              taskDescriptions:'0000'
-          },
-          {
-              taskName:'Principle of Complier',
-              taskDescriptions:'1111'
-          },
-          {
-              taskName:'AI Project',
-              taskDescriptions:'999'
-          }
-      ]
+      Friends:[],
 
     }
   },
@@ -288,69 +199,77 @@ export default {
     toProfile(event) {
       this.$router.push({name: 'Profile',params:{username:this.username}});
     },
-    toAnalysis(event) {
-      this.$router.push({name: 'Profile',params:{username:this.username, page:"1"}});
+    // 跳转到日历界面
+    toCalendar() {
+      this.showCalendar()
     },
+    // 个人任务
     showPersonalTask() {
       this.personalTaskShow = true
       this.teamInfoShow = false
       this.addTaskShow = false
-      this.addGroupShow = false
+      this.addTeamShow = false
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = false
     },
-    showGroupInfo() {
+    // 组队任务
+    showTeamInfo() {
       this.personalTaskShow = false
       this.teamInfoShow = true
       this.addTaskShow = false
-      this.addGroupShow = false
+      this.addTeamShow = false
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = false
     },
+    // 添加任务
     showTask() {
       this.personalTaskShow = false
       this.teamInfoShow = false
       this.addTaskShow = true
-      this.addGroupShow = false
+      this.addTeamShow = false
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = false
 
     },
+    // 添加组
     showGroup() {
       this.personalTaskShow = false
       this.teamInfoShow = false
       this.addTaskShow = false
-      this.addGroupShow = true
+      this.addTeamShow = true
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = false
     },
+    // 日历
     showCalendar() {
       this.personalTaskShow = false
       this.teamInfoShow = false
       this.addTaskShow = false
-      this.addGroupShow = false
+      this.addTeamShow = false
       this.addressBookShow = false
       this.calendarShow = true
       this.searchTaskShow = false
     },
+    // 通讯录
     showAddressBook() {
       this.personalTaskShow = false
       this.teamInfoShow = false
       this.addTaskShow = false
-      this.addGroupShow = false
+      this.addTeamShow = false
       this.addressBookShow = true
       this.calendarShow = false
       this.searchTaskShow = false
     },
+    // 任务过滤器
     showSearchTask() {
       this.personalTaskShow = false
       this.teamInfoShow = false
       this.addTaskShow = false
-      this.addGroupShow = false
+      this.addTeamShow = false
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = true
@@ -371,21 +290,13 @@ export default {
       )
       return calendarData
     },
+    // 响应添加任务的表单，调用接口添加任务
     addTask(newTask) {
       const that = this
       // 向后端发送创建的任务数据
       axios.post(
-        'http://localhost:8081/',
-        {
-          taskName:newTask.taskName,
-          taskTags:newTask.taskTags,
-          taskDDL:newTask.taskDDL,
-          taskPriority:newTask.taskPriority,
-          taskType:newTask.taskType,
-          taskGroups:newTask.taskGroups,
-          taskStartTime:newTask.taskStartTime,
-          taskDescription:newTask.taskDescription
-        }
+        'http://localhost:8081/api/task/addtask',
+         newTask
       ).then(
         function(response) {
           that.$message(
@@ -393,7 +304,6 @@ export default {
               message:'创建任务成功',
               type:'success'
             }
-
           );
         },
         function(err) {
@@ -401,15 +311,13 @@ export default {
         }
       )
     },
-    addGroup(newGroup) {
+    // 响应添加组的表单，调用接口添加组
+    addTeam(newTeam) {
       const that = this
       // 向后端发送创建的组别数据
       axios.post(
-        'http://localhost:8081/',
-        {
-          groupName:newGroup.groupName,
-          groupMembers:newGroup.groupMembers
-        }
+        'http://localhost:8081/api/team/createTeam',
+         newTeam
       ).then(
         function(response) {
           that.$message({
@@ -422,83 +330,7 @@ export default {
         }
       )
     },
-    // 向后端请求个人任务信息
-    postPersonalTasks() {
-      const that = this
-      alert('请求个人任务信息')
-      this.showPersonalTask()
-      axios.post(
-        'http://localhost:8081/api/user/personaltasks',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.todayTasks = response.data.todayTasks
-          that.recentSevenDaysTasks = response.data.recentSevenDaysTasks
-        },
-        function(err) {
-          that.$message.error('请求个人任务失败')
-        }
-      )
-    },
-    // 向后端请求组队任务信息
-    postGroupInfo() {
-      const that = this
-      alert('请求组队任务信息')
-      this.showGroupInfo()
-      axios.post(
-        'http://localhost:8081/api/user/mygroups',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.groupInfo = response.data
-        },
-        function(err) {
-          that.$message.error('获取组队任务信息失败')
-        }
-      )
-    },
-    // 向后端请求通讯录数据
-    postAddressBook() {
-      const that = this
-      alert('请求通讯录数据')
-      this.showAddressBook()
-      axios.post(
-        'http://localhost:8081/api/user/addressbook',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.friends = response.data
-        },
-        function(err) {
-          that.$message.error('获取通讯录数据失败')
-        }
-      )
-    },
-    // 向后端请求日历数据
-    postCalendar() {
-      const that = this
-      alert('请求日历数据')
-      this.showCalendar()
-      axios.post(
-        'http://localhost:8081/api/user/calendar',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.calendarTasks = response.data
-        },
-        function(err) {
-          that.$message.error('获取日历数据失败')
-        }
-      )
-    }
+    
   }
 }
 </script>

@@ -21,6 +21,7 @@
                             </el-col>
                         </el-row>
                         <el-tooltip content="点击可修改组的描述信息" slot="reference">
+                            <!-- TODO:点击添加好友 -->
                             <el-button type='primary' icon='el-icon-plus' circle ></el-button>
                         </el-tooltip>
                     </el-popover>
@@ -33,14 +34,14 @@
             <!-- 侧边栏，用于显示所有好友 -->
             <el-aside class='address_aside'>
                 <el-menu >
-                    <el-menu-item v-for="(friend, index) in friends" :key="index" @click="changeSelectedFriend(index)">
+                    <el-menu-item v-for="(friend, index) in Friends" :key="index" @click="changeSelectedFriend(index)">
                         {{ friend.username }}
                     </el-menu-item>
                 </el-menu>
             </el-aside>
             <!-- 主页面，用于显示好友信息 -->
             <el-main class='address_main'>
-                <FriendShow :friend="friends[this.selectedFriend]"></FriendShow>
+                <FriendShow :friend="Friends[this.selectedFriend]"></FriendShow>
             </el-main>
         </el-container>
     </el-container>
@@ -55,7 +56,7 @@ export default {
   components: {
       FriendShow
   },
-  props:['friends'],
+  props:['Friends'],
   data() {
       return {
           selectedFriend:0,
