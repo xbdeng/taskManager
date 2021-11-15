@@ -27,8 +27,33 @@
           </div>
         </el-col>
 
+        <el-col :span="6">
+          <div class="grid-content bg-purple">
+
+            <doughnut-card title="项目分布" :total="projectData.count">
+              <div class="chart-wrapper">
+                <doughnut-chart :chart-data="doughnutdata" :options="options" class="chart"></doughnut-chart>
+              </div>
+            </doughnut-card>
+          </div>
+        </el-col>
+
+        <el-col :span="6">
+          <div class="grid-content bg-purple">
+
+            <doughnut-card title="总任务进度" :total="projectData.count">
+              <div class="chart-wrapper">
+                <el-progress type="circle" :percentage="50" status="exception"></el-progress>
+                <el-progress :percentage="50" status="exception"></el-progress>
+              </div>
+            </doughnut-card>
+          </div>
+        </el-col>
 
       </el-row>
+    </el-form-item>
+    <el-form-item>
+      <BigChart></BigChart>
     </el-form-item>
   </el-form>
 </template>
@@ -37,18 +62,42 @@
 import LineChart from '../sub-components/LineChart.js'
 import ChartCard from '../sub-components/ChartCard'
 import BarChart from '../sub-components/BarChart'
+import BigCard from "../sub-components/BigCard";
+import BigChart from "../sub-components/BigCard";
+import DoughnutChart from "../sub-components/DoughnutChart";
+import DoughnutCard from "../sub-components/DoughnutCard";
 
 const projectList = [];
 
 export default {
   name: "data-analysis",
   components: {
+    DoughnutCard,
+    DoughnutChart,
+    BigChart,
     BarChart,
     ChartCard,
     LineChart
   },
   data() {
     return {
+      doughnutdata: {
+        labels: [
+          'Red',
+          'Blue',
+          'Yellow'
+        ],
+        datasets: [{
+          label: 'My First Dataset',
+          data: [300, 50, 100],
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)'
+          ],
+          hoverOffset: 4
+        }]
+      },
       datacollection: {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
         datasets: [{
@@ -74,13 +123,19 @@ export default {
           xAxes: [{
             ticks: {
               display: false
+            },
+            gridLines: {
+              display: false
             }
           }],
           yAxes: [{
             ticks: {
               display: false
-            }
-          }]
+            },
+            gridLines: {
+              display: false
+            },
+          }],
         },
         layout: {
           padding: {
