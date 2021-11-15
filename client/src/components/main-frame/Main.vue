@@ -52,25 +52,25 @@
           </el-submenu>
 
           <!-- 展示个人任务 -->
-          <el-menu-item index="3" @click='postPersonalTasks'>
+          <el-menu-item index="3" @click='showPersonalTask'>
             <i class="el-icon-user"></i>
             <span slot="title">个人任务</span>
           </el-menu-item>
 
           <!-- 展示组别任务 -->
-          <el-menu-item index="4" @click="postGroupInfo">
+          <el-menu-item index="4" @click="showTeamInfo">
             <i class="el-icon-platform-eleme"></i>
             <span slot="title">组队任务</span>
           </el-menu-item>
 
           <!-- 通讯录 -->
-          <el-menu-item index="5" @click="postAddressBook">
+          <el-menu-item index="5" @click="showAddressBook">
             <i class="el-icon-s-management"></i>
             <span slot="title">通讯录</span>
           </el-menu-item>
 
           <!-- 以日历视图展示任务 -->
-          <el-menu-item index="6" @click="postCalendar">
+          <el-menu-item index="6" @click="showCalendar">
             <i class="el-icon-date"></i>
             <span slot="title">日历视图</span>
           </el-menu-item>
@@ -214,7 +214,7 @@ export default {
       this.searchTaskShow = false
     },
     // 组队任务
-    showGroupInfo() {
+    showTeamInfo() {
       this.personalTaskShow = false
       this.teamInfoShow = true
       this.addTaskShow = false
@@ -330,83 +330,7 @@ export default {
         }
       )
     },
-    // 向后端请求个人任务信息
-    postPersonalTasks() {
-      const that = this
-      alert('请求个人任务信息')
-      this.showPersonalTask()
-      axios.post(
-        'http://localhost:8081/api/user/personaltasks',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.todayTasks = response.data.todayTasks
-          that.recentSevenDaysTasks = response.data.recentSevenDaysTasks
-        },
-        function(err) {
-          that.$message.error('请求个人任务失败')
-        }
-      )
-    },
-    // 向后端请求组队任务信息
-    postGroupInfo() {
-      const that = this
-      alert('请求组队任务信息')
-      this.showGroupInfo()
-      axios.post(
-        'http://localhost:8081/api/user/mygroups',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.groupInfo = response.data
-        },
-        function(err) {
-          that.$message.error('获取组队任务信息失败')
-        }
-      )
-    },
-    // 向后端请求通讯录数据
-    postAddressBook() {
-      const that = this
-      alert('请求通讯录数据')
-      this.showAddressBook()
-      axios.post(
-        'http://localhost:8081/api/user/addressbook',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.friends = response.data
-        },
-        function(err) {
-          that.$message.error('获取通讯录数据失败')
-        }
-      )
-    },
-    // 向后端请求日历数据
-    postCalendar() {
-      const that = this
-      alert('请求日历数据')
-      this.showCalendar()
-      axios.post(
-        'http://localhost:8081/api/user/calendar',
-        {
-          username:this.username
-        }
-      ).then(
-        function(response) {
-          that.calendarTasks = response.data
-        },
-        function(err) {
-          that.$message.error('获取日历数据失败')
-        }
-      )
-    }
+    
   }
 }
 </script>
