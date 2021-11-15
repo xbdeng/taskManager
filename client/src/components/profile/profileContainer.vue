@@ -52,10 +52,18 @@ import Data_analysis from "./data-analysis";
 export default {
   name: "profileContainer",
   components: {Data_analysis, profileInfo, changePasswd},
-  props: ['username'],
+  props: {
+    username: {
+      type: String,
+      default: ''
+    },
+    page: {
+      type: String,
+      default: "0"
+    }
+  },
   data() {
     return {
-      page: "0",
       isCollapse: false,
       drawer: false,
       direction: 'ltr',

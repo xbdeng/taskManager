@@ -38,6 +38,5 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("SELECT * from user WHERE username = #{username} and password = #{password}")
     User getUserByPass(String username, String password);
 
-    List<BigInteger> getIdsByNames(List<String> usernames);
 }
 

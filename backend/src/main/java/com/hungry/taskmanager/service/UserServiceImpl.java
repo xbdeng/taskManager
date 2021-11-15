@@ -1,18 +1,21 @@
 package com.hungry.taskmanager.service;
 
-import com.hungry.taskmanager.dao.UserMapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.dto.TeamDTO;
 import com.hungry.taskmanager.dto.UserDTO;
-import com.hungry.taskmanager.entity.Perms;
+import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.dto.RegisterInfoDTO;
-import com.hungry.taskmanager.entity.Role;
-import com.hungry.taskmanager.entity.User;
-import com.hungry.taskmanager.entity.Result;
+import com.hungry.taskmanager.entity.relation_entity.Contact;
+import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("userService")
 @Transactional
@@ -23,6 +26,14 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
 
+    @Resource
+    private ContactMapper contactMapper;
+
+    @Resource
+    private TeamUserMapper teamUserMapper;
+
+    @Resource
+    private TeamMapper teamMapper;
 
     @Override
     public List<Perms> findPermsByRoleId(String id) {
@@ -31,27 +42,61 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByPass(String username, String password) {
-        return userMapper.getUserByPass(username,password);
+        return userMapper.getUserByPass(username, password);
     }
 
     @Override
     public List<UserDTO> getAddressBook(String username) {
-        return null;//todo
+        BigInteger userId = userMapper.getIdByName(username);
+        List<BigInteger> friendsId = contactMapper.selectList(new QueryWrapper<Contact>().eq("person", userId)).stream().map(Contact::getFriend).collect(Collectors.toList());
+        List<UserDTO> re_turn = userMapper.selectList(new QueryWrapper<User>().in("user_id", friendsId)).stream().map(User::toUserDTO).collect(Collectors.toList());
+        return re_turn;
     }
 
-    @Override
+    @Override //todo 不优雅
     public List<TeamDTO> getTeams(String username) {
-        return null;//todo
+        BigInteger userId = userMapper.getIdByName(username);
+        //获取全部的teamsId
+        List<BigInteger> teamsId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("user_id", userId)).stream().map(TeamUser::getTeamId).collect(Collectors.toList());
+
+        //获取全部的teams
+        return getTeamDTOSbyTeamIds(teamsId);
     }
 
     @Override
     public List<TeamDTO> getAdminTeams(String username) {
-        return null; //todo
+        BigInteger userId = userMapper.getIdByName(username);
+        //获取管理的的teamsId
+        List<String> t = new ArrayList<>(2);
+        t.add("admin");
+        t.add("creator");
+        List<BigInteger> teamsId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("user_id", userId).in("identity", t)).stream().map(TeamUser::getTeamId).collect(Collectors.toList());
+
+        //获取全部的teams
+        return getTeamDTOSbyTeamIds(teamsId);
+    }
+
+    private List<TeamDTO> getTeamDTOSbyTeamIds(List<BigInteger> teamsId) {
+        List<Team> teams = teamMapper.selectList(new QueryWrapper<Team>().in("team_id", teamsId));
+
+        List<TeamDTO> re_turn = new ArrayList<>();
+        for (Team team : teams) {
+            List<BigInteger> membersId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("team_id", team.getTeamId()).eq("identity", "member")).stream().map(TeamUser::getUserId).collect(Collectors.toList());
+            List<BigInteger> adminsId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("team_id", team.getTeamId()).eq("identity", "admin")).stream().map(TeamUser::getUserId).collect(Collectors.toList());
+
+            String creator = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", team.getCreator())).getUsername();
+            List<String> members = userMapper.selectList(new QueryWrapper<User>().in("user_id", membersId)).stream().map(User::getUsername).collect(Collectors.toList());
+            List<String> admins = userMapper.selectList(new QueryWrapper<User>().in("user_id", adminsId)).stream().map(User::getUsername).collect(Collectors.toList());
+            TeamDTO teamDTO = new TeamDTO(team.getTeamId(), team.getTeamName(), team.getDescription(), team.getCreatTime()
+                    , creator, members, admins);
+            re_turn.add(teamDTO);
+        }
+        return re_turn;
     }
 
     @Override
     public UserDTO getProfile(String username) {
-        return null; //todo
+        return userMapper.selectOne(new QueryWrapper<User>().eq("username",username)).toUserDTO();
     }
 
     @Override
