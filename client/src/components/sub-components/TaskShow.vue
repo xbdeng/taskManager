@@ -13,18 +13,18 @@
               </el-col>
 
               <el-col :span="3">
-                <span class="title">{{ singleTaskData.taskName }}</span>
+                <span class="title">{{ tempTaskForm.taskName }}</span>
               </el-col>
 
               <el-popover placement="top" width="200" trigger="click" title="修改任务名">
                   <el-row>
                       <el-col>
-                          <el-input placeholder="请输入修改后的任务名..." clearable></el-input>
+                          <el-input placeholder="请输入修改后的任务名..." clearable v-model="editedTaskName"></el-input>
                       </el-col>
                   </el-row>
                   <el-row>
                       <el-col :offset="8">
-                          <el-button type='primary' plain size="small">确定</el-button>
+                          <el-button type='primary' plain size="small" @click="editTaskName">确定</el-button>
                       </el-col>
                   </el-row>
                     <el-tooltip content="点击可修改任务名称" slot="reference">
@@ -45,7 +45,7 @@
               </el-col>
               <el-col :span="17">
                 <el-tag :key="tag"
-                  v-for="tag in singleTaskData.taskTags" 
+                  v-for="tag in tempTaskForm.taskTags" 
                   closable 
                   :disable-transitions="false" 
                   @close= "deleteTag(tag)">
@@ -63,17 +63,17 @@
                 <span style="font-weight:bold">任务优先级：</span>
               </el-col>
               <el-col :span="5">
-                <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="singleTaskData.taskPriority == 3">
-                  <i class="el-icon-s-flag" style="color:red" v-if="singleTaskData.taskPriority == 3"></i>
+                <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="tempTaskForm.taskPriority == 3">
+                  <i class="el-icon-s-flag" style="color:red" v-if="tempTaskForm.taskPriority == 3"></i>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="singleTaskData.taskPriority == 2">
-                  <i class="el-icon-s-flag" style="color:#FFA500" v-if="singleTaskData.taskPriority == 2"></i>
+                <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="tempTaskForm.taskPriority == 2">
+                  <i class="el-icon-s-flag" style="color:#FFA500" v-if="tempTaskForm.taskPriority == 2"></i>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="singleTaskData.taskPriority == 1">
-                  <i class="el-icon-s-flag" style="color:#00BFFF" v-if="singleTaskData.taskPriority == 1"></i>
+                <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="tempTaskForm.taskPriority == 1">
+                  <i class="el-icon-s-flag" style="color:#00BFFF" v-if="tempTaskForm.taskPriority == 1"></i>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="singleTaskData.taskPriority == 0">
-                  <i class="el-icon-s-flag" style="color:#7CFC00" v-if="singleTaskData.taskPriority == 0"></i>
+                <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="tempTaskForm.taskPriority == 0">
+                  <i class="el-icon-s-flag" style="color:#7CFC00" v-if="tempTaskForm.taskPriority == 0"></i>
                 </el-tooltip>
               </el-col>
               <!-- 修改任务优先级的接口 -->
@@ -103,7 +103,7 @@
                 <span style="font-weight:bold">任务开始时间：</span>
               </el-col>
               <el-col :span="15">
-                {{ singleTaskData.taskStartTime }}
+                {{ tempTaskForm.taskStartTime }}
               </el-col>
               <el-col :span="3">
                   <el-popover placement="top" width="200" trigger="click" title="修改任务开始时间">
@@ -131,7 +131,7 @@
                 <span style="font-weight:bold">任务结束时间：</span>
               </el-col>
               <el-col :span="15">
-                {{ singleTaskData.taskDDL }}
+                {{ tempTaskForm.taskDDL }}
               </el-col>
               <el-col :span="3">
                   <el-popover placement="top" width="200" trigger="click" title="修改任务结束时间">
@@ -154,7 +154,7 @@
               </el-col>
             </el-row>
             <!-- 如果是组队任务，显示这个任务覆盖的组员 -->
-            <el-row v-show="singleTaskData.taskType==1">
+            <el-row v-show="tempTaskForm.taskType==1">
               <!-- 显示组内成员的组件 -->
                   <el-col :span="4">
                       <span style="font-weight:bold">任务成员：</span>
@@ -166,7 +166,7 @@
                             点击查看任务成员<i class="el-icon-arrow-down el-icon--right"></i>
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item v-for="member in singleTaskData.members" :key="member.name">
+                            <el-dropdown-item v-for="member in tempTaskForm.members" :key="member.name">
                                 {{ member.name }}
                             </el-dropdown-item>
                         </el-dropdown-menu>
@@ -200,7 +200,7 @@
                 <span style="font-weight:bold">任务描述：</span>
               </el-col>
               <el-col :span="20">
-                {{ singleTaskData.taskDescriptions }}
+                {{ tempTaskForm.taskDescriptions }}
               </el-col>
               <el-popover placement="bottom" width="200" trigger="click" title="修改任务的描述信息">
                   <el-row>
@@ -229,10 +229,10 @@
             <!-- 两个按钮，一个是修改完成，一个是删除任务 -->
             <el-row type="flex" justify="start">
               <el-col>
-                <el-button type="primary" round>确认修改</el-button>
+                <el-button type="primary" round @click="postEdit">确认修改</el-button>
               </el-col>
               <el-col>
-                <el-button type="danger" round>删除任务</el-button>
+                <el-button type="danger" round >删除任务</el-button>
               </el-col>
             </el-row>
           </el-main>
@@ -242,23 +242,38 @@
 </template>
  
 <script>
-
 export default {
 
   name: 'TaskShow',
   // 这个组件接收的参数是一个任务对象
-  props: ['singleTaskData'],
-
+  props: ['singleTaskData','drawer'],
+  watch:{
+    'drawer':function() {
+      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
+    }
+  },
   data() {
     return {
       inputVisible:false,
+      // 添加的标签，是一个字符串类型的数组
       addedTag:'',
+      // 任务优先级的评价词，在el-rate中使用
       texts:['低','中','高','很高'],
+      // 修改后的任务的优先级
       editedPriority:null,
+      // 修改后的任务开始时间
       editedStartTime:null,
+      // 修改后的任务结束时间
       editedDDL:null,
+      // 添加的子任务名
       subTaskName:null,
-      invitiedMembers:[],
+      // 组队任务邀请的成员名单
+      invitedMembers:[],
+      // 修改后的任务名
+      editedTaskName:'',
+      friends:[],
+      // 暂存区,对传入的参数进行深拷贝
+      tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData))
     }
   },
   methods:{
@@ -281,7 +296,7 @@ export default {
     },
     deleteTag(tag) {
       // 动态删除某个标签
-      this.singleTaskData.taskTags.splice(this.singleTaskData.taskTags.indexOf(tag), 1);
+      this.tempTaskForm.taskTags.splice(this.tempTaskForm.taskTags.indexOf(tag), 1);
     },
     showInput() {
       this.inputVisible = true;
@@ -292,47 +307,64 @@ export default {
     handleInputConfirm() {
       let inputValue = this.addedTag;
       if(inputValue) {
-        for(let i in this.singleTaskData.taskTags) {
-          if(this.singleTaskData.taskTags[i] === inputValue) {
+        for(let i in this.tempTaskForm.taskTags) {
+          if(this.tempTaskForm.taskTags[i] === inputValue) {
             this.$message.error('添加失败，已有该标签')
             this.inputVisible = false;
             this.addedTag = '';
             return 
           }
         }
-        this.singleTaskData.taskTags.push(inputValue);
+        this.tempTaskForm.taskTags.push(inputValue);
       }
       this.inputVisible = false;
       this.addedTag = '';
     },
+    // 修改任务名
+    editTaskName() {
+      let value = this.editedTaskName
+      if(value != '') {
+        this.tempTaskForm.taskName = value
+        this.editedTaskName = null
+      }
+      else {
+        this.$message.error('修改失败，修改后的任务名不能为空')
+      }
+    },
     editPriority() {
       let value = this.editedPriority
       if(value != null) {
-        this.singleTaskData.taskPriority = this.editedPriority - 1
+        this.tempTaskForm.taskPriority = this.editedPriority - 1
       }
       this.editedPriority = null
     },
     editStartTime() {
       let value = this.editedStartTime
       if(value != null) {
-        this.singleTaskData.taskStartTime = value
+        this.tempTaskForm.taskStartTime = value
       }
       this.editedStartTime = null
     },
     editDDL() {
       let value = this.editedDDL
       if(value != null) {
-        this.singleTaskData.taskDDL = value
+        this.tempTaskForm.taskDDL = value
       }
       this.editedDDL = null
     },
     addSubTask() {
       let value = this.subTaskName
       if(value != null) {
-        this.singleTaskData.subTasks.push(value)
+        this.tempTaskForm.subTasks.push(value)
       }
       this.subTaskName = null
-    }
+    },
+    // 点击确认修改后的动作
+    postEdit() {
+      this.$emit('editTask',this.tempTaskForm)
+      // 将抽屉中展示的任务数据刷新
+      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
+    },
   }
   
 }

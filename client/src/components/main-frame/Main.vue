@@ -39,10 +39,10 @@
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-plus"></i>
-              <span slot="title">添加任务/组别</span>
+              <span slot="title">新建任务/组别</span>
             </template>
             <el-menu-item-group>
-              <span slot="title">添加...</span>
+              <span slot="title">新建...</span>
               <el-menu-item index="2-1" @click='showTask'>任务</el-menu-item>
               <el-menu-item index="2-2" @click='showGroup'>组别</el-menu-item>
             </el-menu-item-group>
@@ -81,12 +81,12 @@
        </el-aside>
        <el-main class='main'>
          <!-- 添加task的表单 -->
-         <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false'>
-            <AddTaskForm  v-on:taskFormData='addTask($event)'></AddTaskForm>
+         <el-dialog :visible.sync='addTaskShow'  width='700px' :modal-append-to-body='false' @close='showCalendar'>
+            <AddTaskForm  v-on:taskFormData='addTask($event)' :username='username' v-on:toCalendar='toCalendar($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
-          <el-dialog :visible.sync='addGroupShow' width='1000px' height='1000px' :modal-append-to-body='false'>
-            <AddGroupForm v-on:groupFormData='addGroup($event)'></AddGroupForm>
+          <el-dialog :visible.sync='addGroupShow' width='1000px' height='1000px' :modal-append-to-body='false' @close='showCalendar'>
+            <AddGroupForm v-on:groupFormData='addGroup($event)' v-on:toCalendar='toCalendar($event)'></AddGroupForm>
           </el-dialog>
           <!-- 个人任务页面 -->
           <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
@@ -128,22 +128,45 @@ export default {
   data() {
 
     return {
+      // 是否展示"个人任务"界面
       personalTaskShow:false,
+      // 是否展示“组队任务”界面
       teamInfoShow:false,
+      // 是否展示“添加任务”界面
       addTaskShow:false,
+      // 是否展示“添加组别”界面
       addGroupShow:false,
+      // 是否展示“通讯录”界面
       addressBookShow:false,
+      // 是否展示“日历”界面
       calendarShow:true,
+      // 是否展示“任务过滤器”界面
       searchTaskShow:false,
+      // 获取当前时间，用于在日历中特殊显示
       calendarValue:new Date(),
       taskForm:{
+        // 任务名
           taskName:'',
+          // 标签
           taskTags: '',
+          // 截止时间
           taskDDL:'',
+          // 优先级
           taskPriority:'',
+          // 任务类型：0是个人，1是组队
           taskType: '',
+          // 子任务，对象类型数组
+          subTasks:[],
+          // 如果是组队任务，涉及的成员，对象类型的数组
+          members:[],
+          // 任务开始时间
           taskStartTime:'',
-          taskDescription:''
+          // 任务描述信息
+          taskDescription:'',
+          // 任务是否过期
+          hasExpired:false,
+          // 任务是否结束
+          hasFinished:false
       },
       // 后端返回的日历数据
       calendarTasks:[
@@ -288,6 +311,11 @@ export default {
     toProfile(event) {
       this.$router.push({name: 'Profile',params:{username:this.username}});
     },
+    // 跳转到日历界面
+    toCalendar() {
+      this.showCalendar()
+    },
+    // 个人任务
     showPersonalTask() {
       this.personalTaskShow = true
       this.teamInfoShow = false
@@ -297,6 +325,7 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
+    // 组队任务
     showGroupInfo() {
       this.personalTaskShow = false
       this.teamInfoShow = true
@@ -306,6 +335,7 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
+    // 添加任务
     showTask() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -316,6 +346,7 @@ export default {
       this.searchTaskShow = false
 
     },
+    // 添加组
     showGroup() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -325,6 +356,7 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
+    // 日历
     showCalendar() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -334,6 +366,7 @@ export default {
       this.calendarShow = true
       this.searchTaskShow = false
     },
+    // 通讯录
     showAddressBook() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -343,6 +376,7 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
+    // 任务过滤器
     showSearchTask() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -368,6 +402,7 @@ export default {
       )
       return calendarData
     },
+    // 响应添加任务的表单，调用接口添加任务
     addTask(newTask) {
       const that = this
       // 向后端发送创建的任务数据
@@ -398,6 +433,7 @@ export default {
         }
       )
     },
+    // 响应添加组的表单，调用接口添加组
     addGroup(newGroup) {
       const that = this
       // 向后端发送创建的组别数据

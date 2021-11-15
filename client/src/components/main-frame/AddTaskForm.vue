@@ -1,13 +1,14 @@
 <template>
     <div class='addTaskForm'>
         <el-container>
+            <!-- 表单标题 -->
             <el-header>
-                <h1>添加任务</h1>
+                <h1>新建任务</h1>
             </el-header>
-
+            <!-- 表单项 -->
             <el-main>
                 <el-form label-width="150px" ref='taskForm' :model='taskForm' :rules="rules" status-icon>
-                    <!--Task Name-->
+                    <!--任务名-->
                     <el-form-item label='任务名称:' prop='taskName'>
                         <el-row>
                             <el-col :span='14'>
@@ -15,7 +16,7 @@
                             </el-col>
                         </el-row>
                     </el-form-item>
-                    <!--Task Tags-->
+                    <!--任务标签-->
                     <el-form-item label='任务标签:' prop='taskTags'>
                         <el-row>
                             <el-col :span='14' >
@@ -97,8 +98,10 @@
             </el-main>
 
             <el-footer>
-                <el-button type='primary' @click="submitForm('taskForm')" >添加任务</el-button>
-                <el-button type="danger">取消</el-button>
+                <!-- 点击添加任务，提交到父组件 -->
+                <el-button type='primary' @click="submitForm('taskForm')" >新建</el-button>
+                <!-- 点击取消，跳转到日历界面 -->
+                <el-button type="danger" @click="toCalendar">取消</el-button>
             </el-footer>
         </el-container>
     </div>
@@ -107,78 +110,92 @@
 <script>
 export default {
   name: 'AddTaskForm',
+  props:['username'],
   data () {
-    
+    // 任务名验证
     var checkTaskName = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Task Name should not be empty!'));
+            return callback(new Error('任务名不能为空！'));
         }
         callback()
     };
-
+    // 标签验证
     var checkTaskTags = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Task Tags should not be empty!'));
+            return callback(new Error('任务标签不能为空！'));
         }
         callback()
     };
-
+    // 截止时间验证
     var checkTaskDDL = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Task DDL should not be empty!'));
+            return callback(new Error('任务截止时间不能为空！'));
         }
         callback()
     };
-
+    // 优先级验证
     var checkTaskPriority = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Task Priority should not be empty!'));
+            return callback(new Error('任务优先级不能为空！'));
         }
         callback()
     };
-
+    // 任务类型验证
     var checkTaskType = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Task Type should not be empty!'));
+            return callback(new Error('任务类型不能为空！'));
         }
         callback()
     };
-
+    // 开始时间验证
     var checkTaskStartTime = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Task Start Time should not be empty!'));
+            return callback(new Error('任务开始时间不能为空！'));
         }
         callback()
     };
-
+    // 任务描述验证
     var checkTaskDescription = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Task Description should not be empty!'));
+            return callback(new Error('任务描述信息不能为空！'));
         }
         callback()
     };
 
     return {
+        // 添加的标签，是一个string类型的数组
         addedTag:'',
+        // 用户输入的表单内容
         taskForm:{
+            // 任务名
             taskName:'',
+            // 标签
             taskTags: '',
+            // 截止时间
             taskDDL:'',
+            // 优先级
             taskPriority:'',
+            // 任务类型,0个人，1组
             taskType: '',
+            // 如果任务类型是组队任务，这个任务所覆盖的组，是一个字符串数组
             taskGroups:'',
+            // 任务开始时间
             taskStartTime:'',
+            // 任务描述
             taskDescription:''
         },
+        // 默认标签
         tagArray:[
             {label:'学习', value:'study'},
             {label:'工作', value: 'work'}
         ],
+        // 默认优先级
         priorityArray:[
             {label:'高', value:'high_priority'},
             {label:'中', value:'medium_priority'},
             {label:'低', value:'low_priority'}
         ],
+        // 默认能够选择的组的信息
         groupInfo:[
             {
                 groupName:'嘻嘻嘻嘻嘻',
@@ -187,6 +204,7 @@ export default {
                 groupName:'OOAD摸鱼划水'
             }
         ],
+        // 表单的验证规则
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
             taskTags:[{validator:checkTaskTags, trigger:'blur'}],
@@ -199,9 +217,15 @@ export default {
     }
   },
   methods:{
-    //   用户自定义标签
+    //   跳转到日历界面
+    toCalendar() {
+        this.$emit('toCalendar',{
+            
+        });
+    },
+    //   添加用户自定义标签
       addTag() {
-        //   判断要添加的标签是否已经存在
+        //   判断要添加的标签是否已经存在,如果已经存在，报错
           let flag = false
           for(let i in this.tagArray) {
               let item = this.tagArray[i]
@@ -214,12 +238,14 @@ export default {
               this.$message.error('添加失败，已有该标签')
               return ;
           }
+        //   向默认标签中添加该标签
           this.tagArray.push(
               {
                   label:this.addedTag,
                   value:this.addedTag
               }
           )
+        //   提示成功信息
           this.$message(
               {
                   message:'添加成功!',
@@ -227,11 +253,13 @@ export default {
               }
           )
       },
+    //   点击提交按钮，提交添加任务的表单
       submitForm(formName) {
 
           this.$refs[formName].validate((valid)=>{
               
               if(valid) {
+                //   向父组件<Main>传值
                   this.$emit('taskFormData',{
                       taskName:this.taskForm.taskName,
                       taskTags:this.taskForm.taskTags,
@@ -242,12 +270,15 @@ export default {
                       taskStartTime:this.taskForm.taskStartTime,
                       taskDescription:this.taskForm.taskDescription
                   })
+                //   提交后清空表单
                   for(let key in this.taskForm) {
                       this.taskForm[key] = ''
                   }
-
+                // 提交成功后跳转到日历界面
+                this.toCalendar()
               } else {
-                  console.log('error submit !!')
+                //   提示错误提交信息
+                  alert('error submit !!')
                   return false
               }
           });

@@ -2,7 +2,7 @@
     <div class='addGroupForm'>
         <el-container>
             <el-header>
-                <h1>添加组别</h1>
+                <h1>新建组别</h1>
             </el-header>
             <el-main>
                 <el-form label-width="150px" ref='groupForm' :model='groupForm' :rules="rules" status-icon>
@@ -16,10 +16,10 @@
                     <!-- 输入组内成员 :穿梭框bug-->
 
                     <!-- 输入组的描述信息 -->
-                    <el-form-item label='任务描述:' prop='taskDescription'>
+                    <el-form-item label='描述信息:' prop='groupDescription'>
                         <el-row>
                             <el-col :span='14'>
-                                <el-input placeholder='请输入任务的描述信息' clearabletype='textarea' :rows="4"></el-input>
+                                <el-input placeholder='请输入队伍的描述信息' clearabletype='textarea' :rows="4"></el-input>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -27,8 +27,8 @@
             </el-main>
 
             <el-footer>
-                <el-button type='primary' @click="submitForm('groupForm')" >添加组别</el-button>
-                <el-button type="danger">取消</el-button>
+                <el-button type='primary' @click="submitForm('groupForm')" >新建</el-button>
+                <el-button type="danger" @click="toCalendar">取消</el-button>
             </el-footer>
         </el-container>
     </div>
@@ -38,56 +38,57 @@
 export default {
   name: 'AddGroupForm',
   data () {
-    
+    // 验证队名
     var checkGroupName = (rule, value, callback)=>{
         if (value === '') {
-            return callback(new Error('Group Name should not be empty!'));
+            return callback(new Error('队名不能为空！'));
         }
         callback()
     };
-
-
+    // 验证描述信息
+    var checkGroupDescription = (rule, value, callback)=>{
+        if(value === '') {
+            return callback(new Error('描述信息不能为空！'));
+        }
+        callback()
+    };
     return {
+        // 新建组的表单信息
         groupForm:{
             groupName:'',
-            groupMembers:''
+            groupDescription:''
         },
+        // 表单项验证规则
         rules:{
             groupName:[{validator:checkGroupName, trigger:'blur'}],
+            groupDescription:[{validator:checkGroupDescription, trigger:'blur'}]
         },
-        friends:[
-            {
-                friendName:'博丽灵梦'
-            },
-            {
-                friendName:'Trump'
-            },
-            {
-                friendName:'dxbdl'
-            },
-            {
-                friendName:'糖糖'
-            }
-        ]
     }
   },
   methods:{
-      
-
+      toCalendar() {
+        this.$emit('toCalendar',{
+            
+        });
+      },
+    //   点击“新建”，提交表单
       submitForm(formName) {
 
           this.$refs[formName].validate((valid)=>{
               if(valid) {
+                //   向父组件传值
                   this.$emit('groupFormData',{
                       groupName:this.groupForm.groupName,
-                      groupMemvers:this.groupForm.groupMembers,
+                      groupDescription:this.groupForm.groupDescription,
                   })
+                //   清空表单
                   for(let key in this.groupForm) {
                       this.groupForm[key] = ''
                   }
+                // 跳转到日历界面
 
               } else {
-                  console.log('error submit !!')
+                  alert('error submit !!')
                   return false
               }
           });

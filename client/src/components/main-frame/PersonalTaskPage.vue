@@ -23,6 +23,7 @@
 
             <!-- 显示今天,一周内，稍后任务的侧边栏 -->
             <el-main>
+                <!-- 默认展开今天的任务数据 -->
                 <el-menu :default-openeds="['today']">
                     <el-submenu index='today'>
                         <template slot="title">
@@ -54,7 +55,7 @@
             :modal-append-to-body='false'
             size='50%'
             >
-                <TaskShow :singleTaskData="getTask(chosenTaskId)"></TaskShow>
+                <TaskShow :singleTaskData="getTask(chosenTaskId)" :drawer="drawer" v-on:editTask='editTask'></TaskShow>
             </el-drawer>
         </el-container>
     </div>
@@ -140,9 +141,23 @@ export default {
                 }
             ],
             // 经过任务过滤器筛选后，后端返回的一周内的任务数据
-            weekTaskData:[],
+            weekTaskData:[
+            ],
             // 经过任务过滤器过滤后，后端返回的“稍后”的任务数据
-            laterTaskData:[]
+            laterTaskData:[
+                {
+                    taskName:'OOAD',
+                    taskTags:['学习','工作'],
+                    taskStartTime:'',
+                    taskDDL:'',
+                    taskPriority:3,
+                    taskType:0,
+                    subTasks:[],
+                    taskDescriptions:'OOAD的描述信息',
+                    hasFinished:false,
+                    hasExpired:false
+                }
+            ],
         }
   },
   methods: {
@@ -225,6 +240,10 @@ export default {
     },
     handleClose() {
         this.drawer = false
+    },
+    // 进行任务修改
+    editTask(task) {
+        
     }
 }
 
