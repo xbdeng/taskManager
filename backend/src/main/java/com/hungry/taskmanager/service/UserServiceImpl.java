@@ -49,8 +49,10 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> getAddressBook(String username) {
         BigInteger userId = userMapper.getIdByName(username);
         List<BigInteger> friendsId = contactMapper.selectList(new QueryWrapper<Contact>().eq("person", userId)).stream().map(Contact::getFriend).collect(Collectors.toList());
-        List<UserDTO> re_turn = userMapper.selectList(new QueryWrapper<User>().in("user_id", friendsId)).stream().map(User::toUserDTO).collect(Collectors.toList());
-        return re_turn;
+        if(friendsId.isEmpty()){
+            return new ArrayList<UserDTO>();
+        }
+        return userMapper.selectList(new QueryWrapper<User>().in("user_id", friendsId)).stream().map(User::toUserDTO).collect(Collectors.toList());
     }
 
     @Override //todo 不优雅
