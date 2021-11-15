@@ -98,6 +98,7 @@
 
             <el-footer>
                 <el-button type='primary' @click="submitForm('taskForm')" >添加任务</el-button>
+                <el-button type="danger">取消</el-button>
             </el-footer>
         </el-container>
     </div>

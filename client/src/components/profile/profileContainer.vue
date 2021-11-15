@@ -19,7 +19,8 @@
                        :collapse="isCollapse" @select="handleSelect">
                   <el-menu-item-group>
                     <el-menu-item index="0">个人信息</el-menu-item>
-                    <el-menu-item index="1">修改信息</el-menu-item>
+                    <el-menu-item index="1">数据统计</el-menu-item>
+                    <el-menu-item index="2">修改信息</el-menu-item>
                   </el-menu-item-group>
               </el-menu>
             </div>
@@ -28,12 +29,13 @@
               HomeWork
             </div>
           </el-aside>
-<!--        </el-drawer>-->
+
         <el-container>
           <el-main>
             <div class="main-page">
               <profile-info v-show="this.page === '0'"></profile-info>
-              <changePasswd v-show="this.page === '1'"></changePasswd>
+              <data_analysis v-show="this.page === '1'"></data_analysis>
+              <changePasswd v-show="this.page === '2'"></changePasswd>
             </div>
           </el-main>
         </el-container>
@@ -45,14 +47,23 @@
 <script>
 import profileInfo from "./profileInfo";
 import changePasswd from "./ChangePasswd";
+import Data_analysis from "./data-analysis";
 
 export default {
   name: "profileContainer",
-  components: {profileInfo, changePasswd},
-  props: ['username'],
+  components: {Data_analysis, profileInfo, changePasswd},
+  props: {
+    username: {
+      type: String,
+      default: ''
+    },
+    page: {
+      type: String,
+      default: "0"
+    }
+  },
   data() {
     return {
-      page: "0",
       isCollapse: false,
       drawer: false,
       direction: 'ltr',
@@ -73,6 +84,9 @@ export default {
       }
       if(key === "1" && this.page !== "1"){
         this.page = "1";
+      }
+      if(key === "2" && this.page !== "2"){
+        this.page = "2";
       }
     },
     push_back(event){

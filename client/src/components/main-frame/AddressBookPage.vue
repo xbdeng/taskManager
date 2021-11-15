@@ -9,7 +9,22 @@
                     <span class='friends_title'>Friends</span>
                 </el-col>
                 <el-col :span="5" :offset="18">
-                    <el-button type='primary' icon='el-icon-plus' circle ></el-button>
+                    <el-popover placement="bottom" width="200" trigger="click" title="添加好友">
+                        <el-row>
+                            <el-col>
+                                <el-input placeholder="请输入用户名"></el-input>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :offset="8">
+                                <el-button type='primary' plain size="small">确定</el-button>
+                            </el-col>
+                        </el-row>
+                        <el-tooltip content="点击可修改组的描述信息" slot="reference">
+                            <el-button type='primary' icon='el-icon-plus' circle ></el-button>
+                        </el-tooltip>
+                    </el-popover>
+                    
                 </el-col>
             </el-row>
         </el-header>

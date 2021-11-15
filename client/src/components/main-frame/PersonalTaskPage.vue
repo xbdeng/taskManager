@@ -21,9 +21,9 @@
                 </el-menu>
             </el-aside>
 
-            <!-- 显示今天任务的侧边栏 -->
-            <el-aside>
-                <el-menu>
+            <!-- 显示今天,一周内，稍后任务的侧边栏 -->
+            <el-main>
+                <el-menu :default-openeds="['today']">
                     <el-submenu index='today'>
                         <template slot="title">
                             <span slot="title">今天</span>
@@ -43,12 +43,19 @@
                         <TaskTree :taskData="this.laterTaskData" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                         </el-submenu>
                 </el-menu>
-            </el-aside>
+            </el-main>
 
             <!-- 显示任务信息 -->
-            <el-main>
+            <el-drawer 
+            title="查看或编辑任务"
+            :visible.sync="drawer"
+            direction="rtl"
+            :before-close="handleClose"
+            :modal-append-to-body='false'
+            size='50%'
+            >
                 <TaskShow :singleTaskData="getTask(chosenTaskId)"></TaskShow>
-            </el-main>
+            </el-drawer>
         </el-container>
     </div>
 </template>
@@ -75,6 +82,8 @@ export default {
             // 显示“今天”，“一周内”，还是“稍后”的数据
             // 0 显示今天，1 显示一周内，2显示稍后
             Specifier:0,
+            // 任务信息显示与编辑界面
+            drawer:false,
             // 经过任务过滤器筛选后，后端返回的今天的任务数据
             todayTaskData:[
                 {
@@ -110,7 +119,8 @@ export default {
                     taskStartTime:'',
                     taskDDL:'',
                     taskPriority:2,
-                    taskType:0,
+                    taskType:1,
+                    members:[{name:111},{name:222},{name:333}],
                     subTasks:[],
                     taskDescriptions:'任务三的描述信息',
                     hasFinished:false,
@@ -149,6 +159,7 @@ export default {
     // 响应TaskTree中传上来的id
     chooseTasks(id) {
           this.chosenTaskId = id;
+          this.drawer = true
     },
     // 根据任务数组taskList和id找到对应的任务对象并返回
     getTaskById(taskList, id) {
@@ -211,6 +222,9 @@ export default {
                 break;
         }
         return {};
+    },
+    handleClose() {
+        this.drawer = false
     }
 }
 

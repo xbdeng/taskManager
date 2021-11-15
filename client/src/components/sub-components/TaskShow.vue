@@ -102,8 +102,27 @@
               <el-col :span="4">
                 <span style="font-weight:bold">任务开始时间：</span>
               </el-col>
-              <el-col :span="20">
+              <el-col :span="15">
                 {{ singleTaskData.taskStartTime }}
+              </el-col>
+              <el-col :span="3">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务开始时间">
+                    <el-row type="flex" justify="start">
+                        <el-col>
+                            <el-date-picker v-model="editedStartTime" type="datetime" placeholder="请选择任务的开始时间"></el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small" @click="editStartTime">确定</el-button>
+                      </el-col>
+                    </el-row>
+                    <el-tooltip content="点击可修改任务的开始时间" slot="reference">
+                      <el-link type='primary'>
+                        <i class="el-icon-edit"></i>
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
               </el-col>
             </el-row>
             <!-- 显示任务的结束时间 -->
@@ -111,9 +130,69 @@
               <el-col :span="4">
                 <span style="font-weight:bold">任务结束时间：</span>
               </el-col>
-              <el-col :span="20">
+              <el-col :span="15">
                 {{ singleTaskData.taskDDL }}
               </el-col>
+              <el-col :span="3">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务结束时间">
+                    <el-row type="flex" justify="start">
+                        <el-col>
+                            <el-date-picker v-model="editedDDL" type="datetime" placeholder="请选择任务的结束时间"></el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small" @click="editDDL">确定</el-button>
+                      </el-col>
+                    </el-row>
+                    <el-tooltip content="点击可修改任务的结束时间" slot="reference">
+                      <el-link type='primary'>
+                        <i class="el-icon-edit"></i>
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
+              </el-col>
+            </el-row>
+            <!-- 如果是组队任务，显示这个任务覆盖的组员 -->
+            <el-row v-show="singleTaskData.taskType==1">
+              <!-- 显示组内成员的组件 -->
+                  <el-col :span="4">
+                      <span style="font-weight:bold">任务成员：</span>
+                  </el-col>
+                  <!-- 下拉菜单 -->
+                  <el-col :span="7">
+                    <el-dropdown trigger="click">
+                        <el-button>
+                            点击查看任务成员<i class="el-icon-arrow-down el-icon--right"></i>
+                        </el-button>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item v-for="member in singleTaskData.members" :key="member.name">
+                                {{ member.name }}
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                  </el-col>
+                  <!-- 增加成员的接口 -->
+                  <el-col :span="3">
+                      <el-popover placement="top" width="900" trigger="click" title="邀请成员">
+                        <el-row>
+                            <el-col>
+                                <el-transfer :data="friends" filterable :button-texts="['取消邀请','邀请进组']" v-model="invitedMembers" :titles="['我的好友','邀请名单']"></el-transfer>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col :offset="8">
+                                <el-button type='primary'>确定</el-button>
+                                <el-button type="danger">取消</el-button>
+                            </el-col>
+                        </el-row>
+                            <el-tooltip content="点击可邀请成员进组" slot="reference">
+                            <el-link type='primary'>
+                                <i class="el-icon-plus"></i>
+                            </el-link>
+                            </el-tooltip>
+                        </el-popover>
+                  </el-col>
             </el-row>
             <!-- 显示任务描述信息 -->
             <el-row type="flex" justify="start">
@@ -122,6 +201,38 @@
               </el-col>
               <el-col :span="20">
                 {{ singleTaskData.taskDescriptions }}
+              </el-col>
+              <el-popover placement="bottom" width="200" trigger="click" title="修改任务的描述信息">
+                  <el-row>
+                      <el-col>
+                          <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"></el-input>
+                      </el-col>
+                  </el-row>
+                  <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small">确定</el-button>
+                      </el-col>
+                  </el-row>
+                    <el-tooltip content="点击可修改任务的描述信息" slot="reference">
+                      <el-link type='primary'>
+                        <i class="el-icon-edit"></i>
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
+            </el-row>
+            <!-- 输入框，可以输入子任务的名称，输入后摁下回车可以创建子任务，之后可以通过本界面进行修改 -->
+            <el-row type="flex" justify="start">
+              <el-col>
+                <el-input v-model="subTaskName" placeholder="请输入子任务的名称" @keyup.enter.native="addSubTask"></el-input>
+              </el-col>
+            </el-row>
+            <!-- 两个按钮，一个是修改完成，一个是删除任务 -->
+            <el-row type="flex" justify="start">
+              <el-col>
+                <el-button type="primary" round>确认修改</el-button>
+              </el-col>
+              <el-col>
+                <el-button type="danger" round>删除任务</el-button>
               </el-col>
             </el-row>
           </el-main>
@@ -144,6 +255,10 @@ export default {
       addedTag:'',
       texts:['低','中','高','很高'],
       editedPriority:null,
+      editedStartTime:null,
+      editedDDL:null,
+      subTaskName:null,
+      invitiedMembers:[],
     }
   },
   methods:{
@@ -196,6 +311,27 @@ export default {
         this.singleTaskData.taskPriority = this.editedPriority - 1
       }
       this.editedPriority = null
+    },
+    editStartTime() {
+      let value = this.editedStartTime
+      if(value != null) {
+        this.singleTaskData.taskStartTime = value
+      }
+      this.editedStartTime = null
+    },
+    editDDL() {
+      let value = this.editedDDL
+      if(value != null) {
+        this.singleTaskData.taskDDL = value
+      }
+      this.editedDDL = null
+    },
+    addSubTask() {
+      let value = this.subTaskName
+      if(value != null) {
+        this.singleTaskData.subTasks.push(value)
+      }
+      this.subTaskName = null
     }
   }
   
@@ -233,5 +369,15 @@ export default {
 
 .el-row {
     margin-bottom: 50px;
+}
+
+.el-dropdown {
+vertical-align: top;
+}
+.el-dropdown + .el-dropdown {
+margin-left: 15px;
+}
+.el-icon-arrow-down {
+font-size: 12px;
 }
 </style>
