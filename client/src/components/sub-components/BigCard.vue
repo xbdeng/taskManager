@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       radio1: '本年',
-      activeName: 'second',
+      activeName: 'first',
       datacollection: {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
         datasets: [{

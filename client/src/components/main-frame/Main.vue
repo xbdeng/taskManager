@@ -28,7 +28,7 @@
             <el-menu-item-group>
               <span slot="title"></span>
               <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
-              <el-menu-item index="1-2" >任务统计</el-menu-item>
+              <el-menu-item index="1-2" @click="toAnalysis">任务统计</el-menu-item>
               <el-menu-item index="1-3" >页面设置</el-menu-item>
               <el-menu-item index="1-4" >数据同步</el-menu-item>
               <el-menu-item index="1-5" >账号登出</el-menu-item>
@@ -287,6 +287,9 @@ export default {
     // 跳转到个人主页
     toProfile(event) {
       this.$router.push({name: 'Profile',params:{username:this.username}});
+    },
+    toAnalysis(event) {
+      this.$router.push({name: 'Profile',params:{username:this.username, page:"1"}});
     },
     showPersonalTask() {
       this.personalTaskShow = true

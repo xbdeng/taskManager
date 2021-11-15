@@ -11,9 +11,7 @@
 
 <script>
 import registerContainer from "./registerContainer";
-
 import vueCanvasNest from "vue-canvas-nest";
-
 
 export default {
   name: "register",
