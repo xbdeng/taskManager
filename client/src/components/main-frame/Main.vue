@@ -1,12 +1,24 @@
 <template>
 <!-- 这个页面是个人主页面 -->
   <div class='mainFrame'>
+    <el-container>
+      <el-header class="mainFrameHeader">
+        <el-row type="flex" align="middle" justify="start">
+          <el-col :span="20">
+            <span class="taskManager">Task Manager</span>
+          </el-col>
+          <el-col :span="10" :offset="19">
+            <span>你好, {{ username }}</span>
+          </el-col>
+          <el-col :span="2" :offset="1">
+            <el-avatar src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>
+          </el-col>
+        </el-row>
+      </el-header>
      <el-container>
        <!-- 侧边栏 -->
        <el-aside class = 'mainFrameAside' width='64px'>
          <el-menu default-active="6" class="main-frame-menu"  :collapse="true" >
-           <!-- TODO:怎么用头像取代个人面板中的el-icon-user-solid -->
-           <el-avatar src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>
            <!-- 个人面板弹框 -->
           <el-submenu index="1">
             <template slot="title">
@@ -63,7 +75,7 @@
           <!-- 搜索任务 -->
           <el-menu-item index="7" @click="showSearchTask">
             <i class="el-icon-search"></i>
-            <span slot="title">任务搜索</span>
+            <span slot="title">任务过滤器</span>
           </el-menu-item>
         </el-menu>
        </el-aside>
@@ -79,7 +91,7 @@
           <!-- 个人任务页面 -->
           <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
           <!-- 组队任务页面 -->
-          <GroupInfoPage v-show="groupInfoShow" :groupInfo="this.groupInfo"></GroupInfoPage>
+          <TeamInfoPage v-show="teamInfoShow" :teamInfo="this.teamInfo"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :friends="this.friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -97,12 +109,13 @@
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
        </el-main>
      </el-container>
+     </el-container>
   </div>
 </template>
 
 <script>
 import PersonalTaskPage from './PersonalTaskPage.vue'
-import GroupInfoPage from './GroupInfoPage.vue'
+import TeamInfoPage from './TeamInfoPage.vue'
 import AddTaskForm from './AddTaskForm.vue'
 import AddGroupForm from './AddGroupForm.vue'
 import AddressBookPage from './AddressBookPage.vue'
@@ -110,13 +123,13 @@ import SearchTaskPage from './SearchTaskPage.vue'
 import axios from 'axios'
 export default {
   name: "Main",
-  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, GroupInfoPage, AddressBookPage, SearchTaskPage},
+  components:{AddTaskForm, AddGroupForm, PersonalTaskPage, TeamInfoPage, AddressBookPage, SearchTaskPage},
   props: ['username'],
   data() {
 
     return {
       personalTaskShow:false,
-      groupInfoShow:false,
+      teamInfoShow:false,
       addTaskShow:false,
       addGroupShow:false,
       addressBookShow:false,
@@ -166,84 +179,47 @@ export default {
         }
       ],
       // 后端返回的组队任务数据
-      groupInfo:[
+      teamInfo:[
+        {
+          teamId:0,
+          teamName:'OOAD',
+          description:'An OOAD team',
+          createTime:'创建时间',
+          creator:'seven',
+          admins:['RX','Amazon','OOO'],
+          members:['1','2','www'],
+          teamTasks:[
             {
-                groupName:'菜鸡学生组',
-                groupMembers:[
-                    {
-                        memberName:'八云紫',
-                        memberRole:'Master'
-                    },
-                    {
-                        memberName:'八云蓝',
-                        memberRole:'Manager'
-                    },
-                    {
-                        memberName:'橙',
-                        memberRole:'none'
-                    }
-
-
-                ],
-                groupTasks:[
-                    {
-                        taskName:'Database',
-                        taskDescriptions:'Very busy'
-                    },
-                    {
-                        taskName:'Computer Architecture',
-                        taskDescriptions:'Easy',
-                        subTasks:[
-                            {
-                                taskName:'ALU',
-                                taskDescriptions:'ababaab',
-                            },
-                            {
-                                taskName:'Controller',
-                                taskDescriptions:'hhh'
-                            }
-                        ]
-                    }
-                ]
+              taskName:'Front End',
+              taskTags: ['摸鱼','划水'],
+              taskDDL:'11-22',
+              taskPriority:3,
+              taskType: 1,
+              taskStartTime:'9-7',
+              taskDescription:'前端',
+              subTasks:[
+                {
+                  taskName:'Vue',
+                  taskTags: ['学习','划水'],
+                  taskDDL:'11-22',
+                  taskPriority:2,
+                  taskType: 1,
+                  taskStartTime:'9-7',
+                  taskDescription:'前端Vue'
+                }
+              ]
             },
             {
-                groupName:'菜鸡教师组',
-                groupMembers:[
-                    {
-                        memberName:'古明地觉',
-                        memberRole:'Master'
-                    },
-                    {
-                        memberName:'古明地恋',
-                        memberRole:'Manager'
-                    },
-                    {
-                        memberName:'Olen',
-                        memberRole:'none'
-                    },
-                    {
-                        memberName:'灵乌路空',
-                        memberRole:'none'
-                    }
-
-                ],
-                groupTasks:[
-                    {
-                        taskName:'AI Project',
-                        taskDescriptions:'aaaaaaaaaa'
-                    },
-                    {
-                        taskName:'OS Project',
-                        taskDescriptions:'A little hard',
-                        subTasks:[
-                            {
-                                taskName:'fork function',
-                                taskDescriptions:'easiest'
-                            }
-                        ]
-                    }
-                ]
-            },
+              taskName:'Back End',
+              taskTags:['摸摸摸'],
+              taskDDL:'11-22',
+              taskPriority:3,
+              taskType:1,
+              taskStartTime:'9-7',
+              taskDescription:'后端',
+            }
+          ]
+        }
       ],
       // 后端返回的通讯录数据
       friends:[
@@ -314,7 +290,7 @@ export default {
     },
     showPersonalTask() {
       this.personalTaskShow = true
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false
@@ -323,7 +299,7 @@ export default {
     },
     showGroupInfo() {
       this.personalTaskShow = false
-      this.groupInfoShow = true
+      this.teamInfoShow = true
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false
@@ -332,7 +308,7 @@ export default {
     },
     showTask() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = true
       this.addGroupShow = false
       this.addressBookShow = false
@@ -342,7 +318,7 @@ export default {
     },
     showGroup() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = true
       this.addressBookShow = false
@@ -351,7 +327,7 @@ export default {
     },
     showCalendar() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false
@@ -360,7 +336,7 @@ export default {
     },
     showAddressBook() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = true
@@ -369,7 +345,7 @@ export default {
     },
     showSearchTask() {
       this.personalTaskShow = false
-      this.groupInfoShow = false
+      this.teamInfoShow = false
       this.addTaskShow = false
       this.addGroupShow = false
       this.addressBookShow = false
@@ -525,7 +501,6 @@ export default {
 </script>
 
 <style scoped>
-
 .mainFrame{
   width: 100%;
   height:100%;
@@ -533,12 +508,21 @@ export default {
   padding: 0%;
   margin: 0%;
 }
-
+.taskManager {
+  font-weight: bold;
+  font-size: 20px;
+}
+.mainFrameAside {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
 .main{
   padding: 0%;
 }
 .main-frame-menu{
   height: 900px;
+}
+.mainFrameHeader {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }
 
 </style>

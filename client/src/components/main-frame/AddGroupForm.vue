@@ -6,27 +6,29 @@
             </el-header>
             <el-main>
                 <el-form label-width="150px" ref='groupForm' :model='groupForm' :rules="rules" status-icon>
-                    <!--Group Name-->
+                    <!--输入组别名称-->
                     <el-form-item label='组别名称:' prop='groupName'>
                         <el-col :span='14'>
                             <el-input placeholder='请输入组别名称...' clearable v-model='groupForm.groupName'></el-input>
                         </el-col>
                     </el-form-item>
 
-                    <!-- Group Members -->
-                    <el-form-item label='组内成员:' prop="groupMembers">
-                        <el-col :span="6">
-                            <el-select placeholder='请选择组内成员' multiple v-model='groupForm.groupMembers'>
-                                <el-option v-for="(friend, fIndex) in friends" :key="fIndex" :label="friend.friendName" :value="friend.friendName">
-                                </el-option>
-                            </el-select>
-                        </el-col>
+                    <!-- 输入组内成员 :穿梭框bug-->
+
+                    <!-- 输入组的描述信息 -->
+                    <el-form-item label='任务描述:' prop='taskDescription'>
+                        <el-row>
+                            <el-col :span='14'>
+                                <el-input placeholder='请输入任务的描述信息' clearabletype='textarea' :rows="4"></el-input>
+                            </el-col>
+                        </el-row>
                     </el-form-item>
                 </el-form> 
             </el-main>
 
             <el-footer>
                 <el-button type='primary' @click="submitForm('groupForm')" >添加组别</el-button>
+                <el-button type="danger">取消</el-button>
             </el-footer>
         </el-container>
     </div>
