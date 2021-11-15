@@ -2,20 +2,20 @@ package com.hungry.taskmanager.service;
 
 import com.hungry.taskmanager.dto.CreateTeamDTO;
 import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
-import com.hungry.taskmanager.entity.Response.MyResponse;
+import com.hungry.taskmanager.entity.Result;
 
 import java.math.BigInteger;
 
 public interface TeamService {
-    MyResponse createTeam(CreateTeamDTO createTeamDTO);
+    Result createTeam(CreateTeamDTO createTeamDTO);
 
-    MyResponse addMember(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO);
 
-    MyResponse setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO);
 
-    MyResponse removeMember(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result removeMember(OppoTeamMemberDTO oppoTeamMemberDTO);
 
-    MyResponse dismiss(BigInteger teamId);
+    Result dismiss(BigInteger teamId);
 
-    MyResponse removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO);
 }

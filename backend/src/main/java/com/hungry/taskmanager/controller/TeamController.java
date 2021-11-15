@@ -2,7 +2,7 @@ package com.hungry.taskmanager.controller;
 
 import com.hungry.taskmanager.dto.CreateTeamDTO;
 import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
-import com.hungry.taskmanager.entity.Response.MyResponse;
+import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.service.TeamService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,39 +17,39 @@ public class TeamController {
     TeamService teamService;
 
     @PostMapping("/createteam")
-    public MyResponse createTeam(@RequestBody CreateTeamDTO createTeamDTO) {
+    public Result<String> createTeam(@RequestBody CreateTeamDTO createTeamDTO) {
         teamService.createTeam(createTeamDTO);
-        return new MyResponse("todo");
+        return Result.succ("创建成功");
     }
 
     @PostMapping("/addmember")
-    public MyResponse addMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+    public Result<String> addMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.addMember(oppoTeamMemberDTO);
-        return new MyResponse("todo");
+        return Result.succ("添加成功");
     }
 
     @PostMapping("/setadmin")
-    public MyResponse setAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+    public Result<String> setAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.setAdmin(oppoTeamMemberDTO);
-        return new MyResponse("todo");
+        return Result.succ("设置管理员成功");
     }
 
     @PostMapping("/removemember")
-    public MyResponse removeMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+    public Result<String> removeMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.removeMember(oppoTeamMemberDTO);
-        return new MyResponse("todo");
+        return Result.succ("移除成功");
     }
 
     @PostMapping("/dismiss")
-    public MyResponse dismiss(@RequestBody BigInteger teamId) {
+    public Result<String> dismiss(@RequestBody BigInteger teamId) {
         teamService.dismiss(teamId);
-        return new MyResponse("todo");
+        return Result.succ("解散成功");
     }
 
     @PostMapping("/removeadmin")
-    public MyResponse removeAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
+    public Result<String> removeAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.removeAdmin(oppoTeamMemberDTO);
-        return new MyResponse("todo");
+        return Result.succ("移除成功");
     }
 
 }

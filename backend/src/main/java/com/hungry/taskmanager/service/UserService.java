@@ -1,11 +1,10 @@
 package com.hungry.taskmanager.service;
 
 
-import com.hungry.taskmanager.entity.Perms;
+import com.hungry.taskmanager.dto.TeamDTO;
+import com.hungry.taskmanager.dto.UserDTO;
+import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.dto.RegisterInfoDTO;
-import com.hungry.taskmanager.entity.Role;
-import com.hungry.taskmanager.entity.User;
-import com.hungry.taskmanager.entity.Result;
 
 import java.util.List;
 
@@ -25,4 +24,16 @@ public interface UserService {
 
     //根据用户名和密码查询用户
     User getUserByPass(String username, String password);
+
+    //获取通信录
+    List<UserDTO> getAddressBook(String username);
+
+    //获取用户的组
+    List<TeamDTO> getTeams(String username);
+
+    //获取用户管理的组
+    List<TeamDTO> getAdminTeams(String username);
+
+    //获取个人信息
+    UserDTO getProfile(String username);
 }
