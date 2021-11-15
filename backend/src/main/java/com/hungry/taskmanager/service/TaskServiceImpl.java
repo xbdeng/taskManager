@@ -177,7 +177,7 @@ public class TaskServiceImpl implements TaskService{
             }
             case(1):{
                 Team team = teamMapper.selectOne(new QueryWrapper<Team>().eq("team_id", params.getTeamName()));
-                type = team.getGroupId();
+                type = team.getTeamId();
                 break;
             }
             default:{

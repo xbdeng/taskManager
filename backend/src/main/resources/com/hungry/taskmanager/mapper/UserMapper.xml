@@ -6,12 +6,6 @@
         where username = #{username}
     </select>
 
-    <select id="getIdsByNames" resultType="list" >
-        select user_id from user where username in (
-        <foreach collection="list" separator="," open="(" close=")" item="">
-
-        </foreach> )
-    </select>
 
 
 <!--    <resultMap id="userMap" type="User">-->
