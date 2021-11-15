@@ -17,10 +17,10 @@ mo<template>
                         </el-row>
                     </el-form-item>
                     <!--任务标签-->
-                    <el-form-item label='任务标签:' prop='taskTags'>
+                    <el-form-item label='任务标签:' prop='tags'>
                         <el-row>
                             <el-col :span='14' >
-                                <el-select placeholder='请选择任务标签' multiple v-model='taskForm.taskTags'>
+                                <el-select placeholder='请选择任务标签' multiple v-model='taskForm.tags'>
                                     <el-option v-for='item in tagArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
                                 </el-select>
                                 <!-- 文字提示：提示用户可以自定义任务标签 -->
@@ -41,56 +41,56 @@ mo<template>
                         </el-row>
                     </el-form-item>
                     <!--Task DDL-->
-                    <el-form-item label='任务截止时间:' prop='taskDDL'>
+                    <el-form-item label='任务截止时间:' prop='dueDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='date' placeholder="请选择任务的截止时间" v-model="taskForm.taskDDL"></el-date-picker>
+                                <el-date-picker type='date' placeholder="请选择任务的截止时间" v-model="taskForm.dueDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
                     <!--Task Priority-->
-                    <el-form-item label='任务优先级：' prop='taskPriority'>
+                    <el-form-item label='任务优先级：' prop='priviledge'>
                         <el-row>
                             <el-col :span='11'>
-                                <el-select placeholder='请选择任务优先级' v-model='taskForm.taskPriority'>
+                                <el-select placeholder='请选择任务优先级' v-model='taskForm.priviledge'>
                                     <el-option v-for='item in priorityArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
                                 </el-select>
                             </el-col>
                         </el-row>
                     </el-form-item>
                     <!--Task Type-->
-                    <el-form-item label='任务类型:' prop='taskType'>
+                    <el-form-item label='任务类型:' prop='type'>
                         <el-row>
                             <el-col :span='10'>
-                                <el-radio-group v-model='taskForm.taskType' >
+                                <el-radio-group v-model='taskForm.type' >
                                     <el-radio label='personal'>个人任务</el-radio>
-                                    <el-radio label='group'>组队任务</el-radio>
+                                    <el-radio label='team' @click="postMyTeams">组队任务</el-radio>
                                 </el-radio-group>
                             </el-col>
                         </el-row>
                     </el-form-item>
                     <!-- 如果选择了组队任务，会多出一个多选框，选择给哪个队伍分配任务 -->
-                    <el-form-item label='分配组别:' prop='taskGroups' v-if="taskForm.taskType === 'group'">
+                    <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === 'team'">
                         <el-col :span='10'>
-                            <el-select placeholder='请选择任务分配的组别' multiple v-model='taskForm.taskGroups'>
-                                <el-option v-for="(group, gIndex) in groupInfo" :key="gIndex" :label="group.groupName" :value="group.groupName">
+                            <el-select placeholder='请选择任务分配的组别' multiple v-model='taskForm.teams'>
+                                <el-option v-for="(team, tIndex) in myTeamInfo" :key="tIndex" :label="team.teamName" :value="team.teamName">
                                 </el-option>
                             </el-select>
                         </el-col>
                     </el-form-item>
                     <!--Task Start Time-->
-                    <el-form-item label='开始时间:' prop='taskStartTime'>
+                    <el-form-item label='开始时间:' prop='createDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='date' placeholder="请选择任务的开始时间" v-model="taskForm.taskStartTime"></el-date-picker>
+                                <el-date-picker type='date' placeholder="请选择任务的开始时间" v-model="taskForm.createDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
                     <!-- Task Description -->
-                    <el-form-item label='任务描述:' prop='taskDescription'>
+                    <el-form-item label='任务描述:' prop='description'>
                         <el-row>
                             <el-col :span='14'>
-                                <el-input placeholder='请输入任务的描述信息' clearable v-model='taskForm.taskDescription' type='textarea'></el-input>
+                                <el-input placeholder='请输入任务的描述信息' clearable v-model='taskForm.description' type='textarea'></el-input>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -108,6 +108,7 @@ mo<template>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'AddTaskForm',
   props:['username'],
@@ -170,19 +171,19 @@ export default {
             // 任务名
             taskName:'',
             // 标签
-            taskTags: '',
+            tags: '',
             // 截止时间
-            taskDDL:'',
+            dueDate:'',
             // 优先级
-            taskPriority:'',
-            // 任务类型,0个人，1组
-            taskType: '',
+            privilege:'',
+            // 任务类型,0个人任务，1组
+            type: '',
             // 如果任务类型是组队任务，这个任务所覆盖的组，是一个字符串数组
-            taskGroups:'',
+            teams:'',
             // 任务开始时间
-            taskStartTime:'',
+            createDate:'',
             // 任务描述
-            taskDescription:''
+            description:''
         },
         // 默认标签
         tagArray:[
@@ -191,19 +192,13 @@ export default {
         ],
         // 默认优先级
         priorityArray:[
-            {label:'高', value:'high_priority'},
-            {label:'中', value:'medium_priority'},
-            {label:'低', value:'low_priority'}
+            {label:'极高', value:3},
+            {label:'高',   value:2},
+            {label:'中',   value:1},
+            {label:'低',   value:0}
         ],
-        // 默认能够选择的组的信息
-        groupInfo:[
-            {
-                groupName:'嘻嘻嘻嘻嘻',
-            },
-            {
-                groupName:'OOAD摸鱼划水'
-            }
-        ],
+        // 用户创建，或者管理的组,需要向后端获取
+        myTeamInfo:'',
         // 表单的验证规则
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
@@ -219,9 +214,7 @@ export default {
   methods:{
     //   跳转到日历界面
     toCalendar() {
-        this.$emit('toCalendar',{
-            
-        });
+        this.$emit('toCalendar',{});
     },
     //   添加用户自定义标签
       addTag() {
@@ -255,21 +248,12 @@ export default {
       },
     //   点击提交按钮，提交添加任务的表单
       submitForm(formName) {
-
+          let that = this
           this.$refs[formName].validate((valid)=>{
               
               if(valid) {
                 //   向父组件<Main>传值
-                  this.$emit('taskFormData',{
-                      taskName:this.taskForm.taskName,
-                      taskTags:this.taskForm.taskTags,
-                      taskDDL:this.taskForm.taskDDL,
-                      taskPriority:this.taskForm.taskPriority,
-                      taskType:this.taskForm.taskType,
-                      taskGroups:this.taskForm.taskGroups,
-                      taskStartTime:this.taskForm.taskStartTime,
-                      taskDescription:this.taskForm.taskDescription
-                  })
+                  this.$emit('taskFormData',that.taskForm)
                 //   提交后清空表单
                   for(let key in this.taskForm) {
                       this.taskForm[key] = ''
@@ -283,7 +267,20 @@ export default {
               }
           });
       },
-
+    // 向后端请求用户创建/管理的所有组
+      postMyTeams() {
+          let that = this;
+          axios.post(
+              'http://localhost:8081/api/user/myteams/admin',
+          ).then(
+              function(response) {
+                  that.myTeamInfo = response.data
+              },
+              function(err) {
+                  that.$message.error('请求用户创建或管理的组失败')
+              }
+          );
+      }
 
   }
 }

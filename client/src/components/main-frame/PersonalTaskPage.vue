@@ -2,7 +2,7 @@
 <!-- 这个页面用来显示个人任务数据 -->
     <div class='personalTask'>
         <el-container>
-            <!-- 侧边栏，显示 “任务” 或者是 “计划内任务” -->
+            <!-- 侧边栏，显示 “任务” , “计划内任务” -->
             <el-aside>
                 <el-menu default-active="1" class="main-frame-menu"  :collapse="false">
                     <!-- 显示侧边栏中对应的"任务"的数据 -->
@@ -21,9 +21,9 @@
                 </el-menu>
             </el-aside>
 
-            <!-- 显示今天,一周内，稍后任务的侧边栏 -->
+            <!-- 显示今天,一周内，稍后,任务的侧边栏 -->
             <el-main>
-                <!-- 默认展开今天的任务数据 -->
+                <!-- 默认展开"今天" -->
                 <el-menu :default-openeds="['today']">
                     <el-submenu index='today'>
                         <template slot="title">
@@ -72,6 +72,17 @@ export default {
     TaskTree,
     TaskShow
   },
+  watch:{
+      // 一旦要显示“任务”对应的数据，向后端发送请求
+      'taskShow':{
+
+      },
+    //   一旦要显示“计划内任务”对应的数据，向后端发送请求
+    // 同上
+      'planedTaskShow': {
+
+      }
+  },
   data() {
         
         return {
@@ -81,84 +92,16 @@ export default {
             taskShow:true,
             // 是否显示"计划内任务"对应的数据
             planedTaskShow:false,
-            // 显示“今天”，“一周内”，还是“稍后”的数据
             // 0 显示今天，1 显示一周内，2显示稍后
             Specifier:0,
             // 任务信息显示与编辑界面
             drawer:false,
-            // 经过任务过滤器筛选后，后端返回的今天的任务数据
-            todayTaskData:[
-                {
-                    taskName:'任务一',
-                    taskTags:['学习','工作'],
-                    taskStartTime:'',
-                    taskDDL:'结束时间',
-                    taskPriority:0,
-                    taskType:0,
-                    subTasks:[],
-                    taskStartTime:'开始时间',
-                    taskDescriptions:'任务一的描述信息',
-                    hasFinished:true,
-                    hasExpired:false
-
-                },
-                {
-                    taskName:'任务二',
-                    taskTags:['学习','工作'],
-                    taskStartTime:'',
-                    taskDDL:'结束时间',
-                    taskPriority:1,
-                    taskType:0,
-                    subTasks:[],
-                    taskStartTime:'开始时间',
-                    taskDescriptions:'任务二的描述信息',
-                    hasFinished:false,
-                    hasExpired:true
-                },
-                {
-                    taskName:'任务三',
-                    taskTags:['学习','工作'],
-                    taskStartTime:'',
-                    taskDDL:'',
-                    taskPriority:2,
-                    taskType:1,
-                    members:[{name:111},{name:222},{name:333}],
-                    subTasks:[],
-                    taskDescriptions:'任务三的描述信息',
-                    hasFinished:false,
-                    hasExpired:false
-                },
-                {
-                    taskName:'任务四',
-                    taskTags:['学习','工作'],
-                    taskStartTime:'',
-                    taskDDL:'',
-                    taskPriority:3,
-                    taskType:0,
-                    subTasks:[],
-                    taskDescriptions:'任务四的描述信息',
-                    hasFinished:false,
-                    hasExpired:false
-                }
-            ],
-            // 经过任务过滤器筛选后，后端返回的一周内的任务数据
-            weekTaskData:[
-            ],
-            // 经过任务过滤器过滤后，后端返回的“稍后”的任务数据
-            laterTaskData:[
-                {
-                    taskName:'OOAD',
-                    taskTags:['学习','工作'],
-                    taskStartTime:'',
-                    taskDDL:'',
-                    taskPriority:3,
-                    taskType:0,
-                    subTasks:[],
-                    taskDescriptions:'OOAD的描述信息',
-                    hasFinished:false,
-                    hasExpired:false
-                }
-            ],
+            // 今天的任务数据
+            todayTaskData:[],
+            // 一周内的任务数据
+            weekTaskData:[],
+            // “稍后”的任务数据
+            laterTaskData:[],
         }
   },
   methods: {
@@ -188,40 +131,7 @@ export default {
         if (id.length == 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
     },
-    // 向后端请求今天的任务数据
-    postTodayTask() {
-        // 如果最左边侧边栏选择的是“任务”
-        if(this.taskShow) {
-            // TODO:
-        }
-        // 如果最左边侧边栏选择的是“计划内任务”
-        else if(this.planedTaskShow) {
-            // TODO:
-        }
-    },
-    // 向后端请求一周内的任务数据
-    postWeekTask() {
-        // 如果最左边侧边栏选择的是“任务”
-        if(this.taskShow) {
-            // TODO:
-        }
-        // 如果最左边侧边栏选择的是“计划内任务”
-        else if(this.planedTaskShow) {
-            // TODO:
-        }
-    },
-    // 向后端请求稍后时间的任务数据
-    postLaterTask() {
-        // 如果最左边侧边栏选择的是“任务”
-        if(this.taskShow) {
-            // TODO:
-        }
-        // 如果最左边侧边栏选择的是“计划内任务”
-        else if(this.planedTaskShow) {
-            // TODO:
-        }
-    },
-    // 通过用户选中的任务的id，结合Specifier,确定显示哪一个人物的信息
+    // 通过用户选中的任务的id，结合Specifier,确定显示哪一个任务的信息
     getTask(id)
     {
         switch(this.Specifier) {
@@ -239,10 +149,11 @@ export default {
         }
         return {};
     },
+    // 关闭展示任务信息的抽屉
     handleClose() {
         this.drawer = false
     },
-    // 进行任务修改
+    // 进行任务修改,task是子组件TaskShow提交上来的修改后的任务数据
     editTask(task) {
         // TODO:向后端请求修改任务
         
