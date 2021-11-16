@@ -81,16 +81,18 @@ public class UserController {
 
 
     @PostMapping("addressbook")
-    @ApiOperation(value = "请求用户的通信录")
+    @RequiresAuthentication
+    @ApiOperation(value = "请求用户的通信录",notes = "后端已测试通过")
     public Result<List<UserDTO>> addressbook(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
         List<UserDTO> friends = userService.getAddressBook(username);
-        return new Result<>(200,"请求成功",friends);
+        return new Result<List<UserDTO>>(200,"请求成功",friends);
     }
 
     @PostMapping("myteams")
     @ApiOperation(value = "请求用户加入的组")
+    //todo
     public Result<List<TeamDTO>> myteams(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
@@ -100,6 +102,7 @@ public class UserController {
 
     @PostMapping("myteams/admin")
     @ApiOperation(value = "请求用户创建和管理的组")
+    //todo
     public Result<List<TeamDTO>> adminTeams(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
@@ -108,7 +111,8 @@ public class UserController {
     }
 
     @PostMapping("profile")
-    @ApiOperation(value = "请求用户主页信息")
+    @RequiresAuthentication
+    @ApiOperation(value = "请求用户主页信息",notes = "后端已测试通过")
     public Result<UserDTO> profile(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,7 +50,9 @@ public class TeamServiceImpl implements TeamService {
 
         //set members
         for (User member : members) {
-            teamUserMapper.insert(new TeamUser().setTeamId(teamId).setUserId(member.getUserId()).setIdentity("member"));
+            if (!Objects.equals(member.getUsername(), createTeamDTO.getCreatorName())) {
+                teamUserMapper.insert(new TeamUser().setTeamId(teamId).setUserId(member.getUserId()).setIdentity("member"));
+            }
         }
 
         return null;
@@ -57,43 +60,47 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO) {
-        List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username",oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
-        for(BigInteger userId:usersId) {
-            teamUserMapper.insert(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("member"));
+        List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username", oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
+        for (BigInteger userId : usersId) {
+            try {
+                teamUserMapper.insert(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("member"));
+            } catch (Exception e) {
+                e.printStackTrace();//todo 不能在这里处理
+            }
         }
         return null;
     }
 
     @Override
     public Result setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO) {
-        List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username",oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
-        for(BigInteger userId:usersId) {
-            teamUserMapper.insert(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("admin"));
+        List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username", oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
+        for (BigInteger userId : usersId) {
+            teamUserMapper.update(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("admin"), new QueryWrapper<TeamUser>().eq("team_id", oppoTeamMemberDTO.getTeamId()).eq("user_id", userId));
         }
         return null;
     }
 
     @Override
     public Result removeMember(OppoTeamMemberDTO oppoTeamMemberDTO) {
-        List<BigInteger>usersId = userMapper.selectList(new QueryWrapper<User>().in("username",oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
-        teamUserMapper.delete(new QueryWrapper<TeamUser>().eq("team_id",oppoTeamMemberDTO.getTeamId()).in("user_id",usersId));
-        return null;
-    }
-
-    @Override
-    public Result dismiss(BigInteger teamId) {
-        teamMapper.deleteById(teamId);
+        List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username", oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
+        teamUserMapper.delete(new QueryWrapper<TeamUser>().eq("team_id", oppoTeamMemberDTO.getTeamId()).in("user_id", usersId));
         return null;
     }
 
     @Override
     public Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO) {
-        List<BigInteger>usersId = userMapper.selectList(new QueryWrapper<User>().in("username",oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
-        for(BigInteger userId:usersId){
-            UpdateWrapper<TeamUser>updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("team_id",oppoTeamMemberDTO.getTeamId()).eq("user_id",userId).set("identity","member");
-            teamUserMapper.update(null,updateWrapper);
+        List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username", oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
+        for (BigInteger userId : usersId) {
+            UpdateWrapper<TeamUser> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("team_id", oppoTeamMemberDTO.getTeamId()).eq("user_id", userId).set("identity", "member");
+            teamUserMapper.update(null, updateWrapper);
         }
+        return null;
+    }
+
+    @Override
+    public Result dismiss(BigInteger teamId) {
+        teamMapper.delete(new QueryWrapper<Team>().eq("team_id",teamId));
         return null;
     }
 }

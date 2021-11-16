@@ -49,8 +49,10 @@ public class UserServiceImpl implements UserService {
     public List<UserDTO> getAddressBook(String username) {
         BigInteger userId = userMapper.getIdByName(username);
         List<BigInteger> friendsId = contactMapper.selectList(new QueryWrapper<Contact>().eq("person", userId)).stream().map(Contact::getFriend).collect(Collectors.toList());
-        List<UserDTO> re_turn = userMapper.selectList(new QueryWrapper<User>().in("user_id", friendsId)).stream().map(User::toUserDTO).collect(Collectors.toList());
-        return re_turn;
+        if(friendsId.isEmpty()){
+            return new ArrayList<UserDTO>();
+        }
+        return userMapper.selectList(new QueryWrapper<User>().in("user_id", friendsId)).stream().map(User::toUserDTO).collect(Collectors.toList());
     }
 
     @Override //todo 不优雅
@@ -87,7 +89,7 @@ public class UserServiceImpl implements UserService {
             String creator = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", team.getCreator())).getUsername();
             List<String> members = userMapper.selectList(new QueryWrapper<User>().in("user_id", membersId)).stream().map(User::getUsername).collect(Collectors.toList());
             List<String> admins = userMapper.selectList(new QueryWrapper<User>().in("user_id", adminsId)).stream().map(User::getUsername).collect(Collectors.toList());
-            TeamDTO teamDTO = new TeamDTO(team.getTeamId(), team.getTeamName(), team.getDescription(), team.getCreatTime()
+            TeamDTO teamDTO = new TeamDTO(team.getTeamId(), team.getTeamName(), team.getDescription(), team.getCreateTime()
                     , creator, members, admins);
             re_turn.add(teamDTO);
         }
