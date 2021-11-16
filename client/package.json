@@ -10,6 +10,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@fullcalendar/core": "^5.10.1",
+    "@fullcalendar/daygrid": "^5.10.1",
+    "@fullcalendar/interaction": "^5.10.1",
+    "@fullcalendar/timegrid": "^5.10.1",
+    "@fullcalendar/vue": "^5.10.1",
     "axios": "^0.24.0",
     "chart.js": "^2.9.4",
     "element-ui": "^2.15.6",
