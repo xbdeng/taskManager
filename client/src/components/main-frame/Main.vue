@@ -101,39 +101,48 @@
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
-          <el-calendar v-show='calendarShow'>
-            <template slot="dateCell" slot-scope="{data}">
-              {{ data.day.split('-').slice(1).join('-') }}
-              <div v-show="formCalendarData(data).length <= 3" v-for="(task,index) in formCalendarData(data)"
-                   :key="index">
-                <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
-                  <el-link slot='reference'>{{ task[0] }}</el-link>
-                </el-popover>
+          <div class='demo-app' v-show="calendarShow">
+            <div class='demo-app-sidebar'>
+              <div class='demo-app-sidebar-section'>
+                <h2 class="demo-h2">Instructions</h2>
+                <ul class="demo-ul">
+                  <li class="demo-li">Select dates and you will be prompted to create a new event</li>
+                  <li class="demo-li">Drag, drop, and resize events</li>
+                  <li class="demo-li">Click an event to delete it</li>
+                </ul>
               </div>
-
-              <div v-show="formCalendarData(data).length > 3" v-for="(task,index) in formCalendarData_Font(data)"
-                   :key="index + '1'">
-                <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
-                  <el-link slot='reference'>{{ task[0] }}</el-link>
-                </el-popover>
+              <div class='demo-app-sidebar-section'>
+                <label>
+                  <input
+                      type='checkbox'
+                      :checked='calendarOptions.weekends'
+                      @change='handleWeekendsToggle'
+                  />
+                  toggle weekends
+                </label>
               </div>
-
-              <div v-show="formCalendarData(data).length > 3">
-                <el-popover placement="top-start" trigger="click" title="More task shows" popper-class="my-popover-box">
-                  <div class="popover-content-box">
-                    <div v-show="formCalendarData(data).length > 3" v-for="(task,index) in formCalendarData_Last(data)"
-                         :key="index + '2'">
-                      <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
-                        <el-link slot='reference'>{{ task[0] }}</el-link>
-                      </el-popover>
-                    </div>
-                  </div>
-                  <el-link slot='reference'>...</el-link>
-                </el-popover>
+              <div class='demo-app-sidebar-section'>
+                <h2 class="demo-h2">All Events ({{ currentEvents.length }})</h2>
+                <ul class="demo-ul">
+                  <li class="demo-li" v-for='event in currentEvents' :key='event.id'>
+                    <b class="demo-b">{{ event.startStr }}</b>
+                    <i>{{ event.title }}</i>
+                  </li>
+                </ul>
               </div>
-
-            </template>
-          </el-calendar>
+            </div>
+            <div class='demo-app-main'>
+              <FullCalendar
+                  class='demo-app-calendar'
+                  :options='calendarOptions'
+              >
+                <template v-slot:eventContent='arg'>
+                  <b class="demo-b">{{ arg.timeText }}</b>
+                  <i>{{ arg.event.title }}</i>
+                </template>
+              </FullCalendar>
+            </div>
+          </div>
           <!-- 任务搜索 -->
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
         </el-main>
@@ -150,10 +159,23 @@ import AddTeamForm from './AddTeamForm.vue'
 import AddressBookPage from './AddressBookPage.vue'
 import SearchTaskPage from './SearchTaskPage.vue'
 import axios from 'axios'
+import FullCalendar from '@fullcalendar/vue'
+import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import {INITIAL_EVENTS, createEventId} from './event-utils'
 
 export default {
   name: "Main",
-  components: {AddTaskForm, AddTeamForm, PersonalTaskPage, TeamInfoPage, AddressBookPage, SearchTaskPage},
+  components: {
+    AddTaskForm,
+    AddTeamForm,
+    PersonalTaskPage,
+    TeamInfoPage,
+    AddressBookPage,
+    SearchTaskPage,
+    FullCalendar
+  },
   props: ['username'],
   watch: {
     // TODO:监听，如果显示组队任务界面，获取该成员加入的所有组放入teamInfo中
@@ -206,28 +228,43 @@ export default {
         // 任务状态，0是未完成，1是已完成，2是已过期
         status: 0,
       },
-      // 后端返回的日历数据
-      calendarTasks: [],
+      // // 后端返回的日历数据
+      // calendarTasks: [],
       // 后端返回的组队任务数据
       teamInfo: [],
       // 后端返回的通讯录数据
       Friends: [],
-
+      calendarOptions: {
+        plugins: [
+          dayGridPlugin,
+          timeGridPlugin,
+          interactionPlugin // needed for dateClick
+        ],
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        initialView: 'dayGridMonth',
+        initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+        editable: true,
+        selectable: true,
+        selectMirror: true,
+        dayMaxEvents: true,
+        weekends: true,
+        select: this.handleDateSelect,
+        eventClick: this.handleEventClick,
+        eventsSet: this.handleEvents
+        /* you can update a remote database when these fire:
+        eventAdd:
+        eventChange:
+        eventRemove:
+        */
+      },
+      currentEvents: []
     }
   },
   methods: {
-    // 将calendarDateOn变量设置为想 + 显示的
-    seton(name) {
-      this.calendarDateOn = name;
-    },
-    // 将calendarDateOn变量设置为不想 + 显示的
-    setoff() {
-      this.calendarDateOn = ' ';
-    },
-    // 判断这个datacell是否显示 +
-    judgeon(name) {
-      return this.calendarDateOn === name;
-    },
     // 跳转到个人主页
     toProfile(event) {
       this.$router.push({name: 'Profile', params: {username: this.username}});
@@ -265,7 +302,6 @@ export default {
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = false
-
     },
     // 添加组
     showGroup() {
@@ -307,98 +343,78 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = true
     },
-    // 将任务名称展示在日历中
-    formCalendarData(data) {
-      let currentDate = data.day.split('-').slice(1).join('-')
-      let calendarData = []
-      this.calendarTasks.forEach(
-          function (task) {
-            if (currentDate === task.taskDDL) {
-              let list = []
-              list.push(task.taskName)
-              list.push(task.taskDescription)
-              calendarData.push(list)
-            }
-          }
-      )
-      return calendarData
+    handleWeekendsToggle() {
+      this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
-    // 将后n个任务名称展示在日历中
-    formCalendarData_Last(data) {
-      let currentDate = data.day.split('-').slice(1).join('-')
-      let calendarData = []
-      this.calendarTasks.forEach(
-          function (task) {
-            if (currentDate === task.taskDDL) {
-              let list = []
-              list.push(task.taskName)
-              list.push(task.taskDescription)
-              calendarData.push(list)
-            }
-          }
-      )
-      calendarData.shift()
-      calendarData.shift()
-      return calendarData
+
+    handleDateSelect(selectInfo) {
+      // let title = prompt('Please enter a new title for your event')
+      let calendarApi = selectInfo.view.calendar
+
+      calendarApi.unselect() // clear date selection
+      //
+      // if (title) {
+      //   calendarApi.addEvent({
+      //     id: createEventId(),
+      //     title,
+      //     start: selectInfo.startStr,
+      //     end: selectInfo.endStr,
+      //     allDay: selectInfo.allDay
+      //   })
+      // }
+      this.showTask()
     },
-    // 将前2个任务名称展示在日历中
-    formCalendarData_Font(data) {
-      let currentDate = data.day.split('-').slice(1).join('-')
-      let calendarData = []
-      for (let task in this.calendarTasks) {
-        if (currentDate === this.calendarTasks[task].taskDDL) {
-          let list = []
-          list.push(this.calendarTasks[task].taskName)
-          list.push(this.calendarTasks[task].taskDescription)
-          calendarData.push(list)
-        }
-        if (calendarData.length === 2) {
-          break
-        }
+
+    handleEventClick(clickInfo) {
+      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+        clickInfo.event.remove()
       }
-      return calendarData
     },
-    // 响应添加任务的表单，调用接口添加任务
-    addTask(newTask) {
-      const that = this
-      // 向后端发送创建的任务数据
-      axios.post(
-          'http://localhost:8081/api/task/addtask',
-          newTask
-      ).then(
-          function (response) {
-            that.$message(
-                {
-                  message: '创建任务成功',
-                  type: 'success'
-                }
-            );
-          },
-          function (err) {
-            that.$message.error('创建任务失败')
-          }
-      )
-    },
-    // 响应添加组的表单，调用接口添加组
-    addTeam(newTeam) {
-      const that = this
-      // 向后端发送创建的组别数据
-      axios.post(
-          'http://localhost:8081/api/team/createTeam',
-          newTeam
-      ).then(
-          function (response) {
-            that.$message({
-              message: '创建组别成功',
-              type: 'success'
-            })
-          },
-          function (err) {
-            that.$message.error('创建组别失败')
-          }
-      )
-    },
-  }
+
+    handleEvents(events) {
+      this.currentEvents = events
+    }
+  },
+  // 响应添加任务的表单，调用接口添加任务
+  addTask(newTask) {
+    const that = this
+    // 向后端发送创建的任务数据
+    axios.post(
+        'http://localhost:8081/api/task/addtask',
+        newTask
+    ).then(
+        function (response) {
+          that.$message(
+              {
+                message: '创建任务成功',
+                type: 'success'
+              }
+          );
+        },
+        function (err) {
+          that.$message.error('创建任务失败')
+        }
+    )
+  },
+  // 响应添加组的表单，调用接口添加组
+  addTeam(newTeam) {
+    const that = this
+    // 向后端发送创建的组别数据
+    axios.post(
+        'http://localhost:8081/api/team/createTeam',
+        newTeam
+    ).then(
+        function (response) {
+          that.$message({
+            message: '创建组别成功',
+            type: 'success'
+          })
+        },
+        function (err) {
+          that.$message.error('创建组别失败')
+        }
+    )
+  },
 }
 </script>
 
@@ -430,6 +446,53 @@ export default {
 
 .mainFrameHeader {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+}
+
+.demo-h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.demo-ul {
+  margin: 0;
+  padding: 0 0 0 1.5em;
+}
+
+.demo-li {
+  margin: 1.5em 0;
+  padding: 0;
+}
+
+.demo-b { /* used for event dates/times */
+  margin-right: 3px;
+}
+
+.demo-app {
+  display: flex;
+  min-height: 100%;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.demo-app-sidebar {
+  width: 300px;
+  line-height: 1.5;
+  background: #eaf9ff;
+  border-right: 1px solid #d3e2e8;
+}
+
+.demo-app-sidebar-section {
+  padding: 2em;
+}
+
+.demo-app-main {
+  flex-grow: 1;
+  padding: 3em;
+}
+
+.fc { /* the calendar root */
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 </style>
