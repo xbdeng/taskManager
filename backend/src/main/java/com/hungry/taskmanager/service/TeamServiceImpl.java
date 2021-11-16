@@ -62,7 +62,11 @@ public class TeamServiceImpl implements TeamService {
     public Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO) {
         List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username", oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
         for (BigInteger userId : usersId) {
-            teamUserMapper.insert(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("member"));
+            try {
+                teamUserMapper.insert(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("member"));
+            } catch (Exception e) {
+                e.printStackTrace();//todo 不能在这里处理
+            }
         }
         return null;
     }
@@ -71,7 +75,7 @@ public class TeamServiceImpl implements TeamService {
     public Result setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO) {
         List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username", oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
         for (BigInteger userId : usersId) {
-            teamUserMapper.insert(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("admin"));
+            teamUserMapper.update(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("admin"), new QueryWrapper<TeamUser>().eq("team_id", oppoTeamMemberDTO.getTeamId()).eq("user_id", userId));
         }
         return null;
     }
@@ -84,12 +88,6 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Result dismiss(BigInteger teamId) {
-        teamMapper.deleteById(teamId);
-        return null;
-    }
-
-    @Override
     public Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO) {
         List<BigInteger> usersId = userMapper.selectList(new QueryWrapper<User>().in("username", oppoTeamMemberDTO.getUserName())).stream().map(User::getUserId).collect(Collectors.toList());
         for (BigInteger userId : usersId) {
@@ -97,6 +95,12 @@ public class TeamServiceImpl implements TeamService {
             updateWrapper.eq("team_id", oppoTeamMemberDTO.getTeamId()).eq("user_id", userId).set("identity", "member");
             teamUserMapper.update(null, updateWrapper);
         }
+        return null;
+    }
+
+    @Override
+    public Result dismiss(BigInteger teamId) {
+        teamMapper.delete(new QueryWrapper<Team>().eq("team_id",teamId));
         return null;
     }
 }
