@@ -32,11 +32,11 @@
                     </el-row>
                 </el-form-item>
                 <!-- 任务标签 -->
-                <el-form-item label="任务标签:" prop="taskTags">
+                <el-form-item label="任务标签:" prop="tags">
                     <el-row type="flex" justify="start">
                         <el-col :span="17">
                             <el-tag :key="tag"
-                            v-for="tag in fliterForm.taskTags" 
+                            v-for="tag in fliterForm.tags" 
                             closable 
                             :disable-transitions="false" 
                             @close= "deleteTag(tag)">
@@ -50,26 +50,26 @@
                     </el-row>
                 </el-form-item>
                 <!-- 任务优先级 -->
-                <el-form-item label="任务优先级:" prop="taskPriority">
+                <el-form-item label="任务优先级:" prop="privilege">
                     <el-row>
                       <el-col>
-                          <el-rate :texts="this.texts" show-text :max="4" v-model="fliterForm.taskPriority"></el-rate>
+                          <el-rate :texts="this.texts" show-text :max="4" v-model="fliterForm.privilege"></el-rate>
                       </el-col>
                   </el-row>
                 </el-form-item>
                 <!-- 任务开始时间 -->
-                <el-form-item label="任务开始时间" prop="taskStartTime">
+                <el-form-item label="任务开始时间" prop="createDate">
                     <el-row>
                         <el-col>
-                            <el-date-picker v-model="fliterForm.taskStartTime" type="datetime" placeholder="请选择任务的开始时间"></el-date-picker>
+                            <el-date-picker v-model="fliterForm.createDate" type="datetime" placeholder="请选择任务的开始时间"></el-date-picker>
                         </el-col>
                     </el-row>
                 </el-form-item>
                 <!-- 任务结束时间 -->
-                <el-form-item label="任务结束时间:" prop="taskDDL">
+                <el-form-item label="任务结束时间:" prop="dueDate">
                     <el-row>
                         <el-col>
-                            <el-date-picker v-model="fliterForm.taskDDL" type="datetime" placeholder="请选择任务的结束时间"></el-date-picker>
+                            <el-date-picker v-model="fliterForm.dueDate" type="datetime" placeholder="请选择任务的结束时间"></el-date-picker>
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -112,60 +112,22 @@ export default {
       return {
           // 用户选中的任务的key
           chosenTaskId:'-1',
-          // 用户输入的查询任务的名称
-          searchTaskName:'',
           // 搜索结果
-          searchedResult:[
-              {
-                  taskName:'OOAD',
-                  taskDescriptions:'An OOAD Project',
-                  subTasks:[
-                      {
-                          taskName:'Front end',
-                          taskDescriptions:'Front end is hard'
-                      },
-                      {
-                          taskName:'back end',
-                          taskDescriptions:'Back end is hard'
-                      }
-                  ]
-              },
-              {
-                  taskName:'Complier',
-                  taskDescriptions:'A Complier Project',
-                  subTasks:[
-                      {
-                          taskName:'Lexcial Analysis',
-                          taskDescriptions:'hard',
-                          subTasks:[
-                              {
-                                  taskName:'regular expression',
-                                  taskDescriptions:'abab',
-
-                              }
-                          ]
-                      },
-                      {
-                          taskName:'Syntax Analysis',
-                          taskDescriptions:'easy',
-                          subTasks:[
-                              {
-                                  taskName:'Context Free Grammar',
-                                  taskDescriptions:'hard'
-                              }
-                          ]
-                      }
-                  ]
-              },
-          ],
+          searchedResult:[],
           // 过滤器表单
           fliterForm:{
+            //   任务名
               taskName:'',
-              taskStartTime:'',
-              taskDDL:'',
-              taskTags:[],
-              taskPriority:0
+            //   任务开始时间
+              createDate:'',
+            //   任务截止时间
+              dueDate:'',
+            //   任务标签
+              tags:[],
+            //   优先级
+              privilege:0
           },
+        //   用户添加的标签
           addedTag:'',
           inputVisible:false,
           // 是否显示过滤器的抽屉
@@ -176,13 +138,13 @@ export default {
       }
   },
   methods: {
-      // 向后端发送请求
+      // 向后端发送搜索任务的请求
       searchRequest(event) {
           const that = this
           axios.post(
               'http://localhost:8081',
               {
-                  searchTaskName:this.searchTaskName
+                //   过滤的参数
               }
           ).then(
               function(response) {
@@ -192,13 +154,12 @@ export default {
                           type:'success'
                       }
                   )
-                  // Clear content in el-input
-                  that.searchTaskName = ''
-                  that.searchedResult = response.data.searchedResult
+                  // TODO:检索完以后，清空过滤器表单
+                  
               },
               function(err) {
                   that.$message.error('查询失败')
-                  that.searchTaskName = ''
+                // 清空过滤器表单
               }
           )
       },
@@ -227,21 +188,21 @@ export default {
       handleInputConfirm() {
           let inputValue = this.addedTag;
             if(inputValue) {
-                for(let i in this.fliterForm.taskTags) {
-                if(this.fliterForm.taskTags[i] === inputValue) {
+                for(let i in this.fliterForm.tags) {
+                if(this.fliterForm.tags[i] === inputValue) {
                     this.$message.error('添加失败，已有该标签')
                     this.inputVisible = false;
                     this.addedTag = '';
                     return 
                 }
                 }
-                this.fliterForm.taskTags.push(inputValue);
+                this.fliterForm.tags.push(inputValue);
             }
             this.inputVisible = false;
             this.addedTag = '';
       },
       deleteTag(tag) {
-        this.fliterForm.taskTags.splice(this.fliterForm.taskTags.indexOf(tag), 1);
+        this.fliterForm.tags.splice(this.fliterForm.tags.indexOf(tag), 1);
       },
       showInput() {
         this.inputVisible = true;
