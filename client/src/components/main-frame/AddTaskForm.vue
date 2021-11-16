@@ -44,7 +44,7 @@ mo<template>
                     <el-form-item label='任务截止时间:' prop='dueDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='date' placeholder="请选择任务的截止时间" v-model="taskForm.dueDate"></el-date-picker>
+                                <el-date-picker type='datetime' placeholder="请选择任务的截止时间" v-model="taskForm.dueDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -63,8 +63,8 @@ mo<template>
                         <el-row>
                             <el-col :span='10'>
                                 <el-radio-group v-model='taskForm.type' >
-                                    <el-radio label='personal'>个人任务</el-radio>
-                                    <el-radio label='team' @click="postMyTeams">组队任务</el-radio>
+                                    <el-radio label='0'>个人任务</el-radio>
+                                    <el-radio label='1' @click="postMyTeams">组队任务</el-radio>
                                 </el-radio-group>
                             </el-col>
                         </el-row>
@@ -82,7 +82,7 @@ mo<template>
                     <el-form-item label='开始时间:' prop='createDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='date' placeholder="请选择任务的开始时间" v-model="taskForm.createDate"></el-date-picker>
+                                <el-date-picker type='datetime' placeholder="请选择任务的开始时间" v-model="taskForm.createDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -109,6 +109,7 @@ mo<template>
 
 <script>
 import axios from 'axios'
+const token = window.sessionStorage.getItem('token')
 export default {
   name: 'AddTaskForm',
   props:['username'],
@@ -238,6 +239,8 @@ export default {
                   value:this.addedTag
               }
           )
+        // TODO:向后端发送添加后的tag
+
         //   提示成功信息
           this.$message(
               {
@@ -249,11 +252,36 @@ export default {
     //   点击提交按钮，提交添加任务的表单
       submitForm(formName) {
           let that = this
+          // this.taskForm.createDate = new Date(this.taskForm.createDate)
+          // alert(this.taskForm.createDate)
+          // this.taskForm.dueDate = new Date(this.taskForm.dueDate)
           this.$refs[formName].validate((valid)=>{
               
               if(valid) {
                 //   向父组件<Main>传值
                   this.$emit('taskFormData',that.taskForm)
+
+                axios.post(
+                    'http://localhost:8081/api/task/addtask',
+                    this.taskForm,
+                    {
+                      headers:{
+                        Authorization:window.localStorage.getItem('token')
+                      }
+                    }
+                ).then(
+                    function (response) {
+                      that.$message(
+                          {
+                            message: '创建任务成功',
+                            type: 'success'
+                          }
+                      );
+                    },
+                    function (err) {
+                      that.$message.error('创建任务失败')
+                    }
+                )
                 //   提交后清空表单
                   for(let key in this.taskForm) {
                       this.taskForm[key] = ''

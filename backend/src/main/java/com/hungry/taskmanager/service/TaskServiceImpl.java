@@ -13,12 +13,13 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class TaskServiceImpl implements TaskService{
@@ -186,9 +187,12 @@ public class TaskServiceImpl implements TaskService{
         return type;
     }
 
-    private LocalDateTime convertGMT(String date){
-        DateTimeFormatter df = DateTimeFormatter.RFC_1123_DATE_TIME;
-        return LocalDateTime.parse(date, df);
+    private LocalDateTime convertGMT(String date) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Instant instant = formatter.parse(date).toInstant();
+        ZoneId id = ZoneId.systemDefault();
+        return instant.atZone(id).toLocalDateTime();
     }
 
     private int insertUserTaskTag(BigInteger userId, BigInteger taskId, List<String> tagNames){

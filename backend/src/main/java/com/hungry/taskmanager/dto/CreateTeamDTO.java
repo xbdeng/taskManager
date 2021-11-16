@@ -15,8 +15,6 @@ import java.util.List;
 public class CreateTeamDTO {
     @ApiModelProperty(required = true)
     String teamName;
-    @ApiModelProperty(required = true)
-    String creatorName;
     List<String> membersName;
     String description;
 }

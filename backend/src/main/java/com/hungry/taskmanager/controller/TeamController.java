@@ -5,11 +5,13 @@ import com.hungry.taskmanager.dto.CreateTeamDTO;
 import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.service.TeamService;
+import com.hungry.taskmanager.utils.JWTUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 
 @RestController
@@ -22,8 +24,10 @@ public class TeamController {
     @PostMapping("/createteam")
     @ApiOperation(value = "创建小组",notes = "后端已测试通过")
     @RequiresAuthentication
-    public Result<String> createTeam(@RequestBody CreateTeamDTO createTeamDTO) {
-        teamService.createTeam(createTeamDTO);
+    public Result<String> createTeam(@RequestBody CreateTeamDTO createTeamDTO, HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        teamService.createTeam(createTeamDTO,username);
         return Result.succ("创建成功");
     }
 
