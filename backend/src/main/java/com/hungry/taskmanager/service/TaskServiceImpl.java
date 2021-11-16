@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
+import com.hungry.taskmanager.entity.post_entities.QueryTaskFilter;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.lang.NonNull;
@@ -15,7 +16,9 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TaskServiceImpl implements TaskService{
@@ -48,7 +51,7 @@ public class TaskServiceImpl implements TaskService{
         // set date
         LocalDateTime createDate = convertGMT(params.getCreateDate());
         LocalDateTime dueDate = convertGMT(params.getDueDate());
-        // set state
+        // set status
         Integer status = 0;
         // set father task
         BigInteger fatherTask = null;
@@ -57,6 +60,7 @@ public class TaskServiceImpl implements TaskService{
                 .setDescription(params.getDescription()).setType(type).setCreateDate(createDate).setDueDate(dueDate)
                 .setStatus(status).setFatherTask(fatherTask).setPrivilege(params.getPrivilege());
         // insert task into database
+        task.updateDate();
         taskMapper.insert(task);
         // insert tag
         BigInteger tagId = tagMapper.newId();
@@ -103,27 +107,20 @@ public class TaskServiceImpl implements TaskService{
     /**
      * query tasks
      */
-    public List<Task> queryTask(@NonNull String username, Integer privilege, String tag, LocalDateTime dueDate) {
-        // get userid
-        BigInteger userId = userMapper.getIdByName(username);
-        QueryWrapper<Task> wrapper = new QueryWrapper<Task>().eq("task.user_id", userId);
-        if (privilege != null){
-            wrapper = wrapper.eq("privilege", privilege);
+    public List<Task> queryTask(QueryTaskFilter filter) {
+        List<Task> tasks = taskMapper.queryTask(filter);
+        BigInteger userId = filter.getUserId();
+        Map<BigInteger, Task> taskMap = new HashMap<>();
+        for (Task task : tasks) {
+            taskMap.put(task.getTaskId(), task);
+            task.setTags(new ArrayList<>());
+            QueryTaskFilter subfilter = new QueryTaskFilter().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
+            task.setSubTask(taskMapper.queryTask(subfilter));
+            task.updateDate();
         }
-        if (tag != null){
-            wrapper = wrapper.eq("tag_name", tag);
-        }
-        if (dueDate != null){
-            wrapper = wrapper.ge("dueDate", dueDate);
-        }
-        List<BigInteger> taskIds = taskMapper.queryTask(wrapper);
-        List<Task> tasks = new ArrayList<>();
-        for (int  i = 0; i < taskIds.size() ; i++){
-            BigInteger id = taskIds.get((int)i);
-            Task task = taskMapper.selectById(id);
-            // append tags information
-//            task.setTags(tagMapper.selectTagsByTaskId(id));
-            tasks.add(task);
+        List<Tag> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
+        for (int i = 0 ; i < taskTags.size(); i++){
+            taskMap.get(taskTags.get(i).getTaskId()).getTags().add(taskTags.get(i));
         }
         return tasks;
     }
@@ -136,7 +133,9 @@ public class TaskServiceImpl implements TaskService{
         BigInteger uId = BigInteger.valueOf(userId);
         Task task = taskMapper.selectById(tId);
         task.setTags(tagMapper.selectTags(tId, uId));
+        task.updateDate();
         // append subtask information
+        QueryTaskFilter subfilter = new QueryTaskFilter().setFatherTask(task.getTaskId()).setUserId(uId);
         task.setSubTask(taskMapper.selectList(new QueryWrapper<Task>().eq("father_task", tId)));
         return task;
     }
@@ -157,7 +156,7 @@ public class TaskServiceImpl implements TaskService{
         }
         if (params.getCreateDate() != null) wrapper.set("create_date", convertGMT(params.getCreateDate()));
         if (params.getDueDate() != null) wrapper.set("due_date", convertGMT(params.getDueDate()));
-        if (params.getStatus() != null) wrapper.set("status", params.getStatus());
+        if (params.getStatus() != null && (params.getStatus() == 0 || params.getStatus() == 1)) wrapper.set("status", params.getStatus());
         if (params.getFatherTask() != null) wrapper.set("father_task", params.getFatherTask());
         if (params.getPrivilege() != null) wrapper.set("privilege", params.getPrivilege());
         if (params.getUsername() != null) {

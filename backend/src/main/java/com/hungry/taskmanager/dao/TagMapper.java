@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 
 public interface TagMapper extends BaseMapper<Tag> {
     @Select("SELECT IFNULL(MAX(tag_id)+1, 0) FROM tag")
@@ -19,4 +20,10 @@ public interface TagMapper extends BaseMapper<Tag> {
             "tag.tag_id = utt.tag_id INNER JOIN user_task AS ut ON ut.ut_id = utt.ut_id WHERE ut.user_id = #{userId} and ut.task_id = " +
             "#{taskId}")
     List<Tag>  selectTags(BigInteger taskId, BigInteger userId);
+
+    @Select("SELECT * FROM tag WHERE user_id = #{userId}")
+    List<Tag> selectTagsByUser(BigInteger suerId);
+
+    @Select("")
+    List<Tag> selectTagsByUserTasks(BigInteger userId, Set<BigInteger> taskIds);
 }

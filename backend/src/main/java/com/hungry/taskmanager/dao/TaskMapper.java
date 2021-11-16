@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.hungry.taskmanager.entity.Task;
+import com.hungry.taskmanager.entity.post_entities.QueryTaskFilter;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -19,5 +20,8 @@ public interface TaskMapper extends BaseMapper<Task> {
             "ON task_tag.tag_id = tag.tag_id")
     List<BigInteger> queryTask(@Param(Constants.WRAPPER) Wrapper<Task> queryWrapper);
 
+    List<Task> queryTask(QueryTaskFilter filter);
+
+    Object selectTagsForTasks(BigInteger userId);
 
 }

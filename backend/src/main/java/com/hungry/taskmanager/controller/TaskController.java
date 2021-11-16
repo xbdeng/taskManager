@@ -18,7 +18,7 @@ import java.util.List;
 public class TaskController {
     @Resource
     private TaskServiceImpl taskServiceImpl;
-    @ApiOperation(value = "create a task",notes = "username, type, taskName, privilege and createDate is required\n father task, members, status is unnecessary")
+    @ApiOperation(value = "create a task",notes = "username, type, taskName, privilege and createDate is required\n father task, members, status,subtask is unnecessary")
     @PostMapping("/addtask")
     public Result<String> addTask(@RequestBody CreateTaskParams params) {
         try {
