@@ -13,12 +13,12 @@
               <el-popover placement="top" width="200" trigger="click" title="修改组名">
                   <el-row>
                       <el-col>
-                          <el-input placeholder="请输入修改后的组名..." clearable></el-input>
+                          <el-input placeholder="请输入修改后的组名..." clearable v-model="editedTeamName"></el-input>
                       </el-col>
                   </el-row>
                   <el-row>
                       <el-col :offset="8">
-                          <el-button type='primary' plain size="small">确定</el-button>
+                          <el-button type='primary' plain size="small" @click="editTeamName">确定</el-button>
                       </el-col>
                   </el-row>
                     <el-tooltip content="点击可修改组的名称" slot="reference">
@@ -36,7 +36,7 @@
                       <span style="font-weight:bold">创建时间：</span>
                   </el-col>
                   <el-col>
-                      {{ singleTeamData.createTime }}
+                      {{ singleTeamData.createDate }}
                   </el-col>
               </el-row>
             <!-- 显示组内成员，留接口修改 -->
@@ -73,7 +73,8 @@
                             </el-row>
                             <el-row>
                                 <el-col :offset="8">
-                                    <el-button type='primary'>确定</el-button>
+                                    <el-button type='primary' @click="editAdmins">确定</el-button>
+                                    <!-- TODO:点击取消后的动作 -->
                                     <el-button type="danger">取消</el-button>
                                 </el-col>
                             </el-row>
@@ -94,7 +95,8 @@
                         </el-row>
                         <el-row>
                             <el-col :offset="8">
-                                <el-button type='primary'>确定</el-button>
+                                <el-button type='primary' @click="editInvitedMembers">确定</el-button>
+                                <!-- TODO:点击取消后的动作 -->
                                 <el-button type="danger">取消</el-button>
                             </el-col>
                         </el-row>
@@ -115,12 +117,12 @@
                   <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
                     <el-row>
                         <el-col>
-                            <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"></el-input>
+                            <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4" v-model="editedTeamDescription"></el-input>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :offset="8">
-                            <el-button type='primary' plain size="small">确定</el-button>
+                            <el-button type='primary' plain size="small" @click="editDescription">确定</el-button>
                         </el-col>
                     </el-row>
                     <el-tooltip content="点击可修改组的描述信息" slot="reference">
@@ -131,9 +133,10 @@
                 </el-popover>
               </el-row>
               <!-- 确定， 退出该组，解散该组 -->
+              <!-- TODO:点击按钮后执行的动作 -->
               <el-row type="flex" justify="start">
                   <el-col>
-                      <el-button type="primary">确定</el-button>
+                      <el-button type="primary" @click="postEdit">确定</el-button>
                   </el-col>
                   <el-col>
                       <el-button type="danger">退出该组</el-button>
@@ -154,7 +157,13 @@ export default {
 
   name: 'TeamShow',
   // 这个组件接收的参数是一个组对象
-  props: ['singleTeamData'],
+  props: ['singleTeamData','drawer'],
+  watch:{
+    // 关闭抽屉的时候，同步数据
+    'drawer':function() {
+      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
+    }
+  },
   data() {
       // 生成普通成员的穿梭框信息
       const generateTransferData = _ => {
@@ -182,12 +191,18 @@ export default {
           memberList:[],
           transferData:generateTransferData(),
           friends:generateFriendData(),
-        //   设置后的管理员名单
+        //   重新设置后的管理员名单
           editedAdmins:[],
         //   邀请进组的名单
           invitedMembers:[],
         //   鼠标移入的成员
           mousein:null,
+        //   修改后的队伍名
+          editedTeamName:null,
+        //   修改后的队伍描述信息
+          editedTeamDescription:null,
+        //   暂存区
+          tempTeamInfo:JSON.parse(JSON.stringify(this.singleTeamData))
       }
   },
   methods:{
@@ -215,20 +230,56 @@ export default {
           
           this.memberList = members
       },
+    // 鼠标移进，显示鼠标所在的成员的名称
       whenMouseIn(name) {
           this.mousein = name
       },
+    //   鼠标移出，成员置空
       whenMouseOut() {
           this.mousein = null
       },
+    //   点击成员中的某人，在暂存区中删除这个成员
       deleteMember(name) {
-          // 遮罩层bug
-          this.$notify({
-          title: '成功',
-          message: '删除成员' + name + '成功',
-          type: 'success'
-        });
-      }
+          this.tempTeamInfo.members.splice(this.teapTeamInfo.indexOf(name), 1)
+      },
+    //   将修改后的editedTeamName添加到暂存区
+      editTeamName() {
+          let value = this.editedTeamName
+          if(value != null) {
+              this.tempTeamInfo.teamName = value
+          }
+          this.editedTeamName = null
+      },
+    //   将修改后的editedAdmins添加到暂存区
+      editAdmins() {
+          let value = this.editedAdmins
+          if(value != null) {
+              this.tempTeamInfo.admins.concat(value)
+          }
+          this.editedAdmins = null
+      },
+    //   将邀请的成员添加到暂存区
+      editInvitedMembers() {
+          let value = this.invitedMembers
+          if(value != null) {
+              this.tempTeamInfo.members.concat(value)
+          }
+          this.invitedMembers = null
+      },
+    //   将修改后的任务描述信息添加到暂存区
+      editDescription() {
+          let value = this.editedTeamDescription
+          if(value != null) {
+              this.tempTeamInfo.description = value
+          }
+          this.editedTeamDescription = null
+      },
+    //   向父组件传递修改后的值
+    postEdit() {
+        this.$emit('editTeam', this.tempTeamInfo)
+        // 刷新数据
+        this.tempTeamInfo = JSON.parse(JSON.stringify(this.singleTeamData))
+    }
     
   }
   

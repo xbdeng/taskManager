@@ -28,7 +28,7 @@
             :before-close="handleTeamInfoClose"
             :modal-append-to-body='false'
             size='50%'>
-                <TeamShow :singleTeamData="teamInfo[selectedTeam]"></TeamShow>
+                <TeamShow :singleTeamData="teamInfo[selectedTeam]" :drawer="teamInfoDrawer"></TeamShow>
             </el-drawer>
             <!-- 用于显示任务信息 -->
             <el-drawer 
@@ -38,7 +38,7 @@
             :before-close="handleTaskInfoClose"
             :modal-append-to-body='false'
             size='50%'>
-                <TaskShow :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"></TaskShow>
+                <TaskShow :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)" v-on:editTeam='editTeam'></TaskShow>
             </el-drawer>
 
             <!-- 用于显示组的信息 -->
@@ -98,6 +98,9 @@ export default {
     },
     handleTeamInfoClose() {
         this.teamInfoDrawer = false
+    },
+    editTeam(newTeam) {
+        // TODO:调用后端接口，实现修改组的信息
     }
 }
 
