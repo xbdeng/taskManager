@@ -102,17 +102,37 @@
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
           <el-calendar v-show='calendarShow'>
-            <div slot="dateCell" slot-scope="{data}">
-              <div @mouseenter="seton(data.day.split('-').slice(1).join('-'))" @mouseleave="setoff()">
-                {{ data.day.split('-').slice(1).join('-') }}
-                <el-button v-show="judgeon(data.day.split('-').slice(1).join('-'))" icon="el-icon-plus" type="primary" circle></el-button>
-                <div v-for="(task,index) in formCalendarData(data)" :key="index">
-                  <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
-                    <el-link slot='reference'>{{ task[0] }}</el-link>
-                  </el-popover>
-                </div>
+            <template slot="dateCell" slot-scope="{data}">
+              {{ data.day.split('-').slice(1).join('-') }}
+              <div v-show="formCalendarData(data).length <= 3" v-for="(task,index) in formCalendarData(data)"
+                   :key="index">
+                <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
+                  <el-link slot='reference'>{{ task[0] }}</el-link>
+                </el-popover>
               </div>
-            </div>
+
+              <div v-show="formCalendarData(data).length > 3" v-for="(task,index) in formCalendarData_Font(data)"
+                   :key="index + '1'">
+                <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
+                  <el-link slot='reference'>{{ task[0] }}</el-link>
+                </el-popover>
+              </div>
+
+              <div v-show="formCalendarData(data).length > 3">
+                <el-popover placement="top-start" trigger="click" title="More task shows" popper-class="my-popover-box">
+                  <div class="popover-content-box">
+                    <div v-show="formCalendarData(data).length > 3" v-for="(task,index) in formCalendarData_Last(data)"
+                         :key="index + '2'">
+                      <el-popover placement="top-start" trigger="hover" :title="task[0]" :content="task[1]">
+                        <el-link slot='reference'>{{ task[0] }}</el-link>
+                      </el-popover>
+                    </div>
+                  </div>
+                  <el-link slot='reference'>...</el-link>
+                </el-popover>
+              </div>
+
+            </template>
           </el-calendar>
           <!-- 任务搜索 -->
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
@@ -301,6 +321,41 @@ export default {
             }
           }
       )
+      return calendarData
+    },
+    // 将后n个任务名称展示在日历中
+    formCalendarData_Last(data) {
+      let currentDate = data.day.split('-').slice(1).join('-')
+      let calendarData = []
+      this.calendarTasks.forEach(
+          function (task) {
+            if (currentDate === task.taskDDL) {
+              let list = []
+              list.push(task.taskName)
+              list.push(task.taskDescription)
+              calendarData.push(list)
+            }
+          }
+      )
+      calendarData.shift()
+      calendarData.shift()
+      return calendarData
+    },
+    // 将前2个任务名称展示在日历中
+    formCalendarData_Font(data) {
+      let currentDate = data.day.split('-').slice(1).join('-')
+      let calendarData = []
+      for (let task in this.calendarTasks) {
+        if (currentDate === this.calendarTasks[task].taskDDL) {
+          let list = []
+          list.push(this.calendarTasks[task].taskName)
+          list.push(this.calendarTasks[task].taskDescription)
+          calendarData.push(list)
+        }
+        if (calendarData.length === 2) {
+          break
+        }
+      }
       return calendarData
     },
     // 响应添加任务的表单，调用接口添加任务
