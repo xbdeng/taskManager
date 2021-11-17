@@ -86,7 +86,7 @@
         <el-main class='main'>
           <!-- 添加task的表单 -->
           <el-dialog :visible.sync='addTaskShow' width='700px' :modal-append-to-body='false' @close='showCalendar'>
-            <AddTaskForm v-on:taskFormData='addTask($event)' :username='username'
+            <AddTaskForm v-on:taskFormData='this.addTask($event)' :username='username'
                          v-on:toCalendar='toCalendar($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
@@ -378,6 +378,7 @@ export default {
   // 响应添加任务的表单，调用接口添加任务
   addTask(newTask) {
     const that = this
+    alert(11)
     // 向后端发送创建的任务数据
     axios.post(
         'http://localhost:8081/api/task/addtask',

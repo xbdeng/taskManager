@@ -34,8 +34,8 @@ public class TeamServiceImpl implements TeamService {
     TeamUserMapper teamUserMapper;
 
     @Override
-    public Result createTeam(CreateTeamDTO createTeamDTO) {
-        BigInteger creator = userMapper.getIdByName(createTeamDTO.getCreatorName());
+    public Result createTeam(CreateTeamDTO createTeamDTO,String creatorName) {
+        BigInteger creator = userMapper.getIdByName(creatorName);
         List<User> members = userMapper.selectList(new QueryWrapper<User>().in("username", createTeamDTO.getMembersName()));
 
         //create team
@@ -50,7 +50,7 @@ public class TeamServiceImpl implements TeamService {
 
         //set members
         for (User member : members) {
-            if (!Objects.equals(member.getUsername(), createTeamDTO.getCreatorName())) {
+            if (!Objects.equals(member.getUsername(), creatorName)) {
                 teamUserMapper.insert(new TeamUser().setTeamId(teamId).setUserId(member.getUserId()).setIdentity("member"));
             }
         }

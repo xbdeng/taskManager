@@ -89,7 +89,7 @@ export default {
 
                 if(valid){
                     this.loginForm.password = this.$md5(this.loginForm.password)
-                    alert(this.loginForm.password)
+
                     axios.post(
                         'http://localhost:8081/api/user/login',
                         {
@@ -102,15 +102,19 @@ export default {
                                 message:'登录成功',
                                 type:'success'
                             })
-                            let token = response.data.token
+                            let token = response.data.data
                             // 保存token
-                            window.sessionStorage.setItem('token', token)
+                            // alert(token)
+                            window.localStorage.setItem('token', token)
+                            // alert(window.localStorage.getItem('token'))
                             console.log(response.data)
                             // 清空表单数据
+                            let tmpusername = that.loginForm.username
                             that.loginForm.username = ''
                             that.loginForm.password = ''
                             that.logining = false
-                            that.$router.push({name:'Main', params:{username: that.loginForm.username}})
+
+                            that.$router.push({name:'Main', params:{username: tmpusername}})
                         },
                         function(err) {
                             that.$message.error('用户名或密码错误')

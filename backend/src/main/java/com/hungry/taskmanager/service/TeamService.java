@@ -8,7 +8,7 @@ import com.hungry.taskmanager.entity.Result;
 import java.math.BigInteger;
 
 public interface TeamService {
-    Result createTeam(CreateTeamDTO createTeamDTO);
+    Result createTeam(CreateTeamDTO createTeamDTO,String creatorName);
 
     Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO);
 
