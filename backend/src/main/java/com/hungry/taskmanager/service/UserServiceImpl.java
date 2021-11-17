@@ -79,6 +79,9 @@ public class UserServiceImpl implements UserService {
         List<BigInteger> teamsId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("user_id", userId).in("identity", t)).stream().map(TeamUser::getTeamId).collect(Collectors.toList());
 
         //获取全部的teams
+        if(teamsId.isEmpty()){
+            return null;
+        }
         return getTeamDTOSbyTeamIds(teamsId);
     }
 

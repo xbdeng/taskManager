@@ -95,9 +95,6 @@ export default {
         Specifier:0,
         drawer:false,
         taskData:[],
-        todayTaskData:[],
-        weekTaskData:[],
-        laterTaskData:[],
     }
   },
   methods: {

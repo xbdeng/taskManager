@@ -71,12 +71,12 @@ export default {
           this.$refs[formName].validate((valid)=>{
               if(valid) {
                 axios.post(
-                    'http://localhost:8081/api/teams/createteam',
+                    'http://localhost:8081/api/team/createteam',
                     {
                         //creatorName
-                        description:this.teamForm.description,
+                        description:that.teamForm.description,
                         //memberName
-                        teamName:this.teamForm.teamName
+                        teamName:that.teamForm.teamName
                     },
                     {
                         headers:{
@@ -86,7 +86,7 @@ export default {
                 ).then(
                     function(response) {
                         alert(response.data.msg)
-                        if(response.data.code == 200) {
+                        if(response.data.code === 200) {
                             that.$message({
                                 message:'新建组成功',
                                 type:'success'
@@ -100,7 +100,7 @@ export default {
                         }
                     },
                     function(err) {
-                        this.$message.error('响应错误，添加组失败')
+                        that.$message.error('响应错误，添加组失败')
                     }
                 )
               } else {

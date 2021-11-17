@@ -35,9 +35,8 @@ public class TeamServiceImpl implements TeamService {
     TeamUserMapper teamUserMapper;
 
     @Override
-    public Result createTeam(CreateTeamDTO createTeamDTO,String creatorName) {
+    public Result createTeam(CreateTeamDTO createTeamDTO, String creatorName) {
         BigInteger creator = userMapper.getIdByName(creatorName);
-        List<User> members = userMapper.selectList(new QueryWrapper<User>().in("username", createTeamDTO.getMembersName()));
 
         //create team
         Team team = new Team().setTeamName(createTeamDTO.getTeamName()).setCreator(creator).setDescription(createTeamDTO.getDescription());
@@ -50,9 +49,12 @@ public class TeamServiceImpl implements TeamService {
         teamUserMapper.insert(new TeamUser().setTeamId(teamId).setUserId(creator).setIdentity("creator"));
 
         //set members
-        for (User member : members) {
-            if (!Objects.equals(member.getUsername(), creatorName)) {
-                teamUserMapper.insert(new TeamUser().setTeamId(teamId).setUserId(member.getUserId()).setIdentity("member"));
+        if (createTeamDTO.getMembersName() != null) {
+            List<User> members = userMapper.selectList(new QueryWrapper<User>().in("username", createTeamDTO.getMembersName()));
+            for (User member : members) {
+                if (!Objects.equals(member.getUsername(), creatorName)) {
+                    teamUserMapper.insert(new TeamUser().setTeamId(teamId).setUserId(member.getUserId()).setIdentity("member"));
+                }
             }
         }
 
@@ -104,13 +106,13 @@ public class TeamServiceImpl implements TeamService {
         List<String> identities = new ArrayList<>(2);
         identities.add("admin");
         identities.add("creator");
-        TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId).in("identity",identities));
+        TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).in("identity", identities));
         return t != null;
     }
 
     @Override
     public Result dismiss(BigInteger teamId) {
-        teamMapper.delete(new QueryWrapper<Team>().eq("team_id",teamId));
+        teamMapper.delete(new QueryWrapper<Team>().eq("team_id", teamId));
         return null;
     }
 }

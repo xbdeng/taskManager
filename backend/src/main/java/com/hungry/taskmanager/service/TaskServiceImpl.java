@@ -106,6 +106,7 @@ public class TaskServiceImpl implements TaskService{
     /**
      * query tasks
      */
+    //todo bug
     public List<Task> queryTask(QueryTaskParams filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
         // configure range

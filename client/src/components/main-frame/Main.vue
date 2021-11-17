@@ -533,17 +533,19 @@ export default {
           ).then(
               function(response) {
                   alert(response.data.msg)
-                  if(response.data.code == 200) {
+                  if(response.data.code === 200) {
                     that.$message({
                       message:'获取标签成功',
                       type:'success'
                     })
+                    that.tagArray = []
                     for(let i in response.data.data) {
                       let content = response.data.data[i]
                       let obj = {
-                        label:content,
-                        value:content
+                        label:content.tagName,
+                        value:content.tagName
                       }
+
                       that.tagArray.push(obj)
                     }
                   } else {
