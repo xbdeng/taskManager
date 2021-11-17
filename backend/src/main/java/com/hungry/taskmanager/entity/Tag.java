@@ -19,6 +19,4 @@ public class Tag {
     private BigInteger tagId;
     private String tagName;
     private BigInteger userId;
-    @TableField(exist = false)
-    private BigInteger taskId;
 }

@@ -2,11 +2,13 @@ package com.hungry.taskmanager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hungry.taskmanager.entity.Tag;
+import com.hungry.taskmanager.entity.relation_entity.TaskTagMap;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface TagMapper extends BaseMapper<Tag> {
@@ -24,6 +26,5 @@ public interface TagMapper extends BaseMapper<Tag> {
     @Select("SELECT * FROM tag WHERE user_id = #{userId}")
     List<Tag> selectTagsByUser(BigInteger suerId);
 
-    @Select("")
-    List<Tag> selectTagsByUserTasks(BigInteger userId, Set<BigInteger> taskIds);
+    List<TaskTagMap> selectTagsByUserTasks(BigInteger userId, Set<BigInteger> taskIds);
 }
