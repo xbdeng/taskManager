@@ -3,6 +3,7 @@ package com.hungry.taskmanager.config;
 
 import com.hungry.taskmanager.shiro.JWTFilter;
 import com.hungry.taskmanager.shiro.MyRealm;
+import com.hungry.taskmanager.shiro.TeamAdminFilter;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -49,15 +50,18 @@ public class ShiroConfig {
         Map<String, Filter> filterMap=new LinkedHashMap<>();
         //设置我们自定义的JWT过滤器
         filterMap.put("jwt",new JWTFilter());
+        filterMap.put("teamAdmin", new TeamAdminFilter());
         factoryBean.setFilters(filterMap);
 
         // 设置无权限时跳转的 url;
-        factoryBean.setUnauthorizedUrl("/unauthorized/无权限");
+//        factoryBean.setUnauthorizedUrl("/unauthorized/无权限");
         Map<String,String>filterRuleMap=new HashMap<>();
         // 所有请求通过我们自己的JWT Filter
         filterRuleMap.put("/**","jwt");
+        filterRuleMap.put("/api/team//addmember","teamAdmin");
+        filterRuleMap.put("/api/team//addmember","teamAdmin");
         // 访问 /unauthorized/** 不通过JWTFilter
-        filterRuleMap.put("/unauthorized/**","anon");
+//        filterRuleMap.put("/unauthorized/**","anon");
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return factoryBean;
     }
