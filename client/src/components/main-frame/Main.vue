@@ -528,7 +528,7 @@ export default {
         ).then(
             function(response) {
                 alert(response.data.msg)
-                if(response.data.code == 200) {
+                if(response.data.code === 200) {
                   that.$message({
                     message:'请求用户创建或管理的组成功',
                     type:'success'
@@ -571,7 +571,7 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
-          if(response.data.code == 200) {
+          if(response.data.code === 200) {
             that.$message({
               message:'获取组队任务数据成功',
               type:'success'
@@ -600,7 +600,7 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
-          if(response.data.code == 200) {
+          if(response.data.code === 200) {
             that.$message({
               message:'获取通讯录数据成功',
               type:'success'
