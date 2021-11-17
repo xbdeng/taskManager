@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -96,6 +97,15 @@ public class TeamServiceImpl implements TeamService {
             teamUserMapper.update(null, updateWrapper);
         }
         return null;
+    }
+
+    @Override
+    public boolean isAdmin(BigInteger userId, BigInteger teamId) {
+        List<String> identities = new ArrayList<>(2);
+        identities.add("admin");
+        identities.add("creator");
+        TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId).in("identity",identities));
+        return t != null;
     }
 
     @Override

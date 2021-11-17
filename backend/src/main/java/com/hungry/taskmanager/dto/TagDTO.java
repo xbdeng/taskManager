@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TagDTO {
-    private String tagName;
     @ApiModelProperty(hidden = true)
+    private String tagName;
     private String username;
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
+import com.hungry.taskmanager.entity.post_entities.EditTaskParams;
 import com.hungry.taskmanager.entity.post_entities.QueryTaskParams;
 import com.hungry.taskmanager.entity.relation_entity.TaskTagMap;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
@@ -16,11 +17,9 @@ import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -74,7 +73,7 @@ public class TaskServiceImpl implements TaskService{
             }
         }
         // insert user task relationship if the type is individual
-        if (type.equals(BigInteger.valueOf(-1))){
+        if (type.equals(BigInteger.valueOf(0))){
             BigInteger utId = userTaskMapper.newId();
             UserTask ut = new UserTask().setUserId(creator).setTaskId(id).setUtId(utId);
             userTaskMapper.insert(ut);
@@ -107,8 +106,34 @@ public class TaskServiceImpl implements TaskService{
     /**
      * query tasks
      */
-    public List<Task> queryTask(QueryTaskParams filter) {
+    public List<Task> queryTask(QueryTaskParams filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
+        // configure range
+        if (filter.getScheduledTask() == 1){
+            switch(filter.getTimeRange()){
+                case(0):{
+                    LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
+                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate(), LocalTime.MIN);
+                    filter.setRequiredDate(requiredDate);
+                    break;
+                }
+                case(1):{
+                    LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
+                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(6,ChronoUnit.DAYS), LocalTime.MIN);
+                    filter.setRequiredDate(requiredDate);
+                    break;
+                }
+                case(2):{
+                    LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
+                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(7,ChronoUnit.DAYS), LocalTime.MIN);
+                    filter.setRequiredDate(requiredDate);
+                    break;
+                }
+                default:{
+                    throw new Exception("timerange type error");
+                }
+            }
+        }
         List<Task> tasks = taskMapper.queryTask(filter.setUserId(userId));
         Map<BigInteger, Task> taskMap = new HashMap<>();
         for (Task task : tasks) {
@@ -129,9 +154,9 @@ public class TaskServiceImpl implements TaskService{
     /**
      *  modify status of a task
      */
-    public int editTask(long id, CreateTaskParams params) throws Exception {
+    public int editTask(EditTaskParams params) throws Exception {
         // get task object
-        BigInteger taskId = BigInteger.valueOf(id);
+        BigInteger taskId = BigInteger.valueOf(params.getTaskId());
         UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", taskId);
         // configuration
         if (params.getTaskName() != null) wrapper.set("task_name", params.getTaskName());
@@ -157,7 +182,7 @@ public class TaskServiceImpl implements TaskService{
         BigInteger type;
         switch(params.getType()){
             case(0):{
-                type = BigInteger.valueOf(-1);
+                type = BigInteger.valueOf(0);
                 break;
             }
             case(1):{

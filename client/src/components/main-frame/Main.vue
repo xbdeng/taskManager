@@ -517,31 +517,15 @@ export default {
     handleEvents(events) {
       this.currentEvents = events
     },
-    addTeam(newTeam) {
-        const that = this
-        // 向后端发送创建的组别数据
-        axios.post(
-            'http://localhost:8081/api/team/createTeam',
-            newTeam
-        ).then(
-            function (response) {
-              that.$message({
-                message: '创建组别成功',
-                type: 'success'
-              })
-            },
-            function (err) {
-              that.$message.error('创建组别失败')
-            }
-        )
-    },
     // AddTaskForm
     // TODO:获取用户的标签：文档暂未定
     postTags() {
           let that = this
           axios.post(
-              'http://localhost:8081/api/user/gettags',
-              {},
+              'http://localhost:8081/api/user/selecttags',
+              {
+                username:this.username
+              },
               {
                   headers:{
                       Authorization:window.localStorage.getItem('token')
@@ -550,7 +534,22 @@ export default {
           ).then(
               function(response) {
                   alert(response.data.msg)
-                  that.tagArray = response.data.data
+                  if(response.data.code == 200) {
+                    that.$message({
+                      message:'获取标签成功',
+                      type:'success'
+                    })
+                    for(let i in response.data.data) {
+                      let content = response.data.data[i]
+                      let obj = {
+                        label:content,
+                        value:content
+                      }
+                      that.tagArray.push(obj)
+                    }
+                  } else {
+                    that.$message.error('获取Tags数据失败')
+                  }
               },
               function(err) {
                   that.$message.error('响应错误,获取Tags数据失败')
@@ -561,6 +560,7 @@ export default {
         let that = this;
         axios.post(
             'http://localhost:8081/api/user/myteams/admin',
+            {},
             {
                 headers:{
                     Authorization:window.localStorage.getItem('token')
@@ -569,7 +569,16 @@ export default {
         ).then(
             function(response) {
                 alert(response.data.msg)
-                that.myTeamInfo = response.data
+                if(response.data.code == 200) {
+                  that.$message({
+                    message:'请求用户创建或管理的组成功',
+                    type:'success'
+                  })
+                  that.myTeamInfo = response.data
+                } else {
+                  that.$message.error('请求用户创建或管理的组失败')
+                }
+                
             },
             function(err) {
                 that.$message.error('响应错误,请求用户创建或管理的组失败')
@@ -591,6 +600,7 @@ export default {
     },
     // TeamInfoShow
     postTeamInfo() {
+      let that = this
       axios.post(
         'http://localhost:8081/api/user/myteams',
         {},
@@ -602,15 +612,24 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
-          this.teamInfo = response.data.data
+          if(response.data.code == 200) {
+            that.$message({
+              message:'获取组队任务数据成功',
+              type:'success'
+            })
+            that.teamInfo = response.data.data
+          } else {
+            that.$message.error('获取组队任务失败')
+          }
         },
         function(err) {
-          this.$message.error('响应失败，获取组队任务失败')
+          that.$message.error('响应失败，获取组队任务失败')
         }
       )
     },
     // addressBookShow
     postAddressBook() {
+      let that = this
       axios.post(
         'http://localhost:8081/api/user/addressbook',
         {},
@@ -622,10 +641,18 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
-          this.Friends = response.data.data
+          if(response.data.code == 200) {
+            that.$message({
+              message:'获取通讯录数据成功',
+              type:'success'
+            })
+            that.Friends = response.data.data
+          } else {
+            that.$message.error('获取通讯录数据失败')
+          }
         },
         function(err) {
-          this.$message.error('响应失败,获取通讯录数据出错')
+          that.$message.error('响应失败,获取通讯录数据出错')
         }
       )
     }

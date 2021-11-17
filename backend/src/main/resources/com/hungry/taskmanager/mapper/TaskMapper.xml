@@ -18,13 +18,13 @@
             AND t.privilege = #{privilege}
         </if>
         <if test="taskName != null">
-            AND t.task_name = #{taskName}
+            AND INSTR(#{taskName}, t.task_name) > 0
         </if>
         <if test="createDate != null">
-            AND t.create_date = #{createDate}
+            AND t.create_date &gt;= #{createDate}
         </if>
         <if test="dueDate != null">
-            AND t.due_date = #{dueDate}
+            AND t.due_date &lt;= #{dueDate}
         </if>
         <if test="type != null">
             AND t.type = #{type}
@@ -33,13 +33,24 @@
             AND t.status = #{status}
         </if>
         <if test="teamName != null">
-            AND t2.team_name = #{teamName}
+            AND INSTR(#{teamName}, t2.team_name) > 0
         </if>
         <if test="tag != null">
             AND t3.tag_name = #{tag}
         </if>
         <if test="fatherTask != null">
             AND t.father_task = #{fatherTask}
+        </if>
+        <if test="scheduledTask == 0">
+            AND t.status IN (0, 2)
+        </if>
+        <if test="scheduledTask == 1">
+            <if test="timeRange == 0 or timeRange == 1">
+                AND t.due_date &lt;= #{requiredDate}
+            </if>
+            <if test="timeRange == 2">
+                AND t.due_date &gt;= #{requiredDate}
+            </if>
         </if>
     </select>
 

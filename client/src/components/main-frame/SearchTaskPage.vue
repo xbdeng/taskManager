@@ -9,21 +9,24 @@
             </el-row>
         </el-header>
         <el-main>
-            <!-- 侧边栏，用于递归显示找到的任务数据 -->
             <el-menu>
-                <TaskTree :taskData="searchedResult" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                <TaskTree 
+                :taskData="searchedResult" 
+                :taskLevel="''" 
+                :chosenTask="chosenTaskId" 
+                v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
             </el-menu>
         </el-main>
         <el-drawer 
             title="任务过滤器"
             :visible.sync="fliterDrawer"
-            direction="ttb"
+            direction="ltr"
             :before-close="handleFliterClose"
             :modal-append-to-body='false'
             size='60%'
             >
-            <el-form label-width="150px" ref='fliterForm' :model='fliterForm' status-icon>
-                <!-- 任务名称 -->
+            <el-form label-width="150px" ref='fliterForm' :model='fliterForm' :rules="rules" status-icon>
+                <!-- taskName -->
                 <el-form-item label="任务名称:" prop="taskName">
                     <el-row>
                         <el-col :span='14'>
@@ -31,7 +34,7 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
-                <!-- 任务标签 -->
+                <!-- tags -->
                 <el-form-item label="任务标签:" prop="tags">
                     <el-row type="flex" justify="start">
                         <el-col :span="17">
@@ -49,7 +52,7 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
-                <!-- 任务优先级 -->
+                <!-- privilege -->
                 <el-form-item label="任务优先级:" prop="privilege">
                     <el-row>
                       <el-col>
@@ -57,7 +60,7 @@
                       </el-col>
                   </el-row>
                 </el-form-item>
-                <!-- 任务开始时间 -->
+                <!-- createDate -->
                 <el-form-item label="任务开始时间" prop="createDate">
                     <el-row>
                         <el-col>
@@ -65,7 +68,7 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
-                <!-- 任务结束时间 -->
+                <!-- dueDate -->
                 <el-form-item label="任务结束时间:" prop="dueDate">
                     <el-row>
                         <el-col>
@@ -73,13 +76,40 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
+                <!-- status -->
+                <el-form-item label="任务状态:" prop="status">
+                    <el-row>
+                        <el-col>
+                            <el-checkbox v-model="notFinished">未完成</el-checkbox>
+                            <el-checkbox v-model="finished">已完成</el-checkbox>
+                            <el-checkbox v-model="expired">已过期</el-checkbox>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+                <!-- type -->
+                <el-form-item label="任务类型:" prop="type">
+                    <el-row>
+                        <el-col>
+                            <el-radio label="0" v-model="fliterForm.type">个人任务</el-radio>
+                            <el-radio label="1" v-model="fliterForm.type">组队任务</el-radio>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+                <!-- teamName -->
+                <el-form-item label="队伍名称:" prop="teamName" v-show="fliterForm.type==='1'">
+                    <el-row>
+                        <el-col :span='14'>
+                            <el-input placeholder='请输入队伍名称...' clearable v-model='fliterForm.teamName'></el-input>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
             </el-form>
             <el-row>
                 <el-col :span="5">
-                    <el-button type='primary'>确定</el-button>
+                    <el-button type='primary' @click="searchRequest">确定</el-button>
                 </el-col>
                 <el-col :span="5">
-                    <el-button type='danger'>取消</el-button>
+                    <el-button type='danger' @click="handleFliterClose">取消</el-button>
                 </el-col>
             </el-row>
         </el-drawer>
@@ -109,57 +139,74 @@ export default {
       TaskShow
   },
   data() {
+      var checkDueDate = (rule, value, callback)=> {
+          if(new Date(value) <= new Date(this.fliterForm.createDate)) {
+              return callback(new Error('截止时间不能在开始时间前'))
+          }
+          callback()
+      };
       return {
-          // 用户选中的任务的key
           chosenTaskId:'-1',
-          // 搜索结果
           searchedResult:[],
-          // 过滤器表单
           fliterForm:{
-            //   任务名
-              taskName:'',
-            //   任务开始时间
-              createDate:'',
-            //   任务截止时间
-              dueDate:'',
-            //   任务标签
-              tags:[],
-            //   优先级
-              privilege:0
+              taskName:null,
+              createDate:null,
+              dueDate:null,
+              tags:null,
+              privilege:null,
+              status:null,
+              teamName:null,
+              type:null,
+              finished:false,
+              notFinished:false,
+              expired:false,
           },
-        //   用户添加的标签
-          addedTag:'',
+          addedTag:null,
           inputVisible:false,
-          // 是否显示过滤器的抽屉
           fliterDrawer:false,
-          // 是否显示任务信息的抽屉
           taskInfoDrawer:false,
-          texts:['低','中','高','很高']
+          texts:['低','中','高','很高'],
+          rules:{
+              dueDate:[{validator:checkDueDate, trigger:'blur'}]
+          }
       }
   },
   methods: {
-      // 向后端发送搜索任务的请求
-      searchRequest(event) {
+      searchRequest() {
           const that = this
           axios.post(
-              'http://localhost:8081',
+              'http://localhost:8081/api/task/query',
               {
-                //   过滤的参数
+                createDate:this.fliterForm.createDate,
+                dueDate:this.fliterForm.dueDate,
+                privilege:this.fliterForm.privilege,
+                status:this.generateStatusList(),
+                tags:this.fliterForm.tags,
+                taskName:this.fliterForm.taskName,
+                teamName:this.fliterForm.teamName,
+                type:this.fliterForm.type
+              },
+              {
+                headers:{
+                    Authorization:window.localStorage.getItem('token')
+                }
               }
           ).then(
               function(response) {
-                  that.$message(
-                      {
+                  alert(response.data.msg)
+                  if(response.data.code == 200) {
+                      that.searchedResult = response.data.data
+                      that.$message({
                           message:'查询成功',
                           type:'success'
-                      }
-                  )
-                  // TODO:检索完以后，清空过滤器表单
-                  
+                      })
+                      that.clear()
+                  } else {
+                      that.$message.error('查询失败')
+                  }
               },
               function(err) {
-                  that.$message.error('查询失败')
-                // 清空过滤器表单
+                  that.$message.error('响应失败,查询失败')
               }
           )
       },
@@ -175,7 +222,6 @@ export default {
 
           return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
       },
-      // 打开过滤器抽屉
       openFliter() {
           this.fliterDrawer = true
       },
@@ -184,6 +230,7 @@ export default {
       },
       handleFliterClose() {
           this.fliterDrawer = false
+          this.clear()
       },
       handleInputConfirm() {
           let inputValue = this.addedTag;
@@ -197,6 +244,8 @@ export default {
                 }
                 }
                 this.fliterForm.tags.push(inputValue);
+            } else {
+                this.$message.error('添加的标签不能为空')
             }
             this.inputVisible = false;
             this.addedTag = '';
@@ -210,6 +259,27 @@ export default {
             this.$refs.saveTagInput.$refs.input.focus();
         });
       },
+      generateStatusList() {
+          let array = []
+          if(this.finished) {
+              array.push(0)
+          }
+          if(this.notFinished) {
+              array.push(1)
+          }
+          if(this.expired) {
+              array.push(2)
+          }
+      },
+      clear() {
+          for(let i in this.fliterForm) {
+              this.fliterForm[i] = null
+          }
+          this.finished = false
+          this.notFinished = false
+          this.expired = false
+      },
+      
 
   }
 

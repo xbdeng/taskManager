@@ -3,6 +3,7 @@ package com.hungry.taskmanager.controller;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
+import com.hungry.taskmanager.entity.post_entities.EditTaskParams;
 import com.hungry.taskmanager.entity.post_entities.QueryTaskParams;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import com.hungry.taskmanager.utils.JWTUtil;
@@ -64,10 +65,10 @@ public class TaskController {
     }
 
     @PostMapping("/edittask")
-    @ApiOperation(value = "create a task",notes = "modified information is required only")
-    public Result<String> editTask(@RequestParam("taskId") long id, @RequestBody CreateTaskParams params) {
+    @ApiOperation(value = "edit a task",notes = "modified information is required only")
+    public Result<String> editTask(@RequestBody EditTaskParams params) {
         try {
-            int result = taskServiceImpl.editTask(id, params);
+            int result = taskServiceImpl.editTask(params);
             if (result != 200){
                 throw new Exception("server error");
             }
