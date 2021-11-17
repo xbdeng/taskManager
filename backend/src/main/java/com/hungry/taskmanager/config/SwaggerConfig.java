@@ -52,8 +52,8 @@ public class SwaggerConfig {
                 "task manager",
                 "task manager Swagger API文档",
                 "1.0",
-                "https://localhost:8080",
-                new Contact("Baret-H", "https://bareth.blog.csdn.net/", ""),//作者信息
+                "https://localhost:8081",
+                new Contact("task manager", "https://github.com/xbdeng/taskManager", ""),//作者信息
                 "Apache 2.0",
                 "https://www.apache.org/licenses/LICENSE-2.0",
                 new ArrayList<VendorExtension>());
