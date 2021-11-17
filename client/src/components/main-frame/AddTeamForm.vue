@@ -83,9 +83,12 @@ export default {
                 ).then(
                     function(response) {
                         alert(response.data.msg)
+                        for(let i in this.teamForm) {
+                            this.teamForm[i] = ''
+                        }
                     },
                     function(err) {
-                        this.$message.error('相应错误，添加组失败')
+                        this.$message.error('响应错误，添加组失败')
                     }
                 )
                 that.toCalendar()

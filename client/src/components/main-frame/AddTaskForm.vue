@@ -235,7 +235,7 @@ export default {
                 )
             },
             function(err) {
-                that.$message.error('请求失败')
+                that.$message.error('响应失败，添加标签失败')
             }
         )
     },

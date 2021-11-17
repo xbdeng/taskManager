@@ -153,7 +153,7 @@
               </el-col>
             </el-row>
             <!-- 如果是组队任务，显示这个任务覆盖的组员 -->
-            <el-row v-show="tempTaskForm.type==1">
+            <el-row v-show="tempTaskForm.type==1 || tempTaskForm.type==='1'">
               <!-- 显示组内成员的组件 -->
                   <el-col :span="4">
                       <span style="font-weight:bold">任务成员：</span>
@@ -177,7 +177,7 @@
                         <el-row>
                             <el-col>
                               <!-- 穿梭框左边显示:我的好友 -->
-                                <el-transfer :data="Friends" filterable :button-texts="['取消邀请','邀请进组']" v-model="invitedMembers" :titles="['我的好友','邀请名单']"></el-transfer>
+                                <el-transfer :data="this.Friends" filterable :button-texts="['取消邀请','邀请进组']" v-model="invitedMembers" :titles="['我的好友','邀请名单']"></el-transfer>
                             </el-col>
                         </el-row>
                         <el-row>
@@ -190,7 +190,7 @@
                             <el-tooltip content="点击可邀请成员进组" slot="reference">
                             <el-link type='primary'>
                               <!-- 点击请求好友数据 -->
-                                <i class="el-icon-plus" @click="postFriends"></i>
+                                <i class="el-icon-plus"></i>
                             </el-link>
                             </el-tooltip>
                         </el-popover>
@@ -248,53 +248,33 @@
 export default {
 
   name: 'TaskShow',
-  // 这个组件接收的参数是一个任务对象
-  props: ['singleTaskData','drawer'],
-  watch:{
-    // 关闭抽屉的时候，同步数据
-    'drawer':function() {
-      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
-    }
-  },
+  props: ['singleTaskData','Friends'],
   data() {
     return {
       inputVisible:false,
-      // 添加的标签，是一个字符串类型的数组
-      addedTag:'',
-      // 任务优先级的评价词，在el-rate中使用
+      addedTag:null,
       texts:['低','中','高','很高'],
-      // 修改后的任务的优先级
       editedPriority:null,
-      // 修改后的任务开始时间
       editedStartTime:null,
-      // 修改后的任务结束时间
       editedDDL:null,
-      // 修改后任务的状态
       editedStatus:0,
-      // 添加的子任务名
       subTaskName:null,
-      // 组队任务邀请的成员名单
       invitedMembers:[],
-      // 修改后的任务名
-      editedTaskName:'',
-      editedDescription:'',
-      Friends:[],
-      // 暂存区,对传入的singleTaskData进行深拷贝
+      editedTaskName:null,
+      editedDescription:null,
+      Friends:this.Friends,
       tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData))
     }
   },
   methods:{
-    // 鼠标移过，改变样式
     changeToActive($event) {
       if(document.getElementById('origin') != null)
         document.getElementById('origin').id = 'active'
     },
-    // 鼠标移出，改变样式
     changeToOrigin($event) {
       if(document.getElementById('active') != null)
         document.getElementById('active').id = 'origin'
     },
-    // 鼠标点击，固定样式
     postTaskFinished($event) {
       if(document.getElementById('active') != null) {
         document.getElementById('active').id = 'defined'
@@ -302,41 +282,36 @@ export default {
       else if(document.getElementById('defined') != null) {
         document.getElementById('defined').id = 'origin'
       }
-      // 任务已完成，0是未完成，1是已完成，2是已过期
       this.editedStatus = 1
     },
     deleteTag(tag) {
-      // 动态删除某个标签
       this.tempTaskForm.tags.splice(this.tempTaskForm.taskTags.indexOf(tag), 1);
     },
-    // 显示添加标签的输入框
     showInput() {
       this.inputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
-    // 用户摁下Enter，将标签数组添加到暂存区
     handleInputConfirm() {
       let inputValue = this.addedTag;
-      if(inputValue) {
+      if(inputValue != null) {
         for(let i in this.tempTaskForm.tags) {
           if(this.tempTaskForm.tags[i] === inputValue) {
             this.$message.error('添加失败，已有该标签')
             this.inputVisible = false;
-            this.addedTag = '';
+            this.addedTag = null;
             return 
           }
         }
         this.tempTaskForm.tags.push(inputValue);
       }
       this.inputVisible = false;
-      this.addedTag = '';
+      this.addedTag = null;
     },
-    // 修改任务名
     editTaskName() {
       let value = this.editedTaskName
-      if(value != '') {
+      if(value != null) {
         this.tempTaskForm.taskName = value
         this.editedTaskName = null
       }
@@ -344,7 +319,6 @@ export default {
         this.$message.error('修改失败，修改后的任务名不能为空')
       }
     },
-    // 将修改后的任务优先级添加到暂存区
     editPriority() {
       let value = this.editedPriority
       if(value != null) {
@@ -352,7 +326,6 @@ export default {
       }
       this.editedPriority = null
     },
-    // 将修改后的开始时间添加到暂存区
     editStartTime() {
       let value = this.editedStartTime
       if(value != null) {
@@ -367,26 +340,6 @@ export default {
       }
       this.editedDDL = null
     },
-    addSubTask() {
-      let value = this.subTaskName
-      if(value != null) {
-        this.tempTaskForm.subTasks.push({
-          taskName:value
-        })
-      }
-      this.subTaskName = null
-    },
-    // 点击确认修改后的动作
-    postEdit() {
-      this.$emit('editTask',this.tempTaskForm)
-      // 提交给后端处理后，将抽屉中展示的任务数据刷新
-      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
-    },
-    // 点击添加，请求好友数据
-    postFriends() {
-      // TODO: 向后端请求好友数据，放进Friends中
-    },
-    // 将添加的任务成员存放到暂存区中
     editInvitedMembers() {
       let value = this.invitedMembers
       if(value != null) {
@@ -400,7 +353,22 @@ export default {
         this.tempTaskForm.description = this.editedDescription
       }
       this.editedDescription = null
-    }
+    },
+    addSubTask() {
+      let value = this.subTaskName
+      if(value != null) {
+        if(this.tempTaskForm.subTasks == null) {
+          this.tempTaskForm.subTasks = []
+        }
+        this.tempTaskForm.subTasks.push({
+          taskName:value
+        })
+      }
+      this.subTaskName = null
+    },
+    postEdit() {
+      //TODO:调用修改任务接口
+    },
   }
   
 }

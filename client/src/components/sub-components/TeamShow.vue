@@ -157,13 +157,7 @@ export default {
 
   name: 'TeamShow',
   // 这个组件接收的参数是一个组对象
-  props: ['singleTeamData','drawer'],
-  watch:{
-    // 关闭抽屉的时候，同步数据
-    'drawer':function() {
-      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
-    }
-  },
+  props: ['singleTeamData'],
   data() {
       // 生成普通成员的穿梭框信息
       const generateTransferData = _ => {
@@ -191,17 +185,11 @@ export default {
           memberList:[],
           transferData:generateTransferData(),
           friends:generateFriendData(),
-        //   重新设置后的管理员名单
           editedAdmins:[],
-        //   邀请进组的名单
           invitedMembers:[],
-        //   鼠标移入的成员
           mousein:null,
-        //   修改后的队伍名
           editedTeamName:null,
-        //   修改后的队伍描述信息
           editedTeamDescription:null,
-        //   暂存区
           tempTeamInfo:JSON.parse(JSON.stringify(this.singleTeamData))
       }
   },
@@ -274,11 +262,8 @@ export default {
           }
           this.editedTeamDescription = null
       },
-    //   向父组件传递修改后的值
     postEdit() {
-        this.$emit('editTeam', this.tempTeamInfo)
-        // 刷新数据
-        this.tempTeamInfo = JSON.parse(JSON.stringify(this.singleTeamData))
+        // 向后端提交修改后的组的信息
     }
     
   }

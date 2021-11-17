@@ -28,7 +28,7 @@
             :before-close="handleTeamInfoClose"
             :modal-append-to-body='false'
             size='50%'>
-                <TeamShow :singleTeamData="teamInfo[selectedTeam]" :drawer="teamInfoDrawer"></TeamShow>
+                <TeamShow :singleTeamData="teamInfo[selectedTeam]"></TeamShow>
             </el-drawer>
             <!-- 用于显示任务信息 -->
             <el-drawer 

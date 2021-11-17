@@ -72,7 +72,6 @@
             >
                 <TaskShow 
                 :singleTaskData="getTask(chosenTaskId)" 
-                :drawer="drawer" 
                 v-on:editTask='editTask'></TaskShow>
             </el-drawer>
         </el-container>
