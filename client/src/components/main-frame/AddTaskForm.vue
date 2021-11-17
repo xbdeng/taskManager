@@ -49,10 +49,10 @@ mo<template>
                         </el-row>
                     </el-form-item>
                     <!--Task Priority-->
-                    <el-form-item label='任务优先级：' prop='priviledge'>
+                    <el-form-item label='任务优先级：' prop='privilege'>
                         <el-row>
                             <el-col :span='11'>
-                                <el-select placeholder='请选择任务优先级' v-model='taskForm.priviledge'>
+                                <el-select placeholder='请选择任务优先级' v-model='taskForm.privilege'>
                                     <el-option v-for='item in priorityArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
                                 </el-select>
                             </el-col>
@@ -94,7 +94,7 @@ mo<template>
                             </el-col>
                         </el-row>
                     </el-form-item>
-                </el-form> 
+                </el-form>
             </el-main>
 
             <el-footer>
@@ -256,7 +256,7 @@ export default {
           // alert(this.taskForm.createDate)
           // this.taskForm.dueDate = new Date(this.taskForm.dueDate)
           this.$refs[formName].validate((valid)=>{
-              
+
               if(valid) {
                 //   向父组件<Main>传值
                   this.$emit('taskFormData',that.taskForm)
