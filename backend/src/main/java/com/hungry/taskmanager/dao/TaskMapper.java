@@ -12,8 +12,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 public interface TaskMapper extends BaseMapper<Task> {
-    @Select("SELECT IFNULL(MAX(task_id)+1, 0) FROM task")
-    BigInteger newId();
 
     @Select("SELECT task.task_id FROM task INNER JOIN task_tag ON task.task_id = task_tag.task_id INNER JOIN tag " +
             "ON task_tag.tag_id = tag.tag_id")

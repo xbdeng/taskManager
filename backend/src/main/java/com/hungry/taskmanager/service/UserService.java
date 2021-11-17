@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.service;
 
 
+import com.hungry.taskmanager.dto.TagDTO;
 import com.hungry.taskmanager.dto.TeamDTO;
 import com.hungry.taskmanager.dto.UserDTO;
 import com.hungry.taskmanager.entity.*;
@@ -36,4 +37,8 @@ public interface UserService {
 
     //获取个人信息
     UserDTO getProfile(String username);
+
+    void addTag(TagDTO params);
+
+    List<Tag> selectTags(TagDTO params);
 }
