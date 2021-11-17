@@ -189,6 +189,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import axios from 'axios'
+import qs from 'qs'
 
 export default {
   name: "Main",
@@ -297,7 +298,8 @@ export default {
         weekends: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
+        eventsSet: this.handleEvents,
+        eventChange: this.handleEventChange
         /* you can update a remote database when these fire:
         eventAdd:
         eventChange:
@@ -409,6 +411,17 @@ export default {
       // }
       this.showTask()
     },
+    handleEventChange(event, delta, revertFunc){
+      // console.log(event)
+      let taskId = parseInt(event.event.id);
+      let start = event.event.start;
+      let end = event.event.end;
+      this.changeCalendarData(taskId, start, end);
+      this.$message({
+        message: 'update success',
+        type: 'success'
+      })
+    },
     // 日历点击任务时出现详细信息
     handleEventClick(clickInfo) {
       // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
@@ -428,14 +441,43 @@ export default {
         }
       }
     },
+
+    changeCalendarData(taskId, start, end){
+      const that = this;
+      axios.post(
+          'http://localhost:8081/api/task/edittask',
+          {
+            taskId: taskId,
+            createDate: start,
+            dueDate: end
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            console.log(response)
+            that.showCalendarData()
+          },
+          function (err) {
+            that.$message({
+              message: 'server error',
+              type: 'error'
+            })
+          }
+      )
+    },
     // axios get tasks
     showCalendarData() {
       const that = this;
-      console.log(window.localStorage.getItem('token'));
+      // console.log(window.localStorage.getItem('token'));
       axios.post(
           'http://localhost:8081/api/task/query',
           {
             // fliter
+            scheduledTask: 0
           },
           {
             headers: {
@@ -537,7 +579,7 @@ export default {
                 } else {
                   that.$message.error('请求用户创建或管理的组失败')
                 }
-                
+
             },
             function(err) {
                 that.$message.error('响应错误,请求用户创建或管理的组失败')
