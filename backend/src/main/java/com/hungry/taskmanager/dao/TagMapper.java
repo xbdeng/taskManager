@@ -13,7 +13,7 @@ public interface TagMapper extends BaseMapper<Tag> {
     @Select("SELECT IFNULL(MAX(tag_id)+1, 0) FROM tag")
     BigInteger newId();
 
-    @Insert("INSERT IGNORE INTO tag(tag_id, tag_name, user_id) VALUES(#{tagId}, #{tagName}, #{userId})")
+    @Insert("INSERT IGNORE  INTO tag(tag_id, tag_name, user_id) VALUES(#{tagId}, #{tagName}, #{userId})")
     int insert(Tag entity);
 
     @Select("SELECT tag.tag_id AS tag_id, tag.tag_name AS tag_name, tag.user_id AS user_id FROM tag INNER JOIN user_task_tag AS utt ON " +

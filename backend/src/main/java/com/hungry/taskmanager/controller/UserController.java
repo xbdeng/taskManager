@@ -1,9 +1,7 @@
 package com.hungry.taskmanager.controller;
 
-import com.hungry.taskmanager.dto.LoginDTO;
-import com.hungry.taskmanager.dto.RegisterInfoDTO;
-import com.hungry.taskmanager.dto.TeamDTO;
-import com.hungry.taskmanager.dto.UserDTO;
+import com.hungry.taskmanager.dto.*;
+import com.hungry.taskmanager.entity.Tag;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.service.UserService;
 import com.hungry.taskmanager.utils.JWTUtil;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -119,5 +118,38 @@ public class UserController {
         UserDTO me = userService.getProfile(username);
         return new Result<>(200,"请求成功",me);
     }
+
+    @PostMapping("/addtag")
+    @RequiresAuthentication
+    @ApiOperation(value="add a tag")
+    public Result<String> addTag(@RequestBody TagDTO params, HttpServletRequest request){
+        try{
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            userService.addTag(params.setTagName(username));
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Result<String>(500, "server error", "");
+        }
+        return new Result<String>(200, "successfully add a tag", "");
+    }
+
+    @PostMapping("/selecttags")
+    @RequiresAuthentication
+    @ApiOperation(value="select a tag")
+    public Result<List<Tag>> selectTags(@RequestBody TagDTO params, HttpServletRequest request){
+        Result<List<Tag>> result = new Result<>();
+        try{
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            result.setData(userService.selectTags(params.setTagName(username)));
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Result<>(500, "server error", new ArrayList<>());
+        }
+        return result;
+    }
+
+
 
 }
