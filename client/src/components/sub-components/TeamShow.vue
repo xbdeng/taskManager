@@ -63,7 +63,7 @@
                         </el-dropdown-menu>
                     </el-dropdown>
                   </el-col>
-                  <!-- 设置管理员的接口 -->
+                  <!-- 添加管理员的接口 -->
                     <el-col :span="7">
                         <el-popover placement="top" width="900" trigger="click" title="设置管理员">
                             <el-row>
@@ -79,6 +79,28 @@
                                 </el-col>
                             </el-row>
                                 <el-tooltip content="点击可设置管理员" slot="reference">
+                                <el-link type='primary'>
+                                    <i class="el-icon-edit"></i>
+                                </el-link>
+                                </el-tooltip>
+                        </el-popover>
+                    </el-col>
+                    <!-- 取消管理员的接口 -->
+                    <el-col :span="7">
+                        <el-popover placement="top" width="900" trigger="click" title="删除管理员">
+                            <el-row>
+                                <el-col>
+                                    <el-transfer :data="adminTransferData" filterable :button-texts="['重新设置成管理员','取消管理员权限']" v-model="removedAdmins" :titles="['管理员','取消管理员名单']"></el-transfer>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :offset="8">
+                                    <el-button type='primary' @click="removeAdmins">确定</el-button>
+                                    <!-- TODO:点击取消后的动作 -->
+                                    <el-button type="danger">取消</el-button>
+                                </el-col>
+                            </el-row>
+                                <el-tooltip content="点击可撤销管理员" slot="reference">
                                 <el-link type='primary'>
                                     <i class="el-icon-edit"></i>
                                 </el-link>
@@ -179,12 +201,25 @@ export default {
               });
           }
           return data
-    }
+    };
+    // 生成管理员列表，显示在穿梭框中
+     const generateAdminData = _ => {
+        const data = []
+          for(let i in this.tempTeamInfo.admins) {
+              data.push({
+                  key:this.tempTeamInfo.admins[i],
+                  value:this.tempTeamInfo.admins[i]
+              });
+          }
+          return data
+    };
       return {
           memberList:[],
           transferData:generateTransferData(),
+          adminTransferData:generateAdminData(),
           friends:generateFriendData(),
           editedAdmins:[],
+          removedAdmins:[],
           invitedMembers:[],
           mousein:null,
           editedTeamName:null,
@@ -259,23 +294,58 @@ export default {
           }
           this.editedTeamName = null
       },
-    //   将修改后的editedAdmins添加到暂存区
       editAdmins() {
           let value = this.editedAdmins
+          let that = this
           if(value != null) {
-              this.tempTeamInfo.admins.concat(value)
+              axios.post(
+                  'http://localhost:8081/api/team/setadmin',
+                  {
+                      teamId:that.tempTeamInfo.teamId,
+                      userName:value
+                  },
+                  {
+                    headers:{
+                        Authorization:window.localStorage.getItem('token')
+                    }
+                  }
+              ).then(
+                  function(response) {
+                      alert(response.data.msg)
+                  },
+                  function(err) {
+                      that.$message.error('响应失败，添加管理员失败')
+                  }
+              )
           }
           this.editedAdmins = null
       },
-    //   将邀请的成员添加到暂存区
       editInvitedMembers() {
+          let that = this
           let value = this.invitedMembers
           if(value != null) {
-              this.tempTeamInfo.members.concat(value)
+              axios.post(
+                  'http://localhost:8081/api/team/addmember',
+                  {
+                      teamId:that.tempTeamInfo.teamId,
+                      userName:value
+                  },
+                  {
+                    headers:{
+                        Authorization:window.localStorage.getItem('token')
+                    }
+                  }
+              ).then(
+                  function(response) {
+                      alert(response.data.msg)
+                  },
+                  function(err) {
+                      that.$message.error('响应失败,邀请成员失败')
+                  }
+              )
           }
           this.invitedMembers = null
       },
-    //   将修改后的任务描述信息添加到暂存区
       editDescription() {
           let value = this.editedTeamDescription
           if(value != null) {
@@ -325,6 +395,32 @@ export default {
                   that.$message.error('响应失败，退出组失败')
               }
           )
+      },
+      removeAdmins() {
+          let value = this.removedAdmins
+          if(value != null) {
+              let that = this
+              axios.post(
+                  'http://localhost:8081/api/team/removeadmin',
+                  {
+                      teamId:that.tempTeamInfo.teamId,
+                      userName:value
+                  },
+                  {
+                    headers:{
+                        Authorization:window.localStorage.getItem('token')
+                    }
+                  }
+              ).then(
+                  function(response) {
+                      alert(response.data.msg)
+                  },
+                  function(err) {
+                      that.$message.error('响应失败，撤销管理员失败')
+                  }
+              )
+          }
+          this.removedAdmins = null
       }
     
   }
