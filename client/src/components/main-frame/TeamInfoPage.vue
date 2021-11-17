@@ -16,7 +16,11 @@
             <!-- 侧边栏，用于显示这个组的所有任务 -->
             <el-main>
                 <el-menu>
-                    <TaskTree :taskData="teamInfo[this.selectedTeam].teamTasks" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                    <TaskTree 
+                    :taskData="teamInfo[this.selectedTeam].teamTasks" 
+                    :taskLevel="''" 
+                    :chosenTask="chosenTaskId" 
+                    v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                 </el-menu>
             </el-main>
 
@@ -31,7 +35,8 @@
                 <TeamShow 
                 :singleTeamData="teamInfo[selectedTeam]"
                 :username="this.username"
-                :Friends="this.Friends"></TeamShow>
+                :Friends="this.Friends"
+                v-on:closeTeamDrawer="closeTeamDrawer($event)"></TeamShow>
             </el-drawer>
             <!-- 用于显示任务信息 -->
             <el-drawer 
@@ -41,7 +46,9 @@
             :before-close="handleTaskInfoClose"
             :modal-append-to-body='false'
             size='50%'>
-                <TaskShow :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)" v-on:editTeam='editTeam'></TaskShow>
+                <TaskShow 
+                :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)" 
+                v-on:closeTaskDrawer='closeTaskDrawer($event)'></TaskShow>
             </el-drawer>
 
             <!-- 用于显示组的信息 -->
@@ -102,6 +109,12 @@ export default {
     handleTeamInfoClose() {
         this.teamInfoDrawer = false
     },
+    closeTaskDrawer(a) {
+        this.taskInfoDrawer = false
+    },
+    closeTeamDrawer(a) {
+        this.teamInfoDrawer = false
+    }
 }
 
 }

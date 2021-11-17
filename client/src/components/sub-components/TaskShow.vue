@@ -235,7 +235,7 @@
               </el-col>
               <el-col>
                 <!-- TODO: 删除任务 -->
-                <el-button type="danger" round >删除任务</el-button>
+                <el-button type="danger" round @click="closeDrawer">删除任务</el-button>
               </el-col>
             </el-row>
           </el-main>
@@ -367,21 +367,22 @@ export default {
       this.subTaskName = null
     },
     postEdit() {
+      let that = this
       axios.post(
         'http://localhost:8081/api/task/edittask',
         {
-          createDate:this.tempTaskForm.createDate,
-          description:this.tempTaskForm.description,
-          dueDate:this.tempTaskForm.dueDate,
+          createDate:that.tempTaskForm.createDate,
+          description:that.tempTaskForm.description,
+          dueDate:that.tempTaskForm.dueDate,
           //fatherTask
-          members:this.tempTaskForm.members,
-          privilege:this.tempTaskForm.privilege,
-          status:this.tempTaskForm.status,
-          subTasks:this.tempTaskForm.subTasks,
-          tags:this.tempTaskForm.tags,
-          taskName:this.tempTaskForm.taskName,
+          members:that.tempTaskForm.members,
+          privilege:that.tempTaskForm.privilege,
+          status:that.tempTaskForm.status,
+          subTasks:that.tempTaskForm.subTasks,
+          tags:that.tempTaskForm.tags,
+          taskName:that.tempTaskForm.taskName,
           //teamName
-          type:this.tempTaskForm.type
+          type:that.tempTaskForm.type
         },
         {
             headers:{
@@ -391,12 +392,16 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
+          that.$emit('closeDrawer',{})
         },
         function(err) {
           this.$message.error('响应失败,修改任务失败')
         }
       )
     },
+    closeDrawer() {
+      this.$emit('closeTaskDrawer',{})
+    }
   }
   
 }
