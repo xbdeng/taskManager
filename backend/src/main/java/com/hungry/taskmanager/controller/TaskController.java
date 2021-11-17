@@ -56,12 +56,11 @@ public class TaskController {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            result.setData(taskServiceImpl.queryTask(filter.setUsername(username)))  ;
+            return result.setData(taskServiceImpl.queryTask(filter.setUsername(username))).setCode(200).setMsg("query successfully") ;
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<List<Task>>(500, "server error", null);
         }
-        return result;
     }
 
     @PostMapping("/edittask")

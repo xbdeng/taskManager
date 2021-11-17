@@ -109,8 +109,9 @@ public class TaskServiceImpl implements TaskService{
     //todo bug
     public List<Task> queryTask(QueryTaskParams filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
+        filter.setUserId(userId);
         // configure range
-        if (filter.getScheduledTask() == 1){
+        if (filter.getScheduledTask() != null && filter.getScheduledTask() == 1){
             switch(filter.getTimeRange()){
                 case(0):{
                     LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
@@ -136,6 +137,9 @@ public class TaskServiceImpl implements TaskService{
             }
         }
         List<Task> tasks = taskMapper.queryTask(filter.setUserId(userId));
+        if (tasks.size() == 0){
+            return new ArrayList<>();
+        }
         Map<BigInteger, Task> taskMap = new HashMap<>();
         for (Task task : tasks) {
             taskMap.put(task.getTaskId(), task);

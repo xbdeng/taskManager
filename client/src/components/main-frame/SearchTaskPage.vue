@@ -80,9 +80,9 @@
                 <el-form-item label="任务状态:" prop="status">
                     <el-row>
                         <el-col>
-                            <el-checkbox v-model="notFinished">未完成</el-checkbox>
-                            <el-checkbox v-model="finished">已完成</el-checkbox>
-                            <el-checkbox v-model="expired">已过期</el-checkbox>
+                            <el-checkbox v-model="this.notFinished">未完成</el-checkbox>
+                            <el-checkbox v-model="this.finished">已完成</el-checkbox>
+                            <el-checkbox v-model="this.expired">已过期</el-checkbox>
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -177,14 +177,14 @@ export default {
           axios.post(
               'http://localhost:8081/api/task/query',
               {
-                createDate:this.fliterForm.createDate,
-                dueDate:this.fliterForm.dueDate,
-                privilege:this.fliterForm.privilege,
-                status:this.generateStatusList(),
-                tags:this.fliterForm.tags,
-                taskName:this.fliterForm.taskName,
-                teamName:this.fliterForm.teamName,
-                type:this.fliterForm.type
+                createDate:that.fliterForm.createDate,
+                dueDate:that.fliterForm.dueDate,
+                privilege:that.fliterForm.privilege === 0 ? null : that.fliterForm.privilege - 1,
+                status:that.generateStatusList(),
+                tags:that.fliterForm.tags,
+                taskName:that.fliterForm.taskName,
+                teamName:that.fliterForm.teamName,
+                type:that.fliterForm.type
               },
               {
                 headers:{
@@ -194,7 +194,7 @@ export default {
           ).then(
               function(response) {
                   alert(response.data.msg)
-                  if(response.data.code == 200) {
+                  if(response.data.code === 200) {
                       that.searchedResult = response.data.data
                       that.$message({
                           message:'查询成功',
@@ -270,6 +270,8 @@ export default {
           if(this.expired) {
               array.push(2)
           }
+          if(array.length === 0) return null
+          return array
       },
       clear() {
           for(let i in this.fliterForm) {
