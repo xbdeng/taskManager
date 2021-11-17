@@ -61,6 +61,9 @@ export default {
   },
   methods:{
       toCalendar() {
+          for(let i in this.teamForm) {
+              this.teamForm[i] = null
+          }
         this.$emit('toCalendar',{});
       },
       submitForm(formName) {
@@ -83,15 +86,23 @@ export default {
                 ).then(
                     function(response) {
                         alert(response.data.msg)
-                        for(let i in this.teamForm) {
-                            this.teamForm[i] = ''
+                        if(response.data.code == 200) {
+                            that.$message({
+                                message:'新建组成功',
+                                type:'success'
+                            })
+                            for(let i in this.teamForm) {
+                                this.teamForm[i] = ''
+                            }
+                            that.toCalendar()
+                        } else {
+                            that.$message.error('新建组失败')
                         }
                     },
                     function(err) {
                         this.$message.error('响应错误，添加组失败')
                     }
                 )
-                that.toCalendar()
               } else {
                   alert('error submit !!')
                   return false

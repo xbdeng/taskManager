@@ -158,7 +158,7 @@
               <!-- TODO:点击按钮后执行的动作 -->
               <el-row type="flex" justify="start">
                   <el-col>
-                      <el-button type="primary" @click="postEdit">确定</el-button>
+                      <el-button type="primary" @click="closeTeamDrawer">确定</el-button>
                   </el-col>
                   <el-col>
                       <el-button type="danger" @click="removeMe">退出该组</el-button>
@@ -421,6 +421,9 @@ export default {
               )
           }
           this.removedAdmins = null
+      },
+      closeTeamDrawer() {
+          this.$emit('closeTeamDrawer',{})
       }
     
   }

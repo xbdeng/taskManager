@@ -72,6 +72,7 @@ mo<template>
                     <!-- 如果选择了组队任务，会多出一个多选框，选择给哪个队伍分配任务 -->
                     <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === '1'">
                         <el-col :span='10'>
+                            <!-- 单选 -->
                             <el-select placeholder='请选择任务分配的组别' v-model='taskForm.teams'>
                                 <el-option v-for="(team, tIndex) in myTeamInfo" :key="tIndex" :label="team.teamName" :value="team.teamName">
                                 </el-option>
@@ -149,6 +150,8 @@ export default {
     var checkTaskStartTime = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务开始时间不能为空！'));
+        } else if(new Date(value) >= new Date(this.taskForm.createDate)) {
+            return callback(new Error('任务的开始时间不能比结束时间还晚'))
         }
         callback()
     };
@@ -198,6 +201,9 @@ export default {
   },
   methods:{
     toCalendar() {
+        for(let i in this.taskForm) {
+            this.taskForm[i] = null
+        }
         this.$emit('toCalendar',{});
     },
 
@@ -215,11 +221,10 @@ export default {
             this.$message.error('添加失败，已有该标签')
             return ;
         }
-        // TODO:添加标签的接口未定
         axios.post(
-            'http://localhost:8081/api/user/addtags',
+            'http://localhost:8081/api/user/addtag',
             {
-                addedTag:that.addedTag
+                tagName:that.addedTag
             },
             {
                 headers:{
@@ -230,12 +235,18 @@ export default {
             function(response) {
                 alert(response.data.msg)
                 if(response.data.code == 200) {
-                    this.tagArray.push(
+                    that.$message({
+                        message:'添加标签成功',
+                        type:'success'
+                    })
+                    that.tagArray.push(
                         {
                             label:this.addedTag,
                             value:this.addedTag
                         }
                     )
+                } else {
+                    that.$message.error('添加标签失败')
                 }
             },
             function(err) {
@@ -272,14 +283,23 @@ export default {
             ).then(
                 function (response) {
                     alert(response.data.msg)
+                    if(response.data.code == 200) {
+                        that.$message({
+                            message:'新建任务成功',
+                            type:'success'
+                        })
+                        for(let key in this.taskForm) {
+                            this.taskForm[key] = ''
+                        }
+                    } else {
+                        that.$message.error('新建任务失败')
+                    }
                 },
                 function (err) {
-                    that.$message.error('响应错误')
+                    that.$message.error('响应错误，新建任务失败')
                 }
             )
-            for(let key in this.taskForm) {
-                this.taskForm[key] = ''
-            }
+            
             this.toCalendar()
             } else {
                 alert('error submit !!')
