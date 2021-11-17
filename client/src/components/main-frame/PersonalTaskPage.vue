@@ -11,7 +11,6 @@
                             <span slot="title">任务</span>
                         </template>
                     </el-menu-item>
-
                     <!-- 显示侧边栏中对应的“计划内任务”的数据 -->
                     <el-menu-item index="2" @click="showPlanedTask">
                         <template slot="title">
@@ -23,29 +22,45 @@
 
             <!-- 显示今天,一周内，稍后,任务的侧边栏 -->
             <el-main>
-                <!-- 默认展开"今天" -->
-                <el-menu :default-openeds="['today']">
-                    <el-submenu index='today'>
+                <el-menu :default-openeds="['today']" >
+                    <TaskTree
+                    v-show="taskShow"
+                    :taskData="this.taskData" 
+                    :taskLevel="''" 
+                    :chosenTask="chosenTaskId" 
+                    v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                    <el-submenu index='today' v-show="planedTaskShow">
                         <template slot="title">
-                            <span slot="title">今天</span>
+                            <span slot="title" @click="setSpecifier(0)">今天</span>
                         </template>
-                        <TaskTree :taskData="this.todayTaskData" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                        <TaskTree 
+                        :taskData="this.todayTaskData"
+                        :taskLevel="''"
+                        :chosenTask="chosenTaskId"
+                        v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                     </el-submenu>
-                    <el-submenu index='week'>
+                    <el-submenu index='week' v-show="planedTaskShow">
                         <template slot="title">
-                            <span slot="title">一周内</span>
+                            <span slot="title" @click="setSpecifier(1)">一周内</span>
                         </template>
-                        <TaskTree :taskData="this.weekTaskData" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                        <TaskTree 
+                        :taskData="this.weekTaskData" 
+                        :taskLevel="''" 
+                        :chosenTask="chosenTaskId"
+                        v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                     </el-submenu>
-                    <el-submenu index='later'>
+                    <el-submenu index='later' v-show="planedTaskShow">
                         <template slot="title">
-                            <span slot="title">稍后</span>
+                            <span slot="title" @click="setSpecifier(2)">稍后</span>
                         </template>
-                        <TaskTree :taskData="this.laterTaskData" :taskLevel="''" :chosenTask="chosenTaskId" v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                        <TaskTree 
+                        :taskData="this.laterTaskData" 
+                        :taskLevel="''" 
+                        :chosenTask="chosenTaskId" 
+                        v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                         </el-submenu>
                 </el-menu>
             </el-main>
-
             <!-- 显示任务信息 -->
             <el-drawer 
             title="查看或编辑任务"
@@ -55,7 +70,10 @@
             :modal-append-to-body='false'
             size='50%'
             >
-                <TaskShow :singleTaskData="getTask(chosenTaskId)" :drawer="drawer" v-on:editTask='editTask'></TaskShow>
+                <TaskShow 
+                :singleTaskData="getTask(chosenTaskId)" 
+                :drawer="drawer" 
+                v-on:editTask='editTask'></TaskShow>
             </el-drawer>
         </el-container>
     </div>
@@ -66,61 +84,38 @@ import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
 import axios from 'axios'
 export default {
-
   name: "PersonalTaskPage",
   components: {
     TaskTree,
     TaskShow
   },
-  watch:{
-      // 一旦要显示“任务”对应的数据，向后端发送请求
-      'taskShow':{
-
-      },
-    //   一旦要显示“计划内任务”对应的数据，向后端发送请求
-    // 同上
-      'planedTaskShow': {
-
-      }
-  },
+  props:['taskData','todayTaskData','weekTaskData','laterTaskData'],
   data() {
-        
-        return {
-            // 用户点击的任务的key
-            chosenTaskId:'-1',
-            // 是否显示"任务"对应的数据
-            taskShow:true,
-            // 是否显示"计划内任务"对应的数据
-            planedTaskShow:false,
-            // 0 显示今天，1 显示一周内，2显示稍后
-            Specifier:0,
-            // 任务信息显示与编辑界面
-            drawer:false,
-            // 今天的任务数据
-            todayTaskData:[],
-            // 一周内的任务数据
-            weekTaskData:[],
-            // “稍后”的任务数据
-            laterTaskData:[],
-        }
+    return {
+        chosenTaskId:'-1',
+        taskShow:true,
+        planedTaskShow:false,
+        Specifier:0,
+        drawer:false,
+        taskData:[],
+        todayTaskData:[],
+        weekTaskData:[],
+        laterTaskData:[],
+    }
   },
   methods: {
-      // 用户在侧边栏中点击今天后，显示今天的任务数据
     showTask() {
         this.taskShow = true
         this.planedTaskShow = false
     },
-    // 同上
     showPlanedTask() {
         this.taskShow = false
         this.planedTaskShow = true
     },
-    // 响应TaskTree中传上来的id
     chooseTasks(id) {
           this.chosenTaskId = id;
           this.drawer = true
     },
-    // 根据任务数组taskList和id找到对应的任务对象并返回
     getTaskById(taskList, id) {
         if (id === '-1') return {
             taskName:'Please choose your task'
@@ -131,32 +126,27 @@ export default {
         if (id.length == 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
     },
-    // 通过用户选中的任务的id，结合Specifier,确定显示哪一个任务的信息
     getTask(id)
     {
         switch(this.Specifier) {
-            // 选择“今天”的数据
             case 0:
-                return this.getTaskById(this.todayTaskData, id)
-            // 选择“一周内”的数据
+                return this.getTaskById(this.taskShow ? this.taskData : this.todayTaskData, id)
             case 1:
-                return this.getTaskById(this.weekTaskData, id)
-            // 选择“稍后”的数据
+                return this.getTaskById(this.taskShow ? this.taskData : this.weekTaskData, id)
             case 2:
-                return this.getTaskById(this.laterTaskData, id)
+                return this.getTaskById(this.taskShow ? this.taskData : this.laterTaskData,  id)
             default:
                 break;
         }
         return {};
     },
-    // 关闭展示任务信息的抽屉
     handleClose() {
         this.drawer = false
     },
-    // 进行任务修改,task是子组件TaskShow提交上来的修改后的任务数据
     editTask(task) {
-        // TODO:向后端请求修改任务
-        
+    },
+    setSpecifier(num) {
+        this.Specifier = num
     }
 }
 

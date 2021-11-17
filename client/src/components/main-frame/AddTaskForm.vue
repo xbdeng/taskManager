@@ -49,10 +49,10 @@ mo<template>
                         </el-row>
                     </el-form-item>
                     <!--Task Priority-->
-                    <el-form-item label='任务优先级：' prop='priviledge'>
+                    <el-form-item label='任务优先级：' prop='privilege'>
                         <el-row>
                             <el-col :span='11'>
-                                <el-select placeholder='请选择任务优先级' v-model='taskForm.priviledge'>
+                                <el-select placeholder='请选择任务优先级' v-model='taskForm.privilege'>
                                     <el-option v-for='item in priorityArray' :label='item.label' :value='item.value' :key="item.value"></el-option>
                                 </el-select>
                             </el-col>
@@ -70,7 +70,7 @@ mo<template>
                         </el-row>
                     </el-form-item>
                     <!-- 如果选择了组队任务，会多出一个多选框，选择给哪个队伍分配任务 -->
-                    <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === 'team'">
+                    <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === '1'">
                         <el-col :span='10'>
                             <el-select placeholder='请选择任务分配的组别' multiple v-model='taskForm.teams'>
                                 <el-option v-for="(team, tIndex) in myTeamInfo" :key="tIndex" :label="team.teamName" :value="team.teamName">
@@ -101,7 +101,7 @@ mo<template>
                 <!-- 点击添加任务，提交到父组件 -->
                 <el-button type='primary' @click="submitForm('taskForm')" >新建</el-button>
                 <!-- 点击取消，跳转到日历界面 -->
-                <el-button type="danger" @click="toCalendar">取消</el-button>
+                <el-button type="danger" @click="this.toCalendar">取消</el-button>
             </el-footer>
         </el-container>
     </div>
@@ -112,204 +112,177 @@ import axios from 'axios'
 const token = window.sessionStorage.getItem('token')
 export default {
   name: 'AddTaskForm',
-  props:['username'],
+  props:['username','tagArray','myTeamInfo'],
   data () {
-    // 任务名验证
     var checkTaskName = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务名不能为空！'));
         }
         callback()
     };
-    // 标签验证
     var checkTaskTags = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务标签不能为空！'));
         }
         callback()
     };
-    // 截止时间验证
     var checkTaskDDL = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务截止时间不能为空！'));
+        } else if(new Date(value) <= new Date()) {
+            return callback(new Error('任务的截止时间不能比当前时间还早'))
         }
         callback()
     };
-    // 优先级验证
     var checkTaskPriority = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务优先级不能为空！'));
         }
         callback()
     };
-    // 任务类型验证
     var checkTaskType = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务类型不能为空！'));
         }
         callback()
     };
-    // 开始时间验证
     var checkTaskStartTime = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务开始时间不能为空！'));
         }
         callback()
     };
-    // 任务描述验证
     var checkTaskDescription = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务描述信息不能为空！'));
         }
         callback()
     };
-
+    var checkTeams = (rule, value, callback)=>{
+        if (value === '') {
+            return callback(new Error('组队任务分配的组别不能为空！'));
+        }
+        callback()
+    };
     return {
-        // 添加的标签，是一个string类型的数组
         addedTag:'',
-        // 用户输入的表单内容
         taskForm:{
-            // 任务名
             taskName:'',
-            // 标签
             tags: '',
-            // 截止时间
             dueDate:'',
-            // 优先级
             privilege:'',
-            // 任务类型,0个人任务，1组
             type: '',
-            // 如果任务类型是组队任务，这个任务所覆盖的组，是一个字符串数组
             teams:'',
-            // 任务开始时间
             createDate:'',
-            // 任务描述
-            description:''
+            description:'',
         },
-        // 默认标签
-        tagArray:[
-            {label:'学习', value:'study'},
-            {label:'工作', value: 'work'}
-        ],
-        // 默认优先级
+        tagArray:this.tagArray,
         priorityArray:[
             {label:'极高', value:3},
             {label:'高',   value:2},
             {label:'中',   value:1},
             {label:'低',   value:0}
         ],
-        // 用户创建，或者管理的组,需要向后端获取
-        myTeamInfo:'',
-        // 表单的验证规则
+        myTeamInfo:this.myTeamInfo,
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
-            taskTags:[{validator:checkTaskTags, trigger:'blur'}],
-            taskDDL:[{validator:checkTaskDDL, trigger:'blur'}],
-            taskPriority:[{validator:checkTaskPriority, trigger:'blur'}],
-            taskType:[{validator:checkTaskType, trigger:'blur'}],
-            taskStartTime:[{validator:checkTaskStartTime, trigger:'blur'}],
-            taskDescription:[{validator:checkTaskDescription, trigger:'blur'}],
+            tags:[{validator:checkTaskTags, trigger:'blur'}],
+            dueDate:[{validator:checkTaskDDL, trigger:'blur'}],
+            privilege:[{validator:checkTaskPriority, trigger:'blur'}],
+            type:[{validator:checkTaskType, trigger:'blur'}],
+            createDate:[{validator:checkTaskStartTime, trigger:'blur'}],
+            description:[{validator:checkTaskDescription, trigger:'blur'}],
+            teams:[{validator:checkTeams, trigger:'blur'}]
         }
     }
   },
   methods:{
-    //   跳转到日历界面
     toCalendar() {
         this.$emit('toCalendar',{});
     },
-    //   添加用户自定义标签
-      addTag() {
-        //   判断要添加的标签是否已经存在,如果已经存在，报错
-          let flag = false
-          for(let i in this.tagArray) {
-              let item = this.tagArray[i]
-              if(item.label === this.addedTag) {
-                  flag = true
-                  break
-              }
-          }
-          if(flag) {
-              this.$message.error('添加失败，已有该标签')
-              return ;
-          }
-        //   向默认标签中添加该标签
-          this.tagArray.push(
-              {
-                  label:this.addedTag,
-                  value:this.addedTag
-              }
-          )
-        // TODO:向后端发送添加后的tag
-
-        //   提示成功信息
-          this.$message(
-              {
-                  message:'添加成功!',
-                  type:'success'
-              }
-          )
-      },
-    //   点击提交按钮，提交添加任务的表单
-      submitForm(formName) {
-          let that = this
-          // this.taskForm.createDate = new Date(this.taskForm.createDate)
-          // alert(this.taskForm.createDate)
-          // this.taskForm.dueDate = new Date(this.taskForm.dueDate)
-          this.$refs[formName].validate((valid)=>{
-              
-              if(valid) {
-                //   向父组件<Main>传值
-                  this.$emit('taskFormData',that.taskForm)
-
-                axios.post(
-                    'http://localhost:8081/api/task/addtask',
-                    this.taskForm,
+    addTag() {
+        let flag = false
+        let that = this
+        for(let i in this.tagArray) {
+            let item = this.tagArray[i]
+            if(item.label === this.addedTag) {
+                flag = true
+                break
+            }
+        }
+        if(flag) {
+            this.$message.error('添加失败，已有该标签')
+            return ;
+        }
+        axios.post(
+            'http://localhost:8081/api/user/addtags',
+            {
+                addedTag:that.addedTag
+            },
+            {
+                headers:{
+                    Authorization:window.localStorage.getItem('token')
+                }
+            }
+        ).then(
+            function(response) {
+                alert(response.data.msg)
+                this.tagArray.push(
                     {
-                      headers:{
-                        Authorization:window.localStorage.getItem('token')
-                      }
-                    }
-                ).then(
-                    function (response) {
-                      that.$message(
-                          {
-                            message: '创建任务成功',
-                            type: 'success'
-                          }
-                      );
-                    },
-                    function (err) {
-                      that.$message.error('创建任务失败')
+                        label:this.addedTag,
+                        value:this.addedTag
                     }
                 )
-                //   提交后清空表单
-                  for(let key in this.taskForm) {
-                      this.taskForm[key] = ''
-                  }
-                // 提交成功后跳转到日历界面
-                this.toCalendar()
-              } else {
-                //   提示错误提交信息
-                  alert('error submit !!')
-                  return false
-              }
-          });
-      },
-    // 向后端请求用户创建/管理的所有组
-      postMyTeams() {
-          let that = this;
-          axios.post(
-              'http://localhost:8081/api/user/myteams/admin',
-          ).then(
-              function(response) {
-                  that.myTeamInfo = response.data
-              },
-              function(err) {
-                  that.$message.error('请求用户创建或管理的组失败')
-              }
-          );
-      }
-
+            },
+            function(err) {
+                that.$message.error('请求失败')
+            }
+        )
+    },
+    submitForm(formName) {
+        let that = this
+        this.$refs[formName].validate((valid)=>{
+            if(valid) {
+            axios.post(
+                'http://localhost:8081/api/task/addtask',
+                {
+                    createDate:this.taskForm.createDate,
+                    description:this.taskForm.description,
+                    dueDate:this.taskForm.dueDate,
+                    //fatherTask
+                    //members
+                    privilege:this.taskForm.privilege,
+                    status:0,
+                    // subtasks
+                    tags:this.taskForm.tags,
+                    taskName:this.taskForm.taskName,
+                    //teamName
+                    type:this.taskForm.type,
+                    // username
+                },
+                {
+                    headers:{
+                        Authorization:window.localStorage.getItem('token')
+                    }
+                }
+            ).then(
+                function (response) {
+                    alert(response.data.msg)
+                },
+                function (err) {
+                    that.$message.error('响应错误')
+                }
+            )
+            for(let key in this.taskForm) {
+                this.taskForm[key] = ''
+            }
+            this.toCalendar()
+            } else {
+                alert('error submit !!')
+                return false
+            }
+        });
+    },
   }
 }
 </script>

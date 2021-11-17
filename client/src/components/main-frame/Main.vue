@@ -86,16 +86,25 @@
         <el-main class='main'>
           <!-- 添加task的表单 -->
           <el-dialog :visible.sync='addTaskShow' width='700px' :modal-append-to-body='false' @close='showCalendar'>
-            <AddTaskForm v-on:taskFormData='this.addTask($event)' :username='username'
-                         v-on:toCalendar='toCalendar($event)'></AddTaskForm>
+            <AddTaskForm 
+            :username='username'
+            :tagArray='this.tagArray'
+            :myTeamInfo='this.myTeamInfo'
+            v-on:toCalendar='toCalendar($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
           <el-dialog :visible.sync='addTeamShow' width='1000px' height='1000px' :modal-append-to-body='false'
                      @close='showCalendar'>
-            <AddTeamForm v-on:teamFormData='addTeam($event)' v-on:toCalendar='toCalendar($event)'></AddTeamForm>
+            <AddTeamForm 
+            v-on:toCalendar='toCalendar($event)'></AddTeamForm>
           </el-dialog>
           <!-- 个人任务页面 -->
-          <PersonalTaskPage v-show="personalTaskShow"></PersonalTaskPage>
+          <PersonalTaskPage 
+          v-show="personalTaskShow"
+          :taskData="this.taskData"
+          :todayTaskData="this.todayTaskData"
+          :weekTaskData="this.weekTaskData"
+          :laterTaskData="this.laterTaskData"></PersonalTaskPage>
           <!-- 组队任务页面 -->
           <TeamInfoPage v-show="teamInfoShow" :teamInfo="this.teamInfo"></TeamInfoPage>
           <!-- 通讯录 -->
@@ -178,12 +187,32 @@ export default {
   },
   props: ['username'],
   watch: {
-    // TODO:监听，如果显示组队任务界面，获取该成员加入的所有组放入teamInfo中
-    'teamInfoShow': {},
-    // TODO:监听，如果显示通讯录界面，获取该成员的所有好友放入Friends中
-    'addressBookShow': {},
-    // TODO:监听，如果显示日历界面，获取日历数据,放入calendarTasks中
-    'calendarShow': {}
+    'addTaskShow':function() {
+      if(this.addTaskShow) {
+        this.postTags()
+        this.postMyTeams()
+      }
+    },
+    'addTeamShow':function() {
+    },
+    'personalTaskShow':function() {
+      if(this.personalTaskShow) {
+        this.postTaskData()
+        this.postTodayTaskData()
+        this.postWeekTaskData()
+        this.postLaterTaskData()
+      }
+    },
+    'teamInfoShow':function() {
+      if(this.teamInfoShow) {
+        this.postTeamInfo()
+      }
+    },
+    'addressBookShow':function() {
+      if(this.addressBookShow) {
+        this.postAddressBook()
+      }
+    }
   },
   data() {
 
@@ -207,33 +236,18 @@ export default {
       // 用于在日历上显示 +
       calendarDateOn: ' ',
       taskForm: {
-        // 任务名
         taskName: '',
-        // 标签
         tags: '',
-        // 截止时间
         dueDate: '',
-        // 优先级
         privilege: '',
-        // 任务类型：0是个人，1是组队
         type: '',
-        // 子任务，对象类型数组
         subtasks: [],
-        // 如果是组队任务，涉及的成员，对象类型的数组
         members: [],
-        // 任务开始时间
         createDate: '',
-        // 任务描述信息
         description: '',
-        // 任务状态，0是未完成，1是已完成，2是已过期
         status: 0,
       },
-      // // 后端返回的日历数据
-      // calendarTasks: [],
-      // 后端返回的组队任务数据
       teamInfo: [],
-      // 后端返回的通讯录数据
-      Friends: [],
       calendarOptions: {
         plugins: [
           dayGridPlugin,
@@ -261,19 +275,26 @@ export default {
         eventRemove:
         */
       },
-      currentEvents: []
+      currentEvents: [],
+      // AddTaskForm
+      tagArray:[],
+      myTeamInfo:[],
+      // PersonalTaskPage
+      taskData:[],
+      todayTaskData:[],
+      weekTaskData:[],
+      laterTaskData:[],
+      //  AddressBook
+      Friends: [],
     }
   },
   methods: {
-    // 跳转到个人主页
     toProfile(event) {
       this.$router.push({name: 'Profile', params: {username: this.username}});
     },
-    // 跳转到日历界面
     toCalendar() {
       this.showCalendar()
     },
-    // 个人任务
     showPersonalTask() {
       this.personalTaskShow = true
       this.teamInfoShow = false
@@ -283,7 +304,6 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
-    // 组队任务
     showTeamInfo() {
       this.personalTaskShow = false
       this.teamInfoShow = true
@@ -293,7 +313,6 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
-    // 添加任务
     showTask() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -303,7 +322,6 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
-    // 添加组
     showGroup() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -313,7 +331,6 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
-    // 日历
     showCalendar() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -323,7 +340,6 @@ export default {
       this.calendarShow = true
       this.searchTaskShow = false
     },
-    // 通讯录
     showAddressBook() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -333,7 +349,6 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = false
     },
-    // 任务过滤器
     showSearchTask() {
       this.personalTaskShow = false
       this.teamInfoShow = false
@@ -373,48 +388,86 @@ export default {
 
     handleEvents(events) {
       this.currentEvents = events
-    }
-  },
-  // 响应添加任务的表单，调用接口添加任务
-  addTask(newTask) {
-    const that = this
-    alert(11)
-    // 向后端发送创建的任务数据
-    axios.post(
-        'http://localhost:8081/api/task/addtask',
-        newTask
-    ).then(
-        function (response) {
-          that.$message(
-              {
-                message: '创建任务成功',
+    },
+    addTeam(newTeam) {
+        const that = this
+        // 向后端发送创建的组别数据
+        axios.post(
+            'http://localhost:8081/api/team/createTeam',
+            newTeam
+        ).then(
+            function (response) {
+              that.$message({
+                message: '创建组别成功',
                 type: 'success'
+              })
+            },
+            function (err) {
+              that.$message.error('创建组别失败')
+            }
+        )
+    },
+    // AddTaskForm
+    postTags() {
+          let that = this
+          axios.post(
+              'http://localhost:8081/api/user/gettags',
+              {},
+              {
+                  headers:{
+                      Authorization:window.localStorage.getItem('token')
+                  }
               }
-          );
-        },
-        function (err) {
-          that.$message.error('创建任务失败')
-        }
-    )
-  },
-  // 响应添加组的表单，调用接口添加组
-  addTeam(newTeam) {
-    const that = this
-    // 向后端发送创建的组别数据
-    axios.post(
-        'http://localhost:8081/api/team/createTeam',
-        newTeam
-    ).then(
-        function (response) {
-          that.$message({
-            message: '创建组别成功',
-            type: 'success'
-          })
-        },
-        function (err) {
-          that.$message.error('创建组别失败')
-        }
-    )
+          ).then(
+              function(response) {
+                  alert(response.data.msg)
+                  that.tagArray = response.data.data
+              },
+              function(err) {
+                  that.$message.error('响应错误,获取Tags数据失败')
+              }
+          )
+    },
+    postMyTeams() {
+        let that = this;
+        axios.post(
+            'http://localhost:8081/api/user/myteams/admin',
+            {
+                headers:{
+                    Authorization:window.localStorage.getItem('token')
+                }
+            }
+        ).then(
+            function(response) {
+                alert(response.data.msg)
+                that.myTeamInfo = response.data
+            },
+            function(err) {
+                that.$message.error('响应错误,请求用户创建或管理的组失败')
+            }
+        );
+    },
+    // PersonalTaskPage
+    postTaskData() {
+
+    },
+    postTodayTaskData() {
+
+    },
+    postWeekTaskData() {
+
+    },
+    postLaterTaskData() {
+
+    },
+    // TeamInfoShow
+    postTeamInfo() {
+
+    },
+    // addressBookShow
+    postAddressBook() {
+
+    }
   },
 }
 </script>
