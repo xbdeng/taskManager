@@ -86,7 +86,7 @@
         <el-main class='main'>
           <!-- 添加task的表单 -->
           <el-dialog :visible.sync='addTaskShow' width='700px' :modal-append-to-body='false' @close='showCalendar'>
-            <AddTaskForm 
+            <AddTaskForm
             :username='username'
             :tagArray='this.tagArray'
             :myTeamInfo='this.myTeamInfo'
@@ -95,18 +95,18 @@
           <!-- 添加组别的表单 -->
           <el-dialog :visible.sync='addTeamShow' width='1000px' height='1000px' :modal-append-to-body='false'
                      @close='showCalendar'>
-            <AddTeamForm 
+            <AddTeamForm
             v-on:toCalendar='toCalendar($event)'></AddTeamForm>
           </el-dialog>
           <!-- 个人任务页面 -->
-          <PersonalTaskPage 
+          <PersonalTaskPage
           v-show="personalTaskShow"
           :taskData="this.taskData"
           :todayTaskData="this.todayTaskData"
           :weekTaskData="this.weekTaskData"
           :laterTaskData="this.laterTaskData"></PersonalTaskPage>
           <!-- 组队任务页面 -->
-          <TeamInfoPage v-show="teamInfoShow" 
+          <TeamInfoPage v-show="teamInfoShow"
           :teamInfo="this.teamInfo"
           :username="this.username"
           :Friends="this.Friends"></TeamInfoPage>
@@ -203,17 +203,6 @@ export default {
   },
   props: ['username'],
   watch: {
-    // TODO:监听，如果显示日历界面，获取日历数据,放入calendarTasks中
-    calendarShow(newValue, oldValue) {
-      if (newValue === true) {
-        this.showCalendarData();
-      }
-    }
-  },
-  // 在载入页面前先获取日历数据
-  mounted() {
-    this.showCalendarData()
-
     'addTaskShow':function() {
       if(this.addTaskShow) {
         this.postTags()
@@ -240,8 +229,17 @@ export default {
       if(this.addressBookShow) {
         this.postAddressBook()
       }
+    },
+    // TODO:监听，如果显示日历界面，获取日历数据,放入calendarTasks中
+    calendarShow(newValue, oldValue) {
+      if (newValue === true) {
+        this.showCalendarData();
+      }
     }
-
+  },
+  // 在载入页面前先获取日历数据
+  mounted() {
+    this.showCalendarData()
   },
   data() {
 
@@ -537,7 +535,7 @@ export default {
     },
     // PersonalTaskPage
     postTaskData() {
-      
+
     },
     postTodayTaskData() {
 
