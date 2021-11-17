@@ -150,7 +150,7 @@ export default {
     var checkTaskStartTime = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务开始时间不能为空！'));
-        } else if(new Date(value) >= new Date(this.taskForm.createDate)) {
+        } else if(new Date(value) >= new Date(this.taskForm.dueDate)) {
             return callback(new Error('任务的开始时间不能比结束时间还晚'))
         }
         callback()
@@ -234,17 +234,18 @@ export default {
         ).then(
             function(response) {
                 alert(response.data.msg)
-                if(response.data.code == 200) {
+                if(response.data.code === 200) {
                     that.$message({
                         message:'添加标签成功',
                         type:'success'
                     })
                     that.tagArray.push(
                         {
-                            label:this.addedTag,
-                            value:this.addedTag
+                            label:that.addedTag,
+                            value:that.addedTag
                         }
                     )
+                  that.addedTag = null
                 } else {
                     that.$message.error('添加标签失败')
                 }

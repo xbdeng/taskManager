@@ -121,12 +121,12 @@ public class UserController {
 
     @PostMapping("/addtag")
     @RequiresAuthentication
-    @ApiOperation(value="add a tag")
+    @ApiOperation(value="add a tag",notes = "前后端测试通过")
     public Result<String> addTag(@RequestBody TagDTO params, HttpServletRequest request){
         try{
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            userService.addTag(params.setTagName(username));
+            userService.addTag(params.setUsername(username));
         }catch(Exception e){
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
@@ -136,18 +136,19 @@ public class UserController {
 
     @PostMapping("/selecttags")
     @RequiresAuthentication
-    @ApiOperation(value="select a tag")
+    @ApiOperation(value="select a tag",notes = "前后端测试通过")
     public Result<List<Tag>> selectTags(@RequestBody TagDTO params, HttpServletRequest request){
         Result<List<Tag>> result = new Result<>();
         try{
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            result.setData(userService.selectTags(params.setTagName(username)));
+//            result.setData(userService.selectTags(params.setTagName(username)));
+            List<Tag> tags =  userService.selectTags(params.setTagName(username));
+            return new Result<List<Tag>>(200,"select tag success",tags);
         }catch(Exception e){
             e.printStackTrace();
             return new Result<>(500, "server error", new ArrayList<>());
         }
-        return result;
     }
 
 
