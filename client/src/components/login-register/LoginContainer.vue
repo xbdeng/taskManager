@@ -40,7 +40,6 @@ import axios from 'axios'
 export default {
     name:'LoginContainer',
     data(){
-
         var checkUsername = (rule, value, callback)=>{
             if(value === '') {
                 return callback(new Error("用户名不能为空"))
@@ -58,7 +57,6 @@ export default {
             }
             callback()
         }
-
         return {
             logining: false,
             checked: false,
@@ -86,7 +84,6 @@ export default {
             const that = this
             this.logining = true
             this.$refs.loginForm.validate(async (valid) => {
-
                 if(valid){
                     this.loginForm.password = this.$md5(this.loginForm.password)
 
@@ -103,17 +100,12 @@ export default {
                                 type:'success'
                             })
                             let token = response.data.data
-                            // 保存token
-                            // alert(token)
                             window.localStorage.setItem('token', token)
-                            // alert(window.localStorage.getItem('token'))
                             console.log(response.data)
-                            // 清空表单数据
                             let tmpusername = that.loginForm.username
                             that.loginForm.username = ''
                             that.loginForm.password = ''
                             that.logining = false
-
                             that.$router.push({name:'Main', params:{username: tmpusername}})
                         },
                         function(err) {
@@ -121,12 +113,7 @@ export default {
                             that.logining = false
                         }
                     )
-                    
-                    
                 }else{
-                    
-                    this.loginForm.username = ''
-                    this.loginForm.password = ''
                     return (this.logining = false)
                 }
             })

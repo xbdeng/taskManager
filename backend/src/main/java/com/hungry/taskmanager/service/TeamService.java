@@ -19,4 +19,6 @@ public interface TeamService {
     Result dismiss(BigInteger teamId);
 
     Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO);
+
+    boolean isAdmin(BigInteger userId, BigInteger teamId);
 }

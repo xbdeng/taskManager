@@ -33,7 +33,7 @@ public class TeamController {
 
     @PostMapping("/addmember")
     @RequiresAuthentication
-    @ApiOperation(value = "添加成员",notes = "后端已测试通过")
+    @ApiOperation(value = "添加成员",notes = "后端已测试通过,权限已验证")
     public Result<String> addMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.addMember(oppoTeamMemberDTO);
         return Result.succ("添加成功");

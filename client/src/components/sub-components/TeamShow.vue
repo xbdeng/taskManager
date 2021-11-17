@@ -7,7 +7,7 @@
           <el-header>
             <el-row :gutter="10" type="flex" align="middle">
               <el-col :span="3">
-                <span class="title">{{ singleTeamData.teamName }}</span>
+                <span class="title">{{ this.tempTeamInfo.teamName }}</span>
               </el-col>
 
               <el-popover placement="top" width="200" trigger="click" title="修改组名">
@@ -36,7 +36,7 @@
                       <span style="font-weight:bold">创建时间：</span>
                   </el-col>
                   <el-col>
-                      {{ singleTeamData.createDate }}
+                      {{ this.tempTeamInfo.createDate }}
                   </el-col>
               </el-row>
             <!-- 显示组内成员，留接口修改 -->
@@ -63,7 +63,7 @@
                         </el-dropdown-menu>
                     </el-dropdown>
                   </el-col>
-                  <!-- 设置管理员的接口 -->
+                  <!-- 添加管理员的接口 -->
                     <el-col :span="7">
                         <el-popover placement="top" width="900" trigger="click" title="设置管理员">
                             <el-row>
@@ -79,6 +79,28 @@
                                 </el-col>
                             </el-row>
                                 <el-tooltip content="点击可设置管理员" slot="reference">
+                                <el-link type='primary'>
+                                    <i class="el-icon-edit"></i>
+                                </el-link>
+                                </el-tooltip>
+                        </el-popover>
+                    </el-col>
+                    <!-- 取消管理员的接口 -->
+                    <el-col :span="7">
+                        <el-popover placement="top" width="900" trigger="click" title="删除管理员">
+                            <el-row>
+                                <el-col>
+                                    <el-transfer :data="adminTransferData" filterable :button-texts="['重新设置成管理员','取消管理员权限']" v-model="removedAdmins" :titles="['管理员','取消管理员名单']"></el-transfer>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col :offset="8">
+                                    <el-button type='primary' @click="removeAdmins">确定</el-button>
+                                    <!-- TODO:点击取消后的动作 -->
+                                    <el-button type="danger">取消</el-button>
+                                </el-col>
+                            </el-row>
+                                <el-tooltip content="点击可撤销管理员" slot="reference">
                                 <el-link type='primary'>
                                     <i class="el-icon-edit"></i>
                                 </el-link>
@@ -113,7 +135,7 @@
                   <el-col :span="6">
                       <span style="font-weight:bold">任务描述信息：</span>
                   </el-col>
-                  <el-col>{{ singleTeamData.description }}</el-col>
+                  <el-col>{{ tempTeamInfo.description }}</el-col>
                   <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
                     <el-row>
                         <el-col>
@@ -139,10 +161,10 @@
                       <el-button type="primary" @click="postEdit">确定</el-button>
                   </el-col>
                   <el-col>
-                      <el-button type="danger">退出该组</el-button>
+                      <el-button type="danger" @click="removeMe">退出该组</el-button>
                   </el-col>
                   <el-col>
-                      <el-button type="warning">解散该组</el-button>
+                      <el-button type="warning" @click="dismissTeam">解散该组</el-button>
                   </el-col>
               </el-row>
           </el-main>
@@ -152,26 +174,19 @@
 </template>
  
 <script>
-
+import axios from 'axios'
 export default {
-
   name: 'TeamShow',
   // 这个组件接收的参数是一个组对象
-  props: ['singleTeamData','drawer'],
-  watch:{
-    // 关闭抽屉的时候，同步数据
-    'drawer':function() {
-      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
-    }
-  },
+  props: ['singleTeamData','username','Friends'],
   data() {
       // 生成普通成员的穿梭框信息
       const generateTransferData = _ => {
           const data = []
-          for(let i in this.singleTeamData.members) {
+          for(let i in this.tempTeamInfo.members) {
               data.push({
-                  key:this.singleTeamData.members[i],
-                  value:this.singleTeamData.members[i]
+                  key:this.tempTeamInfo.members[i],
+                  value:this.tempTeamInfo.members[i]
               });
           }
           return data
@@ -179,29 +194,36 @@ export default {
     // 生成好友列表信息，显示在穿梭框中
     const generateFriendData = _ => {
         const data = []
-          for(let i in this.singleTeamData.members) {
+          for(let i in this.Friends) {
               data.push({
-                  key:this.singleTeamData.members[i],
-                  value:this.singleTeamData.members[i]
+                  key:this.Friends[i],
+                  value:this.Friends[i]
               });
           }
           return data
-    }
+    };
+    // 生成管理员列表，显示在穿梭框中
+     const generateAdminData = _ => {
+        const data = []
+          for(let i in this.tempTeamInfo.admins) {
+              data.push({
+                  key:this.tempTeamInfo.admins[i],
+                  value:this.tempTeamInfo.admins[i]
+              });
+          }
+          return data
+    };
       return {
           memberList:[],
           transferData:generateTransferData(),
+          adminTransferData:generateAdminData(),
           friends:generateFriendData(),
-        //   重新设置后的管理员名单
           editedAdmins:[],
-        //   邀请进组的名单
+          removedAdmins:[],
           invitedMembers:[],
-        //   鼠标移入的成员
           mousein:null,
-        //   修改后的队伍名
           editedTeamName:null,
-        //   修改后的队伍描述信息
           editedTeamDescription:null,
-        //   暂存区
           tempTeamInfo:JSON.parse(JSON.stringify(this.singleTeamData))
       }
   },
@@ -210,20 +232,20 @@ export default {
           let members = [];
           // 创建者
           let creator = new Object();
-          creator.name = this.singleTeamData.creator
+          creator.name = this.tempTeamInfo.creator
           creator.role = 'creator'
           members.push(creator)
           // 管理员
-          for(let i in this.singleTeamData.admins) {
+          for(let i in this.tempTeamInfo.admins) {
               let admin = new Object()
-              admin.name = this.singleTeamData.admins[i]
+              admin.name = this.tempTeamInfo.admins[i]
               admin.role = 'admin'
               members.push(admin)
           }
             // 普通成员
-          for(let i in this.singleTeamData.members) {
+          for(let i in this.tempTeamInfo.members) {
               let member = new Object()
-              member.name = this.singleTeamData.members[i]
+              member.name = this.tempTeamInfo.members[i]
               member.role = 'member'
               members.push(member)
           }
@@ -240,7 +262,29 @@ export default {
       },
     //   点击成员中的某人，在暂存区中删除这个成员
       deleteMember(name) {
-          this.tempTeamInfo.members.splice(this.teapTeamInfo.indexOf(name), 1)
+          this.tempTeamInfo.members.splice(this.tempTeamInfo.indexOf(name), 1)
+          let that = this
+          let userName = []
+          userName.push(name)
+          axios.post(
+              'http://localhost:8081/api/team/removemember',
+              {
+                  teamId:that.tempTeamInfo.teamId,
+                  userName:userName
+              },
+              {
+                headers:{
+                    Authorization:window.localStorage.getItem('token')
+                }
+              }
+          ).then(
+              function(response) {
+                  alert(response.msg)
+              },
+              function(err) {
+                  that.$message.error()
+              }
+          )
       },
     //   将修改后的editedTeamName添加到暂存区
       editTeamName() {
@@ -250,23 +294,58 @@ export default {
           }
           this.editedTeamName = null
       },
-    //   将修改后的editedAdmins添加到暂存区
       editAdmins() {
           let value = this.editedAdmins
+          let that = this
           if(value != null) {
-              this.tempTeamInfo.admins.concat(value)
+              axios.post(
+                  'http://localhost:8081/api/team/setadmin',
+                  {
+                      teamId:that.tempTeamInfo.teamId,
+                      userName:value
+                  },
+                  {
+                    headers:{
+                        Authorization:window.localStorage.getItem('token')
+                    }
+                  }
+              ).then(
+                  function(response) {
+                      alert(response.data.msg)
+                  },
+                  function(err) {
+                      that.$message.error('响应失败，添加管理员失败')
+                  }
+              )
           }
           this.editedAdmins = null
       },
-    //   将邀请的成员添加到暂存区
       editInvitedMembers() {
+          let that = this
           let value = this.invitedMembers
           if(value != null) {
-              this.tempTeamInfo.members.concat(value)
+              axios.post(
+                  'http://localhost:8081/api/team/addmember',
+                  {
+                      teamId:that.tempTeamInfo.teamId,
+                      userName:value
+                  },
+                  {
+                    headers:{
+                        Authorization:window.localStorage.getItem('token')
+                    }
+                  }
+              ).then(
+                  function(response) {
+                      alert(response.data.msg)
+                  },
+                  function(err) {
+                      that.$message.error('响应失败,邀请成员失败')
+                  }
+              )
           }
           this.invitedMembers = null
       },
-    //   将修改后的任务描述信息添加到暂存区
       editDescription() {
           let value = this.editedTeamDescription
           if(value != null) {
@@ -274,12 +353,75 @@ export default {
           }
           this.editedTeamDescription = null
       },
-    //   向父组件传递修改后的值
-    postEdit() {
-        this.$emit('editTeam', this.tempTeamInfo)
-        // 刷新数据
-        this.tempTeamInfo = JSON.parse(JSON.stringify(this.singleTeamData))
-    }
+      dismissTeam() {
+          let that = this
+          axios.post(
+              'http://localhost:8081/api/team/dismiss',
+              {
+                  teamId:that.tempTeamInfo.teamId
+              },
+              {
+                headers:{
+                    Authorization:window.localStorage.getItem('token')
+                }
+              }
+          ).then(
+              function(response) {
+                  alert(response.data.msg)
+              },
+              function(err) {
+                  that.$message.error('响应失败,解散该组失败')
+              }
+          )
+      },
+      removeMe() {
+          let that = this
+          axios.post(
+              'http://localhost:8081/api/team/removemember',
+              {
+                  teamId:that.tempTeamInfo.teamId,
+                  userName:that.username
+              },
+              {
+                headers:{
+                    Authorization:window.localStorage.getItem('token')
+                }
+              }
+          ).then(
+              function(response) {
+                  alert(response.data.msg)
+              },
+              function(err) {
+                  that.$message.error('响应失败，退出组失败')
+              }
+          )
+      },
+      removeAdmins() {
+          let value = this.removedAdmins
+          if(value != null) {
+              let that = this
+              axios.post(
+                  'http://localhost:8081/api/team/removeadmin',
+                  {
+                      teamId:that.tempTeamInfo.teamId,
+                      userName:value
+                  },
+                  {
+                    headers:{
+                        Authorization:window.localStorage.getItem('token')
+                    }
+                  }
+              ).then(
+                  function(response) {
+                      alert(response.data.msg)
+                  },
+                  function(err) {
+                      that.$message.error('响应失败，撤销管理员失败')
+                  }
+              )
+          }
+          this.removedAdmins = null
+      }
     
   }
   
