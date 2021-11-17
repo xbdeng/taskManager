@@ -72,7 +72,7 @@ mo<template>
                     <!-- 如果选择了组队任务，会多出一个多选框，选择给哪个队伍分配任务 -->
                     <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === '1'">
                         <el-col :span='10'>
-                            <el-select placeholder='请选择任务分配的组别' multiple v-model='taskForm.teams'>
+                            <el-select placeholder='请选择任务分配的组别' v-model='taskForm.teams'>
                                 <el-option v-for="(team, tIndex) in myTeamInfo" :key="tIndex" :label="team.teamName" :value="team.teamName">
                                 </el-option>
                             </el-select>
@@ -214,6 +214,7 @@ export default {
             this.$message.error('添加失败，已有该标签')
             return ;
         }
+        // TODO:添加标签的接口未定
         axios.post(
             'http://localhost:8081/api/user/addtags',
             {
@@ -227,12 +228,14 @@ export default {
         ).then(
             function(response) {
                 alert(response.data.msg)
-                this.tagArray.push(
-                    {
-                        label:this.addedTag,
-                        value:this.addedTag
-                    }
-                )
+                if(response.data.code == 200) {
+                    this.tagArray.push(
+                        {
+                            label:this.addedTag,
+                            value:this.addedTag
+                        }
+                    )
+                }
             },
             function(err) {
                 that.$message.error('响应失败，添加标签失败')

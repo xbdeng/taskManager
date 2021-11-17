@@ -28,7 +28,10 @@
             :before-close="handleTeamInfoClose"
             :modal-append-to-body='false'
             size='50%'>
-                <TeamShow :singleTeamData="teamInfo[selectedTeam]"></TeamShow>
+                <TeamShow 
+                :singleTeamData="teamInfo[selectedTeam]"
+                :username="this.username"
+                :Friends="this.Friends"></TeamShow>
             </el-drawer>
             <!-- 用于显示任务信息 -->
             <el-drawer 
@@ -59,7 +62,7 @@ export default {
     TaskShow,
     TeamShow
   },
-  props:['teamInfo'],
+  props:['teamInfo','username','Friends'],
   data() {
 
     return {
@@ -99,9 +102,6 @@ export default {
     handleTeamInfoClose() {
         this.teamInfoDrawer = false
     },
-    editTeam(newTeam) {
-        // TODO:调用后端接口，实现修改组的信息
-    }
 }
 
 }

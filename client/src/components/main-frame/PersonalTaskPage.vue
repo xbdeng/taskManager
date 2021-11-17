@@ -70,9 +70,7 @@
             :modal-append-to-body='false'
             size='50%'
             >
-                <TaskShow 
-                :singleTaskData="getTask(chosenTaskId)" 
-                v-on:editTask='editTask'></TaskShow>
+                <TaskShow :singleTaskData="getTask(chosenTaskId)" ></TaskShow>
             </el-drawer>
         </el-container>
     </div>

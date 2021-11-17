@@ -367,7 +367,35 @@ export default {
       this.subTaskName = null
     },
     postEdit() {
-      //TODO:调用修改任务接口
+      axios.post(
+        'http://localhost:8081/api/task/edittask',
+        {
+          createDate:this.tempTaskForm.createDate,
+          description:this.tempTaskForm.description,
+          dueDate:this.tempTaskForm.dueDate,
+          //fatherTask
+          members:this.tempTaskForm.members,
+          privilege:this.tempTaskForm.privilege,
+          status:this.tempTaskForm.status,
+          subTasks:this.tempTaskForm.subTasks,
+          tags:this.tempTaskForm.tags,
+          taskName:this.tempTaskForm.taskName,
+          //teamName
+          type:this.tempTaskForm.type
+        },
+        {
+            headers:{
+                Authorization:window.localStorage.getItem('token')
+            }
+        }
+      ).then(
+        function(response) {
+          alert(response.data.msg)
+        },
+        function(err) {
+          this.$message.error('响应失败,修改任务失败')
+        }
+      )
     },
   }
   

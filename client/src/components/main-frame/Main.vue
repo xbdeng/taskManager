@@ -106,7 +106,10 @@
           :weekTaskData="this.weekTaskData"
           :laterTaskData="this.laterTaskData"></PersonalTaskPage>
           <!-- 组队任务页面 -->
-          <TeamInfoPage v-show="teamInfoShow" :teamInfo="this.teamInfo"></TeamInfoPage>
+          <TeamInfoPage v-show="teamInfoShow" 
+          :teamInfo="this.teamInfo"
+          :username="this.username"
+          :Friends="this.Friends"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -206,6 +209,7 @@ export default {
     'teamInfoShow':function() {
       if(this.teamInfoShow) {
         this.postTeamInfo()
+        this.postAddressBook()
       }
     },
     'addressBookShow':function() {
@@ -408,6 +412,7 @@ export default {
         )
     },
     // AddTaskForm
+    // TODO:获取用户的标签：文档暂未定
     postTags() {
           let that = this
           axios.post(
@@ -449,7 +454,7 @@ export default {
     },
     // PersonalTaskPage
     postTaskData() {
-
+      
     },
     postTodayTaskData() {
 
@@ -462,11 +467,43 @@ export default {
     },
     // TeamInfoShow
     postTeamInfo() {
-
+      axios.post(
+        'http://localhost:8081/api/user/myteams',
+        {},
+        {
+            headers:{
+                Authorization:window.localStorage.getItem('token')
+            }
+        }
+      ).then(
+        function(response) {
+          alert(response.data.msg)
+          this.teamInfo = response.data.data
+        },
+        function(err) {
+          this.$message.error('响应失败，获取组队任务失败')
+        }
+      )
     },
     // addressBookShow
     postAddressBook() {
-
+      axios.post(
+        'http://localhost:8081/api/user/addressbook',
+        {},
+        {
+            headers:{
+                Authorization:window.localStorage.getItem('token')
+            }
+        }
+      ).then(
+        function(response) {
+          alert(response.data.msg)
+          this.Friends = response.data.data
+        },
+        function(err) {
+          this.$message.error('响应失败,获取通讯录数据出错')
+        }
+      )
     }
   },
 }
