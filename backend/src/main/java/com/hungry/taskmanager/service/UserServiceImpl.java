@@ -2,6 +2,7 @@ package com.hungry.taskmanager.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hungry.taskmanager.dao.*;
+import com.hungry.taskmanager.dto.TagDTO;
 import com.hungry.taskmanager.dto.TeamDTO;
 import com.hungry.taskmanager.dto.UserDTO;
 import com.hungry.taskmanager.entity.*;
@@ -34,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private TeamMapper teamMapper;
+
+    @Resource
+    private TagMapper tagMapper;
 
     @Override
     public List<Perms> findPermsByRoleId(String id) {
@@ -117,5 +121,20 @@ public class UserServiceImpl implements UserService {
         userMapper.register(registerInfoDTO);
         return Result.succ("注册成功");
     }
+
+    @Override
+    public void addTag(TagDTO params){
+        BigInteger uId = userMapper.getIdByName(params.getUsername());
+        Tag tag = new Tag().setTagName(params.getTagName()).setUserId(uId);
+        tagMapper.insert(tag);
+    }
+
+    public List<Tag> selectTags(TagDTO params){
+        BigInteger uId = userMapper.getIdByName(params.getUsername());
+        QueryWrapper<Tag> wrapper = new QueryWrapper<Tag>().eq("user_id", uId);
+        return tagMapper.selectList(wrapper);
+    }
+
+
 
 }

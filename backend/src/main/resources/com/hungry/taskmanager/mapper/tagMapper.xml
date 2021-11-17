@@ -1,6 +1,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hungry.taskmanager.dao.TagMapper">
-    <select id="selectTagsByUserTasks" resultType="com.hungry.taskmanager.entity.Tag">
+    <select id="selectTagsByUserTasks" resultMap="tagsByUserTasksMap">
         SELECT ut.task_id task_id, tag.*
         FROM tag
         INNER JOIN user_task_tag utt on tag.tag_id = utt.tag_id
@@ -13,4 +13,12 @@
                 </foreach>
         </if>
     </select>
+    <resultMap id="tagsByUserTasksMap" type="TaskTagMap">
+        <result property="taskId" column="task_id"/>
+        <association property="tag" javaType="Tag">
+            <id property="tagId" column="tag_id"/>
+            <result property="tagName" column="tag_name"/>
+            <result property="userId" column="user_id"/>
+        </association>
+    </resultMap>
 </mapper>

@@ -1,5 +1,6 @@
 package com.hungry.taskmanager.entity.post_entities;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,10 @@ import java.util.HashMap;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class QueryTaskFilter {
-    @NonNull
+public class QueryTaskParams {
+    @ApiModelProperty(hidden = true)
+    private String username;
+    @ApiModelProperty(hidden = true)
     private BigInteger userId;
     private String taskName;
     private Integer privilege;
@@ -24,5 +27,6 @@ public class QueryTaskFilter {
     private String teamName;
     private Integer type;
     private Integer status;
+    @ApiModelProperty(hidden = true)
     private BigInteger fatherTask;
 }

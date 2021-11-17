@@ -1,4 +1,5 @@
 package com.hungry.taskmanager.entity.post_entities;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class CreateTaskParams {
     // parameters necessary for creating a task
+    @ApiModelProperty(hidden = true)
     private String username;
     private String taskName;
     private String description;

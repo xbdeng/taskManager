@@ -5,7 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
-import com.hungry.taskmanager.entity.post_entities.QueryTaskFilter;
+import com.hungry.taskmanager.entity.post_entities.QueryTaskParams;
+import com.hungry.taskmanager.entity.relation_entity.TaskTagMap;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.lang.NonNull;
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -40,11 +42,7 @@ public class TaskServiceImpl implements TaskService{
      * create a new task and insert insert into database
      */
     public int addTask(CreateTaskParams params) throws Exception{
-        // generate new taskId
-        BigInteger id = taskMapper.newId();
-        // get userId by username
-        User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", params.getUsername()));
-        BigInteger creator = user.getUserId();
+        BigInteger creator = userMapper.getIdByName(params.getUsername());
         // operations according to different types
             // individual task set type column -1
             // team task find id of the team set type id of the team
@@ -57,12 +55,13 @@ public class TaskServiceImpl implements TaskService{
         // set father task
         BigInteger fatherTask = null;
         // create new task
-        Task task = new Task().setTaskId(id).setCreator(creator).setTaskName(params.getTaskName())
+        Task task = new Task().setCreator(creator).setTaskName(params.getTaskName())
                 .setDescription(params.getDescription()).setType(type).setCreateDate(createDate).setDueDate(dueDate)
                 .setStatus(status).setFatherTask(fatherTask).setPrivilege(params.getPrivilege());
         // insert task into database
         task.updateDate();
         taskMapper.insert(task);
+        BigInteger id = task.getTaskId();
         // insert tag
         BigInteger tagId = tagMapper.newId();
         Tag tag = new Tag().setUserId(creator);
@@ -108,38 +107,24 @@ public class TaskServiceImpl implements TaskService{
     /**
      * query tasks
      */
-    public List<Task> queryTask(QueryTaskFilter filter) {
-        List<Task> tasks = taskMapper.queryTask(filter);
-        BigInteger userId = filter.getUserId();
+    public List<Task> queryTask(QueryTaskParams filter) {
+        BigInteger userId = userMapper.getIdByName(filter.getUsername());
+        List<Task> tasks = taskMapper.queryTask(filter.setUserId(userId));
         Map<BigInteger, Task> taskMap = new HashMap<>();
         for (Task task : tasks) {
             taskMap.put(task.getTaskId(), task);
             task.setTags(new ArrayList<>());
-            QueryTaskFilter subfilter = new QueryTaskFilter().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
+            QueryTaskParams subfilter = new QueryTaskParams().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
             task.setSubTask(taskMapper.queryTask(subfilter));
             task.updateDate();
         }
-        List<Tag> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
-        for (int i = 0 ; i < taskTags.size(); i++){
-            taskMap.get(taskTags.get(i).getTaskId()).getTags().add(taskTags.get(i));
+        List<TaskTagMap> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
+        for (TaskTagMap t: taskTags){
+            taskMap.get(t.getTaskId()).getTags().add(t.getTag());
         }
         return tasks;
     }
 
-    /**
-     * get task information
-     */
-    public Task getInfo(long taskId, long userId) {
-        BigInteger tId = BigInteger.valueOf(taskId);
-        BigInteger uId = BigInteger.valueOf(userId);
-        Task task = taskMapper.selectById(tId);
-        task.setTags(tagMapper.selectTags(tId, uId));
-        task.updateDate();
-        // append subtask information
-        QueryTaskFilter subfilter = new QueryTaskFilter().setFatherTask(task.getTaskId()).setUserId(uId);
-        task.setSubTask(taskMapper.selectList(new QueryWrapper<Task>().eq("father_task", tId)));
-        return task;
-    }
 
     /**
      *  modify status of a task
@@ -187,12 +172,10 @@ public class TaskServiceImpl implements TaskService{
         return type;
     }
 
-    private LocalDateTime convertGMT(String date) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Instant instant = formatter.parse(date).toInstant();
-        ZoneId id = ZoneId.systemDefault();
-        return instant.atZone(id).toLocalDateTime();
+
+    private LocalDateTime convertGMT(String date){
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return LocalDateTime.parse(date, f).atZone(ZoneId.from(ZoneOffset.UTC)).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     private int insertUserTaskTag(BigInteger userId, BigInteger taskId, List<String> tagNames){

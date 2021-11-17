@@ -1,6 +1,8 @@
 package com.hungry.taskmanager.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +15,8 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {
+    @TableId(type = IdType.AUTO)
     private BigInteger tagId;
     private String tagName;
     private BigInteger userId;
-    @TableField(exist = false)
-    private BigInteger taskId;
 }
