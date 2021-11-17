@@ -446,10 +446,8 @@ export default {
       const that = this;
       axios.post(
           'http://localhost:8081/api/task/edittask',
-          qs.stringify({
-            taskId: taskId
-          }),
           {
+            taskId: taskId,
             createDate: start,
             dueDate: end
           },
@@ -461,7 +459,7 @@ export default {
       ).then(
           function (response) {
             console.log(response)
-            this.showCalendarData()
+            that.showCalendarData()
           },
           function (err) {
             that.$message({
@@ -479,6 +477,7 @@ export default {
           'http://localhost:8081/api/task/query',
           {
             // fliter
+            scheduledTask: 0
           },
           {
             headers: {
@@ -578,7 +577,7 @@ export default {
                 } else {
                   that.$message.error('请求用户创建或管理的组失败')
                 }
-                
+
             },
             function(err) {
                 that.$message.error('响应错误,请求用户创建或管理的组失败')
