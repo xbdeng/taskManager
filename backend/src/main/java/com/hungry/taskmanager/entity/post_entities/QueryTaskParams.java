@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 @Data
@@ -29,4 +30,9 @@ public class QueryTaskParams {
     private Integer status;
     @ApiModelProperty(hidden = true)
     private BigInteger fatherTask;
+    private String currentDate;
+    private Integer timeRange;
+    private Integer scheduledTask;
+    @ApiModelProperty(hidden = true)
+    private LocalDateTime requiredDate;
 }

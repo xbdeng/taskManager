@@ -27,8 +27,5 @@ public class CreateTaskParams {
     private List<String> members;
     private String createDate;
     private String dueDate;
-    // other parameters necessary for modifying a task
-    private BigInteger fatherTask;
-    private List<BigInteger> subtasks;
-    private Integer status;
+
 }
