@@ -2,9 +2,9 @@ package com.hungry.taskmanager.controller;
 
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
-import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
-import com.hungry.taskmanager.entity.post_entities.EditTaskParams;
-import com.hungry.taskmanager.entity.post_entities.QueryTaskParams;
+import com.hungry.taskmanager.dto.CreateTaskDTO;
+import com.hungry.taskmanager.dto.EditTaskDTO;
+import com.hungry.taskmanager.dto.QueryTaskDTO;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import com.hungry.taskmanager.utils.JWTUtil;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +21,7 @@ public class TaskController {
     private TaskServiceImpl taskServiceImpl;
     @ApiOperation(value = "create a task",notes = "前后端测试通过 \n type, taskName, privilege and createDate is required\n father task, members, status,subtask is unnecessary")
     @PostMapping("/addtask")
-    public Result<String> addTask(@RequestBody CreateTaskParams params, HttpServletRequest request) {
+    public Result<String> addTask(@RequestBody CreateTaskDTO params, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
@@ -51,7 +51,7 @@ public class TaskController {
     }
 
     @PostMapping("/query")
-    public Result<List<Task>> queryTask(@RequestBody QueryTaskParams filter, HttpServletRequest request){
+    public Result<List<Task>> queryTask(@RequestBody QueryTaskDTO filter, HttpServletRequest request){
         Result<List<Task>> result = new Result<>();
         try {
             String token = request.getHeader("Authorization");
@@ -66,7 +66,7 @@ public class TaskController {
 
     @PostMapping("/edittask")
     @ApiOperation(value = "edit a task",notes = "modified information is required only")
-    public Result<String> editTask(@RequestBody EditTaskParams params) {
+    public Result<String> editTask(@RequestBody EditTaskDTO params) {
         try {
             int result = taskServiceImpl.editTask(params);
             if (result != 200){

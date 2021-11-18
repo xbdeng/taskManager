@@ -2,20 +2,19 @@ package com.hungry.taskmanager.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hungry.taskmanager.entity.Tag;
-import com.hungry.taskmanager.entity.relation_entity.TaskTagMap;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface TagMapper extends BaseMapper<Tag> {
     @Select("SELECT IFNULL(MAX(tag_id)+1, 0) FROM tag")
     BigInteger newId();
 
-    @Insert("INSERT IGNORE  INTO tag(tag_id, tag_name, user_id) VALUES(#{tagId}, #{tagName}, #{userId})")
+    @Insert("INSERT IGNORE INTO tag(tag_name, user_id) VALUES(#{tagName}, #{userId})")
     int insert(Tag entity);
 
     @Select("SELECT tag.tag_id AS tag_id, tag.tag_name AS tag_name, tag.user_id AS user_id FROM tag INNER JOIN user_task_tag AS utt ON " +
@@ -26,5 +25,5 @@ public interface TagMapper extends BaseMapper<Tag> {
     @Select("SELECT * FROM tag WHERE user_id = #{userId}")
     List<Tag> selectTagsByUser(BigInteger suerId);
 
-    List<TaskTagMap> selectTagsByUserTasks(BigInteger userId, Set<BigInteger> taskIds);
+    List<HashMap<String, Object>> selectTagsByUserTasks(BigInteger userId, Set<BigInteger> taskIds);
 }

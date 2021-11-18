@@ -6,6 +6,7 @@ import com.hungry.taskmanager.dao.TeamMapper;
 import com.hungry.taskmanager.dao.TeamUserMapper;
 import com.hungry.taskmanager.dao.UserMapper;
 import com.hungry.taskmanager.dto.CreateTeamDTO;
+import com.hungry.taskmanager.dto.EditTeamDTO;
 import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
 import com.hungry.taskmanager.dto.TeamDTO;
 import com.hungry.taskmanager.entity.Response.MyResponse;
@@ -114,5 +115,19 @@ public class TeamServiceImpl implements TeamService {
     public Result dismiss(BigInteger teamId) {
         teamMapper.delete(new QueryWrapper<Team>().eq("team_id", teamId));
         return null;
+    }
+
+    @Override
+    public int editTeam(EditTeamDTO params){
+        Team team = new Team();
+        UpdateWrapper<Team> wrapper = new UpdateWrapper<Team>().eq("team_id", params.getTeamId());
+        if (params.getTeamName() != null){
+            wrapper = wrapper.set("team_name", params.getTeamName());
+        }
+        if (params.getDescription() != null){
+            wrapper = wrapper.set("description", params.getDescription());
+        }
+        teamMapper.update(team, wrapper);
+        return 200;
     }
 }
