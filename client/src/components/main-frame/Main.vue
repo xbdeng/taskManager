@@ -87,29 +87,29 @@
           <!-- 添加task的表单 -->
           <el-dialog :visible.sync='addTaskShow' width='700px' :modal-append-to-body='false' @close='showCalendar'>
             <AddTaskForm
-            :username='username'
-            :tagArray='this.tagArray'
-            :myTeamInfo='this.myTeamInfo'
-            v-on:toCalendar='toCalendar($event)'></AddTaskForm>
+                :username='username'
+                :tagArray='this.tagArray'
+                :myTeamInfo='this.myTeamInfo'
+                v-on:toCalendar='toCalendar($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
           <el-dialog :visible.sync='addTeamShow' width='1000px' height='1000px' :modal-append-to-body='false'
                      @close='showCalendar'>
             <AddTeamForm
-            v-on:toCalendar='toCalendar($event)'></AddTeamForm>
+                v-on:toCalendar='toCalendar($event)'></AddTeamForm>
           </el-dialog>
           <!-- 个人任务页面 -->
           <PersonalTaskPage
-          v-show="personalTaskShow"
-          :taskData="this.taskData"
-          :todayTaskData="this.todayTaskData"
-          :weekTaskData="this.weekTaskData"
-          :laterTaskData="this.laterTaskData"></PersonalTaskPage>
+              v-show="personalTaskShow"
+              :taskData="this.taskData"
+              :todayTaskData="this.todayTaskData"
+              :weekTaskData="this.weekTaskData"
+              :laterTaskData="this.laterTaskData"></PersonalTaskPage>
           <!-- 组队任务页面 -->
           <TeamInfoPage v-show="teamInfoShow"
-          :teamInfo="this.teamInfo"
-          :username="this.username"
-          :Friends="this.Friends"></TeamInfoPage>
+                        :teamInfo="this.teamInfo"
+                        :username="this.username"
+                        :Friends="this.Friends"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -162,7 +162,7 @@
               width="30%"
               :modal-append-to-body='false'
               center>
-            <span>{{this.CalendarClickTask}}</span>
+            <span>{{ this.CalendarClickTask }}</span>
             <span slot="footer" class="dialog-footer">
               <el-button @click="CalendarDialog = false">取 消</el-button>
               <el-button type="primary" @click="CalendarDialog = false">确 定</el-button>
@@ -204,30 +204,30 @@ export default {
   },
   props: ['username'],
   watch: {
-    'addTaskShow':function() {
-      if(this.addTaskShow) {
+    'addTaskShow': function () {
+      if (this.addTaskShow) {
         this.postTags()
         this.postMyTeams()
       }
     },
-    'addTeamShow':function() {
+    'addTeamShow': function () {
     },
-    'personalTaskShow':function() {
-      if(this.personalTaskShow) {
+    'personalTaskShow': function () {
+      if (this.personalTaskShow) {
         this.postTaskData()
         this.postTodayTaskData()
         this.postWeekTaskData()
         this.postLaterTaskData()
       }
     },
-    'teamInfoShow':function() {
-      if(this.teamInfoShow) {
+    'teamInfoShow': function () {
+      if (this.teamInfoShow) {
         this.postTeamInfo()
         this.postAddressBook()
       }
     },
-    'addressBookShow':function() {
-      if(this.addressBookShow) {
+    'addressBookShow': function () {
+      if (this.addressBookShow) {
         this.postAddressBook()
       }
     },
@@ -308,13 +308,13 @@ export default {
       },
       currentEvents: [],
       // AddTaskForm
-      tagArray:[],
-      myTeamInfo:[],
+      tagArray: [],
+      myTeamInfo: [],
       // PersonalTaskPage
-      taskData:[],
-      todayTaskData:[],
-      weekTaskData:[],
-      laterTaskData:[],
+      taskData: [],
+      todayTaskData: [],
+      weekTaskData: [],
+      laterTaskData: [],
       //  AddressBook
       Friends: [],
     }
@@ -411,16 +411,16 @@ export default {
       // }
       this.showTask()
     },
-    handleEventChange(event, delta, revertFunc){
+    handleEventChange(event, delta, revertFunc) {
       // console.log(event)
       let taskId = parseInt(event.event.id);
       let start = event.event.start;
       let end = event.event.end;
       this.changeCalendarData(taskId, start, end);
-      this.$message({
-        message: 'update success',
-        type: 'success'
-      })
+      // this.$message({
+      //   message: 'update success',
+      //   type: 'success'
+      // })
     },
     // 日历点击任务时出现详细信息
     handleEventClick(clickInfo) {
@@ -432,9 +432,9 @@ export default {
       this.CalendarDialog = true
     },
     // 任务详细信息
-    getTaskDetails(taskId){
+    getTaskDetails(taskId) {
       for (let x in this.calendarTasks) {
-        if(this.calendarTasks[x].taskId.toString() === taskId){
+        if (this.calendarTasks[x].taskId.toString() === taskId) {
           this.CalendarClickTask = this.calendarTasks[x];
           // console.log(this.CalendarClickTask)
           return;
@@ -442,7 +442,7 @@ export default {
       }
     },
 
-    changeCalendarData(taskId, start, end){
+    changeCalendarData(taskId, start, end) {
       const that = this;
       axios.post(
           'http://localhost:8081/api/task/edittask',
@@ -458,7 +458,19 @@ export default {
           }
       ).then(
           function (response) {
-            console.log(response)
+            // console.log(response)
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'update success',
+                type: 'success'
+              });
+            }
+            else{
+              that.$message({
+                message: 'fetch error',
+                type: 'error'
+              })
+            }
             that.showCalendarData()
           },
           function (err) {
@@ -486,10 +498,18 @@ export default {
           }
       ).then(
           function (response) {
-            that.$message({
-              message: 'get all',
-              type: 'success'
-            });
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取日历信息',
+                type: 'success'
+              });
+            }
+            else{
+              that.$message({
+                message: 'fetch error',
+                type: 'error'
+              })
+            }
             // console.log(response.data.data)
             that.calendarTasks = []
             let tmplist = []
@@ -519,72 +539,72 @@ export default {
     // AddTaskForm
     // TODO:获取用户的标签：文档暂未定
     postTags() {
-          let that = this
-          axios.post(
-              'http://localhost:8081/api/user/selecttags',
-              {
-                username:this.username
-              },
-              {
-                  headers:{
-                      Authorization:window.localStorage.getItem('token')
-                  }
-              }
-          ).then(
-              function(response) {
-                  alert(response.data.msg)
-                  if(response.data.code === 200) {
-                    that.$message({
-                      message:'获取标签成功',
-                      type:'success'
-                    })
-                    that.tagArray = []
-                    for(let i in response.data.data) {
-                      let content = response.data.data[i]
-                      let obj = {
-                        label:content.tagName,
-                        value:content.tagName
-                      }
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/user/selecttags',
+          {
+            username: this.username
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取标签成功',
+                type: 'success'
+              })
+              that.tagArray = []
+              for (let i in response.data.data) {
+                let content = response.data.data[i]
+                let obj = {
+                  label: content.tagName,
+                  value: content.tagName
+                }
 
-                      that.tagArray.push(obj)
-                    }
-                  } else {
-                    that.$message.error('获取Tags数据失败')
-                  }
-              },
-              function(err) {
-                  that.$message.error('响应错误,获取Tags数据失败')
+                that.tagArray.push(obj)
               }
-          )
+            } else {
+              that.$message.error('获取Tags数据失败')
+            }
+          },
+          function (err) {
+            that.$message.error('响应错误,获取Tags数据失败')
+          }
+      )
     },
     postMyTeams() {
-        let that = this;
-        axios.post(
-            'http://localhost:8081/api/user/myteams/admin',
-            {},
-            {
-                headers:{
-                    Authorization:window.localStorage.getItem('token')
-                }
+      let that = this;
+      axios.post(
+          'http://localhost:8081/api/user/myteams/admin',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
             }
-        ).then(
-            function(response) {
-                alert(response.data.msg)
-                if(response.data.code === 200) {
-                  that.$message({
-                    message:'请求用户创建或管理的组成功',
-                    type:'success'
-                  })
-                  that.myTeamInfo = response.data
-                } else {
-                  that.$message.error('请求用户创建或管理的组失败')
-                }
+          }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '请求用户创建或管理的组成功',
+                type: 'success'
+              })
+              that.myTeamInfo = response.data
+            } else {
+              that.$message.error('请求用户创建或管理的组失败')
+            }
 
-            },
-            function(err) {
-                that.$message.error('响应错误,请求用户创建或管理的组失败')
-            }
-        );
+          },
+          function (err) {
+            that.$message.error('响应错误,请求用户创建或管理的组失败')
+          }
+      );
     },
     // PersonalTaskPage
     postTaskData() {
@@ -603,58 +623,58 @@ export default {
     postTeamInfo() {
       let that = this
       axios.post(
-        'http://localhost:8081/api/user/myteams',
-        {},
-        {
-            headers:{
-                Authorization:window.localStorage.getItem('token')
+          'http://localhost:8081/api/user/myteams',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
             }
-        }
-      ).then(
-        function(response) {
-          alert(response.data.msg)
-          if(response.data.code === 200) {
-            that.$message({
-              message:'获取组队任务数据成功',
-              type:'success'
-            })
-            that.teamInfo = response.data.data
-          } else {
-            that.$message.error('获取组队任务失败')
           }
-        },
-        function(err) {
-          that.$message.error('响应失败，获取组队任务失败')
-        }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取组队任务数据成功',
+                type: 'success'
+              })
+              that.teamInfo = response.data.data
+            } else {
+              that.$message.error('获取组队任务失败')
+            }
+          },
+          function (err) {
+            that.$message.error('响应失败，获取组队任务失败')
+          }
       )
     },
     // addressBookShow
     postAddressBook() {
       let that = this
       axios.post(
-        'http://localhost:8081/api/user/addressbook',
-        {},
-        {
-            headers:{
-                Authorization:window.localStorage.getItem('token')
+          'http://localhost:8081/api/user/addressbook',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
             }
-        }
-      ).then(
-        function(response) {
-          alert(response.data.msg)
-          if(response.data.code === 200) {
-            that.$message({
-              message:'获取通讯录数据成功',
-              type:'success'
-            })
-            that.Friends = response.data.data
-          } else {
-            that.$message.error('获取通讯录数据失败')
           }
-        },
-        function(err) {
-          that.$message.error('响应失败,获取通讯录数据出错')
-        }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取通讯录数据成功',
+                type: 'success'
+              })
+              that.Friends = response.data.data
+            } else {
+              that.$message.error('获取通讯录数据失败')
+            }
+          },
+          function (err) {
+            that.$message.error('响应失败,获取通讯录数据出错')
+          }
       )
     }
   },
