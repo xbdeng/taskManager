@@ -277,7 +277,16 @@ export default {
         description: '',
         status: 0,
       },
-      teamInfo: [],
+      teamInfo: [{
+        admins:[],
+        createTime:'',
+        creator:'',
+        description:'',
+        members:[],
+        teamId:0,
+        teamName:'',
+        teamTasks:[]
+      }],
       calendarOptions: {
         plugins: [
           dayGridPlugin,
@@ -316,7 +325,14 @@ export default {
       weekTaskData: [],
       laterTaskData: [],
       //  AddressBook
-      Friends: [],
+      Friends: [{
+        email:'',
+        firstname:'',
+        lastname:'',
+        phone:'',
+        userId:'',
+        username:''
+      }],
     }
   },
   methods: {

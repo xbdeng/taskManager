@@ -94,7 +94,6 @@ export default {
         planedTaskShow:false,
         Specifier:0,
         drawer:false,
-        taskData:[],
     }
   },
   methods: {
