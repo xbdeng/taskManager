@@ -73,8 +73,8 @@ mo<template>
                     <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === '1'">
                         <el-col :span='10'>
                             <!-- 单选 -->
-                            <el-select placeholder='请选择任务分配的组别' v-model='taskForm.teams'>
-                                <el-option v-for="(team, tIndex) in myTeamInfo" :key="tIndex" :label="team.teamName" :value="team.teamName">
+                            <el-select placeholder='请选择任务分配的组别' v-model='taskForm.teamId'>
+                                <el-option v-for="(team, tIndex) in myTeamInfo" :key="tIndex" :label="team.teamName" :value="team.teamId">
                                 </el-option>
                             </el-select>
                         </el-col>
@@ -175,7 +175,7 @@ export default {
             dueDate:'',
             privilege:'',
             type: '',
-            teams:'',
+            teamId:'',
             createDate:'',
             description:'',
         },
@@ -262,18 +262,18 @@ export default {
             axios.post(
                 'http://localhost:8081/api/task/addtask',
                 {
-                    createDate:this.taskForm.createDate,
-                    description:this.taskForm.description,
-                    dueDate:this.taskForm.dueDate,
+                    createDate:that.taskForm.createDate,
+                    description:that.taskForm.description,
+                    dueDate:that.taskForm.dueDate,
                     //fatherTask
                     //members
-                    privilege:this.taskForm.privilege,
+                    privilege:that.taskForm.privilege,
                     status:0,
                     // subtasks
-                    tags:this.taskForm.tags,
-                    taskName:this.taskForm.taskName,
-                    //teamName
-                    type:this.taskForm.type,
+                    tags:that.taskForm.tags,
+                    taskName:that.taskForm.taskName,
+                    teamId:that.taskForm.teamId,
+                    type:that.taskForm.type,
                     // username
                 },
                 {
@@ -284,13 +284,13 @@ export default {
             ).then(
                 function (response) {
                     alert(response.data.msg)
-                    if(response.data.code == 200) {
+                    if(response.data.code === 200) {
                         that.$message({
                             message:'新建任务成功',
                             type:'success'
                         })
                         for(let key in this.taskForm) {
-                            this.taskForm[key] = ''
+                            that.taskForm[key] = ''
                         }
                     } else {
                         that.$message.error('新建任务失败')

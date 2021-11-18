@@ -103,6 +103,7 @@ public class TaskServiceImpl implements TaskService{
      */
     public List<Task> queryTask(QueryTaskDTO filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
+        filter.setUserId(userId);
         // configure range
         if (filter.getScheduledTask() != null && filter.getScheduledTask() == 1){
             switch(filter.getTimeRange()){
@@ -130,6 +131,9 @@ public class TaskServiceImpl implements TaskService{
             }
         }
         List<Task> tasks = taskMapper.queryTask(filter.setUserId(userId));
+        if (tasks.size() == 0){
+            return new ArrayList<>();
+        }
         Map<BigInteger, Task> taskMap = new HashMap<>();
         for (Task task : tasks) {
             taskMap.put(task.getTaskId(), task);

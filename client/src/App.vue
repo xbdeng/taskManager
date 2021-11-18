@@ -10,13 +10,15 @@ import Main from './components/main-frame/Main'
 import Login from './components/login-register/Login'
 import register from './components/login-register/register'
 import Profile from './components/profile/profile.vue'
+import tree from './components/main-frame/TreeTask.vue'
 export default {
   name: 'App',
   components: {
     Main,
     Login,
     register,
-    Profile
+    Profile,
+    tree
   },
   router
 }

@@ -4,7 +4,7 @@ import Main from '../components/main-frame/Main'
 import Login from '../components/login-register/Login'
 import register from "../components/login-register/register";
 import profile from "../components/profile/profile";
-
+import tree from '../components/main-frame/TreeTask'
 
 Vue.use(VueRouter);
 
@@ -39,5 +39,11 @@ export default new VueRouter({
             name: 'Profile',
             props: true
         },
+        {
+            path:'/tree/:username',
+            component:tree,
+            name:'Tree',
+            props:true
+        }
     ]
 });

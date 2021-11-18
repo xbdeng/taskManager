@@ -91,7 +91,7 @@ public class UserController {
 
     @PostMapping("myteams")
     @ApiOperation(value = "请求用户加入的组")
-    //todo
+    // todo mybatis
     public Result<List<TeamDTO>> myteams(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
@@ -101,7 +101,7 @@ public class UserController {
 
     @PostMapping("myteams/admin")
     @ApiOperation(value = "请求用户创建和管理的组")
-    //todo
+    // todo mybatis
     public Result<List<TeamDTO>> adminTeams(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);

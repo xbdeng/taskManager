@@ -62,17 +62,17 @@
                 <span style="font-weight:bold">任务优先级：</span>
               </el-col>
               <el-col :span="5">
-                <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="tempTaskForm.privilege == 3">
-                  <i class="el-icon-s-flag" style="color:red" v-if="tempTaskForm.privilege == 3"></i>
+                <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="tempTaskForm.privilege === 3">
+                  <i class="el-icon-s-flag" style="color:red" v-if="tempTaskForm.privilege === 3"></i>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="tempTaskForm.privilege == 2">
-                  <i class="el-icon-s-flag" style="color:#FFA500" v-if="tempTaskForm.privilege == 2"></i>
+                <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="tempTaskForm.privilege === 2">
+                  <i class="el-icon-s-flag" style="color:#FFA500" v-if="tempTaskForm.privilege === 2"></i>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="tempTaskForm.privilege == 1">
-                  <i class="el-icon-s-flag" style="color:#00BFFF" v-if="tempTaskForm.privilege == 1"></i>
+                <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="tempTaskForm.privilege === 1">
+                  <i class="el-icon-s-flag" style="color:#00BFFF" v-if="tempTaskForm.privilege === 1"></i>
                 </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="tempTaskForm.privilege == 0">
-                  <i class="el-icon-s-flag" style="color:#7CFC00" v-if="tempTaskForm.privilege == 0"></i>
+                <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="tempTaskForm.privilege === 0">
+                  <i class="el-icon-s-flag" style="color:#7CFC00" v-if="tempTaskForm.privilege === 0"></i>
                 </el-tooltip>
               </el-col>
               <!-- 修改任务优先级的接口 -->
@@ -153,7 +153,7 @@
               </el-col>
             </el-row>
             <!-- 如果是组队任务，显示这个任务覆盖的组员 -->
-            <el-row v-show="tempTaskForm.type==1 || tempTaskForm.type==='1'">
+            <el-row v-show="tempTaskForm.type===1 || tempTaskForm.type==='1'">
               <!-- 显示组内成员的组件 -->
                   <el-col :span="4">
                       <span style="font-weight:bold">任务成员：</span>
@@ -183,8 +183,6 @@
                         <el-row>
                             <el-col :offset="8">
                                 <el-button type='primary' @click="editInvitedMembers">确定</el-button>
-                                <!-- TODO:添加点击取消后的动作 -->
-                                <el-button type="danger">取消</el-button>
                             </el-col>
                         </el-row>
                             <el-tooltip content="点击可邀请成员进组" slot="reference">
@@ -234,7 +232,6 @@
                 <el-button type="primary" round @click="postEdit">确认修改</el-button>
               </el-col>
               <el-col>
-                <!-- TODO: 删除任务 -->
                 <el-button type="danger" round @click="closeDrawer">删除任务</el-button>
               </el-col>
             </el-row>
@@ -245,10 +242,16 @@
 </template>
  
 <script>
+import axios from 'axios'
 export default {
 
   name: 'TaskShow',
   props: ['singleTaskData','Friends'],
+  watch:{
+    'singleTaskData':function() {
+      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
+    }
+  },
   data() {
     return {
       inputVisible:false,
@@ -285,7 +288,7 @@ export default {
       this.editedStatus = 1
     },
     deleteTag(tag) {
-      this.tempTaskForm.tags.splice(this.tempTaskForm.taskTags.indexOf(tag), 1);
+      this.tempTaskForm.tags.splice(this.tempTaskForm.tags.indexOf(tag), 1);
     },
     showInput() {
       this.inputVisible = true;
@@ -381,7 +384,6 @@ export default {
           subTasks:that.tempTaskForm.subTasks,
           tags:that.tempTaskForm.tags,
           taskName:that.tempTaskForm.taskName,
-          //teamName
           type:that.tempTaskForm.type
         },
         {
@@ -392,6 +394,14 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
+          if(response.data.code === 200) {
+            that.$message({
+              message:'修改任务成功',
+              type:'success'
+            })
+          } else {
+            that.$message.error('修改任务失败')
+          }
           that.$emit('closeDrawer',{})
         },
         function(err) {
@@ -400,7 +410,31 @@ export default {
       )
     },
     closeDrawer() {
-      this.$emit('closeTaskDrawer',{})
+      let that = this
+      axios({
+        method:'POST',
+        url:'http://localhost:8081/api/task/deletetask',
+        params:{'id':that.tempTaskForm.taskId},
+        headers:{
+          Authorization:window.localStorage.getItem('token')
+        }
+      }).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'删除任务成功',
+                type:'success'
+              })
+              this.$emit('closeTaskDrawer',{})
+            } else {
+              that.$message.error('删除任务失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，删除任务失败')
+          }
+      )
     }
   }
   

@@ -90,8 +90,8 @@ export default {
                     axios.post(
                         'http://localhost:8081/api/user/login',
                         {
-                            username: this.loginForm.username,
-                            password: this.loginForm.password
+                            username: that.loginForm.username,
+                            password: that.loginForm.password
                         },
                     ).then(
                         function(response) {
@@ -101,7 +101,6 @@ export default {
                             })
                             let token = response.data.data
                             window.localStorage.setItem('token', token)
-                            console.log(response.data)
                             let tmpusername = that.loginForm.username
                             that.loginForm.username = ''
                             that.loginForm.password = ''

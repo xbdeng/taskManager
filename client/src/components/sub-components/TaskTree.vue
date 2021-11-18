@@ -13,23 +13,23 @@
             <!-- 此处绑定changeTaskId，表示当点击某个任务时，会向父组件传递这个任务的key，一直传递到SearchTaskPage,GroupInfoPage或者是PersonalTaskPage -->
               <span slot="title" @click="changeTaskId(taskLevel + String(tIndex))">
                 <el-tooltip effect="dark" content="优先级：很高" placement="top-end">
-                  <i class="el-icon-s-flag" style="color:red" v-if="task.privilege == 3"></i>
+                  <i class="el-icon-s-flag" style="color:red" v-if="task.privilege === 3"></i>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="优先级：高" placement="top-end">
-                  <i class="el-icon-s-flag" style="color:#FFA500" v-if="task.privilege == 2"></i>
+                  <i class="el-icon-s-flag" style="color:#FFA500" v-if="task.privilege === 2"></i>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="优先级：中" placement="top-end">
-                  <i class="el-icon-s-flag" style="color:#00BFFF" v-if="task.privilege == 1"></i>
+                  <i class="el-icon-s-flag" style="color:#00BFFF" v-if="task.privilege === 1"></i>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="优先级：低" placement="top-end">
-                  <i class="el-icon-s-flag" style="color:#7CFC00" v-if="task.privilege == 0"></i>
+                  <i class="el-icon-s-flag" style="color:#7CFC00" v-if="task.privilege === 0"></i>
                 </el-tooltip>
                 {{ task.taskName }}
                 <el-tooltip effect="dark" content="任务已完成，辛苦啦" placement="top-end">
-                  <i class="el-icon-success" style="color:#7CFC00" v-if="task.status == 1"></i>
+                  <i class="el-icon-success" style="color:#7CFC00" v-if="task.status === 1"></i>
                 </el-tooltip>
                 <el-tooltip effect="dark" content="该任务未能在DDL之前完成" placement="top-end">
-                  <i class="el-icon-error" style="color:red" v-if="task.status == 2"></i>
+                  <i class="el-icon-error" style="color:red" v-if="task.status === 2"></i>
                 </el-tooltip>
               </span>
           </template>
@@ -39,17 +39,17 @@
       <!-- 如果任务没有子任务，就不用el-submenu递归显示，直接用el-menu-item显示 -->
       <el-menu-item :key="task.taskName" :index="taskLevel + String(tIndex)" v-else>
           <span slot="title" @click="changeTaskId(taskLevel + String(tIndex))">
-            <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="task.privilege == 3">
-              <i class="el-icon-s-flag" style="color:red" v-if="task.privilege == 3"></i>
+            <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="task.privilege === 3">
+              <i class="el-icon-s-flag" style="color:red" v-if="task.privilege === 3"></i>
             </el-tooltip>
-            <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="task.privilege == 2">
-              <i class="el-icon-s-flag" style="color:#FFA500" v-if="task.privilege == 2"></i>
+            <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="task.privilege === 2">
+              <i class="el-icon-s-flag" style="color:#FFA500" v-if="task.privilege === 2"></i>
             </el-tooltip>
-            <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="task.privilege == 1">
-              <i class="el-icon-s-flag" style="color:#00BFFF" v-if="task.privilege == 1"></i>
+            <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="task.privilege === 1">
+              <i class="el-icon-s-flag" style="color:#00BFFF" v-if="task.privilege === 1"></i>
             </el-tooltip>
-            <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="task.privilege == 0">
-              <i class="el-icon-s-flag" style="color:#7CFC00" v-if="task.privilege == 0"></i>
+            <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="task.privilege === 0">
+              <i class="el-icon-s-flag" style="color:#7CFC00" v-if="task.privilege === 0"></i>
             </el-tooltip>
             {{ task.taskName }}
           </span>

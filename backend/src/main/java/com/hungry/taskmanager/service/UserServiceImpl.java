@@ -64,9 +64,8 @@ public class UserServiceImpl implements UserService {
         BigInteger userId = userMapper.getIdByName(username);
         //获取全部的teamsId
         List<BigInteger> teamsId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("user_id", userId)).stream().map(TeamUser::getTeamId).collect(Collectors.toList());
-
         //获取全部的teams
-        return getTeamDTOSbyTeamIds(teamsId);
+        return getTeamDTOSbyTeamIds(teamsId);//todo
     }
 
     @Override

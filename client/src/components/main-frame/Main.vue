@@ -81,35 +81,49 @@
               <i class="el-icon-search"></i>
               <span slot="title">任务过滤器</span>
             </el-menu-item>
+
+            <el-menu-item index="8" @click="showTree">
+              <i class="el-icon-ship"></i>
+              <span slot="title">任务树形图</span>
+            </el-menu-item>
+
+            <!-- 消息推送 -->
+            <el-menu-item index="9" @click="showMessage">
+              <el-badge :value="12" class="item">
+                <i class="el-icon-message"></i>
+                <span slot="title">消息通知</span>
+              </el-badge>
+            </el-menu-item>
           </el-menu>
+
         </el-aside>
         <el-main class='main'>
           <!-- 添加task的表单 -->
           <el-dialog :visible.sync='addTaskShow' width='700px' :modal-append-to-body='false' @close='showCalendar'>
             <AddTaskForm
-            :username='username'
-            :tagArray='this.tagArray'
-            :myTeamInfo='this.myTeamInfo'
-            v-on:toCalendar='toCalendar($event)'></AddTaskForm>
+                :username='username'
+                :tagArray='this.tagArray'
+                :myTeamInfo='this.myTeamInfo'
+                v-on:toCalendar='toCalendar($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
           <el-dialog :visible.sync='addTeamShow' width='1000px' height='1000px' :modal-append-to-body='false'
                      @close='showCalendar'>
             <AddTeamForm
-            v-on:toCalendar='toCalendar($event)'></AddTeamForm>
+                v-on:toCalendar='toCalendar($event)'></AddTeamForm>
           </el-dialog>
           <!-- 个人任务页面 -->
           <PersonalTaskPage
-          v-show="personalTaskShow"
-          :taskData="this.taskData"
-          :todayTaskData="this.todayTaskData"
-          :weekTaskData="this.weekTaskData"
-          :laterTaskData="this.laterTaskData"></PersonalTaskPage>
+              v-show="personalTaskShow"
+              :taskData="this.taskData"
+              :todayTaskData="this.todayTaskData"
+              :weekTaskData="this.weekTaskData"
+              :laterTaskData="this.laterTaskData"></PersonalTaskPage>
           <!-- 组队任务页面 -->
           <TeamInfoPage v-show="teamInfoShow"
-          :teamInfo="this.teamInfo"
-          :username="this.username"
-          :Friends="this.Friends"></TeamInfoPage>
+                        :teamInfo="this.teamInfo"
+                        :username="this.username"
+                        :Friends="this.Friends"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -162,12 +176,23 @@
               width="30%"
               :modal-append-to-body='false'
               center>
-            <span>{{this.CalendarClickTask}}</span>
+            <span>{{ this.CalendarClickTask }}</span>
             <span slot="footer" class="dialog-footer">
               <el-button @click="CalendarDialog = false">取 消</el-button>
               <el-button type="primary" @click="CalendarDialog = false">确 定</el-button>
             </span>
           </el-dialog>
+
+          <!--弹出消息推送-->
+          <el-drawer
+              :title="this.username + ' --- Your notifications'"
+              :visible.sync="MessageShow"
+              direction="rtl"
+              :before-close="handleMessageClose"
+              :append-to-body='true'
+              size="400px">
+            <MessagePage></MessagePage>
+          </el-drawer>
 
           <!-- 任务搜索 -->
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
@@ -188,11 +213,13 @@ import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import MessagePage from "./MessagePage";
 import axios from 'axios'
 
 export default {
   name: "Main",
   components: {
+    MessagePage,
     AddTaskForm,
     AddTeamForm,
     PersonalTaskPage,
@@ -203,30 +230,30 @@ export default {
   },
   props: ['username'],
   watch: {
-    'addTaskShow':function() {
-      if(this.addTaskShow) {
+    'addTaskShow': function () {
+      if (this.addTaskShow) {
         this.postTags()
         this.postMyTeams()
       }
     },
-    'addTeamShow':function() {
+    'addTeamShow': function () {
     },
-    'personalTaskShow':function() {
-      if(this.personalTaskShow) {
+    'personalTaskShow': function () {
+      if (this.personalTaskShow) {
         this.postTaskData()
         this.postTodayTaskData()
         this.postWeekTaskData()
         this.postLaterTaskData()
       }
     },
-    'teamInfoShow':function() {
-      if(this.teamInfoShow) {
+    'teamInfoShow': function () {
+      if (this.teamInfoShow) {
         this.postTeamInfo()
         this.postAddressBook()
       }
     },
-    'addressBookShow':function() {
-      if(this.addressBookShow) {
+    'addressBookShow': function () {
+      if (this.addressBookShow) {
         this.postAddressBook()
       }
     },
@@ -259,6 +286,7 @@ export default {
       // 是否展示“任务过滤器”界面
       searchTaskShow: false,
       // 获取当前时间，用于在日历中特殊显示
+      MessageShow: false,
       calendarValue: new Date(),
       // 用于在日历上显示 +
       calendarDateOn: ' ',
@@ -276,7 +304,16 @@ export default {
         description: '',
         status: 0,
       },
-      teamInfo: [],
+      teamInfo: [{
+        admins: [],
+        createTime: '',
+        creator: '',
+        description: '',
+        members: [],
+        teamId: 0,
+        teamName: '',
+        teamTasks: []
+      }],
       calendarOptions: {
         plugins: [
           dayGridPlugin,
@@ -297,7 +334,8 @@ export default {
         weekends: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
+        eventsSet: this.handleEvents,
+        eventChange: this.handleEventChange
         /* you can update a remote database when these fire:
         eventAdd:
         eventChange:
@@ -306,15 +344,22 @@ export default {
       },
       currentEvents: [],
       // AddTaskForm
-      tagArray:[],
-      myTeamInfo:[],
+      tagArray: [],
+      myTeamInfo: [],
       // PersonalTaskPage
-      taskData:[],
-      todayTaskData:[],
-      weekTaskData:[],
-      laterTaskData:[],
+      taskData: [],
+      todayTaskData: [],
+      weekTaskData: [],
+      laterTaskData: [],
       //  AddressBook
-      Friends: [],
+      Friends: [{
+        email: '',
+        firstname: '',
+        lastname: '',
+        phone: '',
+        userId: '',
+        username: ''
+      }],
     }
   },
   methods: {
@@ -387,6 +432,12 @@ export default {
       this.calendarShow = false
       this.searchTaskShow = true
     },
+    showMessage() {
+      this.MessageShow = true;
+    },
+    handleMessageClose(done) {
+      done();
+    },
     // 选择是否显示周末
     handleWeekendsToggle() {
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
@@ -409,6 +460,17 @@ export default {
       // }
       this.showTask()
     },
+    handleEventChange(event, delta, revertFunc) {
+      // console.log(event)
+      let taskId = parseInt(event.event.id);
+      let start = event.event.start;
+      let end = event.event.end;
+      this.changeCalendarData(taskId, start, end);
+      // this.$message({
+      //   message: 'update success',
+      //   type: 'success'
+      // })
+    },
     // 日历点击任务时出现详细信息
     handleEventClick(clickInfo) {
       // if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
@@ -419,23 +481,24 @@ export default {
       this.CalendarDialog = true
     },
     // 任务详细信息
-    getTaskDetails(taskId){
+    getTaskDetails(taskId) {
       for (let x in this.calendarTasks) {
-        if(this.calendarTasks[x].taskId.toString() === taskId){
+        if (this.calendarTasks[x].taskId.toString() === taskId) {
           this.CalendarClickTask = this.calendarTasks[x];
           // console.log(this.CalendarClickTask)
           return;
         }
       }
     },
-    // axios get tasks
-    showCalendarData() {
+
+    changeCalendarData(taskId, start, end) {
       const that = this;
-      console.log(window.localStorage.getItem('token'));
       axios.post(
-          'http://localhost:8081/api/task/query',
+          'http://localhost:8081/api/task/edittask',
           {
-            // fliter
+            taskId: taskId,
+            createDate: start,
+            dueDate: end
           },
           {
             headers: {
@@ -444,10 +507,56 @@ export default {
           }
       ).then(
           function (response) {
+            // console.log(response)
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'update success',
+                type: 'success'
+              });
+            } else {
+              that.$message({
+                message: 'fetch error',
+                type: 'error'
+              })
+            }
+            that.showCalendarData()
+          },
+          function (err) {
             that.$message({
-              message: 'get all',
-              type: 'success'
-            });
+              message: 'server error',
+              type: 'error'
+            })
+          }
+      )
+    },
+    // axios get tasks
+    showCalendarData() {
+      const that = this;
+      // console.log(window.localStorage.getItem('token'));
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            // fliter
+            scheduledTask: 0
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取日历信息',
+                type: 'success'
+              });
+            } else {
+              that.$message({
+                message: 'fetch error',
+                type: 'error'
+              })
+            }
             // console.log(response.data.data)
             that.calendarTasks = []
             let tmplist = []
@@ -470,151 +579,298 @@ export default {
           }
       )
     },
-
+    showTree() {
+      this.$router.push({name:'Tree', params:{username:this.username}})
+      this.showCalendar()
+    },
     handleEvents(events) {
       this.currentEvents = events
     },
     // AddTaskForm
-    // TODO:获取用户的标签：文档暂未定
     postTags() {
-          let that = this
-          axios.post(
-              'http://localhost:8081/api/user/selecttags',
-              {
-                username:this.username
-              },
-              {
-                  headers:{
-                      Authorization:window.localStorage.getItem('token')
-                  }
-              }
-          ).then(
-              function(response) {
-                  alert(response.data.msg)
-                  if(response.data.code === 200) {
-                    that.$message({
-                      message:'获取标签成功',
-                      type:'success'
-                    })
-                    that.tagArray = []
-                    for(let i in response.data.data) {
-                      let content = response.data.data[i]
-                      let obj = {
-                        label:content.tagName,
-                        value:content.tagName
-                      }
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/user/selecttags',
+          {
+            username: this.username
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取标签成功',
+                type: 'success'
+              })
+              that.tagArray = []
+              for (let i in response.data.data) {
+                let content = response.data.data[i]
+                let obj = {
+                  label: content.tagName,
+                  value: content.tagName
+                }
 
-                      that.tagArray.push(obj)
-                    }
-                  } else {
-                    that.$message.error('获取Tags数据失败')
-                  }
-              },
-              function(err) {
-                  that.$message.error('响应错误,获取Tags数据失败')
+                that.tagArray.push(obj)
               }
-          )
+            } else {
+              that.$message.error('获取Tags数据失败')
+            }
+          },
+          function (err) {
+            that.$message.error('响应错误,获取Tags数据失败')
+          }
+      )
     },
     postMyTeams() {
-        let that = this;
-        axios.post(
-            'http://localhost:8081/api/user/myteams/admin',
-            {},
-            {
-                headers:{
-                    Authorization:window.localStorage.getItem('token')
-                }
+      let that = this;
+      axios.post(
+          'http://localhost:8081/api/user/myteams/admin',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
             }
-        ).then(
-            function(response) {
-                alert(response.data.msg)
-                if(response.data.code == 200) {
-                  that.$message({
-                    message:'请求用户创建或管理的组成功',
-                    type:'success'
-                  })
-                  that.myTeamInfo = response.data
-                } else {
-                  that.$message.error('请求用户创建或管理的组失败')
-                }
-                
-            },
-            function(err) {
-                that.$message.error('响应错误,请求用户创建或管理的组失败')
+          }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '请求用户创建或管理的组成功',
+                type: 'success'
+              })
+              that.myTeamInfo = response.data
+            } else {
+              that.$message.error('请求用户创建或管理的组失败')
             }
-        );
+          },
+          function (err) {
+            that.$message.error('响应错误,请求用户创建或管理的组失败')
+          }
+      );
     },
     // PersonalTaskPage
     postTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            scheduledTask:0
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“任务”数据成功',
+                type:'success'
+              })
+              that.taskData = response.data.data
+            } else {
+              that.$message.error('请求“任务”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“任务”数据失败')
+          }
+      )
     },
     postTodayTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            scheduledTask:1,
+            currentDate:new Date().toISOString(),
+            timeRange:0
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“今天任务”数据成功',
+                type:'success'
+              })
+              that.todaytaskData = response.data.data
+            } else {
+              that.$message.error('请求“今天任务”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“今天任务”数据失败')
+          }
+      )
     },
     postWeekTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            scheduledTask:1,
+            currentDate:new Date().toISOString(),
+            timeRange:1
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“一周内”数据成功',
+                type:'success'
+              })
+              that.weekTaskData = response.data.data
+            } else {
+              that.$message.error('请求“一周内”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“一周内”数据失败')
+          }
+      )
     },
     postLaterTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            currentDate:new Date().toISOString(),
+            timeRange:2
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“稍后”数据成功',
+                type:'success'
+              })
+              that.laterTaskData = response.data.data
+            } else {
+              that.$message.error('请求“稍后”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“稍后”数据失败')
+          }
+      )
     },
     // TeamInfoShow
     postTeamInfo() {
       let that = this
       axios.post(
-        'http://localhost:8081/api/user/myteams',
-        {},
-        {
-            headers:{
-                Authorization:window.localStorage.getItem('token')
+          'http://localhost:8081/api/user/myteams',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
             }
-        }
-      ).then(
-        function(response) {
-          alert(response.data.msg)
-          if(response.data.code == 200) {
-            that.$message({
-              message:'获取组队任务数据成功',
-              type:'success'
-            })
-            that.teamInfo = response.data.data
-          } else {
-            that.$message.error('获取组队任务失败')
           }
-        },
-        function(err) {
-          that.$message.error('响应失败，获取组队任务失败')
-        }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取组队任务数据成功',
+                type: 'success'
+              })
+              that.teamInfo = response.data.data
+            } else {
+              that.$message.error('获取组队任务失败')
+            }
+          },
+          function (err) {
+            that.$message.error('响应失败，获取组队任务失败')
+          }
       )
     },
     // addressBookShow
     postAddressBook() {
       let that = this
       axios.post(
-        'http://localhost:8081/api/user/addressbook',
-        {},
-        {
-            headers:{
-                Authorization:window.localStorage.getItem('token')
+          'http://localhost:8081/api/user/addressbook',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
             }
-        }
-      ).then(
-        function(response) {
-          alert(response.data.msg)
-          if(response.data.code == 200) {
-            that.$message({
-              message:'获取通讯录数据成功',
-              type:'success'
-            })
-            that.Friends = response.data.data
-          } else {
-            that.$message.error('获取通讯录数据失败')
           }
-        },
-        function(err) {
-          that.$message.error('响应失败,获取通讯录数据出错')
-        }
+      ).then(
+          function (response) {
+            alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取通讯录数据成功',
+                type: 'success'
+              })
+              that.Friends = response.data.data
+            } else {
+              that.$message.error('获取通讯录数据失败')
+            }
+          },
+          function (err) {
+            that.$message.error('响应失败,获取通讯录数据出错')
+          }
       )
     }
+
   },
 }
 </script>
@@ -694,6 +950,11 @@ export default {
 .fc { /* the calendar root */
   max-width: 1100px;
   margin: 0 auto;
+}
+
+.item {
+  margin-top: 10px;
+  margin-right: 40px;
 }
 
 </style>

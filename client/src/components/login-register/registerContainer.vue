@@ -1,6 +1,7 @@
 <template>
   <div class="register-container">
-    <img src="https://github.githubassets.com/images/modules/site/home/hero-glow.svg" alt="Glowing universe" class="img_Test">
+    <img src="https://github.githubassets.com/images/modules/site/home/hero-glow.svg" alt="Glowing universe"
+         class="img_Test">
     <el-container>
       <el-header>Register</el-header>
       <el-container>
@@ -8,11 +9,11 @@
           <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="0px"
                    class="demo-ruleForm">
 
-            <el-row class = "front-word text-gray-mktg typewriter">
+            <el-row class="front-word text-gray-mktg typewriter">
               <p>
-              Welcome to Task Manager!
-              <br>
-              Let’s begin the adventure
+                Welcome to Task Manager!
+                <br>
+                Let’s begin the adventure
               </p>
             </el-row>
 
@@ -22,10 +23,12 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input v-model="ruleForm.username" autocomplete="off" :disabled="checkList[0]" class="input-text"></el-input>
+                  <el-input v-model="ruleForm.username" autocomplete="off" :disabled="checkList[0]"
+                            class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[0] === false">
-                  <el-button @click="setTrue(0)" :disabled="enable[0] === false" class="button_register">continue</el-button>
+                  <el-button @click="setTrue(0)" :disabled="enable[0] === false" class="button_register">continue
+                  </el-button>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -36,10 +39,12 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input v-model="ruleForm.email" autocomplete="off" :disabled="checkList[1]" class="input-text"></el-input>
+                  <el-input v-model="ruleForm.email" autocomplete="off" :disabled="checkList[1]"
+                            class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[1] === false">
-                  <el-button @click="setTrue(1)" :disabled="enable[1]  === false" class="button_register">continue</el-button>
+                  <el-button @click="setTrue(1)" :disabled="enable[1]  === false" class="button_register">continue
+                  </el-button>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -50,10 +55,12 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input type="password" v-model="ruleForm.pass" autocomplete="off" :disabled="checkList[2]" class="input-text"></el-input>
+                  <el-input type="password" v-model="ruleForm.pass" autocomplete="off" :disabled="checkList[2]"
+                            class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[2] === false">
-                  <el-button @click="setTrue(2)" :disabled="enable[2]  === false" class="button_register">continue</el-button>
+                  <el-button @click="setTrue(2)" :disabled="enable[2]  === false" class="button_register">continue
+                  </el-button>
                 </el-col>
               </el-row>
             </el-form-item>
@@ -64,32 +71,81 @@
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" :disabled="checkList[3]" class="input-text"></el-input>
+                  <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" :disabled="checkList[3]"
+                            class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[3] === false">
-                  <el-button @click="setTrue(3)" :disabled="enable[3]  === false" class="button_register">continue</el-button>
+                  <el-button @click="setTrue(3)" :disabled="enable[3]  === false" class="button_register">continue
+                  </el-button>
                 </el-col>
               </el-row>
             </el-form-item>
 
-            <el-form-item prop="age" v-show="checkList[3] === true">
-              <el-row class="word">Enter your age</el-row>
+            <el-form-item prop="phone" v-show="checkList[3] === true">
+              <el-row class="word">Enter your phone number</el-row>
               <el-row>
                 <el-col class="sword" :span="1">
                 </el-col>
                 <el-col :span="18">
-                  <el-input v-model.number="ruleForm.age" :disabled="checkList[4]" class="input-text"></el-input>
+                  <el-input v-model.number="ruleForm.phone" :disabled="checkList[4]"
+                            class="input-text"></el-input>
                 </el-col>
                 <el-col :span="4" v-show="checkList[4] === false">
+                  <el-button @click="setTrue(4)" :disabled="enable[4]  === false" class="button_register">continue
+                  </el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+
+            <el-form-item prop="firstName" v-show="checkList[4] === true">
+              <el-row class="word">Enter your first name</el-row>
+              <el-row>
+                <el-col class="sword" :span="1">
+                </el-col>
+                <el-col :span="18">
+                  <el-input v-model="ruleForm.firstName" :disabled="checkList[5]"
+                            class="input-text"></el-input>
+                </el-col>
+                <el-col :span="4" v-show="checkList[5] === false">
+                  <el-button @click="setTrue(5)" :disabled="enable[5]  === false" class="button_register">continue
+                  </el-button>
+                </el-col>
+              </el-row>
+            </el-form-item>
+
+            <el-form-item prop="lastName" v-show="checkList[5] === true">
+              <el-row class="word">Enter your last name</el-row>
+              <el-row>
+                <el-col class="sword" :span="1">
+                </el-col>
+                <el-col :span="18">
+                  <el-input v-model="ruleForm.lastName" :disabled="checkList[6]" class="input-text"></el-input>
+                </el-col>
+                <el-col :span="4" v-show="checkList[6] === false">
                   <el-button @click="submitForm('ruleForm')" class="button_register">sign up</el-button>
                 </el-col>
               </el-row>
             </el-form-item>
 
-<!--            <el-form-item>-->
-<!--              <el-button @click="resetForm('ruleForm')">重置</el-button>-->
-<!--&lt;!&ndash;              <el-button @click="print">test</el-button>&ndash;&gt;-->
-<!--            </el-form-item>-->
+
+            <!--            <el-form-item prop="age" v-show="checkList[3] === true">-->
+            <!--              <el-row class="word">Enter your age</el-row>-->
+            <!--              <el-row>-->
+            <!--                <el-col class="sword" :span="1">-->
+            <!--                </el-col>-->
+            <!--                <el-col :span="18">-->
+            <!--                  <el-input v-model.number="ruleForm.age" :disabled="checkList[4]" class="input-text"></el-input>-->
+            <!--                </el-col>-->
+            <!--                <el-col :span="4" v-show="checkList[4] === false">-->
+            <!--                  <el-button @click="submitForm('ruleForm')" class="button_register">sign up</el-button>-->
+            <!--                </el-col>-->
+            <!--              </el-row>-->
+            <!--            </el-form-item>-->
+
+            <!--            <el-form-item>-->
+            <!--              <el-button @click="resetForm('ruleForm')">重置</el-button>-->
+            <!--&lt;!&ndash;              <el-button @click="print">test</el-button>&ndash;&gt;-->
+            <!--            </el-form-item>-->
 
           </el-form>
         </el-main>
@@ -100,37 +156,43 @@
 
 <script>
 import axios from 'axios'
+
 export default {
   name: "registerContainer",
   data() {
-    var checkAge = (rule, value, callback) => {
-      if (!value) {
-        this.$set(this.enable, 4, false);
-        return callback(new Error('年龄不能为空'));
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          this.$set(this.enable, 4, false);
-          callback(new Error('请输入数字值'));
-        } else {
-          if (value < 18) {
-            this.$set(this.enable, 4, false);
-            callback(new Error('必须年满18岁'));
-          } else {
-            this.$set(this.enable, 4, true);
-            callback();
-          }
-        }
-      }, 1000);
-    };
+    // var checkAge = (rule, value, callback) => {
+    //   if (!value) {
+    //     this.$set(this.enable, 4, false);
+    //     return callback(new Error('年龄不能为空'));
+    //   }
+    //   setTimeout(() => {
+    //     if (!Number.isInteger(value)) {
+    //       this.$set(this.enable, 4, false);
+    //       callback(new Error('请输入数字值'));
+    //     } else {
+    //       if (value < 18) {
+    //         this.$set(this.enable, 4, false);
+    //         callback(new Error('必须年满18岁'));
+    //       } else {
+    //         this.$set(this.enable, 4, true);
+    //         callback();
+    //       }
+    //     }
+    //   }, 1000);
+    // };
     var validateName = (rule, value, callback) => {
-      if(value === '') {
+      if (value === '') {
         this.$set(this.enable, 0, false);
         callback(new Error('请输入名称'));
       } else {
-        // this.enable[1] = true;
-        this.$set(this.enable, 0, true);
-        callback();
+        if (value.length < 3) {
+          this.$set(this.enable, 0, false);
+          callback(new Error('名称不能小于三个字母'));
+        } else {
+          // this.enable[1] = true;
+          this.$set(this.enable, 0, true);
+          callback();
+        }
       }
     };
     var validateEmail = (rule, value, callback) => {
@@ -165,8 +227,7 @@ export default {
         if (!(value.length >= 6 && value.length <= 15)) {
           this.$set(this.enable, 2, false);
           callback(new Error('密码需要在6到15个字符长度之间'))
-        }
-        else {
+        } else {
           this.$set(this.enable, 2, true);
           callback();
         }
@@ -185,19 +246,56 @@ export default {
         callback();
       }
     };
+    var validphone = (rule, value, callback) => {
+      if (value === '') {
+        this.$set(this.enable, 4, false);
+        callback(new Error('请再次输入 phone number'));
+      } else {
+        if (!Number.isInteger(value)) {
+          this.$set(this.enable, 4, false);
+          callback(new Error('请输入数字值'));
+        } else {
+          this.$set(this.enable, 4, true)
+          callback();
+        }
+      }
+    };
+    var validfirstName = (rule, value, callback) => {
+      if (value === '') {
+        this.$set(this.enable, 5, false);
+        callback(new Error('请输入 first name'));
+      } else {
+        // this.enable[1] = true;
+        this.$set(this.enable, 5, true);
+        callback();
+      }
+    };
+    var validlastName = (rule, value, callback) => {
+      if (value === '') {
+        this.$set(this.enable, 6, false);
+        callback(new Error('请输入 last name'));
+      } else {
+        // this.enable[1] = true;
+        this.$set(this.enable, 6, true);
+        callback();
+      }
+    };
     return {
-      checkList: [false, false, false, false, false],
-      enable : [false, false, false, false, false],
+      checkList: [false, false, false, false, false, false, false],
+      enable: [false, false, false, false, false, false, false],
       ruleForm: {
         username: '',
         email: '',
         pass: '',
         checkPass: '',
-        age: ''
+        // age: ''
+        phone: '',
+        firstName: '',
+        lastName: ''
       },
       rules: {
         username: [
-          {validator: validateName,  trigger: 'change'}
+          {validator: validateName, trigger: 'change'}
         ],
         email: [
           {validator: validateEmail, trigger: 'change'}
@@ -208,9 +306,18 @@ export default {
         checkPass: [
           {validator: validatePass2, trigger: 'change'},
         ],
-        age: [
-          {validator: checkAge, trigger: 'change'}
+        phone: [
+          {validator: validphone, trigger: 'change'}
+        ],
+        firstName: [
+          {validator: validfirstName, trigger: 'change'}
+        ],
+        LastName: [
+          {validator: validlastName, trigger: 'change'}
         ]
+        // age: [
+        //   {validator: checkAge, trigger: 'change'}
+        // ]
       }
     };
   },
@@ -226,29 +333,34 @@ export default {
           //todo 登录注册验证方式同步
           // 向后端提交登录数据
           axios.post(
-            'http://localhost:8081/api/user/register',
-            {
-              username:that.ruleForm.username,
-              email:that.ruleForm.email,
-              password:that.$md5(that.ruleForm.pass),
-              age:that.ruleForm.age
-            }
+              'http://localhost:8081/api/user/register',
+              {
+                username: that.ruleForm.username,
+                email: that.ruleForm.email,
+                password: that.$md5(that.ruleForm.pass),
+                phone: that.ruleForm.phone,
+                firstName: that.ruleForm.firstName,
+                lastName: that.ruleForm.lastName
+              }
           ).then(
-            function(response) {
-              alert('注册成功')
-              // 清空表单
-              let username = that.ruleForm.username
-              that.ruleForm.username = ''
-              that.ruleForm.pass = ''
-              that.ruleForm.email = ''
-              that.ruleForm.age = ''
-
-              // 跳转路由
-              that.$router.push('/login')
-            },
-            function(err) {
-              alert('注册失败');
-            }
+              function (response) {
+                alert('注册成功')
+                // 清空表单
+                let username = that.ruleForm.username
+                that.ruleForm.username = ''
+                that.ruleForm.pass = ''
+                that.ruleForm.email = ''
+                // that.ruleForm.age = ''
+                that.ruleForm.phone = ''
+                that.ruleForm.firstName = ''
+                that.ruleForm.lastName = ''
+                that.resetForm('ruleForm')
+                // 跳转路由
+                that.$router.push('/login')
+              },
+              function (err) {
+                alert('注册失败');
+              }
           )
         } else {
           console.log('error submit!!');
@@ -257,13 +369,13 @@ export default {
       });
     },
     resetForm(formName) {
-      for(var i = 0; i < 5; i++){
+      for (var i = 0; i < 7; i++) {
         this.$set(this.checkList, i, false);
         this.$set(this.enable, i, false);
       }
       this.$refs[formName].resetFields();
     },
-    print(){
+    print() {
       console.log(this.checkList)
       console.log(this.enable)
       console.log(this.ruleForm)
@@ -278,7 +390,8 @@ export default {
   height: 100%;
   background-color: transparent;
 }
-.register-page{
+
+.register-page {
   -webkit-border-radius: 5px;
   /*border-radius: 10px;*/
   margin: auto;
@@ -296,6 +409,7 @@ export default {
   box-sizing: border-box;
   display: block;
 }
+
 /*.front-word{*/
 /*  color: #424242;*/
 /*  font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;*/
@@ -313,25 +427,32 @@ export default {
   white-space: nowrap; /* Keeps the content on a single line */
   margin: 0 auto; /* Gives that scrolling effect as the typing happens */
   letter-spacing: .15em; /* Adjust as needed */
-  animation:
-      typing 3.5s steps(40, end),
-      blink-caret .75s step-end infinite;
+  animation: typing 3.5s steps(40, end),
+  blink-caret .75s step-end infinite;
 }
 
 /* The typing effect */
 @keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
+  from {
+    width: 0
+  }
+  to {
+    width: 100%
+  }
 }
 
 /* The typewriter cursor effect */
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: orange; }
+  from, to {
+    border-color: transparent
+  }
+  50% {
+    border-color: orange;
+  }
 }
 
 .front-word {
-  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace !important;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
 }
 
 .text-gray-mktg {
@@ -347,7 +468,7 @@ export default {
 /*  text-align:left;*/
 /*  font-weight: bold;*/
 /*}*/
-.sword::after{
+.sword::after {
   content: '';
   display: inline-block;
   width: 8px;
@@ -367,16 +488,17 @@ export default {
   background-color: unset !important;
 }
 
-.el-form-item{
+.el-form-item {
   margin-bottom: 0px;
 }
 
 .word {
-  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace !important;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
   color: #00cfc8;
   font-size: 16px !important;
 }
-.img_Test{
+
+.img_Test {
   position: absolute !important;
   overflow: hidden !important;
   top: 50%;
@@ -384,12 +506,14 @@ export default {
   width: 200%;
   transform: translate(-50%, -50%);
 }
-.input-text >>> .el-input__inner{
+
+.input-text >>> .el-input__inner {
   background-color: #0c162d;
   -webkit-text-fill-color: #fff;
   border: 0;
   font-size: 17px;
 }
+
 .button_register {
   border-radius: 6px;
   background-color: transparent;
@@ -397,7 +521,7 @@ export default {
   color: rgba(119, 250, 0, 0.88);
 }
 
-.el-button.is-disabled{
+.el-button.is-disabled {
   background-color: transparent;
   border: 1px solid rgba(175, 175, 175, 0.26);
   color: rgba(175, 175, 175, 0.26);

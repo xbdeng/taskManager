@@ -80,9 +80,9 @@
                 <el-form-item label="任务状态:" prop="status">
                     <el-row>
                         <el-col>
-                            <el-checkbox v-model="notFinished">未完成</el-checkbox>
-                            <el-checkbox v-model="finished">已完成</el-checkbox>
-                            <el-checkbox v-model="expired">已过期</el-checkbox>
+                            <el-checkbox v-model="this.notFinished">未完成</el-checkbox>
+                            <el-checkbox v-model="this.finished">已完成</el-checkbox>
+                            <el-checkbox v-model="this.expired">已过期</el-checkbox>
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -121,7 +121,7 @@
             :modal-append-to-body='false'
             size='50%'
             >
-            <TaskShow :singleTaskData="getTaskById(searchedResult, chosenTaskId)"></TaskShow>
+            <TaskShow :singleTaskData="this.showedTask"></TaskShow>
         </el-drawer>
     </el-container>
   </div>
@@ -157,12 +157,14 @@ export default {
               status:null,
               teamName:null,
               type:null,
-              finished:false,
-              notFinished:false,
-              expired:false,
+
           },
+          finished:false,
+          notFinished:false,
+          expired:false,
           addedTag:null,
           inputVisible:false,
+          showedTask:null,
           fliterDrawer:false,
           taskInfoDrawer:false,
           texts:['低','中','高','很高'],
@@ -177,14 +179,14 @@ export default {
           axios.post(
               'http://localhost:8081/api/task/query',
               {
-                createDate:this.fliterForm.createDate,
-                dueDate:this.fliterForm.dueDate,
-                privilege:this.fliterForm.privilege,
-                status:this.generateStatusList(),
-                tags:this.fliterForm.tags,
-                taskName:this.fliterForm.taskName,
-                teamName:this.fliterForm.teamName,
-                type:this.fliterForm.type
+                createDate:that.fliterForm.createDate,
+                dueDate:that.fliterForm.dueDate,
+                privilege:that.fliterForm.privilege === 0 ? null : that.fliterForm.privilege - 1,
+                status:that.generateStatusList(),
+                tags:that.fliterForm.tags,
+                taskName:that.fliterForm.taskName,
+                teamName:that.fliterForm.teamName,
+                type:that.fliterForm.type
               },
               {
                 headers:{
@@ -194,7 +196,7 @@ export default {
           ).then(
               function(response) {
                   alert(response.data.msg)
-                  if(response.data.code == 200) {
+                  if(response.data.code === 200) {
                       that.searchedResult = response.data.data
                       that.$message({
                           message:'查询成功',
@@ -211,14 +213,16 @@ export default {
           )
       },
       chooseTasks(id) {
-          this.taskInfoDrawer = true
           this.chosenTaskId = id;
+          this.showedTask = this.getTaskById(this.searchedResult, id)
+          console.log(this.showedTask.taskName)
+          this.taskInfoDrawer = true
       },
       getTaskById(taskList, id) {
           if (id === '-1') return {
               taskName:'Please choose your task'
         }
-          if (id.length == 1) return taskList[parseInt(id)];
+          if (id.length === 1) return taskList[parseInt(id)];
 
           return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
       },
@@ -242,7 +246,7 @@ export default {
                     this.addedTag = '';
                     return 
                 }
-                }
+            }
                 this.fliterForm.tags.push(inputValue);
             } else {
                 this.$message.error('添加的标签不能为空')
@@ -270,6 +274,8 @@ export default {
           if(this.expired) {
               array.push(2)
           }
+          if(array.length === 0) return null
+          return array
       },
       clear() {
           for(let i in this.fliterForm) {

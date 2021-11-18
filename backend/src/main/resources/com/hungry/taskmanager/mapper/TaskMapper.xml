@@ -44,17 +44,20 @@
         <if test="fatherTask != null">
             AND t.father_task = #{fatherTask}
         </if>
-        <if test="scheduledTask == 0">
-            AND t.status IN (0, 2)
-        </if>
-        <if test="scheduledTask == 1">
-            <if test="timeRange == 0 or timeRange == 1">
-                AND t.due_date &lt;= #{requiredDate}
+        <if test="scheduledTask != null">
+            <if test="scheduledTask == 0">
+                AND t.status IN (0, 2)
             </if>
-            <if test="timeRange == 2">
-                AND t.due_date &gt;= #{requiredDate}
+            <if test="scheduledTask == 1">
+                <if test="timeRange == 0 or timeRange == 1">
+                    AND t.due_date &lt;= #{requiredDate}
+                </if>
+                <if test="timeRange == 2">
+                    AND t.due_date &gt;= #{requiredDate}
+                </if>
             </if>
         </if>
+
     </select>
 
 
