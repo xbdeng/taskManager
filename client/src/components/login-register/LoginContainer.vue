@@ -101,7 +101,6 @@ export default {
                             })
                             let token = response.data.data
                             window.localStorage.setItem('token', token)
-                            console.log(response.data)
                             let tmpusername = that.loginForm.username
                             that.loginForm.username = ''
                             that.loginForm.password = ''
