@@ -81,6 +81,10 @@
               <i class="el-icon-search"></i>
               <span slot="title">任务过滤器</span>
             </el-menu-item>
+            <el-menu-item index="8" @click="showTree">
+              <i class="el-icon-ship"></i>
+              <span slot="title">任务树形图</span>
+            </el-menu-item>
           </el-menu>
         </el-aside>
         <el-main class='main'>
@@ -548,12 +552,14 @@ export default {
           }
       )
     },
-
+    showTree() {
+      this.$router.push({name:'Tree', params:{username:this.username}})
+      this.showCalendar()
+    },
     handleEvents(events) {
       this.currentEvents = events
     },
     // AddTaskForm
-    // TODO:获取用户的标签：文档暂未定
     postTags() {
       let that = this
       axios.post(
@@ -615,7 +621,6 @@ export default {
             } else {
               that.$message.error('请求用户创建或管理的组失败')
             }
-
           },
           function (err) {
             that.$message.error('响应错误,请求用户创建或管理的组失败')
@@ -624,16 +629,161 @@ export default {
     },
     // PersonalTaskPage
     postTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            scheduledTask:0
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“任务”数据成功',
+                type:'success'
+              })
+              that.taskData = response.data.data
+            } else {
+              that.$message.error('请求“任务”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“任务”数据失败')
+          }
+      )
     },
     postTodayTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            scheduledTask:1,
+            currentDate:new Date().toISOString(),
+            timeRange:0
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“今天任务”数据成功',
+                type:'success'
+              })
+              that.todaytaskData = response.data.data
+            } else {
+              that.$message.error('请求“今天任务”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“今天任务”数据失败')
+          }
+      )
     },
     postWeekTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            scheduledTask:1,
+            currentDate:new Date().toISOString(),
+            timeRange:1
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“一周内”数据成功',
+                type:'success'
+              })
+              that.weekTaskData = response.data.data
+            } else {
+              that.$message.error('请求“一周内”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“一周内”数据失败')
+          }
+      )
     },
     postLaterTaskData() {
-
+      let that = this
+      axios.post(
+          'http://localhost:8081/api/task/query',
+          {
+            createDate:null,
+            dueDate:null,
+            privilege:null,
+            status:null,
+            tag:null,
+            taskName:null,
+            teamName:null,
+            type:null,
+            currentDate:new Date().toISOString(),
+            timeRange:2
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'请求“稍后”数据成功',
+                type:'success'
+              })
+              that.laterTaskData = response.data.data
+            } else {
+              that.$message.error('请求“稍后”数据失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，请求“稍后”数据失败')
+          }
+      )
     },
     // TeamInfoShow
     postTeamInfo() {
@@ -693,6 +843,7 @@ export default {
           }
       )
     }
+
   },
 }
 </script>
