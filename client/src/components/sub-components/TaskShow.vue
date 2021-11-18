@@ -250,6 +250,11 @@ export default {
 
   name: 'TaskShow',
   props: ['singleTaskData','Friends'],
+  watch:{
+    'singleTaskData':function() {
+      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
+    }
+  },
   data() {
     return {
       inputVisible:false,

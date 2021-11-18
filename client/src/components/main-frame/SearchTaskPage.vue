@@ -121,7 +121,7 @@
             :modal-append-to-body='false'
             size='50%'
             >
-            <TaskShow :singleTaskData="getTaskById(searchedResult, chosenTaskId)"></TaskShow>
+            <TaskShow :singleTaskData="this.showedTask"></TaskShow>
         </el-drawer>
     </el-container>
   </div>
@@ -163,6 +163,7 @@ export default {
           },
           addedTag:null,
           inputVisible:false,
+          showedTask:null,
           fliterDrawer:false,
           taskInfoDrawer:false,
           texts:['低','中','高','很高'],
@@ -212,6 +213,8 @@ export default {
       },
       chooseTasks(id) {
           this.chosenTaskId = id;
+          this.showedTask = this.getTaskById(this.searchedResult, id)
+          console.log(this.showedTask.taskName)
           this.taskInfoDrawer = true
       },
       getTaskById(taskList, id) {
