@@ -86,6 +86,15 @@
               <span slot="title">任务树形图</span>
             </el-menu-item>
           </el-menu>
+
+          <!-- 消息推送 -->
+          <el-menu-item index="9" @click="showMessage">
+            <el-badge :value="12" class="item">
+              <i class="el-icon-message"></i>
+              <span slot="title">消息通知</span>
+            </el-badge>
+          </el-menu-item>
+
         </el-aside>
         <el-main class='main'>
           <!-- 添加task的表单 -->
