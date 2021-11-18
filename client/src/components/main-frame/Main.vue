@@ -81,19 +81,20 @@
               <i class="el-icon-search"></i>
               <span slot="title">任务过滤器</span>
             </el-menu-item>
+
             <el-menu-item index="8" @click="showTree">
               <i class="el-icon-ship"></i>
               <span slot="title">任务树形图</span>
             </el-menu-item>
-          </el-menu>
 
-          <!-- 消息推送 -->
-          <el-menu-item index="9" @click="showMessage">
-            <el-badge :value="12" class="item">
-              <i class="el-icon-message"></i>
-              <span slot="title">消息通知</span>
-            </el-badge>
-          </el-menu-item>
+            <!-- 消息推送 -->
+            <el-menu-item index="9" @click="showMessage">
+              <el-badge :value="12" class="item">
+                <i class="el-icon-message"></i>
+                <span slot="title">消息通知</span>
+              </el-badge>
+            </el-menu-item>
+          </el-menu>
 
         </el-aside>
         <el-main class='main'>
