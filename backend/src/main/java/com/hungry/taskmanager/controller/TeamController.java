@@ -40,7 +40,7 @@ public class TeamController {
     }
 
     @PostMapping("/setadmin")
-    @ApiOperation(value = "设置管理员",notes = "后端已测试通过")
+    @ApiOperation(value = "设置管理员",notes = "后端已测试通过,权限已验证")
     @RequiresAuthentication
     public Result<String> setAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.setAdmin(oppoTeamMemberDTO);
@@ -55,7 +55,7 @@ public class TeamController {
     }
 
     @PostMapping("/dismiss")
-    @ApiOperation(value = "解散小组",notes = "后端已测试通过")
+    @ApiOperation(value = "解散小组",notes = "后端已测试通过,权限已验证")
     public Result<String> dismiss(@RequestBody String teamId) {
         BigInteger teamId_ = JSON.parseObject(teamId).getBigInteger("teamId");
         teamService.dismiss(teamId_);
@@ -63,7 +63,7 @@ public class TeamController {
     }
 
     @PostMapping("/removeadmin")
-    @ApiOperation(value = "撤销管理员权限",notes = "后端已测试通过")
+    @ApiOperation(value = "撤销管理员权限",notes = "后端已测试通过,权限已验证")
     public Result<String> removeAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.removeAdmin(oppoTeamMemberDTO);
         return Result.succ("移除成功");
