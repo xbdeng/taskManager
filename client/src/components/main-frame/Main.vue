@@ -81,8 +81,6 @@
               <i class="el-icon-search"></i>
               <span slot="title">任务过滤器</span>
             </el-menu-item>
-
-
           </el-menu>
         </el-aside>
         <el-main class='main'>
