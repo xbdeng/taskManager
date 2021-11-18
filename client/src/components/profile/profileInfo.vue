@@ -57,36 +57,59 @@
           </el-form>
         </div>
       </el-aside>
+
       <el-main>
         <el-form ref="form">
-          <el-form-item class="text_left" >
+          <el-form-item class="text_left">
             <el-row :gutter="20">
               <el-col :span="8">
                 <div>
-                  全名
+                  username
                   <br>
-                  <el-input placeholder="Admin" v-model="name"></el-input>
+                  <el-input placeholder="Put your user name here" v-model="username" @change></el-input>
                 </div>
               </el-col>
 
               <el-col :span="8">
                 <div>
-                  Email
+                  email
                   <br>
-                  <el-input placeholder="example@.com" v-model="email"></el-input>
+                  <el-input placeholder="Put your email address here" v-model="email"></el-input>
                 </div>
               </el-col>
 
               <el-col :span="8">
                 <div>
-                  Passwd
+                  phone
                   <br>
-                  <el-input placeholder="123456" v-model="passwd"></el-input>
+                  <el-input placeholder="Put your phone number here" v-model="phone"></el-input>
                 </div>
               </el-col>
 
             </el-row>
           </el-form-item>
+
+          <el-form-item class="text_left">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <div>
+                  firstName
+                  <br>
+                  <el-input placeholder="d" v-model="firstName"></el-input>
+                </div>
+              </el-col>
+
+              <el-col :span="8">
+                <div>
+                  lastName
+                  <br>
+                  <el-input placeholder="xb" v-model="lastName"></el-input>
+                </div>
+              </el-col>
+
+            </el-row>
+          </el-form-item>
+
         </el-form>
       </el-main>
     </el-container>
@@ -94,15 +117,60 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "profileInfo",
-  data(){
-  return {
-    name : '',
-    email : '',
-    passwd : ''
+  data() {
+    return {
+      username: '',
+      email: '',
+      passwd: '',
+      firstName: '',
+      lastName: '',
+      phone: '',
+      userId: -1
+    }
+  },
+  mounted() {
+    this.showInfo()
+  },
+  methods: {
+    showInfo() {
+      const that = this;
+      axios.post(
+          'http://localhost:8081/api/user/profile',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response){
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'fetch success',
+                type: 'success'
+              });
+            }
+            else{
+              that.$message({
+                message: 'fetch error',
+                type: 'error'
+              })
+            }
+            that.username = response.data.data.username
+            that.phone = response.data.data.phone
+            that.email = response.data.data.email
+            that.firstName = response.data.data.firstName
+            that.lastName = response.data.data.lastName
+            that.userId = response.data.data.userId
+            // console.log(response)
+          }
+      )
+    }
   }
-}
 }
 </script>
 
