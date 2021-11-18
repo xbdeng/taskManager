@@ -394,6 +394,14 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
+          if(response.data.code === 200) {
+            that.$message({
+              message:'修改任务成功',
+              type:'success'
+            })
+          } else {
+            that.$message.error('修改任务失败')
+          }
           that.$emit('closeDrawer',{})
         },
         function(err) {
@@ -410,8 +418,23 @@ export default {
         headers:{
           Authorization:window.localStorage.getItem('token')
         }
-      })
-      this.$emit('closeTaskDrawer',{})
+      }).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'删除任务成功',
+                type:'success'
+              })
+              this.$emit('closeTaskDrawer',{})
+            } else {
+              that.$message.error('删除任务失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，删除任务失败')
+          }
+      )
     }
   }
   

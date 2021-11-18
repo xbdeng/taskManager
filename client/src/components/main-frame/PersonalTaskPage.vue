@@ -70,7 +70,7 @@
             :modal-append-to-body='false'
             size='50%'
             >
-                <TaskShow :singleTaskData="getTask(chosenTaskId)" v-on:closeTaskDrawer='closeDrawer($event)'></TaskShow>
+                <TaskShow :singleTaskData="getTask(chosenTaskId)" v-on:closeTaskDrawer='closeTaskDrawer($event)'></TaskShow>
             </el-drawer>
         </el-container>
     </div>
@@ -140,6 +140,8 @@ export default {
         this.Specifier = num
     },
     closeTaskDrawer() {
+      //TODO:
+        this.$emit('closeTaskDrawer', {})
         this.drawer = false
     }
 }
