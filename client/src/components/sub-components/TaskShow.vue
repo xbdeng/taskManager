@@ -183,8 +183,6 @@
                         <el-row>
                             <el-col :offset="8">
                                 <el-button type='primary' @click="editInvitedMembers">确定</el-button>
-                                <!-- TODO:添加点击取消后的动作 -->
-                                <el-button type="danger">取消</el-button>
                             </el-col>
                         </el-row>
                             <el-tooltip content="点击可邀请成员进组" slot="reference">
@@ -234,7 +232,6 @@
                 <el-button type="primary" round @click="postEdit">确认修改</el-button>
               </el-col>
               <el-col>
-                <!-- TODO: 删除任务 -->
                 <el-button type="danger" round @click="closeDrawer">删除任务</el-button>
               </el-col>
             </el-row>
@@ -387,7 +384,6 @@ export default {
           subTasks:that.tempTaskForm.subTasks,
           tags:that.tempTaskForm.tags,
           taskName:that.tempTaskForm.taskName,
-          //teamName
           type:that.tempTaskForm.type
         },
         {
@@ -398,6 +394,14 @@ export default {
       ).then(
         function(response) {
           alert(response.data.msg)
+          if(response.data.code === 200) {
+            that.$message({
+              message:'修改任务成功',
+              type:'success'
+            })
+          } else {
+            that.$message.error('修改任务失败')
+          }
           that.$emit('closeDrawer',{})
         },
         function(err) {
@@ -414,8 +418,23 @@ export default {
         headers:{
           Authorization:window.localStorage.getItem('token')
         }
-      })
-      this.$emit('closeTaskDrawer',{})
+      }).then(
+          function(response) {
+            alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'删除任务成功',
+                type:'success'
+              })
+              this.$emit('closeTaskDrawer',{})
+            } else {
+              that.$message.error('删除任务失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，删除任务失败')
+          }
+      )
     }
   }
   
