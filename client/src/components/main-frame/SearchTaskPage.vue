@@ -211,14 +211,14 @@ export default {
           )
       },
       chooseTasks(id) {
-          this.taskInfoDrawer = true
           this.chosenTaskId = id;
+          this.taskInfoDrawer = true
       },
       getTaskById(taskList, id) {
           if (id === '-1') return {
               taskName:'Please choose your task'
         }
-          if (id.length == 1) return taskList[parseInt(id)];
+          if (id.length === 1) return taskList[parseInt(id)];
 
           return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
       },
@@ -242,7 +242,7 @@ export default {
                     this.addedTag = '';
                     return 
                 }
-                }
+            }
                 this.fliterForm.tags.push(inputValue);
             } else {
                 this.$message.error('添加的标签不能为空')

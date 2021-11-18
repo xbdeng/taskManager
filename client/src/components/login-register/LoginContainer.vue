@@ -90,8 +90,8 @@ export default {
                     axios.post(
                         'http://localhost:8081/api/user/login',
                         {
-                            username: this.loginForm.username,
-                            password: this.loginForm.password
+                            username: that.loginForm.username,
+                            password: that.loginForm.password
                         },
                     ).then(
                         function(response) {
