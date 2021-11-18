@@ -82,13 +82,7 @@
               <span slot="title">任务过滤器</span>
             </el-menu-item>
 
-            <!-- 消息推送 -->
-              <el-menu-item index="8" @click="showMessage">
-                <el-badge :value="12" class="item">
-                  <i class="el-icon-message"></i>
-                  <span slot="title">消息通知</span>
-                </el-badge>
-              </el-menu-item>
+
           </el-menu>
         </el-aside>
         <el-main class='main'>
