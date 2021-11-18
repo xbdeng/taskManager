@@ -81,11 +81,21 @@
               <i class="el-icon-search"></i>
               <span slot="title">任务过滤器</span>
             </el-menu-item>
+
             <el-menu-item index="8" @click="showTree">
               <i class="el-icon-ship"></i>
               <span slot="title">任务树形图</span>
             </el-menu-item>
+
+            <!-- 消息推送 -->
+            <el-menu-item index="9" @click="showMessage">
+              <el-badge :value="12" class="item">
+                <i class="el-icon-message"></i>
+                <span slot="title">消息通知</span>
+              </el-badge>
+            </el-menu-item>
           </el-menu>
+
         </el-aside>
         <el-main class='main'>
           <!-- 添加task的表单 -->
@@ -173,6 +183,17 @@
             </span>
           </el-dialog>
 
+          <!--弹出消息推送-->
+          <el-drawer
+              :title="this.username + ' --- Your notifications'"
+              :visible.sync="MessageShow"
+              direction="rtl"
+              :before-close="handleMessageClose"
+              :append-to-body='true'
+              size="400px">
+            <MessagePage></MessagePage>
+          </el-drawer>
+
           <!-- 任务搜索 -->
           <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
         </el-main>
@@ -192,12 +213,13 @@ import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import MessagePage from "./MessagePage";
 import axios from 'axios'
-import qs from 'qs'
 
 export default {
   name: "Main",
   components: {
+    MessagePage,
     AddTaskForm,
     AddTeamForm,
     PersonalTaskPage,
@@ -264,6 +286,7 @@ export default {
       // 是否展示“任务过滤器”界面
       searchTaskShow: false,
       // 获取当前时间，用于在日历中特殊显示
+      MessageShow: false,
       calendarValue: new Date(),
       // 用于在日历上显示 +
       calendarDateOn: ' ',
@@ -282,14 +305,14 @@ export default {
         status: 0,
       },
       teamInfo: [{
-        admins:[],
-        createTime:'',
-        creator:'',
-        description:'',
-        members:[],
-        teamId:0,
-        teamName:'',
-        teamTasks:[]
+        admins: [],
+        createTime: '',
+        creator: '',
+        description: '',
+        members: [],
+        teamId: 0,
+        teamName: '',
+        teamTasks: []
       }],
       calendarOptions: {
         plugins: [
@@ -330,12 +353,12 @@ export default {
       laterTaskData: [],
       //  AddressBook
       Friends: [{
-        email:'',
-        firstname:'',
-        lastname:'',
-        phone:'',
-        userId:'',
-        username:''
+        email: '',
+        firstname: '',
+        lastname: '',
+        phone: '',
+        userId: '',
+        username: ''
       }],
     }
   },
@@ -408,6 +431,12 @@ export default {
       this.addressBookShow = false
       this.calendarShow = false
       this.searchTaskShow = true
+    },
+    showMessage() {
+      this.MessageShow = true;
+    },
+    handleMessageClose(done) {
+      done();
     },
     // 选择是否显示周末
     handleWeekendsToggle() {
@@ -484,8 +513,7 @@ export default {
                 message: 'update success',
                 type: 'success'
               });
-            }
-            else{
+            } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
@@ -523,8 +551,7 @@ export default {
                 message: '获取日历信息',
                 type: 'success'
               });
-            }
-            else{
+            } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
@@ -923,6 +950,11 @@ export default {
 .fc { /* the calendar root */
   max-width: 1100px;
   margin: 0 auto;
+}
+
+.item {
+  margin-top: 10px;
+  margin-right: 40px;
 }
 
 </style>
