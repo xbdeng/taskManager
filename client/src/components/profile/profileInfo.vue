@@ -82,7 +82,7 @@
                 <div>
                   phone
                   <br>
-                  <el-input placeholder="Put your phone number here" v-model="passwd"></el-input>
+                  <el-input placeholder="Put your phone number here" v-model="phone"></el-input>
                 </div>
               </el-col>
 
@@ -128,6 +128,7 @@ export default {
       passwd: '',
       firstName: '',
       lastName: '',
+      phone: '',
       userId: -1
     }
   },
@@ -160,7 +161,7 @@ export default {
               })
             }
             that.username = response.data.data.username
-            that.phase = response.data.data.phone
+            that.phone = response.data.data.phone
             that.email = response.data.data.email
             that.firstName = response.data.data.firstName
             that.lastName = response.data.data.lastName
