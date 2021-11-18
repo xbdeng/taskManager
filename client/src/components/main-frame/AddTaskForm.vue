@@ -262,18 +262,18 @@ export default {
             axios.post(
                 'http://localhost:8081/api/task/addtask',
                 {
-                    createDate:this.taskForm.createDate,
-                    description:this.taskForm.description,
-                    dueDate:this.taskForm.dueDate,
+                    createDate:that.taskForm.createDate,
+                    description:that.taskForm.description,
+                    dueDate:that.taskForm.dueDate,
                     //fatherTask
                     //members
-                    privilege:this.taskForm.privilege,
+                    privilege:that.taskForm.privilege,
                     status:0,
                     // subtasks
-                    tags:this.taskForm.tags,
-                    taskName:this.taskForm.taskName,
+                    tags:that.taskForm.tags,
+                    taskName:that.taskForm.taskName,
                     //teamName
-                    type:this.taskForm.type,
+                    type:that.taskForm.type,
                     // username
                 },
                 {
@@ -290,7 +290,7 @@ export default {
                             type:'success'
                         })
                         for(let key in this.taskForm) {
-                            this.taskForm[key] = ''
+                            that.taskForm[key] = ''
                         }
                     } else {
                         that.$message.error('新建任务失败')
