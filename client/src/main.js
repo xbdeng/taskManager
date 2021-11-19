@@ -4,10 +4,12 @@ import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
 import md5 from 'js-md5'
+import animated from 'animate.css'
 import 'element-ui/lib/theme-chalk/index.css'
 
 
 Vue.use(ElementUI);
+Vue.use(animated)
 Vue.config.productionTip = false
 Vue.prototype.$md5 = md5
 
