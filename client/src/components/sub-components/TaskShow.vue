@@ -265,7 +265,6 @@ export default {
       invitedMembers:[],
       editedTaskName:null,
       editedDescription:null,
-      Friends:this.Friends,
       tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData))
     }
   },
@@ -281,11 +280,12 @@ export default {
     postTaskFinished($event) {
       if(document.getElementById('active') != null) {
         document.getElementById('active').id = 'defined'
+        this.editedStatus = 1
       } 
       else if(document.getElementById('defined') != null) {
         document.getElementById('defined').id = 'origin'
+        this.editedStatus = 0
       }
-      this.editedStatus = 1
     },
     deleteTag(tag) {
       this.tempTaskForm.tags.splice(this.tempTaskForm.tags.indexOf(tag), 1);
@@ -371,9 +371,13 @@ export default {
     },
     postEdit() {
       let that = this
-      axios.post(
-        'http://localhost:8081/api/task/edittask',
-        {
+      axios({
+        method:'POST',
+        url:'http://localhost:8081/api/task/edittask',
+        params:{
+          'taskId':that.tempTaskForm.taskId
+        },
+        data:{
           createDate:that.tempTaskForm.createDate,
           description:that.tempTaskForm.description,
           dueDate:that.tempTaskForm.dueDate,
@@ -386,14 +390,12 @@ export default {
           taskName:that.tempTaskForm.taskName,
           type:that.tempTaskForm.type
         },
-        {
-            headers:{
-                Authorization:window.localStorage.getItem('token')
-            }
+        headers:{
+          Authorization:window.localStorage.getItem('token')
         }
-      ).then(
+      }).then(
         function(response) {
-          alert(response.data.msg)
+          //alert(response.data.msg)
           if(response.data.code === 200) {
             that.$message({
               message:'修改任务成功',
@@ -402,12 +404,13 @@ export default {
           } else {
             that.$message.error('修改任务失败')
           }
-          that.$emit('closeDrawer',{})
+          that.$emit('closeTaskDrawer',{})
         },
         function(err) {
           this.$message.error('响应失败,修改任务失败')
         }
       )
+
     },
     closeDrawer() {
       let that = this
@@ -420,7 +423,7 @@ export default {
         }
       }).then(
           function(response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if(response.data.code === 200) {
               that.$message({
                 message:'删除任务成功',
@@ -435,7 +438,7 @@ export default {
             that.$message.error('响应失败，删除任务失败')
           }
       )
-    }
+    },
   }
   
 }

@@ -64,7 +64,7 @@ mo<template>
                             <el-col :span='10'>
                                 <el-radio-group v-model='taskForm.type' >
                                     <el-radio label='0'>个人任务</el-radio>
-                                    <el-radio label='1' @click="postMyTeams">组队任务</el-radio>
+                                    <el-radio label='1'>组队任务</el-radio>
                                 </el-radio-group>
                             </el-col>
                         </el-row>
@@ -179,14 +179,12 @@ export default {
             createDate:'',
             description:'',
         },
-        tagArray:this.tagArray,
         priorityArray:[
             {label:'极高', value:3},
             {label:'高',   value:2},
             {label:'中',   value:1},
             {label:'低',   value:0}
         ],
-        myTeamInfo:this.myTeamInfo,
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
             tags:[{validator:checkTaskTags, trigger:'blur'}],
@@ -233,7 +231,7 @@ export default {
             }
         ).then(
             function(response) {
-                alert(response.data.msg)
+                //alert(response.data.msg)
                 if(response.data.code === 200) {
                     that.$message({
                         message:'添加标签成功',
@@ -259,9 +257,13 @@ export default {
         let that = this
         this.$refs[formName].validate((valid)=>{
             if(valid) {
-            axios.post(
-                'http://localhost:8081/api/task/addtask',
-                {
+              axios({
+                method:'POST',
+                url:'http://localhost:8081/api/task/addtask',
+                headers:{
+                  Authorization:window.localStorage.getItem('token')
+                },
+                data:{
                     createDate:that.taskForm.createDate,
                     description:that.taskForm.description,
                     dueDate:that.taskForm.dueDate,
@@ -275,23 +277,19 @@ export default {
                     teamId:that.taskForm.teamId,
                     type:that.taskForm.type,
                     // username
-                },
-                {
-                    headers:{
-                        Authorization:window.localStorage.getItem('token')
-                    }
                 }
-            ).then(
+              }).then(
                 function (response) {
-                    alert(response.data.msg)
+                    //alert(response.data.msg)
                     if(response.data.code === 200) {
                         that.$message({
                             message:'新建任务成功',
                             type:'success'
                         })
-                        for(let key in this.taskForm) {
+                        for(let key in that.taskForm) {
                             that.taskForm[key] = ''
                         }
+                        that.toCalendar()
                     } else {
                         that.$message.error('新建任务失败')
                     }
@@ -300,10 +298,9 @@ export default {
                     that.$message.error('响应错误，新建任务失败')
                 }
             )
-            
-            this.toCalendar()
+
             } else {
-                alert('error submit !!')
+                //alert('error submit !!')
                 return false
             }
         });

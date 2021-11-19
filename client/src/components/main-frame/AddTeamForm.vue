@@ -85,7 +85,7 @@ export default {
                     }
                 ).then(
                     function(response) {
-                        alert(response.data.msg)
+                        //alert(response.data.msg)
                         if(response.data.code === 200) {
                             that.$message({
                                 message:'新建组成功',
