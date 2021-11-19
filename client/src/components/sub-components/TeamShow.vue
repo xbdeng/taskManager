@@ -7,7 +7,7 @@
           <el-header>
             <el-row :gutter="10" type="flex" align="middle">
               <el-col :span="3">
-                <span class="title">{{ this.tempTeamInfo.teamName }}</span>
+                <span class="title">{{ this.singleTeamData.teamName }}</span>
               </el-col>
 
               <el-popover placement="top" width="200" trigger="click" title="修改组名">
@@ -36,7 +36,7 @@
                       <span style="font-weight:bold">创建时间：</span>
                   </el-col>
                   <el-col>
-                      {{ this.tempTeamInfo.createDate }}
+                      {{ this.singleTeamData.createDate }}
                   </el-col>
               </el-row>
             <!-- 显示组内成员，留接口修改 -->
@@ -135,7 +135,7 @@
                   <el-col :span="6">
                       <span style="font-weight:bold">任务描述信息：</span>
                   </el-col>
-                  <el-col>{{ tempTeamInfo.description }}</el-col>
+                  <el-col>{{ singleTeamData.description }}</el-col>
                   <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
                     <el-row>
                         <el-col>
@@ -154,8 +154,6 @@
                     </el-tooltip>
                 </el-popover>
               </el-row>
-              <!-- 确定， 退出该组，解散该组 -->
-              <!-- TODO:点击按钮后执行的动作 -->
               <el-row type="flex" justify="start">
                   <el-col>
                       <el-button type="primary" @click="closeTeamDrawer">确定</el-button>
@@ -179,14 +177,15 @@ export default {
   name: 'TeamShow',
   // 这个组件接收的参数是一个组对象
   props: ['singleTeamData','username','Friends'],
+
   data() {
       // 生成普通成员的穿梭框信息
       const generateTransferData = _ => {
           const data = []
-          for(let i in this.tempTeamInfo.members) {
+          for(let i in this.singleTeamData.members) {
               data.push({
-                  key:this.tempTeamInfo.members[i],
-                  value:this.tempTeamInfo.members[i]
+                  key:this.singleTeamData.members[i],
+                  value:this.singleTeamData.members[i]
               });
           }
           return data
@@ -205,10 +204,10 @@ export default {
     // 生成管理员列表，显示在穿梭框中
      const generateAdminData = _ => {
         const data = []
-          for(let i in this.tempTeamInfo.admins) {
+          for(let i in this.singleTeamData.admins) {
               data.push({
-                  key:this.tempTeamInfo.admins[i],
-                  value:this.tempTeamInfo.admins[i]
+                  key:this.singleTeamData.admins[i],
+                  value:this.singleTeamData.admins[i]
               });
           }
           return data
@@ -224,52 +223,48 @@ export default {
           mousein:null,
           editedTeamName:null,
           editedTeamDescription:null,
-          tempTeamInfo:JSON.parse(JSON.stringify(this.singleTeamData))
       }
   },
   methods:{
       getMemberList() {
           let members = [];
           // 创建者
-          let creator = new Object();
-          creator.name = this.tempTeamInfo.creator
+          let creator = {};
+          creator.name = this.singleTeamData.creator
           creator.role = 'creator'
           members.push(creator)
           // 管理员
-          for(let i in this.tempTeamInfo.admins) {
-              let admin = new Object()
-              admin.name = this.tempTeamInfo.admins[i]
+          for(let i in this.singleTeamData.admins) {
+              let admin = {}
+              admin.name = this.singleTeamData.admins[i]
               admin.role = 'admin'
               members.push(admin)
           }
             // 普通成员
-          for(let i in this.tempTeamInfo.members) {
-              let member = new Object()
-              member.name = this.tempTeamInfo.members[i]
+          for(let i in this.singleTeamData.members) {
+              let member = {}
+              member.name = this.singleTeamData.members[i]
               member.role = 'member'
               members.push(member)
           }
           
           this.memberList = members
       },
-    // 鼠标移进，显示鼠标所在的成员的名称
       whenMouseIn(name) {
           this.mousein = name
       },
-    //   鼠标移出，成员置空
       whenMouseOut() {
           this.mousein = null
       },
-    //   点击成员中的某人，在暂存区中删除这个成员
       deleteMember(name) {
-          this.tempTeamInfo.members.splice(this.tempTeamInfo.indexOf(name), 1)
           let that = this
           let userName = []
           userName.push(name)
+          let teamId = this.singleTeamData.teamId
           axios.post(
               'http://localhost:8081/api/team/removemember',
               {
-                  teamId:that.tempTeamInfo.teamId,
+                  teamId:teamId,
                   userName:userName
               },
               {
@@ -279,29 +274,61 @@ export default {
               }
           ).then(
               function(response) {
-                  alert(response.msg)
+                  if(response.data.code === 200) {
+                    that.$message({
+                      message:'删除组员成功',
+                      type:'success'
+                    })
+                    that.$emit('postTeamDataAgain',{})
+                  } else {
+                    that.$message.error('删除组员失败')
+                  }
               },
               function(err) {
-                  that.$message.error()
+                  that.$message.error('响应失败，删除组员失败')
               }
           )
       },
-    //   将修改后的editedTeamName添加到暂存区
       editTeamName() {
-          let value = this.editedTeamName
-          if(value != null) {
-              this.tempTeamInfo.teamName = value
-          }
-          this.editedTeamName = null
+        const that = this
+        let teamId = this.singleTeamData.teamId
+          axios({
+            methods:'POST',
+            url:'http://localhost:8081/api/team/editteam',
+            data:{
+              teamName:that.editedTeamName,
+              teamId:teamId
+            },
+            headers:{
+              Authorization:window.localStorage.getItem('token')
+            }
+          }).then(
+              function(response) {
+                if(response.data.code === 200) {
+                  that.$message({
+                    message:'修改组名成功',
+                    type:'success'
+                  })
+                  that.editedTeamName = null
+                  that.$emit('postTeamDataAgain',{})
+                } else {
+                  that.$message.error('修改组名失败')
+                }
+              },
+              function(err) {
+                that.$message.error('响应失败，修改组名失败')
+              }
+          )
       },
       editAdmins() {
           let value = this.editedAdmins
-          let that = this
+          const that = this
+          let teamId = this.singleTeamData.teamId
           if(value != null) {
               axios.post(
                   'http://localhost:8081/api/team/setadmin',
                   {
-                      teamId:that.tempTeamInfo.teamId,
+                      teamId:teamId,
                       userName:value
                   },
                   {
@@ -311,7 +338,16 @@ export default {
                   }
               ).then(
                   function(response) {
-                      alert(response.data.msg)
+                      if(response.data.code === 200) {
+                        that.$message({
+                          message:'添加管理员成功',
+                          type:'success'
+                        })
+                        that.editedAdmins = []
+                        that.$emit('postTeamDataAgain',{})
+                    } else {
+                      that.$message.error('添加管理员失败')
+                    }
                   },
                   function(err) {
                       that.$message.error('响应失败，添加管理员失败')
@@ -321,13 +357,14 @@ export default {
           this.editedAdmins = null
       },
       editInvitedMembers() {
-          let that = this
+          const that = this
           let value = this.invitedMembers
+          let teamId = this.singleTeamData.teamId
           if(value != null) {
               axios.post(
                   'http://localhost:8081/api/team/addmember',
                   {
-                      teamId:that.tempTeamInfo.teamId,
+                      teamId:teamId,
                       userName:value
                   },
                   {
@@ -337,7 +374,16 @@ export default {
                   }
               ).then(
                   function(response) {
-                      alert(response.data.msg)
+                      if(response.data.code === 200) {
+                        that.$message({
+                          message:'邀请组员成功',
+                          type:'success'
+                        })
+                        that.invitedMembers = []
+                        that.$emit('postTeamDataAgain',{})
+                    } else {
+                      that.$message.error('邀请组员失败')
+                    }
                   },
                   function(err) {
                       that.$message.error('响应失败,邀请成员失败')
@@ -347,18 +393,40 @@ export default {
           this.invitedMembers = null
       },
       editDescription() {
-          let value = this.editedTeamDescription
-          if(value != null) {
-              this.tempTeamInfo.description = value
+        const that = this
+        let teamId = this.singleTeamData.teamId
+        axios({
+          methods: 'POST',
+          url:'http://localhost:8081/api/editteam',
+          data:{
+            description:that.editedDescription,
+            teamId:teamId
           }
-          this.editedTeamDescription = null
+        }).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  message:'修改队伍描述信息成功',
+                  type:'success'
+                })
+                that.editedDescription = null
+                that.$emit('postTeamDataAgain', {})
+              } else {
+                that.$message.error('修改队伍描述信息失败')
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改队伍描述信息失败')
+            }
+        )
       },
       dismissTeam() {
           let that = this
+          let teamId = this.singleTeamData.teamId
           axios.post(
               'http://localhost:8081/api/team/dismiss',
               {
-                  teamId:that.tempTeamInfo.teamId
+                  teamId:teamId
               },
               {
                 headers:{
@@ -367,7 +435,16 @@ export default {
               }
           ).then(
               function(response) {
-                  alert(response.data.msg)
+                  if(response.data.code === 200) {
+                    that.$message({
+                      message:'解散组成功',
+                      type:'success'
+                    })
+                    that.closeTeamDrawer()
+                    that.$emit('postTeamDataAgain',{})
+                  } else {
+                    that.$message.error('解散组失败')
+                  }
               },
               function(err) {
                   that.$message.error('响应失败,解散该组失败')
@@ -376,10 +453,11 @@ export default {
       },
       removeMe() {
           let that = this
+          let teamId = this.singleTeamData.teamId
           axios.post(
               'http://localhost:8081/api/team/removemember',
               {
-                  teamId:that.tempTeamInfo.teamId,
+                  teamId:teamId,
                   userName:that.username
               },
               {
@@ -389,7 +467,16 @@ export default {
               }
           ).then(
               function(response) {
-                  alert(response.data.msg)
+                  if(response.data.code === 200) {
+                    that.$message({
+                      message:'退出组成功',
+                      type:'success'
+                    })
+                    that.closeTeamDrawer()
+                    that.$emit('postTeamDataAgain',{})
+                  } else {
+                    that.$message.error('退出组失败')
+                  }
               },
               function(err) {
                   that.$message.error('响应失败，退出组失败')
@@ -397,13 +484,14 @@ export default {
           )
       },
       removeAdmins() {
+          const that = this
           let value = this.removedAdmins
+          let teamId = this.singleTeamData.teamId
           if(value != null) {
-              let that = this
               axios.post(
                   'http://localhost:8081/api/team/removeadmin',
                   {
-                      teamId:that.tempTeamInfo.teamId,
+                      teamId:teamId,
                       userName:value
                   },
                   {
@@ -413,14 +501,23 @@ export default {
                   }
               ).then(
                   function(response) {
-                      alert(response.data.msg)
+                      if(response.data.code === 200) {
+                        that.$message({
+                          message:'撤销管理员成功',
+                          type:'success'
+                        })
+                        that.removedAdmins = null
+                        that.$emit('postTeamDataAgain',{})
+                    } else {
+                      that.$message.error('撤销管理员失败')
+                    }
                   },
                   function(err) {
                       that.$message.error('响应失败，撤销管理员失败')
                   }
               )
           }
-          this.removedAdmins = null
+
       },
       closeTeamDrawer() {
           this.$emit('closeTeamDrawer',{})
@@ -449,7 +546,4 @@ margin-left: 15px;
 font-size: 12px;
 }
 
-.zZindex {
-
-}
 </style>

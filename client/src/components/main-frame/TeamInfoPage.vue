@@ -17,37 +17,38 @@
             <el-main>
                 <el-menu>
                     <TaskTree 
-                    :taskData="teamInfo[this.selectedTeam].teamTasks" 
-                    :taskLevel="''" 
-                    :chosenTask="chosenTaskId" 
+                    :taskData="teamInfo[this.selectedTeam].teamTasks"
+                    :taskLevel="''"
+                    :chosenTask="chosenTaskId"
                     v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                 </el-menu>
             </el-main>
 
             <!-- 用于显示组内任务的抽屉组件 -->
-            <el-drawer 
+            <el-drawer
             title="查看或编辑组内信息"
             :visible.sync="teamInfoDrawer"
             direction="ltr"
             :before-close="handleTeamInfoClose"
             :modal-append-to-body='false'
             size='50%'>
-                <TeamShow 
+                <TeamShow
                 :singleTeamData="teamInfo[selectedTeam]"
                 :username="this.username"
                 :Friends="this.Friends"
-                v-on:closeTeamDrawer="closeTeamDrawer($event)"></TeamShow>
+                v-on:closeTeamDrawer="closeTeamDrawer($event)"
+                v-on:postTeamDataAgain="postTeamDataAgain($event)"></TeamShow>
             </el-drawer>
             <!-- 用于显示任务信息 -->
-            <el-drawer 
+            <el-drawer
             title="查看或编辑任务"
             :visible.sync="taskInfoDrawer"
             direction="rtl"
             :before-close="handleTaskInfoClose"
             :modal-append-to-body='false'
             size='50%'>
-                <TaskShow 
-                :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)" 
+                <TaskShow
+                :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
                 v-on:closeTaskDrawer='closeTaskDrawer($event)'></TaskShow>
             </el-drawer>
 
@@ -100,7 +101,7 @@ export default {
         if (parseInt(id[0]) >= taskList.length) return {
             taskName:'Please choose your task'
         }
-        if (id.length == 1) return taskList[parseInt(id)];
+        if (id.length === 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
     },
     handleTaskInfoClose() {
@@ -109,11 +110,14 @@ export default {
     handleTeamInfoClose() {
         this.teamInfoDrawer = false
     },
-    closeTaskDrawer(a) {
+    closeTaskDrawer() {
         this.taskInfoDrawer = false
     },
-    closeTeamDrawer(a) {
+    closeTeamDrawer() {
         this.teamInfoDrawer = false
+    },
+    postTeamDataAgain() {
+      this.$emit('postTeamDataAgain',{})
     }
 }
 

@@ -118,12 +118,14 @@
               :taskData="this.taskData"
               :todayTaskData="this.todayTaskData"
               :weekTaskData="this.weekTaskData"
-              :laterTaskData="this.laterTaskData"></PersonalTaskPage>
+              :laterTaskData="this.laterTaskData"
+              v-on:closeTaskDrawer="closeTaskDrawer($event)"></PersonalTaskPage>
           <!-- 组队任务页面 -->
           <TeamInfoPage v-show="teamInfoShow"
                         :teamInfo="this.teamInfo"
                         :username="this.username"
-                        :Friends="this.Friends"></TeamInfoPage>
+                        :Friends="this.Friends"
+                        v-on:postTeamDataAgain="postTeamDataAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -601,7 +603,7 @@ export default {
           }
       ).then(
           function (response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if (response.data.code === 200) {
               that.$message({
                 message: '获取标签成功',
@@ -638,7 +640,7 @@ export default {
           }
       ).then(
           function (response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if (response.data.code === 200) {
               that.$message({
                 message: '请求用户创建或管理的组成功',
@@ -677,7 +679,7 @@ export default {
           }
       ).then(
           function(response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if(response.data.code === 200) {
               that.$message({
                 message:'请求“任务”数据成功',
@@ -717,7 +719,7 @@ export default {
           }
       ).then(
           function(response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if(response.data.code === 200) {
               that.$message({
                 message:'请求“今天任务”数据成功',
@@ -757,7 +759,7 @@ export default {
           }
       ).then(
           function(response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if(response.data.code === 200) {
               that.$message({
                 message:'请求“一周内”数据成功',
@@ -796,7 +798,7 @@ export default {
           }
       ).then(
           function(response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if(response.data.code === 200) {
               that.$message({
                 message:'请求“稍后”数据成功',
@@ -825,7 +827,7 @@ export default {
           }
       ).then(
           function (response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if (response.data.code === 200) {
               that.$message({
                 message: '获取组队任务数据成功',
@@ -854,7 +856,7 @@ export default {
           }
       ).then(
           function (response) {
-            alert(response.data.msg)
+            //alert(response.data.msg)
             if (response.data.code === 200) {
               that.$message({
                 message: '获取通讯录数据成功',
@@ -869,7 +871,18 @@ export default {
             that.$message.error('响应失败,获取通讯录数据出错')
           }
       )
+    },
+    // 编辑或删除任务完，重新请求任务
+    closeTaskDrawer() {
+      this.postTaskData()
+      this.postTodayTaskData()
+      this.postWeekTaskData()
+      this.postLaterTaskData()
+    },
+    postTeamDataAgain() {
+      this.postMyTeams()
     }
+
 
   },
 }
