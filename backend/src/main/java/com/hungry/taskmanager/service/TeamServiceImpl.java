@@ -120,7 +120,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public int editTeam(EditTeamDTO params){
         Team team = new Team();
-        UpdateWrapper<Team> wrapper = new UpdateWrapper<Team>().eq("team_id", params.getTeamId());
+        UpdateWrapper<Team> wrapper = new UpdateWrapper<Team>().eq("team_id", params.getTeamId()) ;
         if (params.getTeamName() != null){
             wrapper = wrapper.set("team_name", params.getTeamName());
         }
