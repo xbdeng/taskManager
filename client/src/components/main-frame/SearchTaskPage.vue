@@ -224,8 +224,18 @@ export default {
                           type:'success'
                       })
                       that.clear()
+                      alert(window.localStorage.getItem('token'))
+                      let newToken = response.config.headers.Authorization
+                      if(newToken !== null) {
+                        alert('!')
+                        console.log(response)
+                        console.log(newToken)
+                        window.localStorage.setItem('token', newToken)
+                      }
                   } else {
                       that.$message.error('查询失败')
+                      let newToken = response.config.headers.Authorization
+                      if(newToken != null) window.localStorage.setItem('token', newToken)
                   }
               },
               function(err) {
