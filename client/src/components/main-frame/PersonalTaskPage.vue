@@ -204,8 +204,12 @@ export default {
                 type:'success'
               })
               that.addedTaskName = null
+              let newToken = response.headers.Authorization
+              if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('添加任务失败')
+              let newToken = response.headers.Authorization
+              if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
           function(err) {

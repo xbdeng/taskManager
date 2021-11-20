@@ -406,8 +406,12 @@ export default {
               message:'修改任务成功',
               type:'success'
             })
+            let newToken = response.headers.Authorization
+            if(newToken != null) window.localStorage.setItem('token', newToken)
           } else {
             that.$message.error('修改任务失败')
+            let newToken = response.headers.Authorization
+            if(newToken != null) window.localStorage.setItem('token', newToken)
           }
           that.$emit('closeTaskDrawer',{})
         },
@@ -435,8 +439,12 @@ export default {
                 type:'success'
               })
               this.$emit('closeTaskDrawer',{})
+              let newToken = response.headers.Authorization
+              if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('删除任务失败')
+              let newToken = response.headers.Authorization
+              if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
           function(err) {

@@ -170,12 +170,16 @@ export default {
                 message: 'fetch success',
                 type: 'success'
               });
+              let newToken = response.headers.Authorization
+              if(newToken != null) window.localStorage.setItem('token', newToken)
             }
             else{
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
+              let newToken = response.headers.Authorization
+              if(newToken != null) window.localStorage.setItem('token', newToken)
             }
             that.username = response.data.data.username
             that.phone = response.data.data.phone
