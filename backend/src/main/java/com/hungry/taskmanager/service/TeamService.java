@@ -23,5 +23,7 @@ public interface TeamService {
 
     boolean isAdmin(BigInteger userId, BigInteger teamId);
 
+    boolean isCreator(BigInteger userId, BigInteger teamId);
+
     int editTeam(EditTeamDTO params);
 }

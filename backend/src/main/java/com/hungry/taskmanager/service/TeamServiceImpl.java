@@ -112,6 +112,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public boolean isCreator(BigInteger userId, BigInteger teamId) {
+        TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity","creator"));
+        return t != null;
+    }
+
+    @Override
     public Result dismiss(BigInteger teamId) {
         teamMapper.delete(new QueryWrapper<Team>().eq("team_id", teamId));
         return null;

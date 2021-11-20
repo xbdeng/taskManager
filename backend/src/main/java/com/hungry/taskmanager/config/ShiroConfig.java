@@ -4,6 +4,7 @@ package com.hungry.taskmanager.config;
 import com.hungry.taskmanager.shiro.JWTFilter;
 import com.hungry.taskmanager.shiro.MyRealm;
 import com.hungry.taskmanager.shiro.TeamAdminFilter;
+import com.hungry.taskmanager.shiro.TeamCreatorFilter;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -51,15 +52,19 @@ public class ShiroConfig {
         //设置我们自定义的JWT过滤器
         filterMap.put("jwt",new JWTFilter());
         filterMap.put("teamAdmin", new TeamAdminFilter());
+        filterMap.put("teamCreator", new TeamCreatorFilter());
         factoryBean.setFilters(filterMap);
 
         // 设置无权限时跳转的 url;
 //        factoryBean.setUnauthorizedUrl("/unauthorized/无权限");
-        Map<String,String>filterRuleMap=new HashMap<>();
+        Map<String,String>filterRuleMap=new LinkedHashMap<>();
         // 所有请求通过我们自己的JWT Filter
-        filterRuleMap.put("/**","jwt");
-        filterRuleMap.put("/api/team//addmember","teamAdmin");
-        filterRuleMap.put("/api/team//addmember","teamAdmin");
+//        filterRuleMap.put("/**","jwt");
+
+//        filterRuleMap.put("/api/team//addmember","teamAdmin");
+//        filterRuleMap.put("/api/team//dismiss","teamCreator");
+//        filterRuleMap.put("/api/team//removeadmin","teamCreator");
+//        filterRuleMap.put("/api/team//setadmin","teamCreator");
         // 访问 /unauthorized/** 不通过JWTFilter
 //        filterRuleMap.put("/unauthorized/**","anon");
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);

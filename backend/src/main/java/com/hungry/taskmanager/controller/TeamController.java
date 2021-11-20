@@ -25,7 +25,7 @@ public class TeamController {
 
     @PostMapping("/createteam")
     @ApiOperation(value = "创建小组",notes = "后端已测试通过")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     public Result<String> createTeam(@RequestBody CreateTeamDTO createTeamDTO, HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
@@ -34,7 +34,7 @@ public class TeamController {
     }
 
     @PostMapping("/addmember")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @ApiOperation(value = "添加成员",notes = "后端已测试通过,权限已验证")
     public Result<String> addMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.addMember(oppoTeamMemberDTO);
@@ -42,8 +42,8 @@ public class TeamController {
     }
 
     @PostMapping("/setadmin")
-    @ApiOperation(value = "设置管理员",notes = "后端已测试通过")
-    @RequiresAuthentication
+    @ApiOperation(value = "设置管理员",notes = "后端已测试通过,权限已验证")
+//    @RequiresAuthentication
     public Result<String> setAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.setAdmin(oppoTeamMemberDTO);
         return Result.succ("设置管理员成功");
@@ -57,7 +57,7 @@ public class TeamController {
     }
 
     @PostMapping("/dismiss")
-    @ApiOperation(value = "解散小组",notes = "后端已测试通过")
+    @ApiOperation(value = "解散小组",notes = "后端已测试通过,权限已验证")
     public Result<String> dismiss(@RequestBody String teamId) {
         BigInteger teamId_ = JSON.parseObject(teamId).getBigInteger("teamId");
         teamService.dismiss(teamId_);
@@ -65,7 +65,7 @@ public class TeamController {
     }
 
     @PostMapping("/removeadmin")
-    @ApiOperation(value = "撤销管理员权限",notes = "后端已测试通过")
+    @ApiOperation(value = "撤销管理员权限",notes = "后端已测试通过,权限已验证")
     public Result<String> removeAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.removeAdmin(oppoTeamMemberDTO);
         return Result.succ("移除成功");

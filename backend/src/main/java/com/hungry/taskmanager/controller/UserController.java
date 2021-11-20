@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    @RequiresAuthentication //需要登录才能操作
+//    @RequiresAuthentication //需要登录才能操作
     @ApiOperation(value = "用户登出",notes = "后端已测试通过")
     public Result logout(HttpServletRequest request){
         String token = request.getHeader("Authorization");
@@ -80,7 +80,7 @@ public class UserController {
 
 
     @PostMapping("addressbook")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @ApiOperation(value = "请求用户的通信录",notes = "后端已测试通过")
     public Result<List<UserDTO>> addressbook(HttpServletRequest request){
         String token = request.getHeader("Authorization");
@@ -110,7 +110,7 @@ public class UserController {
     }
 
     @PostMapping("profile")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @ApiOperation(value = "请求用户主页信息",notes = "后端已测试通过")
     public Result<UserDTO> profile(HttpServletRequest request){
         String token = request.getHeader("Authorization");
@@ -120,7 +120,7 @@ public class UserController {
     }
 
     @PostMapping("/addtag")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @ApiOperation(value="add a tag",notes = "前后端测试通过")
     public Result<String> addTag(@RequestBody TagDTO params, HttpServletRequest request){
         try{
@@ -135,7 +135,7 @@ public class UserController {
     }
 
     @PostMapping("/selecttags")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @ApiOperation(value="select a tag",notes = "前后端测试通过")
     public Result<List<Tag>> selectTags(@RequestBody TagDTO params, HttpServletRequest request){
         Result<List<Tag>> result = new Result<>();
