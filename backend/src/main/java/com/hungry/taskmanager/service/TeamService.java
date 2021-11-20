@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.service;
 
 import com.hungry.taskmanager.dto.CreateTeamDTO;
+import com.hungry.taskmanager.dto.EditTeamDTO;
 import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
 import com.hungry.taskmanager.dto.TeamDTO;
 import com.hungry.taskmanager.entity.Result;
@@ -23,4 +24,6 @@ public interface TeamService {
     boolean isAdmin(BigInteger userId, BigInteger teamId);
 
     boolean isCreator(BigInteger userId, BigInteger teamId);
+
+    int editTeam(EditTeamDTO params);
 }

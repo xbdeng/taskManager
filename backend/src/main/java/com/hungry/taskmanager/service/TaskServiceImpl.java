@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.entity.*;
-import com.hungry.taskmanager.entity.post_entities.CreateTaskParams;
-import com.hungry.taskmanager.entity.post_entities.EditTaskParams;
-import com.hungry.taskmanager.entity.post_entities.QueryTaskParams;
-import com.hungry.taskmanager.entity.relation_entity.TaskTagMap;
+import com.hungry.taskmanager.dto.CreateTaskDTO;
+import com.hungry.taskmanager.dto.EditTaskDTO;
+import com.hungry.taskmanager.dto.QueryTaskDTO;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.lang.NonNull;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -40,7 +37,7 @@ public class TaskServiceImpl implements TaskService{
     /**
      * create a new task and insert insert into database
      */
-    public int addTask(CreateTaskParams params) throws Exception{
+    public int addTask(CreateTaskDTO params) throws Exception{
         BigInteger creator = userMapper.getIdByName(params.getUsername());
         // operations according to different types
             // individual task set type column -1
@@ -60,25 +57,30 @@ public class TaskServiceImpl implements TaskService{
         // insert task into database
         task.updateDate();
         taskMapper.insert(task);
-        BigInteger id = task.getTaskId();
+        BigInteger taskId = task.getTaskId();
         // insert tag
-        BigInteger tagId = tagMapper.newId();
-        Tag tag = new Tag().setUserId(creator);
         List<String> tags = params.getTags();
+
         if (tags != null && tags.size() > 0){
             for (String s : tags) {
-                tag.setTagId(tagId).setTagName(s);
+                Tag tag = new Tag().setUserId(creator).setTagName(s);
                 tagMapper.insert(tag);
-                tagId = tagId.add(BigInteger.valueOf(1));
             }
         }
+        // select all related tag ids
+        QueryWrapper<Tag> wrapper = new QueryWrapper<Tag>().eq("user_id", creator).in("tag_name", tags);
+        List<Tag> insertedTags = tagMapper.selectList(wrapper);
         // insert user task relationship if the type is individual
         if (type.equals(BigInteger.valueOf(0))){
-            BigInteger utId = userTaskMapper.newId();
-            UserTask ut = new UserTask().setUserId(creator).setTaskId(id).setUtId(utId);
+            UserTask ut = new UserTask().setUserId(creator).setTaskId(taskId);
             userTaskMapper.insert(ut);
             // insert user task tag relationship
-            return insertUserTaskTag(creator, id, tags);
+
+            for(Tag tag : insertedTags){
+                UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
+                utt.setTagId(tag.getTagId());
+                userTaskTagMapper.insert(utt);
+            }
         }
         return 200;
     }
@@ -88,26 +90,18 @@ public class TaskServiceImpl implements TaskService{
      */
     public int deleteTask(@NonNull long taskId) throws Exception {
         BigInteger id = BigInteger.valueOf(taskId);
-        try{
-            // remove user task tag
-            UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("task_id", taskId));
-            if (ut == null) return 404;
-            BigInteger utId = ut.getUtId();
-            userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", utId));
-            userTaskMapper.delete(new QueryWrapper<UserTask>().eq("ut_id", utId));
-            taskMapper.delete(new QueryWrapper<Task>().eq("task_id", id));
-        }catch(Exception e){
-            e.printStackTrace();
-            throw new Exception("server error");
-        }
+        UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("task_id", taskId));
+        BigInteger utId = ut.getUtId();
+        userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", utId));
+        userTaskMapper.delete(new QueryWrapper<UserTask>().eq("ut_id", utId));
+        taskMapper.delete(new QueryWrapper<Task>().eq("task_id", id));
         return 200;
     }
 
     /**
      * query tasks
      */
-    //todo bug
-    public List<Task> queryTask(QueryTaskParams filter) throws Exception {
+    public List<Task> queryTask(QueryTaskDTO filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
         filter.setUserId(userId);
         // configure range
@@ -144,13 +138,15 @@ public class TaskServiceImpl implements TaskService{
         for (Task task : tasks) {
             taskMap.put(task.getTaskId(), task);
             task.setTags(new ArrayList<>());
-            QueryTaskParams subfilter = new QueryTaskParams().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
+            QueryTaskDTO subfilter = new QueryTaskDTO().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
             task.setSubTask(taskMapper.queryTask(subfilter));
             task.updateDate();
         }
-        List<TaskTagMap> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
-        for (TaskTagMap t: taskTags){
-            taskMap.get(t.getTaskId()).getTags().add(t.getTag());
+        List<HashMap<String, Object>> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
+        for (HashMap<String, Object> map: taskTags){
+            BigInteger taskId  = BigInteger.valueOf((Long)map.get("task_id"));
+            String tagName = ((String)map.get("tag_name"));
+            taskMap.get(taskId).getTags().add(tagName);
         }
         return tasks;
     }
@@ -159,31 +155,23 @@ public class TaskServiceImpl implements TaskService{
     /**
      *  modify status of a task
      */
-    public int editTask(EditTaskParams params) throws Exception {
+    public int editTask(EditTaskDTO params) throws Exception {
         // get task object
         BigInteger taskId = BigInteger.valueOf(params.getTaskId());
         UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", taskId);
         // configuration
         if (params.getTaskName() != null) wrapper.set("task_name", params.getTaskName());
         if (params.getDescription() != null) wrapper.set("description", params.getDescription());
-        if (params.getType() != null){
-            BigInteger type = assignType(params);
-            wrapper.set("type", type);
-        }
         if (params.getCreateDate() != null) wrapper.set("create_date", convertGMT(params.getCreateDate()));
         if (params.getDueDate() != null) wrapper.set("due_date", convertGMT(params.getDueDate()));
         if (params.getStatus() != null && (params.getStatus() == 0 || params.getStatus() == 1)) wrapper.set("status", params.getStatus());
         if (params.getFatherTask() != null) wrapper.set("father_task", params.getFatherTask());
         if (params.getPrivilege() != null) wrapper.set("privilege", params.getPrivilege());
-        if (params.getUsername() != null) {
-            BigInteger userId = userMapper.getIdByName(params.getUsername());
-            wrapper.set("creator", userId);
-        }
         taskMapper.update(null, wrapper);
         return 200;
     }
 
-    private BigInteger assignType(CreateTaskParams params) throws Exception{
+    private BigInteger assignType(CreateTaskDTO params) throws Exception{
         BigInteger type;
         switch(params.getType()){
             case(0):{
@@ -191,8 +179,8 @@ public class TaskServiceImpl implements TaskService{
                 break;
             }
             case(1):{
-                Team team = teamMapper.selectOne(new QueryWrapper<Team>().eq("team_id", params.getTeamName()));
-                type = team.getTeamId();
+                // Todo 插入team task 表 插进去 而且只能用在createtask
+                type = BigInteger.valueOf(1);
                 break;
             }
             default:{
@@ -208,20 +196,4 @@ public class TaskServiceImpl implements TaskService{
         return LocalDateTime.parse(date, f).atZone(ZoneId.from(ZoneOffset.UTC)).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
     }
 
-    private int insertUserTaskTag(BigInteger userId, BigInteger taskId, List<String> tagNames){
-        // get usertasktag id
-        BigInteger uttId = userTaskTagMapper.newId();
-        // get usertask id
-        UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id", userId).eq("task_id", taskId));
-        // get tag id
-        List<Tag> tags = tagMapper.selectList(new QueryWrapper<Tag>().eq("user_id", userId).in("tag_name", tagNames));
-        UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
-        for (Tag tag : tags){
-            utt.setUttId(uttId);
-            utt.setTagId(tag.getTagId());
-            userTaskTagMapper.insert(utt);
-            uttId = uttId.add(BigInteger.valueOf(1));
-        }
-        return 200;
-    }
 }

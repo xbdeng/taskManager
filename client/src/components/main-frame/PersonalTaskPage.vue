@@ -70,7 +70,9 @@
             :modal-append-to-body='false'
             size='50%'
             >
-                <TaskShow :singleTaskData="getTask(chosenTaskId)" v-on:closeTaskDrawer='closeDrawer($event)'></TaskShow>
+                <TaskShow
+                    :singleTaskData="getTask(chosenTaskId)"
+                    v-on:closeTaskDrawer='closeTaskDrawer($event)'></TaskShow>
             </el-drawer>
         </el-container>
     </div>
@@ -116,7 +118,7 @@ export default {
         if (parseInt(id[0]) >= taskList.length) return {
             taskName:'Please choose your task'
         }
-        if (id.length == 1) return taskList[parseInt(id)];
+        if (id.length === 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
     },
     getTask(id)
@@ -140,8 +142,10 @@ export default {
         this.Specifier = num
     },
     closeTaskDrawer() {
+        this.$emit('closeTaskDrawer', {})
         this.drawer = false
-    }
+    },
+
 }
 
 }

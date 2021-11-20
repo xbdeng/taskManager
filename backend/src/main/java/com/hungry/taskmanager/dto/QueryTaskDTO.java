@@ -1,4 +1,4 @@
-package com.hungry.taskmanager.entity.post_entities;
+package com.hungry.taskmanager.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class QueryTaskParams {
+public class QueryTaskDTO {
     @ApiModelProperty(hidden = true)
     private String username;
     @ApiModelProperty(hidden = true)
@@ -26,6 +26,7 @@ public class QueryTaskParams {
     private String dueDate;
     private String createDate;
     private String teamName;
+    private BigInteger teamId;
     private Integer type;
     private Integer status;
     @ApiModelProperty(hidden = true)

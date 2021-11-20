@@ -1,10 +1,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hungry.taskmanager.dao.TaskMapper">
-    <select id="queryTask" parameterType="com.hungry.taskmanager.entity.post_entities.QueryTaskParams" resultType="com.hungry.taskmanager.entity.Task">
+    <select id="queryTask" parameterType="com.hungry.taskmanager.dto.QueryTaskDTO" resultType="com.hungry.taskmanager.entity.Task">
         SELECT t.* FROM task AS t
         INNER JOIN user_task AS ut ON t.task_id = ut.task_id
         INNER JOIN user AS u ON ut.user_id = u.user_id
-        <if test="teamName != null">
+        <if test="teamName != null or teamId != null" >
             INNER JOIN team_user ON u.user_id = team_user.user_id
             INNER JOIN team AS t2 ON team_user.team_id = t2.team_id
         </if>
@@ -34,6 +34,9 @@
         </if>
         <if test="teamName != null">
             AND INSTR(#{teamName}, t2.team_name) > 0
+        </if>
+        <if test="teamId != null">
+
         </if>
         <if test="tag != null">
             AND t3.tag_name = #{tag}
