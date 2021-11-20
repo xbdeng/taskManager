@@ -8,6 +8,7 @@ import com.hungry.taskmanager.dto.QueryTaskDTO;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import com.hungry.taskmanager.utils.JWTUtil;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -22,6 +23,7 @@ public class TaskController {
     private TaskServiceImpl taskServiceImpl;
     @ApiOperation(value = "create a task",notes = "前后端测试通过 \n type, taskName, privilege and createDate is required\n father task, members, status,subtask is unnecessary")
     @PostMapping("/addtask")
+    @RequiresAuthentication
     public Result<String> addTask(@RequestBody CreateTaskDTO params, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization");
@@ -38,6 +40,7 @@ public class TaskController {
     }
 
     @PostMapping("/deletetask")
+    @RequiresAuthentication
     public Result<String> deleteTask(@RequestParam("id") long taskId) {
         try {
             int result = taskServiceImpl.deleteTask(taskId);
@@ -52,6 +55,7 @@ public class TaskController {
     }
 
     @PostMapping("/query")
+    @RequiresAuthentication
     public Result<List<Task>> queryTask(@RequestBody QueryTaskDTO filter, HttpServletRequest request){
         Result<List<Task>> result = new Result<>();
         try {
@@ -65,6 +69,7 @@ public class TaskController {
     }
 
     @PostMapping("/edittask")
+    @RequiresAuthentication
     @ApiOperation(value = "edit a task",notes = "modified information is required only")
     public Result<String> editTask(@RequestBody EditTaskDTO params) {
         try {
