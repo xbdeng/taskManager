@@ -35,7 +35,7 @@
                 <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
                 <el-menu-item index="1-2">页面设置</el-menu-item>
                 <el-menu-item index="1-3">数据同步</el-menu-item>
-                <el-menu-item index="1-4">账号登出</el-menu-item>
+                <el-menu-item index="1-4" @click="logOut">账号登出</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 
@@ -83,7 +83,7 @@
             </el-menu-item>
 
             <el-menu-item index="8" @click="showTree">
-              <i class="el-icon-ship"></i>
+              <i class="el-icon-share"></i>
               <span slot="title">任务树形图</span>
             </el-menu-item>
 
@@ -162,8 +162,7 @@
             <div class='demo-app-main'>
               <FullCalendar ref="fullCalendar"
                             class='demo-app-calendar'
-                            :options='calendarOptions'
-              >
+                            :options='calendarOptions'>
                 <template v-slot:eventContent='arg'>
                   <b class="demo-b">{{ arg.timeText }}</b>
                   <i>{{ arg.event.title }}</i>
@@ -497,7 +496,6 @@ export default {
         }
       }
     },
-
     changeCalendarData(taskId, start, end) {
       const that = this;
       axios.post(
@@ -886,6 +884,145 @@ export default {
     },
     postTeamDataAgain() {
       this.postMyTeams()
+    },
+    logOut() {
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/logout',
+          {},
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                message: '登出成功',
+                type: 'success'
+              })
+              that.$router.push({name: 'Login'})
+            } else {
+              that.$message.error('登出失败')
+            }
+          },
+          function (err) {
+            that.$message.error('响应失败，登出失败')
+          }
+      )
+    },
+
+// websocket
+    connWebSocket() {
+      // let userInfo = JSON.parse(localStorage.getItem("userInfos"));
+      // let userId = userInfo.userId;
+      // WebSocket
+      if ("WebSocket" in window) {
+        this.websocket = new WebSocket(
+            "ws://localhost:8081/websocket/" + this.username //userId 传此id主要后端java用来保存session信息，用于给特定的人发送消息，广播类消息可以不用此参数
+        );
+        //初始化socket
+        this.initWebSocket();
+      } else {
+        alert("浏览器不支持websocket");
+      }
+    },
+
+    initWebSocket() {
+      // 连接错误
+      this.websocket.onerror = this.setErrorMessage;
+
+      // 连接成功
+      this.websocket.onopen = this.setOnopenMessage;
+
+      // 收到消息的回调
+      this.websocket.onmessage = this.setOnmessageMessage;
+
+      // 连接关闭的回调
+      this.websocket.onclose = this.setOncloseMessage;
+
+      // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+      window.onbeforeunload = this.onbeforeunload;
+    },
+    setErrorMessage() {
+      console.log(
+          "WebSocket连接发生错误   状态码：" + this.websocket.readyState
+      );
+      this.reconnect();
+    },
+    setOnopenMessage() {
+      console.log("WebSocket连接成功    状态码：" + this.websocket.readyState);
+      this.start()
+    },
+    setOnmessageMessage(result) {
+      console.log("服务端返回：" + result.data);
+      let msgMap = JSON.parse(result.data);
+      let id = msgMap.id;
+      let title = msgMap.title;
+      let type = msgMap.type;
+      // 根据服务器推送的消息做自己的业务处理
+
+      this.$notify({
+        title: "你有一条新信息",
+        type: "info",
+        duration: 0,
+        dangerouslyUseHTMLString: true,
+        message:
+            '<div style="height:100px;width:100px">' +
+            title,
+        position: "bottom-right"
+      });
+    },
+    setOncloseMessage() {
+      console.log("WebSocket连接关闭    状态码：" + this.websocket.readyState);
+      this.reconnect();
+    },
+    onbeforeunload() {
+      this.closeWebSocket();
+    },
+    closeWebSocket() {
+      this.websocket.close();
+    },
+// heartCheck
+    reconnect() {//重新连接
+      let that = this;
+      if (that.lockReconnect) {
+        return;
+      }
+      that.lockReconnect = true;
+      //没连接上会一直重连，设置延迟避免请求过多
+      that.timeoutnum && clearTimeout(that.timeoutnum);
+      that.timeoutnum = setTimeout(function () {
+        //新连接
+        that.initWebSocket();
+        that.lockReconnect = false;
+      }, 5000);
+    },
+    reset() {//重置心跳
+      let that = this;
+      //清除时间
+      clearTimeout(that.timeoutObj);
+      clearTimeout(that.serverTimeoutObj);
+      //重启心跳
+      that.start();
+    },
+    start() {//开启心跳
+      let self = this;
+      self.timeoutObj && clearTimeout(self.timeoutObj);
+      self.serverTimeoutObj && clearTimeout(self.serverTimeoutObj);
+      self.timeoutObj = setTimeout(function () {
+        //这里发送一个心跳，后端收到后，返回一个心跳消息，
+        if (self.websocket.readyState === 1) {//如果连接正常
+          self.websocket.send("heartCheck");
+        } else {//否则重连
+          self.reconnect();
+        }
+        self.serverTimeoutObj = setTimeout(function () {
+          //超时关闭
+          self.websocket.close();
+        }, self.timeout);
+      }, self.timeout)
     },
   },
 }
