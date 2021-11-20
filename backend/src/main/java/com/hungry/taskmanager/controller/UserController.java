@@ -151,6 +151,19 @@ public class UserController {
         }
     }
 
+    @PostMapping("/edituser")
+    @ApiOperation(value="edit a user", notes="后端测试未通过")
+    public Result<String> editUser(@RequestBody EditUserDTO params, HttpServletRequest request){
+        try{
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            userService.editUser(params.setUsername(username));
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Result<String>(500, "server error", "");
+        }
+        return new Result<String>(200, "successfully edit a user", "");
+    }
 
 
 }

@@ -1,12 +1,10 @@
 package com.hungry.taskmanager.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
-import com.hungry.taskmanager.dto.TagDTO;
-import com.hungry.taskmanager.dto.TeamDTO;
-import com.hungry.taskmanager.dto.UserDTO;
+import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.*;
-import com.hungry.taskmanager.dto.RegisterInfoDTO;
 import com.hungry.taskmanager.entity.relation_entity.Contact;
 import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import org.springframework.stereotype.Service;
@@ -135,6 +133,18 @@ public class UserServiceImpl implements UserService {
         BigInteger uId = userMapper.getIdByName(params.getUsername());
         QueryWrapper<Tag> wrapper = new QueryWrapper<Tag>().eq("user_id", uId);
         return tagMapper.selectList(wrapper);
+    }
+
+    @Override
+    public void editUser(EditUserDTO params){
+        User user = new User();
+        UpdateWrapper<User> wrapper = new UpdateWrapper<User>().eq("username", params.getUsername());
+        if (params.getPassword() != null) wrapper.set("password", params.getPassword());
+        if (params.getFirstName() != null) wrapper.set("first_name", params.getFirstName());
+        if (params.getLastName() != null) wrapper.set("last_name", params.getLastName());
+        if (params.getEmail() != null) wrapper.set("email", params.getEmail());
+        if (params.getPhone() != null) wrapper.set("phone", params.getPhone());
+        userMapper.update(user, wrapper);
     }
 
 
