@@ -23,7 +23,7 @@ public class TeamController {
 
     @PostMapping("/createteam")
     @ApiOperation(value = "创建小组",notes = "后端已测试通过")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     public Result<String> createTeam(@RequestBody CreateTeamDTO createTeamDTO, HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
@@ -32,7 +32,7 @@ public class TeamController {
     }
 
     @PostMapping("/addmember")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @ApiOperation(value = "添加成员",notes = "后端已测试通过,权限已验证")
     public Result<String> addMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.addMember(oppoTeamMemberDTO);
@@ -41,7 +41,7 @@ public class TeamController {
 
     @PostMapping("/setadmin")
     @ApiOperation(value = "设置管理员",notes = "后端已测试通过,权限已验证")
-    @RequiresAuthentication
+//    @RequiresAuthentication
     public Result<String> setAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.setAdmin(oppoTeamMemberDTO);
         return Result.succ("设置管理员成功");
