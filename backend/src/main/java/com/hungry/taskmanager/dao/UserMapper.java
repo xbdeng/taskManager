@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 
 public interface UserMapper extends BaseMapper<User> {
@@ -37,6 +38,8 @@ public interface UserMapper extends BaseMapper<User> {
     //根据用户名和密码查询用户
     @Select("SELECT * from user WHERE username = #{username} and password = #{password}")
     User getUserByPass(String username, String password);
+
+
 
 }
 

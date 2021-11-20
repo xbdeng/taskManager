@@ -100,8 +100,7 @@ public class UserController {
     }
 
     @PostMapping("myteams/admin")
-    @ApiOperation(value = "请求用户创建和管理的组")
-    // todo mybatis
+    @ApiOperation(value = "请求用户创建和管理的组", notes="passed")
     public Result<List<TeamDTO>> adminTeams(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);

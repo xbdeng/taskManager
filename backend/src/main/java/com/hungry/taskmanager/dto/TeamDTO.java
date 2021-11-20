@@ -1,6 +1,8 @@
 package com.hungry.taskmanager.dto;
 
+import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.User;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +25,7 @@ public class TeamDTO {
     private String creator;
     private List<String> admins;
     private List<String> members;
+
+    @ApiModelProperty(hidden=true)
+    private List<Task> teamTasks;
 }
