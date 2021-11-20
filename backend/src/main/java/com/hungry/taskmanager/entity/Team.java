@@ -21,5 +21,4 @@ public class Team {
     private String description;
     private String createTime; // 时间戳 可能有bug（import）
     private BigInteger creator;
-
 }

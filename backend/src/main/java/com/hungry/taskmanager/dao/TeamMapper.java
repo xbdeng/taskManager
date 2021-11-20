@@ -8,7 +8,9 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface TeamMapper extends BaseMapper<Team> {
 
@@ -25,4 +27,5 @@ public interface TeamMapper extends BaseMapper<Team> {
 //
 //    void addAdmin(BigInteger teamId, List<BigInteger> admins);
 
+    List<HashMap<String, Object>> getTeamUserRelationships(List<Team> teams);
 }

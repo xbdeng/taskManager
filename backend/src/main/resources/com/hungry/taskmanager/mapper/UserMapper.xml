@@ -6,6 +6,16 @@
         where username = #{username}
     </select>
 
+    <select id="getTeams" parameterType="BigInteger" resultMap="getTeamsResultMap">
+
+    </select>
+
+    <resultMap id="getTeamsResultMap" type="Object">
+
+    </resultMap>
+
+
+
 
 
 <!--    <resultMap id="userMap" type="User">-->

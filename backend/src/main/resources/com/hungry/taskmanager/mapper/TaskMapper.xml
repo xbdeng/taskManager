@@ -12,52 +12,54 @@
             INNER JOIN user_task_tag utt ON ut.ut_id = utt.ut_id
             INNER JOIN tag AS t3 ON utt.tag_id = t3.tag_id
         </if>
-
-        WHERE u.user_id = #{userId}
-        <if test="privilege != null">
-            AND t.privilege = #{privilege}
-        </if>
-        <if test="taskName != null">
-            AND INSTR(#{taskName}, t.task_name) > 0
-        </if>
-        <if test="createDate != null">
-            AND t.create_date &gt;= #{createDate}
-        </if>
-        <if test="dueDate != null">
-            AND t.due_date &lt;= #{dueDate}
-        </if>
-        <if test="type != null">
-            AND t.type = #{type}
-        </if>
-        <if test="privilege != null">
-            AND t.status = #{status}
-        </if>
-        <if test="teamName != null">
-            AND INSTR(#{teamName}, t2.team_name) > 0
-        </if>
-        <if test="teamId != null">
-
-        </if>
-        <if test="tag != null">
-            AND t3.tag_name = #{tag}
-        </if>
-        <if test="fatherTask != null">
-            AND t.father_task = #{fatherTask}
-        </if>
-        <if test="scheduledTask != null">
-            <if test="scheduledTask == 0">
-                AND t.status IN (0, 2)
+        <where>
+            <if test="userId != null">
+                u.user_id = #{userId}
             </if>
-            <if test="scheduledTask == 1">
-                <if test="timeRange == 0 or timeRange == 1">
-                    AND t.due_date &lt;= #{requiredDate}
+            <if test="privilege != null">
+                AND t.privilege = #{privilege}
+            </if>
+            <if test="taskName != null">
+                AND INSTR(#{taskName}, t.task_name) > 0
+            </if>
+            <if test="createDate != null">
+                AND t.create_date &gt;= #{createDate}
+            </if>
+            <if test="dueDate != null">
+                AND t.due_date &lt;= #{dueDate}
+            </if>
+            <if test="type != null">
+                AND t.type = #{type}
+            </if>
+            <if test="privilege != null">
+                AND t.status = #{status}
+            </if>
+            <if test="teamName != null">
+                AND INSTR(#{teamName}, t2.team_name) > 0
+            </if>
+            <if test="teamId != null">
+
+            </if>
+            <if test="tag != null">
+                AND t3.tag_name = #{tag}
+            </if>
+            <if test="fatherTask != null">
+                AND t.father_task = #{fatherTask}
+            </if>
+            <if test="scheduledTask != null">
+                <if test="scheduledTask == 0">
+                    AND t.status IN (0, 2)
                 </if>
-                <if test="timeRange == 2">
-                    AND t.due_date &gt;= #{requiredDate}
+                <if test="scheduledTask == 1">
+                    <if test="timeRange == 0 or timeRange == 1">
+                        AND t.due_date &lt;= #{requiredDate}
+                    </if>
+                    <if test="timeRange == 2">
+                        AND t.due_date &gt;= #{requiredDate}
+                    </if>
                 </if>
             </if>
-        </if>
-
+        </where>
     </select>
 
 

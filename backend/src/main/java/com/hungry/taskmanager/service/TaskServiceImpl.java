@@ -7,6 +7,7 @@ import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.dto.CreateTaskDTO;
 import com.hungry.taskmanager.dto.EditTaskDTO;
 import com.hungry.taskmanager.dto.QueryTaskDTO;
+import com.hungry.taskmanager.entity.relation_entity.TeamTask;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.lang.NonNull;
@@ -33,6 +34,8 @@ public class TaskServiceImpl implements TaskService{
     private UserTaskMapper userTaskMapper;
     @Resource
     private TeamMapper teamMapper;
+    @Resource
+    private TeamTaskMapper teamTaskMapper;
 
     /**
      * create a new task and insert insert into database
@@ -42,7 +45,7 @@ public class TaskServiceImpl implements TaskService{
         // operations according to different types
             // individual task set type column -1
             // team task find id of the team set type id of the team
-        BigInteger type = assignType(params);
+        BigInteger type = BigInteger.valueOf(params.getType());
         // set date
         LocalDateTime createDate = convertGMT(params.getCreateDate());
         LocalDateTime dueDate = convertGMT(params.getDueDate());
@@ -58,6 +61,14 @@ public class TaskServiceImpl implements TaskService{
         task.updateDate();
         taskMapper.insert(task);
         BigInteger taskId = task.getTaskId();
+        if (params.getType() != null && params.getType() == 1){
+            if (params.getTeamId() != null){
+                TeamTask teamTask = new TeamTask().setTeamId(params.getTeamId()).setTaskId(taskId);
+                teamTaskMapper.insert(teamTask);
+            }else{
+                throw new Exception("params missing");
+            }
+        }
         // insert tag
         List<String> tags = params.getTags();
 
@@ -171,24 +182,7 @@ public class TaskServiceImpl implements TaskService{
         return 200;
     }
 
-    private BigInteger assignType(CreateTaskDTO params) throws Exception{
-        BigInteger type;
-        switch(params.getType()){
-            case(0):{
-                type = BigInteger.valueOf(0);
-                break;
-            }
-            case(1):{
-                // Todo 插入team task 表 插进去 而且只能用在createtask
-                type = BigInteger.valueOf(1);
-                break;
-            }
-            default:{
-                throw new Exception();
-            }
-        }
-        return type;
-    }
+
 
 
     private LocalDateTime convertGMT(String date){

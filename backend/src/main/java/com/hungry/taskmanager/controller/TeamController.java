@@ -51,12 +51,14 @@ public class TeamController {
 
     @PostMapping("/removemember")
     @ApiOperation(value = "移除成员",notes = "后端已测试通过")
+    @RequiresAuthentication
     public Result<String> removeMember(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.removeMember(oppoTeamMemberDTO);
         return Result.succ("移除成功");
     }
 
     @PostMapping("/dismiss")
+    @RequiresAuthentication
     @ApiOperation(value = "解散小组",notes = "后端已测试通过,权限已验证")
     public Result<String> dismiss(@RequestBody String teamId) {
         BigInteger teamId_ = JSON.parseObject(teamId).getBigInteger("teamId");
@@ -66,6 +68,7 @@ public class TeamController {
 
     @PostMapping("/removeadmin")
     @ApiOperation(value = "撤销管理员权限",notes = "后端已测试通过,权限已验证")
+    @RequiresAuthentication
     public Result<String> removeAdmin(@RequestBody OppoTeamMemberDTO oppoTeamMemberDTO) {
         teamService.removeAdmin(oppoTeamMemberDTO);
         return Result.succ("移除成功");
@@ -73,6 +76,7 @@ public class TeamController {
 
     @PostMapping("/editteam")
     @ApiOperation(value = "修改小组信息",notes = "后端测试通过not yet")
+    @RequiresAuthentication
     public Result<String> editTeam(@RequestBody EditTeamDTO params, HttpServletRequest httpServletRequest){
         String token = httpServletRequest.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
