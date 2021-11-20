@@ -245,11 +245,11 @@ export default {
                         }
                     )
                   that.addedTag = null
-                  let newToken = response.headers.Authorization
+                  let newToken = response.config.headers.Authorization
                   if(newToken != null) window.localStorage.setItem('token', newToken)
                 } else {
                     that.$message.error('添加标签失败')
-                    let newToken = response.headers.Authorization
+                    let newToken = response.config.headers.Authorization
                     if(newToken != null) window.localStorage.setItem('token', newToken)
                 }
             },
@@ -294,12 +294,12 @@ export default {
                         for(let key in that.taskForm) {
                             that.taskForm[key] = ''
                         }
-                        let newToken = response.headers.Authorization
+                        let newToken = response.config.headers.Authorization
                         if(newToken != null) window.localStorage.setItem('token', newToken)
                         that.toCalendar()
                     } else {
                         that.$message.error('新建任务失败')
-                        let newToken = response.headers.Authorization
+                        let newToken = response.config.headers.Authorization
                         if(newToken != null) window.localStorage.setItem('token', newToken)
                     }
                 },
