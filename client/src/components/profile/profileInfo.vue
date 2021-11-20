@@ -170,7 +170,7 @@ export default {
                 message: 'fetch success',
                 type: 'success'
               });
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
             else{
@@ -178,7 +178,7 @@ export default {
                 message: 'fetch error',
                 type: 'error'
               })
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
             that.username = response.data.data.username

@@ -515,14 +515,14 @@ export default {
                 message: 'update success',
                 type: 'success'
               });
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
             that.showCalendarData()
@@ -557,14 +557,14 @@ export default {
                 message: '获取日历信息',
                 type: 'success'
               });
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
             // console.log(response.data.data)
@@ -624,11 +624,11 @@ export default {
 
                 that.tagArray.push(obj)
               }
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取Tags数据失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -656,11 +656,11 @@ export default {
                 type: 'success'
               })
               that.myTeamInfo = response.data
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求用户创建或管理的组失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -699,11 +699,11 @@ export default {
                 type: 'success'
               })
               that.taskData = response.data.data
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“任务”数据失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -743,11 +743,11 @@ export default {
                 type: 'success'
               })
               that.todaytaskData = response.data.data
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“今天任务”数据失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -787,11 +787,11 @@ export default {
                 type: 'success'
               })
               that.weekTaskData = response.data.data
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“一周内”数据失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -830,11 +830,11 @@ export default {
                 type: 'success'
               })
               that.laterTaskData = response.data.data
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“稍后”数据失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -863,11 +863,11 @@ export default {
                 type: 'success'
               })
               that.teamInfo = response.data.data
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取组队任务失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -896,11 +896,11 @@ export default {
                 type: 'success'
               })
               that.Friends = response.data.data
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取通讯录数据失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },
@@ -937,11 +937,11 @@ export default {
                 type: 'success'
               })
               that.$router.push({name: 'Login'})
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             } else {
               that.$message.error('登出失败')
-              let newToken = response.config.headers.Authorization
+              let newToken = response.headers.authorization
               if(newToken != null) window.localStorage.setItem('token', newToken)
             }
           },

@@ -101,7 +101,7 @@ export default {
                             if(newToken != null) window.localStorage.setItem('token', newToken)
                         } else {
                             that.$message.error('新建组失败')
-                            let newToken = response.config.headers.Authorization
+                            let newToken = response.headers.authorization
                             if(newToken != null) window.localStorage.setItem('token', newToken)
                         }
                     },
