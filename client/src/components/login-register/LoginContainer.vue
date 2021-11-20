@@ -40,12 +40,9 @@
 
 <script>
 import axios from 'axios'
-<<<<<<< HEAD
-
-=======
 import process from "_shelljs@0.7.8@shelljs";
+
 axios.defaults.baseURL = process.env.API_ROOT
->>>>>>> 486b0d7c6478148513203d6c525722f73e6689db
 export default {
   name: 'LoginContainer',
   data() {
@@ -60,7 +57,6 @@ export default {
         return callback(new Error("密码不能为空"))
       }
       let pwdRegExp = new RegExp('^[0-9a-zA-Z]+$')
-
       if (!pwdRegExp.test(value)) {
         return callback(new Error('密码只能为数字或者小写大写字母'))
       }
@@ -80,7 +76,6 @@ export default {
           {required: true, message: '请输入用户名', trigger: 'blur'},
           {min: 3, max: 10, message: '长度在3到10个字符', trigger: 'blur'}
         ],
-
         password: [
           {required: true, message: '请输入登录密码', trigger: 'blur'},
           {min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur'}
@@ -93,7 +88,7 @@ export default {
       const that = this
       this.logining = true
       this.$refs.loginForm.validate(async (valid) => {
-        if(valid){
+        if (valid) {
           this.loginForm.password = this.$md5(this.loginForm.password)
           axios.post(
               '/user/login',
@@ -102,10 +97,10 @@ export default {
                 password: that.loginForm.password
               },
           ).then(
-              function(response) {
+              function (response) {
                 that.$message({
-                  message:'登录成功',
-                  type:'success'
+                  message: '登录成功',
+                  type: 'success'
                 })
                 let token = response.data.data
                 window.localStorage.setItem('token', token)
@@ -113,14 +108,14 @@ export default {
                 that.loginForm.username = ''
                 that.loginForm.password = ''
                 that.logining = false
-                that.$router.push({name:'Main', params:{username: tmpusername}})
+                that.$router.push({name: 'Main', params: {username: tmpusername}})
               },
-              function(err) {
+              function (err) {
                 that.$message.error('用户名或密码错误')
                 that.logining = false
               }
           )
-        }else{
+        } else {
           return (this.logining = false)
         }
       })
