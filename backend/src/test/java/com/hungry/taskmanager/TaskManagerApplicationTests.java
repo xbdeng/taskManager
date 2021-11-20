@@ -1,6 +1,7 @@
 package com.hungry.taskmanager;
 
 import com.hungry.taskmanager.dto.EditTeamDTO;
+import com.hungry.taskmanager.dto.EditUserDTO;
 import com.hungry.taskmanager.dto.TagDTO;
 import com.hungry.taskmanager.entity.Tag;
 import com.hungry.taskmanager.entity.Task;
@@ -39,8 +40,9 @@ class TaskManagerApplicationTests {
 //        }
 //        List<Tag> ts = userService.selectTags(new TagDTO().setUsername("ddd"));
 //        System.out.println(ts.toString());
-        EditTeamDTO dto = new EditTeamDTO().setTeamId(BigInteger.valueOf(9)).setDescription("description");
-        teamService.editTeam(dto);
+//        EditTeamDTO dto = new EditTeamDTO().setTeamId(BigInteger.valueOf(9)).setDescription("description");
+        userService.editUser(new EditUserDTO().setEmail("ComLqWork@outlook.com").setUsername("nametest").setPassword("password").setFirstName("thomas").setPhone("131111111"));
+//        teamService.editTeam(dto);
     }
 
 }

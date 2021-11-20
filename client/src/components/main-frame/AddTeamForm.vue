@@ -33,6 +33,8 @@
 
 <script>
 import axios from 'axios'
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: 'AddTeamForm',
   data () {
@@ -71,7 +73,7 @@ export default {
           this.$refs[formName].validate((valid)=>{
               if(valid) {
                 axios.post(
-                    'http://localhost:8081/api/team/createteam',
+                    '/team/createteam',
                     {
                         //creatorName
                         description:that.teamForm.description,

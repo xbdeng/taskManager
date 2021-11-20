@@ -1,11 +1,8 @@
 package com.hungry.taskmanager.service;
 
 
-import com.hungry.taskmanager.dto.TagDTO;
-import com.hungry.taskmanager.dto.TeamDTO;
-import com.hungry.taskmanager.dto.UserDTO;
+import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.*;
-import com.hungry.taskmanager.dto.RegisterInfoDTO;
 
 import java.util.List;
 
@@ -41,4 +38,6 @@ public interface UserService {
     void addTag(TagDTO params);
 
     List<Tag> selectTags(TagDTO params);
+
+    void editUser(EditUserDTO userDTO);
 }
