@@ -49,9 +49,21 @@
             size='50%'>
                 <TaskShow
                 :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
-                v-on:closeTaskDrawer='closeTaskDrawer($event)'></TaskShow>
+                v-on:closeTaskDrawer='closeTaskDrawer($event)'
+                v-on:emitTreeData="emitTreeData($event)"></TaskShow>
             </el-drawer>
 
+            <el-drawer
+            title="查看任务树形图"
+            :visible.sync="treeDrawer"
+            direction="ltr"
+            :before-close="handleTreeClose"
+            :modal-append-to-body='false'
+            size='50%'>
+                <TreeTask
+                :TData="this.treeData"
+                v-on:closeTreeDrawer="handleTreeClose"></TreeTask>
+            </el-drawer>
             <!-- 用于显示组的信息 -->
 
         </el-container>
@@ -62,13 +74,15 @@
 import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
 import TeamShow from '../sub-components/TeamShow.vue'
+import TreeTask from './TreeTask'
 export default {
 
   name: "TeamInfoPage",
   components: {
     TaskTree,
     TaskShow,
-    TeamShow
+    TeamShow,
+    TreeTask
   },
   props:['teamInfo','username','Friends'],
   data() {
@@ -79,7 +93,9 @@ export default {
         // 用户点击的组的编号
         selectedTeam:0,
         taskInfoDrawer:false,
-        teamInfoDrawer:false
+        teamInfoDrawer:false,
+        treeDrawer:false,
+        treeData:null
     }
   },
   methods: {
@@ -110,6 +126,9 @@ export default {
     handleTeamInfoClose() {
         this.teamInfoDrawer = false
     },
+    handleTreeClose() {
+      this.treeDrawer = false
+    },
     closeTaskDrawer() {
         this.taskInfoDrawer = false
     },
@@ -118,6 +137,11 @@ export default {
     },
     postTeamDataAgain() {
       this.$emit('postTeamDataAgain',{})
+    },
+    emitTreeData(task) {
+      this.treeDrawer = true
+      this.treeData = task
+      console.log(task)
     }
 }
 
