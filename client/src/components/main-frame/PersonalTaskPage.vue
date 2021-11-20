@@ -59,6 +59,7 @@
                         :chosenTask="chosenTaskId" 
                         v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                         </el-submenu>
+                    <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-menu>
             </el-main>
             <!-- 显示任务信息 -->
@@ -68,11 +69,23 @@
             direction="rtl"
             :before-close="handleClose"
             :modal-append-to-body='false'
-            size='50%'
-            >
+            size='30%'>
                 <TaskShow
                     :singleTaskData="getTask(chosenTaskId)"
-                    v-on:closeTaskDrawer='closeTaskDrawer($event)'></TaskShow>
+                    v-on:closeTaskDrawer='closeTaskDrawer($event)'
+                    v-on:emitTreeData="emitTreeData($event)"></TaskShow>
+            </el-drawer>
+
+            <el-drawer
+            title="查看任务树形图"
+            :visible.sync="treeDrawer"
+            direction="ltr"
+            :before-close="handleTreeClose"
+            :modal-append-to-body='false'
+            size='50%'>
+                <TreeTask
+                :TData="this.treeData"
+                v-on:closeTreeDrawer="handleTreeClose"></TreeTask>
             </el-drawer>
         </el-container>
     </div>
@@ -81,12 +94,14 @@
 <script>
 import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
+import TreeTask from './TreeTask'
 import axios from 'axios'
 export default {
   name: "PersonalTaskPage",
   components: {
     TaskTree,
-    TaskShow
+    TaskShow,
+    TreeTask
   },
   props:['taskData','todayTaskData','weekTaskData','laterTaskData'],
   data() {
@@ -96,6 +111,9 @@ export default {
         planedTaskShow:false,
         Specifier:0,
         drawer:false,
+        addedTaskName:'',
+        treeDrawer:false,
+        treeData:null,
     }
   },
   methods: {
@@ -138,6 +156,9 @@ export default {
     handleClose() {
         this.drawer = false
     },
+    handleTreeClose() {
+      this.treeDrawer = false
+    },
     setSpecifier(num) {
         this.Specifier = num
     },
@@ -145,8 +166,57 @@ export default {
         this.$emit('closeTaskDrawer', {})
         this.drawer = false
     },
+    addTask() {
+      const that = this
+      if(this.addedTaskName === '') {
+        that.$message.error('要添加的任务名不能为空')
+        return ;
+      }
+      axios.post(
+          'http://localhost:8081/api/task/addtask',
+          {
+            createDate:null,
+            description:null,
+            dueDate:null,
+            //fatherTask
+            //members
+            privilege:0,
+            status:0,
+            // subtasks
+            tags:null,
+            taskName:that.addedTaskName,
+            teamId:null,
+            type:0,
+            // username
+          },
+          {
+            headers:{
+              Authorization:window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            if(response.data.code === 200) {
+              that.$message({
+                message:'添加任务成功',
+                type:'success'
+              })
+              that.addedTaskName = null
+            } else {
+              that.$message.error('添加任务失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，添加任务失败')
+          }
+      )
+    },
+    emitTreeData(task) {
+      this.treeDrawer = true
+      this.treeData = task
+    }
 
-}
+  }
 
 }
 </script>

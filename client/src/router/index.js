@@ -39,11 +39,6 @@ export default new VueRouter({
             name: 'Profile',
             props: true
         },
-        {
-            path:'/tree/:username',
-            component:tree,
-            name:'Tree',
-            props:true
-        }
+
     ]
 });

@@ -220,6 +220,9 @@
                     </el-tooltip>
                 </el-popover>
             </el-row>
+            <el-row>
+              <el-button type="primary" @click="emitTreeData">查看树形图</el-button>
+            </el-row>
             <!-- 输入框，可以输入子任务的名称，输入后摁下回车可以创建子任务，之后可以通过本界面进行修改 -->
             <el-row type="flex" justify="start">
               <el-col>
@@ -439,6 +442,9 @@ export default {
           }
       )
     },
+    emitTreeData() {
+      this.$emit('emitTreeData',this.singleTaskData)
+    }
   }
   
 }
