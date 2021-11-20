@@ -35,7 +35,7 @@
                 <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
                 <el-menu-item index="1-2">页面设置</el-menu-item>
                 <el-menu-item index="1-3">数据同步</el-menu-item>
-                <el-menu-item index="1-4">账号登出</el-menu-item>
+                <el-menu-item index="1-4" @click="logOut">账号登出</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 
@@ -83,7 +83,7 @@
             </el-menu-item>
 
             <el-menu-item index="8" @click="showTree">
-              <i class="el-icon-ship"></i>
+              <i class="el-icon-share"></i>
               <span slot="title">任务树形图</span>
             </el-menu-item>
 
@@ -162,8 +162,7 @@
             <div class='demo-app-main'>
               <FullCalendar ref="fullCalendar"
                             class='demo-app-calendar'
-                            :options='calendarOptions'
-              >
+                            :options='calendarOptions'>
                 <template v-slot:eventContent='arg'>
                   <b class="demo-b">{{ arg.timeText }}</b>
                   <i>{{ arg.event.title }}</i>
@@ -492,7 +491,6 @@ export default {
         }
       }
     },
-
     changeCalendarData(taskId, start, end) {
       const that = this;
       axios.post(
@@ -881,6 +879,33 @@ export default {
     },
     postTeamDataAgain() {
       this.postMyTeams()
+    },
+    logOut() {
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/logout',
+          {},
+          {
+            headers:{
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            if(response.data.code === 200) {
+              that.$message({
+                message:'登出成功',
+                type:'success'
+              })
+              that.$router.push({name:'Login'})
+            } else {
+              that.$message.error('登出失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，登出失败')
+          }
+      )
     }
 
 
