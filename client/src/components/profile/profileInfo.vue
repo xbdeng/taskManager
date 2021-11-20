@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="20vw">
         <div>
-          <el-form ref="form">
+          <el-form ref="form" v-loading="loading">
             <el-form-item>
               <p class="text_font text_left">个人头像</p>
             </el-form-item>
@@ -14,12 +14,27 @@
               </div>
             </el-form-item>
 
+<!--            <el-form-item>-->
+<!--              <el-button>上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+<!--            </el-form-item>-->
             <el-form-item>
+              <!-- TODO : token maybe && url api needed-->
+            <el-upload
+                action="https://jsonplaceholder.typicode.com/posts/"
+                :show-file-list="false"
+                :accept="'image/*'"
+                :headers="{Authorization: this.username}"
+                :on-success="handleSuccess"
+                :on-error="handleError"
+                :before-upload="handleBeforeUpload"
+                :on-progress="handleProgress">
               <el-button>上传<i class="el-icon-upload el-icon--right"></i></el-button>
+<!--              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+            </el-upload>
             </el-form-item>
 
             <el-form-item>
-              <p class="text_font">png 或 jpg 格式，最大 20MB</p>
+              <p class="text_font">png 或 jpg 格式，最大 2MB</p>
             </el-form-item>
 
           </el-form>
@@ -129,7 +144,8 @@ export default {
       firstName: '',
       lastName: '',
       phone: '',
-      userId: -1
+      userId: -1,
+      loading: false
     }
   },
   mounted() {
@@ -169,6 +185,38 @@ export default {
             // console.log(response)
           }
       )
+    },
+    // upload image
+    /*----- 以下为常用处理代码 ------*/
+    handleSuccess(response, file, fileList) {
+      this.$notify({
+        title: '成功',
+        message: 'upload success',
+        type: 'success'
+      });
+      this.loading = false;
+    },
+    handleError() {
+      this.$notify.error({
+        title: '错误',
+        message: 'upload failed, check your internet'
+      });
+      this.loading = false;
+    },
+    handleBeforeUpload(file) {
+      const isImage = file.type.includes("image");
+      if (!isImage) {
+        this.$message.error("上传文件类型必须是图片!");
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error("上传图片大小不能超过 2MB!");
+      }
+      this.loading = false;
+      return isImage && isLt2M;
+    },
+    handleProgress(event, file, fileList) {
+      this.loading = true;  //  上传时执行loading事件
     }
   }
 }
