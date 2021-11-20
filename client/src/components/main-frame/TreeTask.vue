@@ -38,8 +38,11 @@
                 nodeText="name"
                 :identifier="getId"
                 :linkLayout="this.linkLayout"
-                :layoutType="this.layoutType"
-                ></tree>
+                :layoutType="this.layoutType">
+              <template #behavior="{on, actions}">
+                <popUpOnHoverText v-bind="{on, actions}"/>
+              </template>
+            </tree>
           </el-main>
         </el-container>
       </el-main>
@@ -49,11 +52,12 @@
 </template>
 
 <script>
-import {tree} from 'vued3tree'
+import {tree,popUpOnHoverText} from 'vued3tree'
 
 export default {
   components: {
     tree,
+    popUpOnHoverText
   },
   props:['TData'],
   watch:{

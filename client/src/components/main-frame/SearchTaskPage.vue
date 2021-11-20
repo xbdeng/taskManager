@@ -147,6 +147,8 @@ import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
 import TreeTask from './TreeTask'
 import axios from 'axios'
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
 
   name: "SearchTaskPage",
@@ -196,7 +198,7 @@ export default {
       searchRequest() {
           const that = this
           axios.post(
-              'http://localhost:8081/api/task/query',
+              '/task/query',
               {
                 createDate:that.fliterForm.createDate,
                 dueDate:that.fliterForm.dueDate,

@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class JWTUtil {
     //token有效时长
-    private static final long EXPIRE=1*60*1000L;
+    private static final long EXPIRE=20*1000L;  //ACCESSTOKEN 过期时间
     //token的密钥
     private static final String SECRET="jwt+shiro";
 
