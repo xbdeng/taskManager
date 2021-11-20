@@ -5,8 +5,6 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.hungry.taskmanager.utils.JWTUtil;
 import com.hungry.taskmanager.utils.RedisUtil;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.WebApplicationContext;
@@ -51,7 +49,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                     }
                     msg=result;
                 }
-                responseError(response,msg);
+                throw new RuntimeException(msg); //todo 异常处理
+//                responseError(response,msg);
             }
         }
         //如果请求头不存在 Token，则可能是执行登陆操作或者是游客状态访问，无需检查 token，直接返回 true
@@ -99,18 +98,18 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
     /**
      * 将非法请求跳转到 /unauthorized/**
      */
-    private void responseError(ServletResponse response, String message) {
-        System.out.println("responseError");
-
-        try {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-            //设置编码，否则中文字符在重定向时会变为空字符串
-            message = URLEncoder.encode(message, "UTF-8");
-            httpServletResponse.sendRedirect("/unauthorized/" + message);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+//    private void responseError(ServletResponse response, String message) throws Exception {
+//        System.out.println("responseError");
+//        throw new Exception(message);
+//        try {
+//            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+//            //设置编码，否则中文字符在重定向时会变为空字符串
+//            message = URLEncoder.encode(message, "UTF-8");
+//            httpServletResponse.sendRedirect("/unauthorized/" + message);
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 
 
     /*
