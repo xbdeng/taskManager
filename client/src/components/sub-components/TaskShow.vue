@@ -246,6 +246,8 @@
  
 <script>
 import axios from 'axios'
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
 
   name: 'TaskShow',
@@ -376,7 +378,7 @@ export default {
       let that = this
       axios({
         method:'POST',
-        url:'http://localhost:8081/api/task/edittask',
+        url:'/task/edittask',
         params:{
           'taskId':that.tempTaskForm.taskId
         },
@@ -419,7 +421,7 @@ export default {
       let that = this
       axios({
         method:'POST',
-        url:'http://localhost:8081/api/task/deletetask',
+        url:'/task/deletetask',
         params:{'id':that.tempTaskForm.taskId},
         headers:{
           Authorization:window.localStorage.getItem('token')

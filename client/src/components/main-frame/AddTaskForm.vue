@@ -110,7 +110,8 @@ mo<template>
 
 <script>
 import axios from 'axios'
-const token = window.sessionStorage.getItem('token')
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: 'AddTaskForm',
   props:['username','tagArray','myTeamInfo'],
@@ -220,7 +221,7 @@ export default {
             return ;
         }
         axios.post(
-            'http://localhost:8081/api/user/addtag',
+            '/user/addtag',
             {
                 tagName:that.addedTag
             },
@@ -259,7 +260,7 @@ export default {
             if(valid) {
               axios({
                 method:'POST',
-                url:'http://localhost:8081/api/task/addtask',
+                url:'/task/addtask',
                 headers:{
                   Authorization:window.localStorage.getItem('token')
                 },

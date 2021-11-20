@@ -37,6 +37,8 @@
 
 <script>
 import axios from 'axios'
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
     name:'LoginContainer',
     data(){
@@ -88,7 +90,7 @@ export default {
                     this.loginForm.password = this.$md5(this.loginForm.password)
 
                     axios.post(
-                        'http://localhost:8081/api/user/login',
+                        '/user/login',
                         {
                             username: that.loginForm.username,
                             password: that.loginForm.password
