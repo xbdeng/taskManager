@@ -156,7 +156,8 @@
 
 <script>
 import axios from 'axios'
-
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "registerContainer",
   data() {
@@ -333,7 +334,7 @@ export default {
           //todo 登录注册验证方式同步
           // 向后端提交登录数据
           axios.post(
-              'http://localhost:8081/api/user/register',
+              '/user/register',
               {
                 username: that.ruleForm.username,
                 email: that.ruleForm.email,

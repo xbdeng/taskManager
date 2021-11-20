@@ -96,6 +96,8 @@ import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
 import TreeTask from './TreeTask'
 import axios from 'axios'
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "PersonalTaskPage",
   components: {
@@ -173,7 +175,7 @@ export default {
         return ;
       }
       axios.post(
-          'http://localhost:8081/api/task/addtask',
+          '/task/addtask',
           {
             createDate:null,
             description:null,

@@ -40,7 +40,12 @@
 
 <script>
 import axios from 'axios'
+<<<<<<< HEAD
 
+=======
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
+>>>>>>> 486b0d7c6478148513203d6c525722f73e6689db
 export default {
   name: 'LoginContainer',
   data() {
@@ -88,20 +93,19 @@ export default {
       const that = this
       this.logining = true
       this.$refs.loginForm.validate(async (valid) => {
-        if (valid) {
+        if(valid){
           this.loginForm.password = this.$md5(this.loginForm.password)
-
           axios.post(
-              'http://localhost:8081/api/user/login',
+              '/user/login',
               {
                 username: that.loginForm.username,
                 password: that.loginForm.password
               },
           ).then(
-              function (response) {
+              function(response) {
                 that.$message({
-                  message: '登录成功',
-                  type: 'success'
+                  message:'登录成功',
+                  type:'success'
                 })
                 let token = response.data.data
                 window.localStorage.setItem('token', token)
@@ -109,14 +113,14 @@ export default {
                 that.loginForm.username = ''
                 that.loginForm.password = ''
                 that.logining = false
-                that.$router.push({name: 'Main', params: {username: tmpusername}})
+                that.$router.push({name:'Main', params:{username: tmpusername}})
               },
-              function (err) {
+              function(err) {
                 that.$message.error('用户名或密码错误')
                 that.logining = false
               }
           )
-        } else {
+        }else{
           return (this.logining = false)
         }
       })

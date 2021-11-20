@@ -212,7 +212,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import MessagePage from "./MessagePage";
 import axios from 'axios'
-
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "Main",
   components: {
@@ -495,7 +496,7 @@ export default {
     changeCalendarData(taskId, start, end) {
       const that = this;
       axios.post(
-          'http://localhost:8081/api/task/edittask',
+          '/task/edittask',
           {
             taskId: taskId,
             createDate: start,
@@ -535,7 +536,7 @@ export default {
       const that = this;
       // console.log(window.localStorage.getItem('token'));
       axios.post(
-          'http://localhost:8081/api/task/query',
+          '/task/query',
           {
             // fliter
             scheduledTask: 0
@@ -588,7 +589,7 @@ export default {
     postTags() {
       let that = this
       axios.post(
-          'http://localhost:8081/api/user/selecttags',
+          '/user/selecttags',
           {
             username: this.username
           },
@@ -627,7 +628,7 @@ export default {
     postMyTeams() {
       let that = this;
       axios.post(
-          'http://localhost:8081/api/user/myteams/admin',
+          '/user/myteams/admin',
           {},
           {
             headers: {
@@ -656,7 +657,7 @@ export default {
     postTaskData() {
       let that = this
       axios.post(
-          'http://localhost:8081/api/task/query',
+          '/task/query',
           {
             createDate: null,
             dueDate: null,
@@ -694,7 +695,7 @@ export default {
     postTodayTaskData() {
       let that = this
       axios.post(
-          'http://localhost:8081/api/task/query',
+          '/task/query',
           {
             createDate: null,
             dueDate: null,
@@ -734,7 +735,7 @@ export default {
     postWeekTaskData() {
       let that = this
       axios.post(
-          'http://localhost:8081/api/task/query',
+          '/task/query',
           {
             createDate: null,
             dueDate: null,
@@ -774,7 +775,7 @@ export default {
     postLaterTaskData() {
       let that = this
       axios.post(
-          'http://localhost:8081/api/task/query',
+          '/task/query',
           {
             createDate: null,
             dueDate: null,
@@ -814,7 +815,7 @@ export default {
     postTeamInfo() {
       let that = this
       axios.post(
-          'http://localhost:8081/api/user/myteams',
+          '/user/myteams',
           {},
           {
             headers: {
@@ -843,7 +844,7 @@ export default {
     postAddressBook() {
       let that = this
       axios.post(
-          'http://localhost:8081/api/user/addressbook',
+          '/user/addressbook',
           {},
           {
             headers: {
@@ -881,7 +882,7 @@ export default {
     logOut() {
       const that = this
       axios.post(
-          'http://localhost:8081/api/user/logout',
+          '/user/logout',
           {},
           {
             headers: {

@@ -173,6 +173,8 @@
  
 <script>
 import axios from 'axios'
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: 'TeamShow',
   // 这个组件接收的参数是一个组对象
@@ -262,7 +264,7 @@ export default {
           userName.push(name)
           let teamId = this.singleTeamData.teamId
           axios.post(
-              'http://localhost:8081/api/team/removemember',
+              '/team/removemember',
               {
                   teamId:teamId,
                   userName:userName
@@ -294,7 +296,7 @@ export default {
         let teamId = this.singleTeamData.teamId
           axios({
             methods:'POST',
-            url:'http://localhost:8081/api/team/editteam',
+            url:'/team/editteam',
             data:{
               teamName:that.editedTeamName,
               teamId:teamId
@@ -326,7 +328,7 @@ export default {
           let teamId = this.singleTeamData.teamId
           if(value != null) {
               axios.post(
-                  'http://localhost:8081/api/team/setadmin',
+                  '/team/setadmin',
                   {
                       teamId:teamId,
                       userName:value
@@ -362,7 +364,7 @@ export default {
           let teamId = this.singleTeamData.teamId
           if(value != null) {
               axios.post(
-                  'http://localhost:8081/api/team/addmember',
+                  '/team/addmember',
                   {
                       teamId:teamId,
                       userName:value
@@ -397,7 +399,7 @@ export default {
         let teamId = this.singleTeamData.teamId
         axios({
           methods: 'POST',
-          url:'http://localhost:8081/api/editteam',
+          url:'/editteam',
           data:{
             description:that.editedDescription,
             teamId:teamId
@@ -424,7 +426,7 @@ export default {
           let that = this
           let teamId = this.singleTeamData.teamId
           axios.post(
-              'http://localhost:8081/api/team/dismiss',
+              '/team/dismiss',
               {
                   teamId:teamId
               },
@@ -455,7 +457,7 @@ export default {
           let that = this
           let teamId = this.singleTeamData.teamId
           axios.post(
-              'http://localhost:8081/api/team/removemember',
+              '/team/removemember',
               {
                   teamId:teamId,
                   userName:that.username
@@ -489,7 +491,7 @@ export default {
           let teamId = this.singleTeamData.teamId
           if(value != null) {
               axios.post(
-                  'http://localhost:8081/api/team/removeadmin',
+                  '/team/removeadmin',
                   {
                       teamId:teamId,
                       userName:value
