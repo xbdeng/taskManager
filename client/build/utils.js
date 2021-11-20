@@ -25,6 +25,7 @@ exports.cssLoaders = function (options) {
     loader: 'px2rem-loader',
     options: {
       //一般设置75
+
       remUnit: 75
     }
   }
