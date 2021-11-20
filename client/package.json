@@ -21,6 +21,7 @@
     "element-ui": "^2.15.6",
     "js-md5": "^0.7.3",
     "lib-flexible": "^0.3.2",
+    "px2rem-loader": "^0.1.9",
     "qs": "^6.10.1",
     "vue": "^2.5.2",
     "vue-chartjs": "^3.5.1",
