@@ -119,10 +119,25 @@
             direction="rtl"
             :before-close="handleTaskInfoClose"
             :modal-append-to-body='false'
-            size='50%'
+            size='30%'
             >
-            <TaskShow :singleTaskData="this.showedTask"></TaskShow>
+            <TaskShow
+                :singleTaskData="this.showedTask"
+                v-on:closeTaskDrawer='handleTaskInfoClose($event)'
+                v-on:emitTreeData="emitTreeData($event)"></TaskShow>
         </el-drawer>
+
+        <el-drawer
+              title="查看任务树形图"
+              :visible.sync="treeDrawer"
+              direction="ltr"
+              :before-close="handleTreeClose"
+              :modal-append-to-body='false'
+              size='50%'>
+                  <TreeTask
+                  :TData="this.treeData"
+                  v-on:closeTreeDrawer="handleTreeClose"></TreeTask>
+              </el-drawer>
     </el-container>
   </div>
 </template>
@@ -130,13 +145,15 @@
 <script>
 import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
+import TreeTask from './TreeTask'
 import axios from 'axios'
 export default {
 
   name: "SearchTaskPage",
   components: {
       TaskTree,
-      TaskShow
+      TaskShow,
+      TreeTask
   },
   data() {
       var checkDueDate = (rule, value, callback)=> {
@@ -167,6 +184,8 @@ export default {
           showedTask:null,
           fliterDrawer:false,
           taskInfoDrawer:false,
+          treeDrawer:false,
+          treeData:null,
           texts:['低','中','高','很高'],
           rules:{
               dueDate:[{validator:checkDueDate, trigger:'blur'}]
@@ -285,7 +304,13 @@ export default {
           this.notFinished = false
           this.expired = false
       },
-      
+      handleTreeClose() {
+        this.treeDrawer = false
+      },
+      emitTreeData(task) {
+        this.treeDrawer = true
+        this.treeData = task
+      }
 
   }
 
