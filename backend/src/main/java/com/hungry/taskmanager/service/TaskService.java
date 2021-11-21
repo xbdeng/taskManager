@@ -7,11 +7,12 @@ import com.hungry.taskmanager.entity.Task;
 
 import org.springframework.lang.NonNull;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface TaskService {
 
-    int addTask(CreateTaskDTO params) throws Exception;
+    BigInteger addTask(CreateTaskDTO params) throws Exception;
 
     int deleteTask(@NonNull long taskId) throws Exception;
 
