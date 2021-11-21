@@ -56,6 +56,23 @@ public class UserController {
         return userService.register(registerInfoDTO);
     }
 
+    @PostMapping("checkname")
+    @ApiOperation(value = "检查用户名是否被占用",notes = "√")
+    public Result checkName(@RequestBody String username){
+        try {
+            username = JSON.parseObject(username).getString("username");
+            User u = userService.findByUserName(username);
+            if (u == null) {
+                return Result.succ("名称可以使用");
+            } else {
+                return Result.fail(202, "名称被占用", null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500,"服务器错误",null);
+        }
+    }
+
 
 
 
