@@ -35,6 +35,8 @@ export default {
             window.sessionStorage.setItem('token', token)
             let tmpusername = response.data.msg
             that.$router.push({name: 'Main', params: {username: tmpusername}})
+          }else {
+            that.$router.push({name: 'login'})
           }
         },
         function (err) {

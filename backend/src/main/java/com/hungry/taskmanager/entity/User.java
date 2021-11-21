@@ -29,18 +29,18 @@ public class User implements Serializable {
     //定义角色集合
     @TableField(exist=false)
     private List<Role> roles;
-  
+
     @TableField(exist=false)
     private List<Perms> perms;
 
     @TableField(exist=false)
     private List<Task> tasks;
 
-    @TableField(exist = false)
+//    @TableField(exist = false)
     private String githubName;
 
     public UserDTO toUserDTO(){
-        return new UserDTO(userId,username,firstName,lastName,email,phone);
+        return new UserDTO(userId,username,firstName,lastName,email,phone,githubName);
     }
 
 
