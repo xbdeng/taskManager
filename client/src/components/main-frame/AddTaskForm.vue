@@ -227,7 +227,7 @@ export default {
             },
             {
                 headers:{
-                    Authorization:window.localStorage.getItem('token')
+                    Authorization:window.sessionStorage.getItem('token')
                 }
             }
         ).then(
@@ -245,8 +245,12 @@ export default {
                         }
                     )
                   that.addedTag = null
+                  let newToken = response.headers.authorization
+                  if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 } else {
                     that.$message.error('添加标签失败')
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 }
             },
             function(err) {
@@ -262,7 +266,7 @@ export default {
                 method:'POST',
                 url:'/task/addtask',
                 headers:{
-                  Authorization:window.localStorage.getItem('token')
+                  Authorization:window.sessionStorage.getItem('token')
                 },
                 data:{
                     createDate:that.taskForm.createDate,
@@ -290,9 +294,13 @@ export default {
                         for(let key in that.taskForm) {
                             that.taskForm[key] = ''
                         }
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                         that.toCalendar()
                     } else {
                         that.$message.error('新建任务失败')
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
                 },
                 function (err) {

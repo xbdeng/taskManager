@@ -82,7 +82,7 @@ export default {
                     },
                     {
                         headers:{
-                            Authorization:window.localStorage.getItem('token')
+                            Authorization:window.sessionStorage.getItem('token')
                         }
                     }
                 ).then(
@@ -97,8 +97,12 @@ export default {
                                 this.teamForm[i] = ''
                             }
                             that.toCalendar()
+                            let newToken = response.headers.Authorization
+                            if(newToken != null) window.sessionStorage.setItem('token', newToken)
                         } else {
                             that.$message.error('新建组失败')
+                            let newToken = response.headers.authorization
+                            if(newToken != null) window.sessionStorage.setItem('token', newToken)
                         }
                     },
                     function(err) {

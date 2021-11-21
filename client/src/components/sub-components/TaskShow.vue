@@ -396,7 +396,7 @@ export default {
           type:that.tempTaskForm.type
         },
         headers:{
-          Authorization:window.localStorage.getItem('token')
+          Authorization:window.sessionStorage.getItem('token')
         }
       }).then(
         function(response) {
@@ -406,8 +406,12 @@ export default {
               message:'修改任务成功',
               type:'success'
             })
+            let newToken = response.headers.authorization
+            if(newToken != null) window.sessionStorage.setItem('token', newToken)
           } else {
             that.$message.error('修改任务失败')
+            let newToken = response.headers.authorization
+            if(newToken != null) window.sessionStorage.setItem('token', newToken)
           }
           that.$emit('closeTaskDrawer',{})
         },
@@ -424,7 +428,7 @@ export default {
         url:'/task/deletetask',
         params:{'id':that.tempTaskForm.taskId},
         headers:{
-          Authorization:window.localStorage.getItem('token')
+          Authorization:window.sessionStorage.getItem('token')
         }
       }).then(
           function(response) {
@@ -435,8 +439,12 @@ export default {
                 type:'success'
               })
               this.$emit('closeTaskDrawer',{})
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('删除任务失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function(err) {
