@@ -85,7 +85,8 @@
             size='50%'>
                 <TreeTask
                 :TData="this.treeData"
-                v-on:closeTreeDrawer="handleTreeClose"></TreeTask>
+                v-on:closeTreeDrawer="handleTreeClose"
+                v-on:postTreeTaskAgain="postPersonalTaskAgain"></TreeTask>
             </el-drawer>
         </el-container>
     </div>
@@ -206,6 +207,7 @@ export default {
               that.addedTaskName = null
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              that.$emit('postPersonalTaskAgain',{})
             } else {
               that.$message.error('添加任务失败')
               let newToken = response.headers.authorization
@@ -218,8 +220,12 @@ export default {
       )
     },
     emitTreeData(task) {
-      this.treeDrawer = true
+      console.log(task)
       this.treeData = task
+      this.treeDrawer = true
+    },
+    postPersonalTaskAgain() {
+      this.$emit('postPersonalTaskAgain', {})
     }
 
   }
