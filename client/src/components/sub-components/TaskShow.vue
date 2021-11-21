@@ -379,9 +379,6 @@ export default {
       axios({
         method:'POST',
         url:'/task/edittask',
-        params:{
-          'taskId':that.tempTaskForm.taskId
-        },
         data:{
           createDate:that.tempTaskForm.createDate,
           description:that.tempTaskForm.description,
@@ -393,7 +390,8 @@ export default {
           subTasks:that.tempTaskForm.subTasks,
           tags:that.tempTaskForm.tags,
           taskName:that.tempTaskForm.taskName,
-          type:that.tempTaskForm.type
+          type:that.tempTaskForm.type,
+          taskId:that.tempTaskForm.taskId
         },
         headers:{
           Authorization:window.sessionStorage.getItem('token')
