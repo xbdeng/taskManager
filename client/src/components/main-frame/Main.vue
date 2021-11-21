@@ -121,7 +121,7 @@
                         :teamInfo="this.teamInfo"
                         :username="this.username"
                         :Friends="this.Friends"
-                        v-on:postTeamInfoAgain="postTeamInfoAgain"
+                        v-on:postTeamInfoAgain="postTeamInfoAgain($event)"
                         v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
@@ -952,6 +952,7 @@ export default {
       )
     },
     postTeamInfoAgain() {
+      alert('***')
       this.postTeamInfo()
     },
 
