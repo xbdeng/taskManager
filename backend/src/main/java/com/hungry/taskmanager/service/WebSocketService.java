@@ -1,4 +1,4 @@
-package com.hungry.taskmanager.component;
+package com.hungry.taskmanager.service;
 
 
 import com.alibaba.druid.support.json.JSONUtils;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(value="/messagepush/{username}")
 @Component
-public class WebSocketServer {
+public class WebSocketService {
 
     public static final Map<String, Session> sessionMap = new ConcurrentHashMap<>();
 
