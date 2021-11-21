@@ -17,6 +17,7 @@ import java.util.List;
 public class EditTaskDTO {
     @ApiModelProperty(hidden = true)
     private String username;
+    private BigInteger taskId;
     private String taskName;
     private String description;
     private List<String> tags;
@@ -25,7 +26,7 @@ public class EditTaskDTO {
     private String dueDate;
     // other parameters necessary for modifying a task
     private BigInteger fatherTask;
-    private List<BigInteger> subTasks;
+    private List<String> subTasks;
     private Integer status;
-    private Long taskId;
+
 }
