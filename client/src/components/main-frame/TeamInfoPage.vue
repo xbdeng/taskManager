@@ -6,10 +6,8 @@
             <el-aside>
                 <el-menu  class="main-frame-menu">
                     <!-- 显示所有的组 -->
-                    <el-menu-item  v-for='(team, teamIndex) in teamInfo' :key="teamIndex" :index= team.teamName >
-                        <template slot="title">
-                            <span slot="title" @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
-                        </template>
+                    <el-menu-item  v-for='(team, teamIndex) in this.teamInfo' :key=team.teamId :index= team.teamName >
+                            <span @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
                     </el-menu-item>
                 </el-menu>
             </el-aside>
@@ -17,7 +15,7 @@
             <el-main>
                 <el-menu>
                     <TaskTree 
-                    :taskData="teamInfo[this.selectedTeam].teamTasks"
+                    :taskData="generateTaskTreeData()"
                     :taskLevel="''"
                     :chosenTask="chosenTaskId"
                     v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
@@ -33,7 +31,7 @@
             :modal-append-to-body='false'
             size='50%'>
                 <TeamShow
-                :singleTeamData="teamInfo[selectedTeam]"
+                :singleTeamData="this.teamInfo === 0 ? this.teamSample: teamInfo[selectedTeam]"
                 :username="this.username"
                 :Friends="this.Friends"
                 v-on:closeTeamDrawer="closeTeamDrawer($event)"
@@ -48,7 +46,7 @@
             :modal-append-to-body='false'
             size='50%'>
                 <TaskShow
-                :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
+                :singleTaskData="teamInfo.length === 0 ? this.taskSample :getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
                 v-on:closeTaskDrawer='closeTaskDrawer($event)'
                 v-on:emitTreeData="emitTreeData($event)"></TaskShow>
             </el-drawer>
@@ -86,7 +84,6 @@ export default {
   },
   props:['teamInfo','username','Friends'],
   data() {
-
     return {
         // 唯一标识任务的key
         chosenTaskId:'-1',
@@ -95,7 +92,25 @@ export default {
         taskInfoDrawer:false,
         teamInfoDrawer:false,
         treeDrawer:false,
-        treeData:null
+        treeData:null,
+        taskSample:{
+          createDate:'',
+          description:'',
+          dueDate:'',
+          members:[],
+          privilege:0,
+          status:0,
+          subTasks:[],
+          tags:[],
+          taskName:'',
+          type:0
+        },
+        teamSample:{
+          teamName:'',
+          createDate:'',
+          members:[],
+          description:''
+        }
     }
   },
   methods: {
@@ -137,12 +152,18 @@ export default {
         this.teamInfoDrawer = false
     },
     postTeamInfoAgain() {
+      this.selectedTeam = 0
       this.$emit('postTeamInfoAgain',{})
     },
     emitTreeData(task) {
       this.treeDrawer = true
       this.treeData = task
       console.log(task)
+    },
+    generateTaskTreeData() {
+      if(this.teamInfo.length !== 0)
+        return this.teamInfo[this.selectedTeam].teamTasks
+      else return []
     }
 }
 

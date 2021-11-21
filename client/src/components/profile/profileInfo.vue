@@ -122,6 +122,19 @@
                 </div>
               </el-col>
 
+              <el-col :span="8">
+                <!--          <div>-->
+                <!--            ?-->
+                <!--            <br>-->
+                <!--            <el-input placeholder="?"></el-input>-->
+                <!--          </div>-->
+                <el-button @click="handleGithub" v-show="githubbind === null">bind to github</el-button>
+                <div v-show="githubbind">
+                  You are now bind with github profile
+                  <el-button @click="handleGithubUntie" v-show="githubbind !== null">Untie to github from {{this.githubbind}}</el-button>
+                </div>
+              </el-col>
+
             </el-row>
           </el-form-item>
 
@@ -147,7 +160,8 @@ export default {
       lastName: '',
       phone: '',
       userId: -1,
-      loading: false
+      loading: false,
+      githubbind: ''
     }
   },
   mounted() {
@@ -188,6 +202,7 @@ export default {
             that.firstName = response.data.data.firstName
             that.lastName = response.data.data.lastName
             that.userId = response.data.data.userId
+            that.githubbind = response.data.data.githubName
             // console.log(response)
           }
       )
@@ -383,7 +398,51 @@ export default {
             })
           }
       )
-    }
+    },
+    handleGithub(event) {
+      //github登录授权页面
+      let oauth_uri = 'https://github.com/login/oauth/authorize'
+      //github中获取
+      let client_id = 'Iv1.187f346cb4978b94'
+      //授权回调地址
+      let redirect_uri = 'http://localhost:8080/oauth/bind'
+      window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}`
+    },
+    handleGithubUntie(event) {
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/unbundgithub',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                    message: 'Unite success',
+                    type: 'success'
+                  }
+              )
+              location.reload();
+            } else {
+              that.$message({
+                message: 'Unite failed',
+                type: 'error'
+              })
+            }
+          },
+          function (err) {
+            that.$message({
+                  message: 'server failed',
+                  type: 'error'
+                }
+            )
+          }
+      )
+    },
   }
 }
 </script>

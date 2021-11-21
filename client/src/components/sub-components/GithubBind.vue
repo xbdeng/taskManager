@@ -21,9 +21,14 @@ export default {
     console.log(code)
     const that = this
     axios.post(
-        'http://localhost:8081/api/github/bind',
+        'http://localhost:8081/api/user/bindgithub',
         {
           code:code
+        },
+        {
+          headers: {
+            Authorization: window.sessionStorage.getItem('token')
+          }
         }
     ).then(
         function (response) {
@@ -33,13 +38,10 @@ export default {
               type: 'success'
             })
             console.log(response)
-            let token = response.data.data
-            window.localStorage.setItem('token', token)
-            let tmpusername = response.data.data.username
-            that.loginForm.username = ''
-            that.loginForm.password = ''
-            that.logining = false
-            this.$router.push({name: 'Profile', params: {username: this.username}});
+            let newToken = response.headers.authorization
+            if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            let tmpusername = response.data.data
+            that.$router.push({name: 'Profile', params: {username: tmpusername}});
           }
         },
         function (err) {
@@ -47,7 +49,7 @@ export default {
             message: 'github bind failed, please personal info page',
             type: 'error'
           })
-          this.$router.push({name: 'Profile', params: {username: this.username}});
+          that.$router.push({name: 'Profile', params: {username: tmpusername}});
         },
     )
     // console.log(code)
