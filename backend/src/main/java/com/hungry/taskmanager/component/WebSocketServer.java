@@ -57,10 +57,10 @@ public class WebSocketServer {
         error.printStackTrace();
     }
 
-    private void send(String message, Session sessionTo) {
+    private synchronized void send(String message, Session sessionTo) {
         try {
-            sessionTo.getBasicRemote().sendText(message);
-        } catch (IOException e) {
+            sessionTo.getAsyncRemote().sendText(message);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
