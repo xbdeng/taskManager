@@ -234,7 +234,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -244,12 +244,16 @@ export default {
                 message: 'email change success',
                 type: 'success'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             else {
               that.$message({
                 message: 'email change failed',
                 type: 'error'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -270,7 +274,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -280,12 +284,16 @@ export default {
                 message: 'phone change success',
                 type: 'success'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             else {
               that.$message({
                 message: 'phone change failed',
                 type: 'error'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -306,7 +314,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -316,12 +324,16 @@ export default {
                 message: 'firstName change success',
                 type: 'success'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             else {
               that.$message({
                 message: 'firstName change failed',
                 type: 'error'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -342,7 +354,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -352,12 +364,16 @@ export default {
                 message: 'lastName change success',
                 type: 'success'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             else {
               that.$message({
                 message: 'lastName change failed',
                 type: 'error'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
