@@ -32,7 +32,7 @@ public class Task {
     private Integer privilege;
     // other attributes
     @TableField(exist=false)
-    private List<Task> subTask;
+    private List<Task> subTasks;
     @TableField(exist=false)
     private List<String> tags;
 
