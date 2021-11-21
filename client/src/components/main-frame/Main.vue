@@ -124,7 +124,8 @@
                         v-on:postTeamInfoAgain="postTeamInfoAgain($event)"
                         v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
-          <AddressBookPage v-show="addressBookShow" :Friends="this.Friends.length === 0 ? this.sampleFriends : this.Friends"></AddressBookPage>
+          <AddressBookPage v-show="addressBookShow"
+                           :Friends="this.Friends.length === 0 ? this.sampleFriends : this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
           <div class='demo-app' v-show="calendarShow">
             <div class='demo-app-sidebar'>
@@ -214,6 +215,9 @@ import interactionPlugin from '@fullcalendar/interaction'
 import MessagePage from "./MessagePage";
 import axios from 'axios'
 import process from "_shelljs@0.7.8@shelljs";
+import websocket from "../sub-components/WebSocket";
+import {heartCheck} from "../sub-components/WebSocket";
+
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "Main",
@@ -266,14 +270,10 @@ export default {
   // 在载入页面前先获取日历数据
   mounted() {
     this.showCalendarData();
-    this.connWebSocket();
-  },
-  beforeDestroy() {
-    // 监听窗口关闭事件,vue生命周期销毁之前关闭socket当窗口关闭时，防止连接还没断开就关闭窗口。
-    this.onbeforeunload();
+    websocket.Init(this.username);
+    this.eventMsg();
   },
   data() {
-
     return {
       // 是否展示"个人任务"界面
       personalTaskShow: false,
@@ -364,8 +364,7 @@ export default {
         userId: '',
         username: 'a'
       }],
-      timeout: 5000
-      sampleFriends:[{
+      sampleFriends: [{
         email: '',
         firstname: '',
         lastname: '',
@@ -376,6 +375,37 @@ export default {
     }
   },
   methods: {
+    eventMsg(){
+      let that = this;
+      websocket.getWebSocket().onmessage = function(res) {
+        //处理接收的时间逻辑
+        heartCheck.start()
+        let tmp = JSON.parse(res.data)
+        if(tmp.heartCheck === 1){
+          return
+        }
+        else {
+          if(tmp.type === 0){
+            this.$notify.info({
+              title: tmp.from,
+              message: '想要与你一起组队成为' + tmp.groupId
+            });
+          }
+          if(tmp.type === 1){
+            this.$notify.info({
+              title: tmp.from,
+              message: '想要与你成为好友'
+            });
+          }
+          if(tmp.type === 2){
+            this.$notify.info({
+              title: tmp.from,
+              message: '想要与你成为好友'
+            });
+          }
+        }
+      }
+    },
     toProfile(event) {
       this.$router.push({name: 'Profile', params: {username: this.username}});
     },
@@ -526,14 +556,14 @@ export default {
                 type: 'success'
               });
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             that.showCalendarData()
           },
@@ -568,14 +598,14 @@ export default {
                 type: 'success'
               });
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             // console.log(response.data.data)
             that.calendarTasks = []
@@ -635,11 +665,11 @@ export default {
                 that.tagArray.push(obj)
               }
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取Tags数据失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -667,11 +697,11 @@ export default {
               })
               that.myTeamInfo = response.data.data
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求用户创建或管理的组失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -710,11 +740,11 @@ export default {
               })
               that.taskData = response.data.data
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“任务”数据失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -754,11 +784,11 @@ export default {
               })
               that.todaytaskData = response.data.data
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“今天任务”数据失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -798,11 +828,11 @@ export default {
               })
               that.weekTaskData = response.data.data
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“一周内”数据失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -841,11 +871,11 @@ export default {
               })
               that.laterTaskData = response.data.data
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“稍后”数据失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -874,11 +904,11 @@ export default {
               })
               that.teamInfo = response.data.data
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取组队任务失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -907,11 +937,11 @@ export default {
               })
               that.Friends = response.data.data
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取通讯录数据失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -948,11 +978,11 @@ export default {
               })
               that.$router.push({name: 'Login'})
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('登出失败')
               let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -963,127 +993,7 @@ export default {
     postTeamInfoAgain() {
       this.postTeamInfo()
     },
-
-
-    // websocket
-    connWebSocket() {
-      // let userInfo = JSON.parse(sessionStorage.getItem("userInfos"));
-      // let userId = userInfo.userId;
-      // WebSocket
-      if ("WebSocket" in window) {
-        this.websocket = new WebSocket(
-            "ws://localhost:8081/messagepush/" + this.username //userId 传此id主要后端java用来保存session信息，用于给特定的人发送消息，广播类消息可以不用此参数
-        );
-        //初始化socket
-        this.initWebSocket();
-      } else {
-        alert("浏览器不支持websocket");
-      }
-    },
-
-    initWebSocket() {
-      // 连接错误
-      this.websocket.onerror = this.setErrorMessage;
-
-      // 连接成功
-      this.websocket.onopen = this.setOnopenMessage;
-
-      // 收到消息的回调
-      this.websocket.onmessage = this.setOnmessageMessage;
-
-      // 连接关闭的回调
-      this.websocket.onclose = this.setOncloseMessage;
-
-      // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-      window.onbeforeunload = this.onbeforeunload;
-    },
-    setErrorMessage() {
-      console.log(
-          "WebSocket连接发生错误   状态码：" + this.websocket.readyState
-      );
-      this.reconnect();
-    },
-    setOnopenMessage() {
-      console.log("WebSocket连接成功    状态码：" + this.websocket.readyState);
-      this.start()
-    },
-    setOnmessageMessage(result) {
-      this.reset();
-      console.log("服务端返回：" + result.data);
-      let msgMap = JSON.parse(result.data);
-      let id = msgMap.id;
-      let title = msgMap.title;
-      let type = msgMap.type;
-      // 根据服务器推送的消息做自己的业务处理
-      console.log('get info ', result)
-
-      // this.$notify({
-      //   title: "你有一条新信息",
-      //   type: "info",
-      //   duration: 0,
-      //   dangerouslyUseHTMLString: true,
-      //   message:
-      //       '<div style="height:100px;width:100px">' +
-      //       title,
-      //   position: "bottom-right"
-      // });
-    },
-    setOncloseMessage() {
-      console.log("WebSocket连接关闭    状态码：" + this.websocket.readyState);
-      this.$notify({
-        title: '警告',
-        message: '您已离线 可能无法使用部分功能',
-        type: 'warning'
-      });
-      this.reconnect();
-    },
-    onbeforeunload() {
-      this.closeWebSocket();
-    },
-    closeWebSocket() {
-      this.websocket.close();
-    },
-// heartCheck
-    reconnect() {//重新连接
-      let that = this;
-      if (that.lockReconnect) {
-        return;
-      }
-      that.lockReconnect = true;
-      //没连接上会一直重连，设置延迟避免请求过多
-      that.timeoutnum && clearTimeout(that.timeoutnum);
-      that.timeoutnum = setTimeout(function () {
-        //新连接
-        that.connWebSocket();
-        that.lockReconnect = false;
-      }, 5000);
-    },
-    reset() {//重置心跳
-      let that = this;
-      //清除时间
-      clearTimeout(that.timeoutObj);
-      clearTimeout(that.serverTimeoutObj);
-      //重启心跳
-      that.start();
-    },
-    start() {//开启心跳
-      let self = this;
-      self.timeoutObj && clearTimeout(self.timeoutObj);
-      self.serverTimeoutObj && clearTimeout(self.serverTimeoutObj);
-      self.timeoutObj = setTimeout(function () {
-        //这里发送一个心跳，后端收到后，返回一个心跳消息，
-        if (self.websocket.readyState === 1) {//如果连接正常
-          self.websocket.send("{heartCheck: 1}");
-        } else {//否则重连
-          self.reconnect();
-        }
-        self.serverTimeoutObj = setTimeout(function () {
-          //超时关闭
-          self.websocket.close();
-        }, self.timeout);
-      }, self.timeout)
-    },
-  },
+  }
 }
 </script>
 
