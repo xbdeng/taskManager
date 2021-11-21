@@ -1,4 +1,4 @@
-package com.hungry.taskmanager.shiro;
+package com.hungry.taskmanager.utils;
 
 import org.apache.shiro.authc.AuthenticationToken;
 

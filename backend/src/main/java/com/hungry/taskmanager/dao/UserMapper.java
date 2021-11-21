@@ -22,7 +22,7 @@ public interface UserMapper extends BaseMapper<User> {
             "#{phone})")
     void register(RegisterInfoDTO registerInfoDTO);//todo 异常处理
 
-    User findByUserName(String username);
+//    User findByUserName(String username);
 
 
     //根据用户名查询所有角色
