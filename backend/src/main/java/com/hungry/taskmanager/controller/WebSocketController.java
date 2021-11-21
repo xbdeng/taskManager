@@ -5,16 +5,14 @@ import com.hungry.taskmanager.dto.MessageDTO;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.component.WebSocketServer;
 import com.hungry.taskmanager.utils.JWTUtil;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/messagepush")
+@RequestMapping("/heartCheck")
+@CrossOrigin
 public class WebSocketController {
     @Resource
     WebSocketServer webSocketServer;
