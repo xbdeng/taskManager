@@ -124,7 +124,7 @@
                         v-on:postTeamInfoAgain="postTeamInfoAgain($event)"
                         v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
-          <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
+          <AddressBookPage v-show="addressBookShow" :Friends="this.Friends.length === 0 ? this.sampleFriends : this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
           <div class='demo-app' v-show="calendarShow">
             <div class='demo-app-sidebar'>
@@ -362,9 +362,17 @@ export default {
         lastname: '',
         phone: '',
         userId: '',
-        username: ''
+        username: 'a'
       }],
       timeout: 5000
+      sampleFriends:[{
+        email: '',
+        firstname: '',
+        lastname: '',
+        phone: '',
+        userId: '',
+        username: ''
+      }]
     }
   },
   methods: {
@@ -953,7 +961,6 @@ export default {
       )
     },
     postTeamInfoAgain() {
-      alert('***')
       this.postTeamInfo()
     },
 
