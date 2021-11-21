@@ -24,6 +24,7 @@
     "lib-flexible": "^0.3.2",
     "px2rem-loader": "^0.1.9",
     "qs": "^6.10.1",
+    "shelljs": "^0.7.8",
     "vue": "^2.5.2",
     "vue-chartjs": "^3.5.1",
     "vued3tree": "^5.1.0"

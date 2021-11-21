@@ -364,7 +364,7 @@ export default {
         userId: '',
         username: 'a'
       }],
-      timeout: 5000
+      timeout: 5000,
       sampleFriends:[{
         email: '',
         firstname: '',

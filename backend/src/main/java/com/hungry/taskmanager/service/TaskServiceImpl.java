@@ -186,6 +186,9 @@ public class TaskServiceImpl implements TaskService{
 
 
     private LocalDateTime convertGMT(String date){
+        if (date == null){
+            return null;
+        }
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         return LocalDateTime.parse(date, f).atZone(ZoneId.from(ZoneOffset.UTC)).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
     }
