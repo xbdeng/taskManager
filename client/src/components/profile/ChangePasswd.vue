@@ -7,7 +7,7 @@
             <div>
               Passwd
               <br>
-              <el-input placeholder="123456"></el-input>
+              <el-input placeholder="passwd here" show-password v-model="passwd" @change="handlePasswd"></el-input>
             </div>
           </el-col>
 
@@ -45,7 +45,8 @@ export default {
   name: "ChangePasswd",
   data() {
     return {
-      githubbind: false
+      githubbind: false,
+      passwd: ''
     }
   },
   props: ['username'],
@@ -91,6 +92,53 @@ export default {
                   type: 'error'
                 }
             )
+          }
+      )
+    },
+    handlePasswd(val){
+      if(val.length < 6 || val.length > 15){
+        this.$message({
+          message: 'not a valid password',
+          type: 'error'
+        })
+        return
+      }
+      // console.log(val)
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/edituser',
+          {
+            password: that.$md5(val)
+          },
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'password change success',
+                type: 'success'
+              })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+            else {
+              that.$message({
+                message: 'password change failed',
+                type: 'error'
+              })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+          },
+          function (err) {
+            that.$message({
+              message: 'server failed',
+              type: 'error'
+            })
           }
       )
     }
