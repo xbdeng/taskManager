@@ -121,7 +121,8 @@
                         :teamInfo="this.teamInfo"
                         :username="this.username"
                         :Friends="this.Friends"
-                        v-on:postTeamDataAgain="postTeamDataAgain($event)"></TeamInfoPage>
+                        v-on:postTeamInfoAgain="postTeamInfoAgain"
+                        v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -655,7 +656,7 @@ export default {
                 message: '请求用户创建或管理的组成功',
                 type: 'success'
               })
-              that.myTeamInfo = response.data
+              that.myTeamInfo = response.data.data
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
@@ -916,7 +917,7 @@ export default {
       this.postWeekTaskData()
       this.postLaterTaskData()
     },
-    postTeamDataAgain() {
+    postMyTeamAgain() {
       this.postMyTeams()
     },
     logOut() {
@@ -950,6 +951,10 @@ export default {
           }
       )
     },
+    postTeamInfoAgain() {
+      this.postTeamInfo()
+    },
+
 
 // websocket
     connWebSocket() {
