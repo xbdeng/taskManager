@@ -6,6 +6,7 @@ import register from "../components/login-register/register";
 import profile from "../components/profile/profile";
 import tree from '../components/main-frame/TreeTask'
 import Github from "../components/sub-components/Github";
+import GithubBind from "../components/sub-components/GithubBind";
 
 Vue.use(VueRouter);
 
@@ -44,6 +45,11 @@ export default new VueRouter({
             path: "/oauth/redirect",
             name: "github",
             component: Github
+        },
+        {
+            path: "/oauth/bind",
+            name: "githubBind",
+            component: GithubBind
         }
     ]
 });

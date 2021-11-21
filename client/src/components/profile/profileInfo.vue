@@ -14,23 +14,23 @@
               </div>
             </el-form-item>
 
-<!--            <el-form-item>-->
-<!--              <el-button>上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item>-->
+            <!--              <el-button>上传<i class="el-icon-upload el-icon&#45;&#45;right"></i></el-button>-->
+            <!--            </el-form-item>-->
             <el-form-item>
               <!-- TODO : token maybe && url api needed-->
-            <el-upload
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :show-file-list="false"
-                :accept="'image/*'"
-                :headers="{Authorization: this.username}"
-                :on-success="handleSuccess"
-                :on-error="handleError"
-                :before-upload="handleBeforeUpload"
-                :on-progress="handleProgress">
-              <el-button>上传<i class="el-icon-upload el-icon--right"></i></el-button>
-<!--              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-            </el-upload>
+              <el-upload
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :show-file-list="false"
+                  :accept="'image/*'"
+                  :headers="{Authorization: this.username}"
+                  :on-success="handleSuccess"
+                  :on-error="handleError"
+                  :before-upload="handleBeforeUpload"
+                  :on-progress="handleProgress">
+                <el-button>上传<i class="el-icon-upload el-icon--right"></i></el-button>
+                <!--              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+              </el-upload>
             </el-form-item>
 
             <el-form-item>
@@ -81,7 +81,7 @@
                 <div>
                   username
                   <br>
-                  <el-input placeholder="Put your user name here" v-model="username" @change></el-input>
+                  <el-input placeholder="Put your user name here" v-model="username" :disabled="true"></el-input>
                 </div>
               </el-col>
 
@@ -89,7 +89,7 @@
                 <div>
                   email
                   <br>
-                  <el-input placeholder="Put your email address here" v-model="email"></el-input>
+                  <el-input placeholder="Put your email address here" v-model="email" @change="handleEmail"></el-input>
                 </div>
               </el-col>
 
@@ -97,7 +97,7 @@
                 <div>
                   phone
                   <br>
-                  <el-input placeholder="Put your phone number here" v-model="phone"></el-input>
+                  <el-input placeholder="Put your phone number here" v-model="phone" @change="handlePhone"></el-input>
                 </div>
               </el-col>
 
@@ -110,7 +110,7 @@
                 <div>
                   firstName
                   <br>
-                  <el-input placeholder="d" v-model="firstName"></el-input>
+                  <el-input placeholder="d" v-model="firstName" @change="handleFirstNmae"></el-input>
                 </div>
               </el-col>
 
@@ -118,7 +118,7 @@
                 <div>
                   lastName
                   <br>
-                  <el-input placeholder="xb" v-model="lastName"></el-input>
+                  <el-input placeholder="xb" v-model="lastName" @change="handleLastName"></el-input>
                 </div>
               </el-col>
 
@@ -134,6 +134,7 @@
 <script>
 import axios from "axios";
 import process from "_shelljs@0.7.8@shelljs";
+
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "profileInfo",
@@ -164,22 +165,21 @@ export default {
             }
           }
       ).then(
-          function (response){
+          function (response) {
             if (response.data.code === 200) {
               that.$message({
                 message: 'fetch success',
                 type: 'success'
               });
               let newToken = response.headers.authorization
-              if(newToken != null) window.localStorage.setItem('token', newToken)
-            }
-            else{
+              if (newToken != null) window.localStorage.setItem('token', newToken)
+            } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
               let newToken = response.headers.authorization
-              if(newToken != null) window.localStorage.setItem('token', newToken)
+              if (newToken != null) window.localStorage.setItem('token', newToken)
             }
             that.username = response.data.data.username
             that.phone = response.data.data.phone
@@ -222,6 +222,150 @@ export default {
     },
     handleProgress(event, file, fileList) {
       this.loading = true;  //  上传时执行loading事件
+    },
+    handleEmail(val) {
+      // console.log(val)
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/edituser',
+          {
+            email: val
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'email change success',
+                type: 'success'
+              })
+            }
+            else {
+              that.$message({
+                message: 'email change failed',
+                type: 'error'
+              })
+            }
+          },
+          function (err) {
+            that.$message({
+              message: 'server failed',
+              type: 'error'
+            })
+          }
+      )
+    },
+    handlePhone(val){
+      // console.log(val)
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/edituser',
+          {
+            phone: val
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'phone change success',
+                type: 'success'
+              })
+            }
+            else {
+              that.$message({
+                message: 'phone change failed',
+                type: 'error'
+              })
+            }
+          },
+          function (err) {
+            that.$message({
+              message: 'server failed',
+              type: 'error'
+            })
+          }
+      )
+    },
+    handleFirstNmae(val){
+      // console.log(val)
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/edituser',
+          {
+            firstName: val
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'firstName change success',
+                type: 'success'
+              })
+            }
+            else {
+              that.$message({
+                message: 'firstName change failed',
+                type: 'error'
+              })
+            }
+          },
+          function (err) {
+            that.$message({
+              message: 'server failed',
+              type: 'error'
+            })
+          }
+      )
+    },
+    handleLastName(val){
+      // console.log(val)
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/edituser',
+          {
+            lastName: val
+          },
+          {
+            headers: {
+              Authorization: window.localStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                message: 'lastName change success',
+                type: 'success'
+              })
+            }
+            else {
+              that.$message({
+                message: 'lastName change failed',
+                type: 'error'
+              })
+            }
+          },
+          function (err) {
+            that.$message({
+              message: 'server failed',
+              type: 'error'
+            })
+          }
+      )
     }
   }
 }

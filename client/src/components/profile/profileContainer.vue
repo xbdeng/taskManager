@@ -35,7 +35,7 @@
             <div class="main-page">
               <profile-info v-show="this.page === '0'"></profile-info>
               <data_analysis v-show="this.page === '1'"></data_analysis>
-              <changePasswd v-show="this.page === '2'"></changePasswd>
+              <changePasswd v-show="this.page === '2'" :username="username"></changePasswd>
             </div>
           </el-main>
         </el-container>
@@ -57,10 +57,13 @@ export default {
       type: String,
       default: ''
     },
-    page: {
+    page_in: {
       type: String,
       default: "0"
     }
+  },
+  mounted() {
+    this.page = this.page_in
   },
   data() {
     return {
@@ -69,6 +72,7 @@ export default {
       direction: 'ltr',
       size: '15vw',
       fit: 'fill',
+      page: "0"
     };
   },
   methods: {
