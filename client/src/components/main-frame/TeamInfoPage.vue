@@ -37,7 +37,7 @@
                 :username="this.username"
                 :Friends="this.Friends"
                 v-on:closeTeamDrawer="closeTeamDrawer($event)"
-                v-on:postTeamDataAgain="postTeamDataAgain($event)"></TeamShow>
+                v-on:postTeamInfoAgain="postTeamInfoAgain($event)"></TeamShow>
             </el-drawer>
             <!-- 用于显示任务信息 -->
             <el-drawer
@@ -130,13 +130,14 @@ export default {
       this.treeDrawer = false
     },
     closeTaskDrawer() {
+        this.$emit('postTeamInfoAgain', {})
         this.taskInfoDrawer = false
     },
     closeTeamDrawer() {
         this.teamInfoDrawer = false
     },
-    postTeamDataAgain() {
-      this.$emit('postTeamDataAgain',{})
+    postTeamInfoAgain() {
+      this.$emit('postTeamInfoAgain',{})
     },
     emitTreeData(task) {
       this.treeDrawer = true
