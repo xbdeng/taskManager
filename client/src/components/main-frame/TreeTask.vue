@@ -46,8 +46,7 @@
               <template #popUp="{data,node}">
                 <div>
                   <el-button @click="Addclick(data, node)" type="primary" icon="el-icon-plus" circle></el-button>
-                  <el-button @click="Detclick(data, node)" type="primary" icon="el-icon-plus" circle></el-button>
-                  <el-button @click="Delclick(data, node)" type="primary" icon="el-icon-plus" circle></el-button>
+                  <el-button @click="Detclick(data, node)" type="danger" icon="el-icon-minus" circle></el-button>
                 </div>
               </template>
             </tree>
@@ -57,7 +56,7 @@
     </el-container>
 
     <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" :modal-append-to-body="false" :modal="false">
-      <add-task-form></add-task-form>
+      <add-task-form :fatherTaskId="this.fatherTaskId"></add-task-form>
     </el-dialog>
 
   </div>
@@ -66,6 +65,9 @@
 <script>
 import {tree,popUpOnHoverText} from 'vued3tree'
 import AddTaskForm from "./AddTaskForm";
+import axios from 'axios'
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
   components: {
     AddTaskForm,
@@ -74,7 +76,7 @@ export default {
   },
   props:['TData'],
   watch:{
-    'Data':function() {
+    'TData':function() {
       this.taskData = this.TData
       this.tree = this.taskToTree(this.taskData)
     }
@@ -85,7 +87,8 @@ export default {
       tree: this.taskToTree(this.TData),
       layoutType: 'horizontal',
       linkLayout:'bezier',
-      dialogVisible: false
+      dialogVisible: false,
+      fatherTaskId:null,
     }
   },
   methods: {
@@ -95,7 +98,7 @@ export default {
     //根据任务数据生成树的数据
     taskToTree(task) {
       let tree = {}
-      tree.name = task.taskName
+      tree.name = task.taskId + ': ' + task.taskName
       if (task.subTasks == null || task.subTasks.length === 0) {
         tree.children = []
         return tree
@@ -136,22 +139,39 @@ export default {
       this.dialogVisible = true;
       console.log(data)
       console.log(node)
+      this.fatherTaskId = parseInt(data.name.split(':')[0])
     },
     Detclick(data, node){
+      const that = this
       console.log(data)
       console.log(node)
+      let deletedTaskId = parseInt(data.name.split(':')[0])
+      axios({
+        methods:'POST',
+        url:'/task/deletetask',
+        params:{
+          'id':deletedTaskId
+        }
+      }).then(
+          function(response) {
+            if(response.data.code === 200) {
+              that.$message({
+                message:'删除任务成功'
+              })
+              that.$emit('postTreeTaskAgain',{})
+            } else {
+              that.$message.error('删除任务失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，删除任务失败')
+          }
+      )
     },
-    Delclick(data, node){
-      console.log(data)
-      console.log(node)
-    },
+
     handleClose(done){
-      this.$confirm('确认关闭？')
-          .then(_ => {
-            this.dialogVisible = false;
-            done();
-          })
-          .catch(_ => {});
+      this.dialogVisible = false
+      done()
     }
   }
 }
