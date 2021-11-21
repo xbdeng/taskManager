@@ -26,6 +26,5 @@ public class TeamDTO {
     private List<String> admins;
     private List<String> members;
 
-    @ApiModelProperty(hidden=true)
     private List<Task> teamTasks;
 }

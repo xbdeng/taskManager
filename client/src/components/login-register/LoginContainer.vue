@@ -127,7 +127,7 @@ export default {
       let client_id = 'Iv1.187f346cb4978b94'
       //授权回调地址
       let redirect_uri = 'http://localhost:8080/oauth/redirect'
-      window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_url=${redirect_uri}`
+      window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}`
     }
   }
 };

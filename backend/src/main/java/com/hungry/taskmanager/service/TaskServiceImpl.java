@@ -150,7 +150,7 @@ public class TaskServiceImpl implements TaskService{
             taskMap.put(task.getTaskId(), task);
             task.setTags(new ArrayList<>());
             QueryTaskDTO subfilter = new QueryTaskDTO().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
-            task.setSubTask(taskMapper.queryTask(subfilter));
+            task.setSubTasks(taskMapper.queryTask(subfilter));
             task.updateDate();
         }
         List<HashMap<String, Object>> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
