@@ -6,7 +6,7 @@
             <el-aside>
                 <el-menu  class="main-frame-menu">
                     <!-- 显示所有的组 -->
-                    <el-menu-item  v-for='(team, teamIndex) in teamInfo' :key="teamIndex" :index= team.teamName >
+                    <el-menu-item  v-for='(team, teamIndex) in this.teamInfo' :key=teamIndex :index= team.teamName >
                         <template slot="title">
                             <span slot="title" @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
                         </template>
@@ -17,7 +17,7 @@
             <el-main>
                 <el-menu>
                     <TaskTree 
-                    :taskData="teamInfo[this.selectedTeam].teamTasks"
+                    :taskData="generateTaskTreeData()"
                     :taskLevel="''"
                     :chosenTask="chosenTaskId"
                     v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
@@ -85,6 +85,11 @@ export default {
     TreeTask
   },
   props:['teamInfo','username','Friends'],
+  watch:{
+    'teamInfo':function() {
+      alert(this.teamInfo.length)
+    }
+  },
   data() {
 
     return {
@@ -95,7 +100,7 @@ export default {
         taskInfoDrawer:false,
         teamInfoDrawer:false,
         treeDrawer:false,
-        treeData:null
+        treeData:null,
     }
   },
   methods: {
@@ -137,12 +142,18 @@ export default {
         this.teamInfoDrawer = false
     },
     postTeamInfoAgain() {
+      this.selectedTeam = 0
       this.$emit('postTeamInfoAgain',{})
     },
     emitTreeData(task) {
       this.treeDrawer = true
       this.treeData = task
       console.log(task)
+    },
+    generateTaskTreeData() {
+      if(this.teamInfo.length !== 0)
+        return this.teamInfo[this.selectedTeam].teamTasks
+      else return []
     }
 }
 

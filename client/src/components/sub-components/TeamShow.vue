@@ -193,7 +193,7 @@ export default {
           return data
       };
     // 生成好友列表信息，显示在穿梭框中
-    const generateFriendData = _ => {
+      const generateFriendData = _ => {
         const data = []
           for(let i in this.Friends) {
               data.push({
@@ -204,7 +204,7 @@ export default {
           return data
     };
     // 生成管理员列表，显示在穿梭框中
-     const generateAdminData = _ => {
+    const generateAdminData = _ => {
         const data = []
           for(let i in this.singleTeamData.admins) {
               data.push({
@@ -463,7 +463,7 @@ export default {
                       type:'success'
                     })
                     that.closeTeamDrawer()
-                    that.$emit('postTeamDataAgain',{})
+                    that.$emit('postTeamInfoAgain',{})
                     let newToken = response.headers.authorization
                     if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   } else {
