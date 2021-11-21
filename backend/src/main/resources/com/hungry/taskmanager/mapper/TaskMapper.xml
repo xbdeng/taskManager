@@ -2,11 +2,11 @@
 <mapper namespace="com.hungry.taskmanager.dao.TaskMapper">
     <select id="queryTask" parameterType="com.hungry.taskmanager.dto.QueryTaskDTO" resultType="com.hungry.taskmanager.entity.Task">
         SELECT t.* FROM task AS t
-        INNER JOIN user_task AS ut ON t.task_id = ut.task_id
-        INNER JOIN user AS u ON ut.user_id = u.user_id
+        <if test="userId != null">
+            INNER JOIN user_task AS ut ON t.task_id = ut.task_id
+        </if>
         <if test="teamName != null or teamId != null" >
-            INNER JOIN team_user ON u.user_id = team_user.user_id
-            INNER JOIN team AS t2 ON team_user.team_id = t2.team_id
+            INNER JOIN team_task AS tt ON t.task_id = tt.task_id
         </if>
         <if test="tag != null">
             INNER JOIN user_task_tag utt ON ut.ut_id = utt.ut_id
@@ -31,14 +31,14 @@
             <if test="type != null">
                 AND t.type = #{type}
             </if>
-            <if test="privilege != null">
+            <if test="status != null">
                 AND t.status = #{status}
             </if>
             <if test="teamName != null">
                 AND INSTR(#{teamName}, t2.team_name) > 0
             </if>
             <if test="teamId != null">
-
+                AND tt.team_id = #{teamId}
             </if>
             <if test="tag != null">
                 AND t3.tag_name = #{tag}
