@@ -162,7 +162,6 @@ public class UserController {
         try{
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-//            result.setData(userService.selectTags(params.setTagName(username)));
             List<Tag> tags =  userService.selectTags(params.setTagName(username));
             return new Result<List<Tag>>(200,"select tag success",tags);
         }catch(Exception e){

@@ -124,7 +124,7 @@
                         v-on:postTeamInfoAgain="postTeamInfoAgain($event)"
                         v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
-          <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
+          <AddressBookPage v-show="addressBookShow" :Friends="this.Friends.length === 0 ? this.sampleFriends : this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
           <div class='demo-app' v-show="calendarShow">
             <div class='demo-app-sidebar'>
@@ -362,8 +362,17 @@ export default {
         lastname: '',
         phone: '',
         userId: '',
-        username: ''
+        username: 'a'
       }],
+      timeout: 5000,
+      sampleFriends:[{
+        email: '',
+        firstname: '',
+        lastname: '',
+        phone: '',
+        userId: '',
+        username: ''
+      }]
     }
   },
   methods: {
@@ -952,7 +961,6 @@ export default {
       )
     },
     postTeamInfoAgain() {
-      alert('***')
       this.postTeamInfo()
     },
 
@@ -1007,20 +1015,26 @@ export default {
       let title = msgMap.title;
       let type = msgMap.type;
       // 根据服务器推送的消息做自己的业务处理
+      console.log('get info ', result)
 
-      this.$notify({
-        title: "你有一条新信息",
-        type: "info",
-        duration: 0,
-        dangerouslyUseHTMLString: true,
-        message:
-            '<div style="height:100px;width:100px">' +
-            title,
-        position: "bottom-right"
-      });
+      // this.$notify({
+      //   title: "你有一条新信息",
+      //   type: "info",
+      //   duration: 0,
+      //   dangerouslyUseHTMLString: true,
+      //   message:
+      //       '<div style="height:100px;width:100px">' +
+      //       title,
+      //   position: "bottom-right"
+      // });
     },
     setOncloseMessage() {
       console.log("WebSocket连接关闭    状态码：" + this.websocket.readyState);
+      this.$notify({
+        title: '警告',
+        message: '您已离线 可能无法使用部分功能',
+        type: 'warning'
+      });
       this.reconnect();
     },
     onbeforeunload() {
@@ -1040,7 +1054,7 @@ export default {
       that.timeoutnum && clearTimeout(that.timeoutnum);
       that.timeoutnum = setTimeout(function () {
         //新连接
-        that.initWebSocket();
+        that.connWebSocket();
         that.lockReconnect = false;
       }, 5000);
     },
