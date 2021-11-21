@@ -438,7 +438,7 @@ export default {
                 message:'删除任务成功',
                 type:'success'
               })
-              this.$emit('closeTaskDrawer',{})
+              that.$emit('closeTaskDrawer',{})
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {

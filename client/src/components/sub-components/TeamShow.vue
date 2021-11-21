@@ -133,7 +133,7 @@
               <!-- 显示任务描述信息 -->
               <el-row type="flex" justify="start">
                   <el-col :span="6">
-                      <span style="font-weight:bold">任务描述信息：</span>
+                      <span style="font-weight:bold">队伍描述信息：</span>
                   </el-col>
                   <el-col>{{ singleTeamData.description }}</el-col>
                   <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
@@ -499,7 +499,7 @@ export default {
                       type:'success'
                     })
                     that.closeTeamDrawer()
-                    that.$emit('postTeamDataAgain',{})
+                    that.$emit('postTeamInfoAgain',{})
                     let newToken = response.headers.authorization
                     if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   } else {
