@@ -28,7 +28,7 @@
             <el-button @click="handleGithub" v-show="githubbind === false">bind to github</el-button>
             <div v-show="githubbind">
               You are now bind with github profile
-              <el-button @click="handleGithubUntie" v-show="githubbind === false">Untie to github</el-button>
+              <el-button @click="handleGithubUntie" v-show="githubbind === true">Untie to github</el-button>
             </div>
           </el-col>
 
@@ -63,7 +63,7 @@ export default {
     handleGithubUntie(event) {
       const that = this
       axios.post(
-          'http://localhost:8081/api/github/unite',
+          'http://localhost:8081/api/user/unbundgithub',
           {},
           {
             headers: {
