@@ -11,6 +11,7 @@ import Login from './components/login-register/Login'
 import register from './components/login-register/register'
 import Profile from './components/profile/profile.vue'
 import tree from './components/main-frame/TreeTask.vue'
+
 export default {
   name: 'App',
   components: {

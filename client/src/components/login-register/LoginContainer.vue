@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-container>
+    <el-container class="login-form">
       <el-main>
         <el-form :model="loginForm" :rules="loginRules" status-icon ref="loginForm" label-width="100px"
                  class="demo-ruleForm login-page">
@@ -21,12 +21,9 @@
             <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码"
                       show-password></el-input>
           </el-form-item>
-          <!-- 记住密码的单选框 -->
-          <el-checkbox v-model="checked" class="rememberme">记住密码</el-checkbox>
           <!-- 登录注册按钮 -->
           <el-form-item>
-            <el-col :span="12" :offset="3">
-              <!-- loading表示显示加载效果 -->
+            <el-col :span="20" >
               <el-button type="primary" @click="handleSubmit">登录</el-button>
               <el-button @click="handleRegister">注册</el-button>
               <el-button @click="handleGithub">login with github</el-button>
@@ -103,7 +100,7 @@ export default {
                   type: 'success'
                 })
                 let token = response.data.data
-                window.localStorage.setItem('token', token)
+                window.sessionStorage.setItem('token', token)
                 let tmpusername = that.loginForm.username
                 that.loginForm.username = ''
                 that.loginForm.password = ''
@@ -141,7 +138,10 @@ export default {
   width: 100%;
   height: 100%;
 }
-
+.login-form {
+  width: 100%;
+  height: 100%;
+}
 .login-page {
   -webkit-border-radius: 5px;
   border-radius: 30px;

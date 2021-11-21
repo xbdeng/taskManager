@@ -10,7 +10,7 @@ import Github from "../components/sub-components/Github";
 Vue.use(VueRouter);
 
 
-export default new VueRouter({
+const router =  new VueRouter({
     mode: 'history',
     routes: [
         //default webpage: /login
@@ -45,5 +45,24 @@ export default new VueRouter({
             name: "github",
             component: Github
         }
-    ]
+    ],
+
 });
+
+router.beforeEach((to, from, next) => {
+    let token = window.sessionStorage.getItem('token')
+    if(token === null) {
+        if(to.name === 'login' || to.name === 'register') {
+            next()
+        } else {
+            next(`/login`)
+        }
+    } else {
+        next()
+    }
+    next()
+})
+export default router;
+
+
+
