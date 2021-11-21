@@ -43,7 +43,7 @@ public class TaskServiceImpl implements TaskService{
     public int addTask(CreateTaskDTO params) throws Exception{
         BigInteger creator = userMapper.getIdByName(params.getUsername());
         // operations according to different types
-            // individual task set type column -1
+            // individual task set type column 0
             // team task find id of the team set type id of the team
         BigInteger type = BigInteger.valueOf(params.getType());
         // set date

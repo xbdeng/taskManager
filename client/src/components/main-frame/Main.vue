@@ -824,6 +824,7 @@ export default {
             teamName: null,
             type: null,
             currentDate: new Date().toISOString(),
+            scheduledTask:1,
             timeRange: 2
           },
           {
