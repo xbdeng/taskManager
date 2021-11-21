@@ -36,6 +36,9 @@ public class User implements Serializable {
     @TableField(exist=false)
     private List<Task> tasks;
 
+    @TableField(exist = false)
+    private String githubName;
+
     public UserDTO toUserDTO(){
         return new UserDTO(userId,username,firstName,lastName,email,phone);
     }

@@ -40,4 +40,13 @@ public interface UserService {
     List<Tag> selectTags(TagDTO params);
 
     void editUser(EditUserDTO userDTO);
+
+    //绑定github
+    void bindGithub(String username, String githubName);
+
+    //解绑github
+    void unbindGithub(String username);
+
+    //根据GitHub name 查找用户
+    User getUserByGithub(String githubName);
 }

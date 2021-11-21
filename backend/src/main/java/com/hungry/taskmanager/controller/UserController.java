@@ -1,11 +1,11 @@
 package com.hungry.taskmanager.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Tag;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.service.UserService;
+import com.hungry.taskmanager.utils.GitHubUtil;
 import com.hungry.taskmanager.utils.JWTUtil;
 import com.hungry.taskmanager.utils.RedisUtil;
 import com.hungry.taskmanager.entity.Result;
@@ -13,8 +13,6 @@ import io.swagger.annotations.*;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.http.*;
 import org.springframework.util.Assert;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,7 +31,6 @@ public class UserController {
 
     @Resource
     private RedisUtil redisUtil;
-
     /**
      * 验证码方法
      */
@@ -72,6 +69,22 @@ public class UserController {
         String token= JWTUtil.createToken(user.getUsername(),currentTimeMillis);
         redisUtil.set(loginDTO.getUsername(),currentTimeMillis,30*60); //放入缓存（登录）
         return new Result<String>(200,"登陆成功",token);
+    }
+
+    @PostMapping("/loginbygithub")
+    public Result loginByGithub(@RequestBody String code){
+        code = JSON.parseObject(code).getString("code");
+        String AccessToken = (code);
+        String gitHubUserName = GitHubUtil.getGithubUserName(AccessToken);
+        User user = userService.getUserByGithub(gitHubUserName);
+        if(user == null){
+            return Result.fail(201,"github账号未绑定，请先注册",null);
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+        String token= JWTUtil.createToken(user.getUsername(),currentTimeMillis);
+        redisUtil.set(user.getUsername(),currentTimeMillis,30*60); //放入缓存（登录）
+        return new Result<String>(200,"使用GitHub登陆成功",token);
     }
 
     @PostMapping("/logout")
@@ -176,47 +189,19 @@ public class UserController {
     public Result bindGithub(@RequestBody String code,HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
-
-        String AccessToken = getGithubAccessToken(code);
-        String GitHubUserName = getGithubUserName(AccessToken);
-        return null; //todo
+        code = JSON.parseObject(code).getString("code");
+        String AccessToken = GitHubUtil.getGithubAccessToken(code);
+        String gitHubUserName = GitHubUtil.getGithubUserName(AccessToken);
+        userService.bindGithub(username, gitHubUserName);
+        return Result.succ("绑定成功");
     }
 
-    private String getGithubAccessToken(String code){
-        //请求路径
-        String url = "https://github.com/login/oauth/access_token";
-        //使用Restemplate来发送HTTP请求
-        RestTemplate restTemplate = new RestTemplate();
-        // 请求头
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        //提交参数设置
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("client_id","Iv1.187f346cb4978b94");
-        map.add("client_secret","f152c15e30334c9b2357d7fd37075ba6e6adceb4");
-        map.add("code",code);
-
-        // 组装请求体
-        HttpEntity<MultiValueMap<String, String>> requestBody = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-        // 发送post请求，以String类型接收响应结果JSON字符串
-        String result = restTemplate.postForObject(url, requestBody, String.class);
-        return JSON.parseObject(result).getString("access_token");
-    }
-
-    private String getGithubUserName(String accessToken){
-        String url = "https://api.github.com/user";
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.add("Authorization","token "+accessToken);
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(null,headers);
-        ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET,requestEntity,String.class);
-
-        System.out.println(result);
-        return result.toString(); //todo
+    @PostMapping("/unbundgithub")
+    public Result unbundGithub(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        userService.unbindGithub(username);
+        return Result.succ("解绑成功");
     }
 
 }
