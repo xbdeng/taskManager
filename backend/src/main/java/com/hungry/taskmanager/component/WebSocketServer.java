@@ -39,16 +39,6 @@ public class WebSocketServer {
             System.out.println(username);
             send("1", sessionMap.get(username));
         } else if (obj.containsKey("heartCheck") && (Integer) obj.get("heartCheck") == 0) {
-            Message message = JSON.parseObject(text, Message.class);
-            String usernameFrom = message.getUsernameFrom();
-            String usernameTo = message.getUsernameTo();
-            String type = message.getContent();
-            Session sessionTo = sessionMap.get(usernameTo);
-            if (sessionTo != null) {
-                MessageDTO messageDTO = new MessageDTO();
-                messageDTO.setType(type).setUsernameFrom(usernameFrom).setUsernameTo(usernameTo);
-                send(JSONObject.toJSONString(messageDTO), sessionTo);
-            }
         }
     }
 
@@ -57,10 +47,10 @@ public class WebSocketServer {
         error.printStackTrace();
     }
 
-    private void send(String message, Session sessionTo) {
+    private synchronized void send(String message, Session sessionTo) {
         try {
-            sessionTo.getBasicRemote().sendText(message);
-        } catch (IOException e) {
+            sessionTo.getAsyncRemote().sendText(message);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
