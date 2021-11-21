@@ -11,7 +11,7 @@ import GithubBind from "../components/sub-components/GithubBind";
 Vue.use(VueRouter);
 
 
-export default new VueRouter({
+const router =  new VueRouter({
     mode: 'history',
     routes: [
         //default webpage: /login
@@ -51,5 +51,24 @@ export default new VueRouter({
             name: "githubBind",
             component: GithubBind
         }
-    ]
+    ],
+
 });
+
+router.beforeEach((to, from, next) => {
+    let token = window.sessionStorage.getItem('token')
+    if(token === null) {
+        if(to.name === 'login' || to.name === 'register') {
+            next()
+        } else {
+            next(`/login`)
+        }
+    } else {
+        next()
+    }
+    next()
+})
+export default router;
+
+
+
