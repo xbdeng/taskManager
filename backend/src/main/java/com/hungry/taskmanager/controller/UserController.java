@@ -72,6 +72,7 @@ public class UserController {
     }
 
     @PostMapping("/loginbygithub")
+    @ApiResponse(code = 200, message = "返回message为username")
     public Result loginByGithub(@RequestBody String code){
         code = JSON.parseObject(code).getString("code");
         String AccessToken = (code);
@@ -84,7 +85,7 @@ public class UserController {
         long currentTimeMillis = System.currentTimeMillis();
         String token= JWTUtil.createToken(user.getUsername(),currentTimeMillis);
         redisUtil.set(user.getUsername(),currentTimeMillis,30*60); //放入缓存（登录）
-        return new Result<String>(200,"使用GitHub登陆成功",token);
+        return new Result<String>(200,user.getUsername(),token);
     }
 
     @PostMapping("/logout")
@@ -186,6 +187,8 @@ public class UserController {
     }
 
     @PostMapping("/bindgithub")
+    @ApiOperation(value="绑定GitHub")
+    @ApiResponse(code = 200, message = "返回data为username")
     public Result bindGithub(@RequestBody String code,HttpServletRequest request){
         String token = request.getHeader("Authorization");
         String username = JWTUtil.getUsername(token);
@@ -193,7 +196,7 @@ public class UserController {
         String AccessToken = GitHubUtil.getGithubAccessToken(code);
         String gitHubUserName = GitHubUtil.getGithubUserName(AccessToken);
         userService.bindGithub(username, gitHubUserName);
-        return Result.succ("绑定成功");
+        return new Result(200,"绑定成功",username);
     }
 
     @PostMapping("/unbundgithub")
