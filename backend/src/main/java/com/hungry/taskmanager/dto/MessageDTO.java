@@ -1,6 +1,5 @@
-package com.hungry.taskmanager.entity;
+package com.hungry.taskmanager.dto;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,10 @@ import java.math.BigInteger;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message {
-    @JSONField(deserialize=false)
+public class MessageDTO {
     private BigInteger messageId;
     private String usernameFrom;
     private String usernameTo;
-    private String content;
-    @JSONField(deserialize=false)
-    private Boolean isRead;
+    private String type;
+    private Integer status;
 }

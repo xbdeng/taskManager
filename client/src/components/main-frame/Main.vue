@@ -121,7 +121,8 @@
                         :teamInfo="this.teamInfo"
                         :username="this.username"
                         :Friends="this.Friends"
-                        v-on:postTeamDataAgain="postTeamDataAgain($event)"></TeamInfoPage>
+                        v-on:postTeamInfoAgain="postTeamInfoAgain"
+                        v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow" :Friends="this.Friends"></AddressBookPage>
           <!-- 日历视图 -->
@@ -504,7 +505,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -515,11 +516,15 @@ export default {
                 message: 'update success',
                 type: 'success'
               });
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             that.showCalendarData()
           },
@@ -534,7 +539,7 @@ export default {
     // axios get tasks
     showCalendarData() {
       const that = this;
-      // console.log(window.localStorage.getItem('token'));
+      // console.log(window.sessionStorage.getItem('token'));
       axios.post(
           '/task/query',
           {
@@ -543,7 +548,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -553,11 +558,15 @@ export default {
                 message: '获取日历信息',
                 type: 'success'
               });
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
               })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             // console.log(response.data.data)
             that.calendarTasks = []
@@ -595,7 +604,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -616,8 +625,12 @@ export default {
 
                 that.tagArray.push(obj)
               }
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取Tags数据失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -632,7 +645,7 @@ export default {
           {},
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -643,9 +656,13 @@ export default {
                 message: '请求用户创建或管理的组成功',
                 type: 'success'
               })
-              that.myTeamInfo = response.data
+              that.myTeamInfo = response.data.data
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求用户创建或管理的组失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -671,7 +688,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -683,8 +700,12 @@ export default {
                 type: 'success'
               })
               that.taskData = response.data.data
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“任务”数据失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -711,7 +732,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -723,8 +744,12 @@ export default {
                 type: 'success'
               })
               that.todaytaskData = response.data.data
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“今天任务”数据失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -751,7 +776,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -763,8 +788,12 @@ export default {
                 type: 'success'
               })
               that.weekTaskData = response.data.data
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“一周内”数据失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -790,7 +819,7 @@ export default {
           },
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -802,8 +831,12 @@ export default {
                 type: 'success'
               })
               that.laterTaskData = response.data.data
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('请求“稍后”数据失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -819,7 +852,7 @@ export default {
           {},
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -831,8 +864,12 @@ export default {
                 type: 'success'
               })
               that.teamInfo = response.data.data
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取组队任务失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -848,7 +885,7 @@ export default {
           {},
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -860,8 +897,12 @@ export default {
                 type: 'success'
               })
               that.Friends = response.data.data
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('获取通讯录数据失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -876,7 +917,7 @@ export default {
       this.postWeekTaskData()
       this.postLaterTaskData()
     },
-    postTeamDataAgain() {
+    postMyTeamAgain() {
       this.postMyTeams()
     },
     logOut() {
@@ -886,7 +927,7 @@ export default {
           {},
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -897,8 +938,12 @@ export default {
                 type: 'success'
               })
               that.$router.push({name: 'Login'})
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('登出失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
@@ -906,10 +951,14 @@ export default {
           }
       )
     },
+    postTeamInfoAgain() {
+      this.postTeamInfo()
+    },
+
 
 // websocket
     connWebSocket() {
-      // let userInfo = JSON.parse(localStorage.getItem("userInfos"));
+      // let userInfo = JSON.parse(sessionStorage.getItem("userInfos"));
       // let userId = userInfo.userId;
       // WebSocket
       if ("WebSocket" in window) {

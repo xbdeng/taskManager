@@ -133,7 +133,7 @@
               <!-- 显示任务描述信息 -->
               <el-row type="flex" justify="start">
                   <el-col :span="6">
-                      <span style="font-weight:bold">任务描述信息：</span>
+                      <span style="font-weight:bold">队伍描述信息：</span>
                   </el-col>
                   <el-col>{{ singleTeamData.description }}</el-col>
                   <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
@@ -271,7 +271,7 @@ export default {
               },
               {
                 headers:{
-                    Authorization:window.localStorage.getItem('token')
+                    Authorization:window.sessionStorage.getItem('token')
                 }
               }
           ).then(
@@ -282,8 +282,12 @@ export default {
                       type:'success'
                     })
                     that.$emit('postTeamDataAgain',{})
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   } else {
                     that.$message.error('删除组员失败')
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   }
               },
               function(err) {
@@ -302,7 +306,7 @@ export default {
               teamId:teamId
             },
             headers:{
-              Authorization:window.localStorage.getItem('token')
+              Authorization:window.sessionStorage.getItem('token')
             }
           }).then(
               function(response) {
@@ -313,8 +317,12 @@ export default {
                   })
                   that.editedTeamName = null
                   that.$emit('postTeamDataAgain',{})
+                  let newToken = response.headers.authorization
+                  if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 } else {
                   that.$message.error('修改组名失败')
+                  let newToken = response.headers.authorization
+                  if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 }
               },
               function(err) {
@@ -335,7 +343,7 @@ export default {
                   },
                   {
                     headers:{
-                        Authorization:window.localStorage.getItem('token')
+                        Authorization:window.sessionStorage.getItem('token')
                     }
                   }
               ).then(
@@ -347,8 +355,12 @@ export default {
                         })
                         that.editedAdmins = []
                         that.$emit('postTeamDataAgain',{})
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     } else {
-                      that.$message.error('添加管理员失败')
+                        that.$message.error('添加管理员失败')
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
                   },
                   function(err) {
@@ -371,7 +383,7 @@ export default {
                   },
                   {
                     headers:{
-                        Authorization:window.localStorage.getItem('token')
+                        Authorization:window.sessionStorage.getItem('token')
                     }
                   }
               ).then(
@@ -383,8 +395,12 @@ export default {
                         })
                         that.invitedMembers = []
                         that.$emit('postTeamDataAgain',{})
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     } else {
-                      that.$message.error('邀请组员失败')
+                        that.$message.error('邀请组员失败')
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
                   },
                   function(err) {
@@ -413,8 +429,12 @@ export default {
                 })
                 that.editedDescription = null
                 that.$emit('postTeamDataAgain', {})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
               } else {
                 that.$message.error('修改队伍描述信息失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
@@ -432,7 +452,7 @@ export default {
               },
               {
                 headers:{
-                    Authorization:window.localStorage.getItem('token')
+                    Authorization:window.sessionStorage.getItem('token')
                 }
               }
           ).then(
@@ -444,8 +464,12 @@ export default {
                     })
                     that.closeTeamDrawer()
                     that.$emit('postTeamDataAgain',{})
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   } else {
                     that.$message.error('解散组失败')
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   }
               },
               function(err) {
@@ -464,7 +488,7 @@ export default {
               },
               {
                 headers:{
-                    Authorization:window.localStorage.getItem('token')
+                    Authorization:window.sessionStorage.getItem('token')
                 }
               }
           ).then(
@@ -475,9 +499,13 @@ export default {
                       type:'success'
                     })
                     that.closeTeamDrawer()
-                    that.$emit('postTeamDataAgain',{})
+                    that.$emit('postTeamInfoAgain',{})
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   } else {
                     that.$message.error('退出组失败')
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   }
               },
               function(err) {
@@ -498,7 +526,7 @@ export default {
                   },
                   {
                     headers:{
-                        Authorization:window.localStorage.getItem('token')
+                        Authorization:window.sessionStorage.getItem('token')
                     }
                   }
               ).then(
@@ -510,8 +538,12 @@ export default {
                         })
                         that.removedAdmins = null
                         that.$emit('postTeamDataAgain',{})
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     } else {
-                      that.$message.error('撤销管理员失败')
+                        that.$message.error('撤销管理员失败')
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
                   },
                   function(err) {

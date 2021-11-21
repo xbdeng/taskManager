@@ -1,6 +1,7 @@
 <template>
   <div>
     <div>{{ githubUser }}</div>
+    <div>wwwwwwww</div>
   </div>
 </template>
 
@@ -13,13 +14,13 @@ export default {
       githubUser: "github登陆中..."
     };
   },
+  name: "GithubBind",
   mounted() {
-    // TODO :  Login with github profile (need api)
+    // TODO : bind with github profile (need api)
     let code = this.$route.query.code;
-    console.log(code)
     const that = this
     axios.post(
-        'http://localhost:8081/api/github/login',
+        'http://localhost:8081/api/github/bind',
         {
           code:code
         }
@@ -27,7 +28,7 @@ export default {
         function (response) {
           if(response.data.code === 200){
             that.$message({
-              message: 'github login success',
+              message: 'github bind success',
               type: 'success'
             })
             console.log(response)
@@ -37,16 +38,16 @@ export default {
             that.loginForm.username = ''
             that.loginForm.password = ''
             that.logining = false
-            that.$router.push({name: 'Main', params: {username: tmpusername}})
+            this.$router.push({name: 'Profile', params: {username: this.username}});
           }
         },
         function (err) {
           that.$message({
-            message: 'github login failed, please register',
+            message: 'github bind failed, please personal info page',
             type: 'error'
           })
-          that.$router.push({name: 'login'})
-        }
+          this.$router.push({name: 'Profile', params: {username: this.username}});
+        },
     )
     // console.log(code)
     // cannot do it on client
@@ -71,4 +72,5 @@ export default {
 </script>
 
 <style>
+
 </style>

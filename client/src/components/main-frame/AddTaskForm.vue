@@ -74,7 +74,7 @@ mo<template>
                         <el-col :span='10'>
                             <!-- 单选 -->
                             <el-select placeholder='请选择任务分配的组别' v-model='taskForm.teamId'>
-                                <el-option v-for="(team, tIndex) in myTeamInfo" :key="tIndex" :label="team.teamName" :value="team.teamId">
+                                <el-option v-for="team in this.myTeamInfo" :key="team.teamName" :label="team.teamName" :value="team.teamId">
                                 </el-option>
                             </el-select>
                         </el-col>
@@ -122,12 +122,7 @@ export default {
         }
         callback()
     };
-    var checkTaskTags = (rule, value, callback)=>{
-        if (value === '') {
-            return callback(new Error('任务标签不能为空！'));
-        }
-        callback()
-    };
+
     var checkTaskDDL = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务截止时间不能为空！'));
@@ -172,7 +167,7 @@ export default {
         addedTag:'',
         taskForm:{
             taskName:'',
-            tags: '',
+            tags: [],
             dueDate:'',
             privilege:'',
             type: '',
@@ -188,7 +183,6 @@ export default {
         ],
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
-            tags:[{validator:checkTaskTags, trigger:'blur'}],
             dueDate:[{validator:checkTaskDDL, trigger:'blur'}],
             privilege:[{validator:checkTaskPriority, trigger:'blur'}],
             type:[{validator:checkTaskType, trigger:'blur'}],
@@ -227,7 +221,7 @@ export default {
             },
             {
                 headers:{
-                    Authorization:window.localStorage.getItem('token')
+                    Authorization:window.sessionStorage.getItem('token')
                 }
             }
         ).then(
@@ -245,8 +239,12 @@ export default {
                         }
                     )
                   that.addedTag = null
+                  let newToken = response.headers.authorization
+                  if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 } else {
                     that.$message.error('添加标签失败')
+                    let newToken = response.headers.authorization
+                    if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 }
             },
             function(err) {
@@ -262,7 +260,7 @@ export default {
                 method:'POST',
                 url:'/task/addtask',
                 headers:{
-                  Authorization:window.localStorage.getItem('token')
+                  Authorization:window.sessionStorage.getItem('token')
                 },
                 data:{
                     createDate:that.taskForm.createDate,
@@ -276,7 +274,7 @@ export default {
                     tags:that.taskForm.tags,
                     taskName:that.taskForm.taskName,
                     teamId:that.taskForm.teamId,
-                    type:that.taskForm.type,
+                    type:parseInt(that.taskForm.type),
                     // username
                 }
               }).then(
@@ -290,9 +288,13 @@ export default {
                         for(let key in that.taskForm) {
                             that.taskForm[key] = ''
                         }
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                         that.toCalendar()
                     } else {
                         that.$message.error('新建任务失败')
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
                 },
                 function (err) {

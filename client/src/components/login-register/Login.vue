@@ -2,7 +2,7 @@
 
   <div id="login">
     <el-row type="flex" justify="center" id="login_container_pos">
-      <el-col :span="12">
+      <el-col :span="24">
           <el-collapse-transition>
             <div v-show="login" class="animate__animated animate__zoomIn">
               <LoginContainer></LoginContainer>

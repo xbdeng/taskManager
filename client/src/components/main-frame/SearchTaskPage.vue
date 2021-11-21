@@ -197,12 +197,13 @@ export default {
   methods: {
       searchRequest() {
           const that = this
+          console.log(that.fliterForm)
           axios.post(
               '/task/query',
               {
                 createDate:that.fliterForm.createDate,
                 dueDate:that.fliterForm.dueDate,
-                privilege:that.fliterForm.privilege === 0 ? null : that.fliterForm.privilege - 1,
+                privilege:that.fliterForm === null ? null : (that.fliterForm === 0 ? null : that.fliterForm - 1),
                 status:that.generateStatusList(),
                 tags:that.fliterForm.tags,
                 taskName:that.fliterForm.taskName,
@@ -211,7 +212,7 @@ export default {
               },
               {
                 headers:{
-                    Authorization:window.localStorage.getItem('token')
+                    Authorization:window.sessionStorage.getItem('token')
                 }
               }
           ).then(
@@ -224,8 +225,14 @@ export default {
                           type:'success'
                       })
                       that.clear()
+                      let newToken = response.headers.authorization
+                      if(newToken != null) {
+                        window.sessionStorage.setItem('token', newToken)
+                      }
                   } else {
                       that.$message.error('查询失败')
+                      let newToken = response.headers.authorization
+                      if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   }
               },
               function(err) {

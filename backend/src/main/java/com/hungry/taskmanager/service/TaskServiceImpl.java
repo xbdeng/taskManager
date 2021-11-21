@@ -71,16 +71,16 @@ public class TaskServiceImpl implements TaskService{
         }
         // insert tag
         List<String> tags = params.getTags();
-
+        List<Tag> insertedTags = new ArrayList<>();
         if (tags != null && tags.size() > 0){
             for (String s : tags) {
                 Tag tag = new Tag().setUserId(creator).setTagName(s);
                 tagMapper.insert(tag);
             }
+            QueryWrapper<Tag> wrapper = new QueryWrapper<Tag>().eq("user_id", creator).in("tag_name", tags);
+            insertedTags = tagMapper.selectList(wrapper);
         }
         // select all related tag ids
-        QueryWrapper<Tag> wrapper = new QueryWrapper<Tag>().eq("user_id", creator).in("tag_name", tags);
-        List<Tag> insertedTags = tagMapper.selectList(wrapper);
         // insert user task relationship if the type is individual
         if (type.equals(BigInteger.valueOf(0))){
             UserTask ut = new UserTask().setUserId(creator).setTaskId(taskId);
@@ -150,7 +150,7 @@ public class TaskServiceImpl implements TaskService{
             taskMap.put(task.getTaskId(), task);
             task.setTags(new ArrayList<>());
             QueryTaskDTO subfilter = new QueryTaskDTO().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
-            task.setSubTask(taskMapper.queryTask(subfilter));
+            task.setSubTasks(taskMapper.queryTask(subfilter));
             task.updateDate();
         }
         List<HashMap<String, Object>> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());

@@ -25,7 +25,7 @@ public class EditTaskDTO {
     private String dueDate;
     // other parameters necessary for modifying a task
     private BigInteger fatherTask;
-    private List<BigInteger> subtasks;
+    private List<BigInteger> subTasks;
     private Integer status;
     private Long taskId;
 }

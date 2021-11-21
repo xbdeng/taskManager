@@ -193,7 +193,7 @@ export default {
           },
           {
             headers:{
-              Authorization:window.localStorage.getItem('token')
+              Authorization:window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -204,8 +204,12 @@ export default {
                 type:'success'
               })
               that.addedTaskName = null
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
               that.$message.error('添加任务失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function(err) {

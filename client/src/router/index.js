@@ -6,11 +6,12 @@ import register from "../components/login-register/register";
 import profile from "../components/profile/profile";
 import tree from '../components/main-frame/TreeTask'
 import Github from "../components/sub-components/Github";
+import GithubBind from "../components/sub-components/GithubBind";
 
 Vue.use(VueRouter);
 
 
-export default new VueRouter({
+const router =  new VueRouter({
     mode: 'history',
     routes: [
         //default webpage: /login
@@ -44,6 +45,30 @@ export default new VueRouter({
             path: "/oauth/redirect",
             name: "github",
             component: Github
+        },
+        {
+            path: "/oauth/bind",
+            name: "githubBind",
+            component: GithubBind
         }
-    ]
+    ],
+
 });
+
+router.beforeEach((to, from, next) => {
+    let token = window.sessionStorage.getItem('token')
+    if(token === null) {
+        if(to.name === 'login' || to.name === 'register') {
+            next()
+        } else {
+            next(`/login`)
+        }
+    } else {
+        next()
+    }
+    next()
+})
+export default router;
+
+
+

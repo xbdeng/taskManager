@@ -15,7 +15,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TaskManagerApplicationTests {
     @Resource
     TaskServiceImpl taskServiceImpl;
@@ -28,9 +28,9 @@ class TaskManagerApplicationTests {
         List<String> tags = new ArrayList<>();
         tags.add("tom");
         tags.add("jerry");
-//        CreateTaskParams params = new CreateTaskParams().setUsername("ddd").setTaskName("try").setDescription("try")
-//                .setTags(tags).setPrivilege(1).setType(0).setCreateDate("2020-11-16T00:01:45.000Z").setDueDate("2020-11-15T00:01:45.000Z");
-//        int result =taskServiceImpl.addTask(params);
+        CreateTaskDTO params = new CreateTaskDTO().setUsername("ddd").setTaskName("try").setDescription("try")
+                .setTags(new ArrayList<>()).setPrivilege(1).setType(0).setCreateDate("2020-11-16T00:01:45.000Z").setDueDate("2020-11-15T00:01:45.000Z");
+        int result =taskServiceImpl.addTask(params);
 //        QueryTaskDTO filter = new QueryTaskDTO().setUsername("ddd");
 //        List<Task> tasks = taskServiceImpl.queryTask(filter);
 //        for (Task task: tasks){
@@ -39,13 +39,13 @@ class TaskManagerApplicationTests {
 //        List<Tag> ts = userService.selectTags(new TagDTO().setUsername("ddd"));
 //        System.out.println(ts.toString());
 //        EditTeamDTO dto = new EditTeamDTO().setTeamId(BigInteger.valueOf(9)).setDescription("description");
-        userService.editUser(new EditUserDTO().setEmail("ComLqWork@outlook.com").setUsername("nametest").setPassword("password").setFirstName("thomas").setPhone("131111111"));
-//        teamService.editTeam(dto);
-        List<TeamDTO> result = userService.getTeams("xyzdl");
-        for(TeamDTO t: result){
-            System.out.println(t.toString());
-        }
-        System.out.println();
+//        userService.editUser(new EditUserDTO().setEmail("ComLqWork@outlook.com").setUsername("nametest").setPassword("password").setFirstName("thomas").setPhone("131111111"));
+////        teamService.editTeam(dto);
+//        List<TeamDTO> result = userService.getTeams("xyzdl");
+//        for(TeamDTO t: result){
+//            System.out.println(t.toString());
+//        }
+//        System.out.println();
     }
 
 }
