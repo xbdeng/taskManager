@@ -6,7 +6,7 @@
             <el-aside>
                 <el-menu  class="main-frame-menu">
                     <!-- 显示所有的组 -->
-                    <el-menu-item  v-for='(team, teamIndex) in this.teamInfo' :key=teamIndex :index= team.teamName >
+                    <el-menu-item  v-for='(team, teamIndex) in this.tmpTeamInfo' :key=teamIndex :index= team.teamName >
                         <template slot="title">
                             <span slot="title" @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
                         </template>
@@ -33,7 +33,7 @@
             :modal-append-to-body='false'
             size='50%'>
                 <TeamShow
-                :singleTeamData="teamInfo[selectedTeam]"
+                :singleTeamData="tmpTeamInfo[selectedTeam]"
                 :username="this.username"
                 :Friends="this.Friends"
                 v-on:closeTeamDrawer="closeTeamDrawer($event)"
@@ -48,7 +48,7 @@
             :modal-append-to-body='false'
             size='50%'>
                 <TaskShow
-                :singleTaskData="getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
+                :singleTaskData="getTaskById(tmpTeamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
                 v-on:closeTaskDrawer='closeTaskDrawer($event)'
                 v-on:emitTreeData="emitTreeData($event)"></TaskShow>
             </el-drawer>
@@ -86,8 +86,14 @@ export default {
   },
   props:['teamInfo','username','Friends'],
   watch:{
-    'teamInfo':function() {
-      alert(this.teamInfo.length)
+    'teamInfo':{
+      handler() {
+        this.tmpTeamInfo = []
+        for(let i in this.teamInfo) {
+          this.tmpTeamInfo.push(this.teamInfo[i])
+        }
+      },
+      deep:true
     }
   },
   data() {
@@ -101,6 +107,8 @@ export default {
         teamInfoDrawer:false,
         treeDrawer:false,
         treeData:null,
+        tmpTeamInfo:JSON.parse(JSON.stringify(this.teamInfo))
+
     }
   },
   methods: {
