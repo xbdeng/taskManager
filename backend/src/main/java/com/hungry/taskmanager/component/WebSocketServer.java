@@ -32,18 +32,23 @@ public class WebSocketServer {
     }
 
     @OnMessage
-    public void onMessage(String text){
-        Message message = JSON.parseObject(text, Message.class);
-        String usernameFrom = message.getUsernameFrom();
-        String usernameTo = message.getUsernameTo();
-        String type = message.getContent();
-        Session sessionTo = sessionMap.get(usernameTo);
-        if (sessionTo != null){
-            MessageDTO messageDTO = new MessageDTO();
-            messageDTO.setType(type).setUsernameFrom(usernameFrom).setUsernameTo(usernameTo);
-            send(JSONObject.toJSONString(messageDTO), sessionTo);
+    public void onMessage(String text, @PathParam("username") String username){
+        JSONObject obj = JSONObject.parseObject(text);
+        // exception?
+        if (obj.containsKey("heartCheck") && (Integer)obj.get("heartCheck") == 1){
+            send("1", sessionMap.get(username));
+        }else if(obj.containsKey("heartCheck") && (Integer)obj.get("heartCheck") == 0){
+            Message message = JSON.parseObject(text, Message.class);
+            String usernameFrom = message.getUsernameFrom();
+            String usernameTo = message.getUsernameTo();
+            String type = message.getContent();
+            Session sessionTo = sessionMap.get(usernameTo);
+            if (sessionTo != null){
+                MessageDTO messageDTO = new MessageDTO();
+                messageDTO.setType(type).setUsernameFrom(usernameFrom).setUsernameTo(usernameTo);
+                send(JSONObject.toJSONString(messageDTO), sessionTo);
+            }
         }
-
     }
 
     @OnError
