@@ -155,7 +155,10 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public int editTeam(EditTeamDTO params){
+    public Result editTeam(EditTeamDTO params,String operator){
+        if(!(isCreator(operator,params.getTeamId())||isAdmin(operator,params.getTeamId()))){
+            return Result.fail(201,"权限不足",null);
+        }
         Team team = new Team();
         UpdateWrapper<Team> wrapper = new UpdateWrapper<Team>().eq("team_id", params.getTeamId()) ;
         if (params.getTeamName() != null){
@@ -165,6 +168,6 @@ public class TeamServiceImpl implements TeamService {
             wrapper = wrapper.set("description", params.getDescription());
         }
         teamMapper.update(team, wrapper);
-        return 200;
+        return Result.succ("修改成功");
     }
 }

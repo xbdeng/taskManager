@@ -21,5 +21,5 @@ public interface TeamService {
 
     Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
 
-    int editTeam(EditTeamDTO params);
+    Result editTeam(EditTeamDTO params,String operator);
 }
