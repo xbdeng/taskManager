@@ -160,7 +160,7 @@ export default {
           {},
           {
             headers: {
-              Authorization: window.localStorage.getItem('token')
+              Authorization: window.sessionStorage.getItem('token')
             }
           }
       ).then(
@@ -171,7 +171,7 @@ export default {
                 type: 'success'
               });
               let newToken = response.headers.authorization
-              if(newToken != null) window.localStorage.setItem('token', newToken)
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             else{
               that.$message({
@@ -179,7 +179,7 @@ export default {
                 type: 'error'
               })
               let newToken = response.headers.authorization
-              if(newToken != null) window.localStorage.setItem('token', newToken)
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
             that.username = response.data.data.username
             that.phone = response.data.data.phone
