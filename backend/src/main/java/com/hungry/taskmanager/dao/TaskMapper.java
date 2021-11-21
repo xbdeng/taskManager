@@ -13,12 +13,6 @@ import java.util.List;
 
 public interface TaskMapper extends BaseMapper<Task> {
 
-    @Select("SELECT task.task_id FROM task INNER JOIN task_tag ON task.task_id = task_tag.task_id INNER JOIN tag " +
-            "ON task_tag.tag_id = tag.tag_id")
-    List<BigInteger> queryTask(@Param(Constants.WRAPPER) Wrapper<Task> queryWrapper);
-
     List<Task> queryTask(QueryTaskDTO filter);
-
-    Object selectTagsForTasks(BigInteger userId);
 
 }

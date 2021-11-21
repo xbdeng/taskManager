@@ -8,7 +8,7 @@
             <el-row :gutter="10" type="flex" align="middle">
               <el-col :span="3">
                 <el-tooltip content="完成任务：在已完成和未完成任务之间切换" placement="top-end">
-                  <i class="el-icon-success" id="origin" v-on:mouseover="changeToActive($event)" v-on:mouseout="changeToOrigin($event)" @click="postTaskFinished($event)"></i>
+                  <i class="el-icon-success" :id="this.Id" v-on:mouseover="changeToActive($event)" v-on:mouseout="changeToOrigin($event)" @click="postTaskFinished($event)"></i>
                 </el-tooltip>
               </el-col>
 
@@ -202,10 +202,10 @@
               <el-col :span="20">
                 {{ tempTaskForm.description }}
               </el-col>
-              <el-popover placement="bottom" width="200" trigger="click" title="修改任务的描述信息">
+              <el-popover placement="bottom" width="200" trigger="click" title="修改任务的描述信息" >
                   <el-row>
                       <el-col>
-                          <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"></el-input>
+                          <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4" v-model="editedDescription"></el-input>
                       </el-col>
                   </el-row>
                   <el-row>
@@ -269,27 +269,28 @@ export default {
       subTaskName:null,
       invitedMembers:[],
       editedTaskName:null,
-      editedDescription:null,
-      tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData))
+      editedDescription:'',
+      tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData)),
+      Id:this.tempTaskForm.status === 0 ? "origin" : "active"
     }
   },
   methods:{
     changeToActive($event) {
-      if(document.getElementById('origin') != null)
-        document.getElementById('origin').id = 'active'
+      if(this.Id === 'origin')
+        this.Id = 'active'
     },
     changeToOrigin($event) {
-      if(document.getElementById('active') != null)
-        document.getElementById('active').id = 'origin'
+      if(this.Id === 'active')
+        this.Id = 'origin'
     },
     postTaskFinished($event) {
-      if(document.getElementById('active') != null) {
-        document.getElementById('active').id = 'defined'
-        this.editedStatus = 1
+      if(this.Id === 'active') {
+        this.Id = 'defined'
+        this.tempTaskForm.status = 1
       } 
-      else if(document.getElementById('defined') != null) {
-        document.getElementById('defined').id = 'origin'
-        this.editedStatus = 0
+      else if(this.Id === 'defined') {
+        this.Id = 'origin'
+        this.tempTaskForm.status = 0
       }
     },
     deleteTag(tag) {
@@ -368,9 +369,7 @@ export default {
         if(this.tempTaskForm.subTasks == null) {
           this.tempTaskForm.subTasks = []
         }
-        this.tempTaskForm.subTasks.push({
-          taskName:value
-        })
+        this.tempTaskForm.subTasks.push(value)
       }
       this.subTaskName = null
     },
@@ -414,7 +413,7 @@ export default {
           that.$emit('closeTaskDrawer',{})
         },
         function(err) {
-          this.$message.error('响应失败,修改任务失败')
+          that.$message.error('响应失败,修改任务失败')
         }
       )
 

@@ -114,7 +114,7 @@ import process from "_shelljs@0.7.8@shelljs";
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: 'AddTaskForm',
-  props:['username','tagArray','myTeamInfo'],
+  props:['username','tagArray','myTeamInfo','fatherTaskId'],
   data () {
     var checkTaskName = (rule, value, callback)=>{
         if (value === '') {
@@ -254,6 +254,8 @@ export default {
     },
     submitForm(formName) {
         let that = this
+        let fTaskId = this.fatherTaskId
+        let cTaskId = null
         this.$refs[formName].validate((valid)=>{
             if(valid) {
               axios({
@@ -288,6 +290,7 @@ export default {
                         for(let key in that.taskForm) {
                             that.taskForm[key] = ''
                         }
+                        cTaskId = response.data.data.taskId
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                         that.toCalendar()
@@ -307,6 +310,31 @@ export default {
                 return false
             }
         });
+        if(fTaskId != null) {
+          //请求添加父子任务
+          axios.post(
+              '/task/addsubtask',
+              {
+                fatherId:fTaskId,
+                childId:cTaskId
+              },
+
+          ).then(
+              function(response) {
+                if(response.data.code === 200) {
+                  that.$message({
+                    message:'添加子任务成功',
+                    type:'success'
+                  })
+                } else {
+                  that.$message.error('添加子任务失败')
+                }
+              },
+              function(err) {
+                that.$message.error('响应失败，添加子任务失败')
+              }
+          )
+        }
     },
   }
 }
