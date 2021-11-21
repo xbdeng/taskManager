@@ -18,6 +18,7 @@ export default {
   mounted() {
     // TODO : bind with github profile (need api)
     let code = this.$route.query.code;
+    console.log(code)
     const that = this
     axios.post(
         'http://localhost:8081/api/github/bind',
