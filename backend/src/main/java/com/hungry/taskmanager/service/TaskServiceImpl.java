@@ -3,6 +3,7 @@ package com.hungry.taskmanager.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
+import com.hungry.taskmanager.dto.AddSubTaskDTO;
 import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.dto.CreateTaskDTO;
 import com.hungry.taskmanager.dto.EditTaskDTO;
@@ -40,10 +41,10 @@ public class TaskServiceImpl implements TaskService{
     /**
      * create a new task and insert insert into database
      */
-    public int addTask(CreateTaskDTO params) throws Exception{
+    public BigInteger addTask(CreateTaskDTO params) throws Exception{
         BigInteger creator = userMapper.getIdByName(params.getUsername());
         // operations according to different types
-            // individual task set type column -1
+            // individual task set type column 0
             // team task find id of the team set type id of the team
         BigInteger type = BigInteger.valueOf(params.getType());
         // set date
@@ -93,7 +94,7 @@ public class TaskServiceImpl implements TaskService{
                 userTaskTagMapper.insert(utt);
             }
         }
-        return 200;
+        return taskId;
     }
 
     /**
@@ -182,10 +183,17 @@ public class TaskServiceImpl implements TaskService{
         return 200;
     }
 
+    public void addSubTask(AddSubTaskDTO params){
+        taskMapper.update(new Task(), new UpdateWrapper<Task>().eq("task_id", params.getSubTask()).set("father_task", params.getFatherTask()));
+    }
+
 
 
 
     private LocalDateTime convertGMT(String date){
+        if (date == null){
+            return null;
+        }
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         return LocalDateTime.parse(date, f).atZone(ZoneId.from(ZoneOffset.UTC)).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
     }

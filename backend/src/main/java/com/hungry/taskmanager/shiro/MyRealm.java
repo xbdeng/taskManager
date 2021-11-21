@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.hungry.taskmanager.entity.Perms;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.service.UserService;
+import com.hungry.taskmanager.utils.JWTToken;
 import com.hungry.taskmanager.utils.JWTUtil;
 import com.hungry.taskmanager.utils.RedisUtil;
 import org.apache.shiro.authc.AuthenticationException;

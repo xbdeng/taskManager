@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUserName(String username) {
-        return userMapper.findByUserName(username);
+        return userMapper.selectOne(new QueryWrapper<User>().eq("username",username));
     }
 
 
@@ -169,10 +169,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addTag(TagDTO params){
+    public Result addTag(TagDTO params){
         BigInteger uId = userMapper.getIdByName(params.getUsername());
         Tag tag = new Tag().setTagName(params.getTagName()).setUserId(uId);
         tagMapper.insert(tag);
+        return Result.succ("添加成功");
     }
 
     public List<Tag> selectTags(TagDTO params){

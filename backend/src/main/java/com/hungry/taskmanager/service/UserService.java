@@ -35,7 +35,7 @@ public interface UserService {
     //获取个人信息
     UserDTO getProfile(String username);
 
-    void addTag(TagDTO params);
+    Result addTag(TagDTO params);
 
     List<Tag> selectTags(TagDTO params);
 

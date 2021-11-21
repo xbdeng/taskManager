@@ -25,22 +25,20 @@ public class User implements Serializable {
     private String lastName;
     private String email;
     private String phone;
-
-    //定义角色集合
-    @TableField(exist=false)
-    private List<Role> roles;
-
-    @TableField(exist=false)
-    private List<Perms> perms;
-
-    @TableField(exist=false)
-    private List<Task> tasks;
-
-//    @TableField(exist = false)
     private String githubName;
 
-    public UserDTO toUserDTO(){
-        return new UserDTO(userId,username,firstName,lastName,email,phone,githubName);
+    //定义角色集合
+    @TableField(exist = false)
+    private List<Role> roles;
+
+    @TableField(exist = false)
+    private List<Perms> perms;
+
+    @TableField(exist = false)
+    private List<Task> tasks;
+
+    public UserDTO toUserDTO() {
+        return new UserDTO(userId, username, firstName, lastName, email, phone, githubName);
     }
 
 

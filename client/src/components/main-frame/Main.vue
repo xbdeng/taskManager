@@ -364,40 +364,42 @@ export default {
         userId: '',
         username: 'a'
       }],
+      timeout: 5000,
       sampleFriends: [{
-        email: '',
-        firstname: '',
-        lastname: '',
-        phone: '',
-        userId: '',
-        username: ''
+        sampleFriends: [{
+          email: '',
+          firstname: '',
+          lastname: '',
+          phone: '',
+          userId: '',
+          username: ''
+        }]
       }]
     }
   },
   methods: {
-    eventMsg(){
+    eventMsg() {
       let that = this;
-      websocket.getWebSocket().onmessage = function(res) {
+      websocket.getWebSocket().onmessage = function (res) {
         //处理接收的时间逻辑
         heartCheck.start()
         let tmp = JSON.parse(res.data)
-        if(tmp.heartCheck === 1){
+        if (tmp.heartCheck === 1) {
           return
-        }
-        else {
-          if(tmp.type === 0){
+        } else {
+          if (tmp.type === 0) {
             this.$notify.info({
               title: tmp.from,
               message: '想要与你一起组队成为' + tmp.groupId
             });
           }
-          if(tmp.type === 1){
+          if (tmp.type === 1) {
             this.$notify.info({
               title: tmp.from,
               message: '想要与你成为好友'
             });
           }
-          if(tmp.type === 2){
+          if (tmp.type === 2) {
             this.$notify.info({
               title: tmp.from,
               message: '想要与你成为好友'
@@ -854,6 +856,7 @@ export default {
             teamName: null,
             type: null,
             currentDate: new Date().toISOString(),
+            scheduledTask: 1,
             timeRange: 2
           },
           {
