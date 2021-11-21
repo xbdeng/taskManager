@@ -11,19 +11,15 @@ import java.math.BigInteger;
 public interface TeamService {
     Result createTeam(CreateTeamDTO createTeamDTO,String creatorName);
 
-    Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
 
-    Result setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
 
-    Result removeMember(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result removeMember(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
 
-    Result dismiss(BigInteger teamId);
+    Result dismiss(BigInteger teamId,String operator);
 
-    Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO);
+    Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
 
-    boolean isAdmin(BigInteger userId, BigInteger teamId);
-
-    boolean isCreator(BigInteger userId, BigInteger teamId);
-
-    int editTeam(EditTeamDTO params);
+    Result editTeam(EditTeamDTO params,String operator);
 }

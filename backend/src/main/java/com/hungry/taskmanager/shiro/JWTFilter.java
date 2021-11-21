@@ -2,6 +2,7 @@ package com.hungry.taskmanager.shiro;
 
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.hungry.taskmanager.utils.JWTToken;
 import com.hungry.taskmanager.utils.JWTUtil;
 import com.hungry.taskmanager.utils.RedisUtil;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -14,9 +15,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 

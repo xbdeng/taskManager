@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUserName(String username) {
-        return userMapper.findByUserName(username);
+        return userMapper.selectOne(new QueryWrapper<User>().eq("username",username));
     }
 
 
