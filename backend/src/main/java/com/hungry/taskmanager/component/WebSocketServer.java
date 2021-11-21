@@ -1,4 +1,4 @@
-package com.hungry.taskmanager.service;
+package com.hungry.taskmanager.component;
 
 
 import com.alibaba.druid.support.json.JSONUtils;
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(value="/messagepush/{username}")
 @Component
-public class WebSocketService {
+public class WebSocketServer {
 
     public static final Map<String, Session> sessionMap = new ConcurrentHashMap<>();
 
@@ -27,19 +27,20 @@ public class WebSocketService {
     }
 
     @OnClose
-    public void onClose(Session session, @PathParam("username") String username){
+    public void onClose(@PathParam("username") String username){
         sessionMap.remove(username);
     }
 
     @OnMessage
-    public void onMessage(String text, Session session, @PathParam("username") String username){
+    public void onMessage(String text){
         Message message = JSON.parseObject(text, Message.class);
+        String usernameFrom = message.getUsernameFrom();
         String usernameTo = message.getUsernameTo();
         String type = message.getContent();
         Session sessionTo = sessionMap.get(usernameTo);
         if (sessionTo != null){
             MessageDTO messageDTO = new MessageDTO();
-            messageDTO.setType(type).setUsernameFrom(username).setUsernameTo(usernameTo);
+            messageDTO.setType(type).setUsernameFrom(usernameFrom).setUsernameTo(usernameTo);
             send(JSONObject.toJSONString(messageDTO), sessionTo);
         }
 
