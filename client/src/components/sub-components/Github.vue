@@ -19,7 +19,7 @@ export default {
     console.log(code)
     const that = this
     axios.post(
-        'http://localhost:8081/api/github/login',
+        'http://localhost:8081/api/user/loginbygithub',
         {
           code:code
         }
@@ -32,12 +32,11 @@ export default {
             })
             console.log(response)
             let token = response.data.data
-            window.localStorage.setItem('token', token)
-            let tmpusername = response.data.data.username
-            that.loginForm.username = ''
-            that.loginForm.password = ''
-            that.logining = false
+            window.sessionStorage.setItem('token', token)
+            let tmpusername = response.data.msg
             that.$router.push({name: 'Main', params: {username: tmpusername}})
+          }else {
+            that.$router.push({name: 'login'})
           }
         },
         function (err) {

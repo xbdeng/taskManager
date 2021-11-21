@@ -75,7 +75,7 @@ public class UserController {
     @ApiResponse(code = 200, message = "返回message为username")
     public Result loginByGithub(@RequestBody String code){
         code = JSON.parseObject(code).getString("code");
-        String AccessToken = (code);
+        String AccessToken = GitHubUtil.getGithubAccessToken(code);
         String gitHubUserName = GitHubUtil.getGithubUserName(AccessToken);
         User user = userService.getUserByGithub(gitHubUserName);
         if(user == null){
