@@ -25,7 +25,7 @@ public class TeamController {
     @PostMapping("/createteam")
     @ApiOperation(value = "创建小组", notes = "√")
     @RequiresAuthentication
-    public Result<String> createTeam(@RequestBody CreateTeamDTO createTeamDTO, HttpServletRequest httpServletRequest) {
+    public Result createTeam(@RequestBody CreateTeamDTO createTeamDTO, HttpServletRequest httpServletRequest) {
         try {
             String token = httpServletRequest.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
