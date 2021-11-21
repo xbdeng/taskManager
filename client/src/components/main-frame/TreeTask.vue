@@ -38,9 +38,17 @@
                 nodeText="name"
                 :identifier="getId"
                 :linkLayout="this.linkLayout"
-                :layoutType="this.layoutType">
-              <template #behavior="{on, actions}">
-                <popUpOnHoverText v-bind="{on, actions}"/>
+                :layoutType="this.layoutType"
+                @clickedText="onClick"
+                @expand="onExpand"
+                @retract="onRetract"
+                @clickedNode="onClickNode">
+              <template #popUp="{data,node}">
+                <div>
+                  <el-button @click="Addclick(data, node)" type="primary" icon="el-icon-plus" circle></el-button>
+                  <el-button @click="Detclick(data, node)" type="primary" icon="el-icon-plus" circle></el-button>
+                  <el-button @click="Delclick(data, node)" type="primary" icon="el-icon-plus" circle></el-button>
+                </div>
               </template>
             </tree>
           </el-main>
@@ -48,14 +56,19 @@
       </el-main>
     </el-container>
 
+    <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" :modal-append-to-body="false" :modal="false">
+      <add-task-form></add-task-form>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import {tree,popUpOnHoverText} from 'vued3tree'
-
+import AddTaskForm from "./AddTaskForm";
 export default {
   components: {
+    AddTaskForm,
     tree,
     popUpOnHoverText
   },
@@ -72,6 +85,7 @@ export default {
       tree: this.taskToTree(this.TData),
       layoutType: 'horizontal',
       linkLayout:'bezier',
+      dialogVisible: false
     }
   },
   methods: {
@@ -100,6 +114,44 @@ export default {
     },
     closeTreeDrawer() {
       this.$emit('closeTreeDrawer',{})
+    },
+    onClick (evt) {
+      this.onEvent('clickedText', evt)
+    },
+    onClickNode (evt) {
+      this.onEvent('clickedNode', evt)
+    },
+    onExpand (evt) {
+      this.onEvent('onExpand', evt)
+    },
+    onRetract (evt) {
+      this.onEvent('onRetract', evt)
+    },
+    onEvent (eventName, data) {
+      console.log(eventName)
+      console.log(data)
+      // this.events.push({eventName, data: data.data})
+    },
+    Addclick(data, node){
+      this.dialogVisible = true;
+      console.log(data)
+      console.log(node)
+    },
+    Detclick(data, node){
+      console.log(data)
+      console.log(node)
+    },
+    Delclick(data, node){
+      console.log(data)
+      console.log(node)
+    },
+    handleClose(done){
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            this.dialogVisible = false;
+            done();
+          })
+          .catch(_ => {});
     }
   }
 }

@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectList(new QueryWrapper<User>().in("user_id", friendsId)).stream().map(User::toUserDTO).collect(Collectors.toList());
     }
 
-    @Override //todo 不优雅
+    @Override
     public List<TeamDTO> getTeams(String username) {
         BigInteger userId = userMapper.getIdByName(username);
         //获取全部的teamsId
@@ -193,6 +193,26 @@ public class UserServiceImpl implements UserService {
         userMapper.update(user, wrapper);
     }
 
+    @Override
+    public void bindGithub(String username, String githubName) {
+        User user = new User();
+        UpdateWrapper<User> wrapper = new UpdateWrapper<User>().eq("username",username);
+        wrapper.set("github_name",githubName);
+        userMapper.update(user,wrapper);
+    }
 
+    @Override
+    public void unbindGithub(String username) {
+        User user = new User();
+        UpdateWrapper<User> wrapper = new UpdateWrapper<User>().eq("username",username);
+        wrapper.set("github_name",null);
+        userMapper.update(user,wrapper);
+    }
+
+    @Override
+    public User getUserByGithub(String githubName) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<User>().eq("github_name",githubName);
+        return userMapper.selectOne(queryWrapper);
+    }
 
 }

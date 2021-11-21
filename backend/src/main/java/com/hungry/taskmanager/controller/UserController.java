@@ -1,16 +1,20 @@
 package com.hungry.taskmanager.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Tag;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.service.UserService;
+import com.hungry.taskmanager.utils.GitHubUtil;
 import com.hungry.taskmanager.utils.JWTUtil;
 import com.hungry.taskmanager.utils.RedisUtil;
 import com.hungry.taskmanager.entity.Result;
 import io.swagger.annotations.*;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.http.*;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +31,6 @@ public class UserController {
 
     @Resource
     private RedisUtil redisUtil;
-
     /**
      * 验证码方法
      */
@@ -66,6 +69,23 @@ public class UserController {
         String token= JWTUtil.createToken(user.getUsername(),currentTimeMillis);
         redisUtil.set(loginDTO.getUsername(),currentTimeMillis,30*60); //放入缓存（登录）
         return new Result<String>(200,"登陆成功",token);
+    }
+
+    @PostMapping("/loginbygithub")
+    @ApiResponse(code = 200, message = "返回message为username")
+    public Result loginByGithub(@RequestBody String code){
+        code = JSON.parseObject(code).getString("code");
+        String AccessToken = GitHubUtil.getGithubAccessToken(code);
+        String gitHubUserName = GitHubUtil.getGithubUserName(AccessToken);
+        User user = userService.getUserByGithub(gitHubUserName);
+        if(user == null){
+            return Result.fail(201,"github账号未绑定，请先注册",null);
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+        String token= JWTUtil.createToken(user.getUsername(),currentTimeMillis);
+        redisUtil.set(user.getUsername(),currentTimeMillis,30*60); //放入缓存（登录）
+        return new Result<String>(200,user.getUsername(),token);
     }
 
     @PostMapping("/logout")
@@ -166,5 +186,25 @@ public class UserController {
         return new Result<String>(200, "successfully edit a user", "");
     }
 
+    @PostMapping("/bindgithub")
+    @ApiOperation(value="绑定GitHub")
+    @ApiResponse(code = 200, message = "返回data为username")
+    public Result bindGithub(@RequestBody String code,HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        code = JSON.parseObject(code).getString("code");
+        String AccessToken = GitHubUtil.getGithubAccessToken(code);
+        String gitHubUserName = GitHubUtil.getGithubUserName(AccessToken);
+        userService.bindGithub(username, gitHubUserName);
+        return new Result(200,"绑定成功",username);
+    }
+
+    @PostMapping("/unbundgithub")
+    public Result unbundGithub(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        String username = JWTUtil.getUsername(token);
+        userService.unbindGithub(username);
+        return Result.succ("解绑成功");
+    }
 
 }

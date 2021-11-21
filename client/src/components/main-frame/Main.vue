@@ -957,14 +957,14 @@ export default {
     },
 
 
-// websocket
+    // websocket
     connWebSocket() {
       // let userInfo = JSON.parse(sessionStorage.getItem("userInfos"));
       // let userId = userInfo.userId;
       // WebSocket
       if ("WebSocket" in window) {
         this.websocket = new WebSocket(
-            "ws://localhost:8081/websocket/" + this.username //userId 传此id主要后端java用来保存session信息，用于给特定的人发送消息，广播类消息可以不用此参数
+            "ws://localhost:8081/messagepush/" + this.username //userId 传此id主要后端java用来保存session信息，用于给特定的人发送消息，广播类消息可以不用此参数
         );
         //初始化socket
         this.initWebSocket();
@@ -1000,6 +1000,7 @@ export default {
       this.start()
     },
     setOnmessageMessage(result) {
+      this.reset();
       console.log("服务端返回：" + result.data);
       let msgMap = JSON.parse(result.data);
       let id = msgMap.id;
@@ -1058,7 +1059,7 @@ export default {
       self.timeoutObj = setTimeout(function () {
         //这里发送一个心跳，后端收到后，返回一个心跳消息，
         if (self.websocket.readyState === 1) {//如果连接正常
-          self.websocket.send("heartCheck");
+          self.websocket.send("{heartCheck: 1}");
         } else {//否则重连
           self.reconnect();
         }

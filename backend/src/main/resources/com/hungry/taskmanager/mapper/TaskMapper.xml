@@ -14,7 +14,7 @@
         </if>
         <where>
             <if test="userId != null">
-                u.user_id = #{userId}
+                ut.user_id = #{userId}
             </if>
             <if test="privilege != null">
                 AND t.privilege = #{privilege}
