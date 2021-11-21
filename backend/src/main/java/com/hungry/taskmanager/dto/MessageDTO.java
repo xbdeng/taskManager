@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -14,7 +15,7 @@ import java.math.BigInteger;
 public class MessageDTO {
     private BigInteger messageId;
     private String usernameFrom;
-    private String usernameTo;
+    private List<String> usernameTo;
     private String type;
-    private Integer status;
+    private Integer isRead;
 }
