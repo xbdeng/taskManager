@@ -6,10 +6,8 @@
             <el-aside>
                 <el-menu  class="main-frame-menu">
                     <!-- 显示所有的组 -->
-                    <el-menu-item  v-for='(team, teamIndex) in this.tmpTeamInfo' :key=teamIndex :index= team.teamName >
-                        <template slot="title">
-                            <span slot="title" @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
-                        </template>
+                    <el-menu-item  v-for='(team, teamIndex) in this.teamInfo' :key=team.teamId :index= team.teamName >
+                            <span @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
                     </el-menu-item>
                 </el-menu>
             </el-aside>
@@ -33,7 +31,7 @@
             :modal-append-to-body='false'
             size='50%'>
                 <TeamShow
-                :singleTeamData="tmpTeamInfo[selectedTeam]"
+                :singleTeamData="this.teamInfo === 0 ? this.teamSample: teamInfo[selectedTeam]"
                 :username="this.username"
                 :Friends="this.Friends"
                 v-on:closeTeamDrawer="closeTeamDrawer($event)"
@@ -48,7 +46,7 @@
             :modal-append-to-body='false'
             size='50%'>
                 <TaskShow
-                :singleTaskData="getTaskById(tmpTeamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
+                :singleTaskData="teamInfo.length === 0 ? this.taskSample :getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
                 v-on:closeTaskDrawer='closeTaskDrawer($event)'
                 v-on:emitTreeData="emitTreeData($event)"></TaskShow>
             </el-drawer>
@@ -85,19 +83,7 @@ export default {
     TreeTask
   },
   props:['teamInfo','username','Friends'],
-  watch:{
-    'teamInfo':{
-      handler() {
-        this.tmpTeamInfo = []
-        for(let i in this.teamInfo) {
-          this.tmpTeamInfo.push(this.teamInfo[i])
-        }
-      },
-      deep:true
-    }
-  },
   data() {
-
     return {
         // 唯一标识任务的key
         chosenTaskId:'-1',
@@ -107,8 +93,24 @@ export default {
         teamInfoDrawer:false,
         treeDrawer:false,
         treeData:null,
-        tmpTeamInfo:JSON.parse(JSON.stringify(this.teamInfo))
-
+        taskSample:{
+          createDate:'',
+          description:'',
+          dueDate:'',
+          members:[],
+          privilege:0,
+          status:0,
+          subTasks:[],
+          tags:[],
+          taskName:'',
+          type:0
+        },
+        teamSample:{
+          teamName:'',
+          createDate:'',
+          members:[],
+          description:''
+        }
     }
   },
   methods: {
