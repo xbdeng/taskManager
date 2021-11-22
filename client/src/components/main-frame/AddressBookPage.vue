@@ -51,27 +51,35 @@
 <script>
 import FriendShow from '../sub-components/FriendShow.vue'
 import axios from "axios";
+//设置axios请求的baseURL
+import process from "_shelljs@0.7.8@shelljs";
+axios.defaults.baseURL = process.env.API_ROOT
 export default {
 
   name: "AddressBookPage",
   components: {
       FriendShow
   },
+  //父组件：Main, 向该组件传递参数Friends，所有的好友数据
   props:['Friends'],
   data() {
       return {
+          //鼠标点击，选中的好友对象在Friends数组中的下标
           selectedFriend:0,
+          //添加好友时，在搜索框中输入的用户名
           addFriend:''
       }
   },
   methods:{
+      //点击某个好友，获取这个好友对象在Friends中的数组下标
       changeSelectedFriend(index) {
           this.selectedFriend = index
       },
+      //发送加好友请求
       AddFriendRequest(friendName){
         const that = this
         axios.post(
-            'http://localhost:8081/api/message/sendrequest',
+            '/message/sendrequest',
             {
               usernameTo: friendName,
               type: 1

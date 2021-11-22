@@ -24,12 +24,13 @@
             <el-main>
               <el-container>
                 <el-main>
-                <el-menu :default-openeds="['today']" >
+                <el-menu :default-openeds="['today']">
                   <TaskTree
                       v-show="taskShow"
                       :taskData="this.taskData"
                       :taskLevel="''"
                       :chosenTask="chosenTaskId"
+
                       v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
                   <el-submenu index='today' v-show="planedTaskShow">
                     <template slot="title">
@@ -175,7 +176,7 @@ export default {
     },
     addTask() {
       const that = this
-      if(this.addedTaskName === '') {
+      if(that.addedTaskName === '' || that.addedTaskName === null) {
         that.$message.error('要添加的任务名不能为空')
         return ;
       }

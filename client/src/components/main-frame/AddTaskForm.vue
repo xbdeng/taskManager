@@ -114,15 +114,20 @@ import process from "_shelljs@0.7.8@shelljs";
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: 'AddTaskForm',
+  //username:Main中传递
+  //tagArray:Main中请求用户的标签信息，传递到子组件
+  //myTeamInfo:Main中请求用户创建或管理的组
+  //fatherTaskId:TreeTask中，点击节点添加子任务时，传递的父任务的id
   props:['username','tagArray','myTeamInfo','fatherTaskId'],
   data () {
+    //任务名验证：不能为空
     var checkTaskName = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务名不能为空！'));
         }
         callback()
     };
-
+  // DDL验证：1.不能为空，2.不能比当前时间早
     var checkTaskDDL = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务截止时间不能为空！'));
@@ -131,18 +136,21 @@ export default {
         }
         callback()
     };
+    //优先级验证：不能为空
     var checkTaskPriority = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务优先级不能为空！'));
         }
         callback()
     };
+    //任务类型验证：不能为空
     var checkTaskType = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务类型不能为空！'));
         }
         callback()
-    };
+    }
+    //开始时间验证：1.不能为空。2.不能比DDL晚
     var checkTaskStartTime = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务开始时间不能为空！'));
@@ -151,12 +159,14 @@ export default {
         }
         callback()
     };
+    //任务描述验证：不能为空
     var checkTaskDescription = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('任务描述信息不能为空！'));
         }
         callback()
     };
+    //组队任务分配的组：不能为空
     var checkTeams = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('组队任务分配的组别不能为空！'));
@@ -164,7 +174,9 @@ export default {
         callback()
     };
     return {
+        // 用户添加的自定义的标签
         addedTag:'',
+        //添加任务的表单
         taskForm:{
             taskName:'',
             tags: [],
@@ -175,12 +187,14 @@ export default {
             createDate:'',
             description:'',
         },
+        //默认的优先级选项
         priorityArray:[
             {label:'极高', value:3},
             {label:'高',   value:2},
             {label:'中',   value:1},
             {label:'低',   value:0}
         ],
+        //表单验证规则
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
             dueDate:[{validator:checkTaskDDL, trigger:'blur'}],
@@ -193,14 +207,18 @@ export default {
     }
   },
   methods:{
+    //用户点击取消，跳转回日历界面
     toCalendar() {
+        //将添加任务表单清空
         for(let i in this.taskForm) {
             this.taskForm[i] = null
         }
+        //向父组件发送跳转日历界面的消息
         this.$emit('toCalendar',{});
     },
-
+    // 用户输入自定义标签内容后，点击添加按钮，执行添加自定义标签
     addTag() {
+        //遍历已有的标签，看是否重复，如果重复不能添加
         let flag = false
         let that = this
         for(let i in this.tagArray) {
@@ -214,6 +232,7 @@ export default {
             this.$message.error('添加失败，已有该标签')
             return ;
         }
+        //向后端发送添加标签请求
         axios.post(
             '/user/addtag',
             {
@@ -226,18 +245,19 @@ export default {
             }
         ).then(
             function(response) {
-                //alert(response.data.msg)
                 if(response.data.code === 200) {
                     that.$message({
                         message:'添加标签成功',
                         type:'success'
                     })
+                  // 添加成功，直接向表单中添加这个标签项
                     that.tagArray.push(
                         {
                             label:that.addedTag,
                             value:that.addedTag
                         }
                     )
+                  // 将输入框绑定的数据清空
                   that.addedTag = null
                   let newToken = response.headers.authorization
                   if(newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -252,9 +272,12 @@ export default {
             }
         )
     },
+    //提交添加任务的表单
     submitForm(formName) {
         let that = this
+        // 如果是在树形结构中调用AddTaskForm，参数中fatherTaskId不为null，这时要多执行一步添加子任务的步骤
         let fTaskId = this.fatherTaskId
+        //子任务的id
         let cTaskId = null
         this.$refs[formName].validate((valid)=>{
             if(valid) {
@@ -281,18 +304,20 @@ export default {
                 }
               }).then(
                 function (response) {
-                    //alert(response.data.msg)
                     if(response.data.code === 200) {
                         that.$message({
                             message:'新建任务成功',
                             type:'success'
                         })
+                        //清空所有表单项
                         for(let key in that.taskForm) {
                             that.taskForm[key] = ''
                         }
+                        //获取添加该任务后，该任务的id
                         cTaskId = response.data.data.taskId
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                        //添加完任务，直接跳转到日历界面
                         that.toCalendar()
                     } else {
                         that.$message.error('新建任务失败')
@@ -306,10 +331,11 @@ export default {
             )
 
             } else {
-                //alert('error submit !!')
+                that.$message.error('表单验证未通过')
                 return false
             }
         });
+        //添加子任务
         if(fTaskId != null) {
           //请求添加父子任务
           axios.post(
