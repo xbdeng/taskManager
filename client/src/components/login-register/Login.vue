@@ -1,21 +1,21 @@
 <template>
 
   <div id="login">
+
     <el-row type="flex" justify="center" id="login_container_pos">
       <el-col :span="24">
-          <el-collapse-transition>
-            <div v-show="login" class="animate__animated animate__zoomIn">
-              <LoginContainer></LoginContainer>
-            </div>
-          </el-collapse-transition>
+<!--        登录窗口-->
+        <div v-show="login" class="animate__animated animate__zoomIn">
+          <LoginContainer></LoginContainer>
+        </div>
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
+//登录窗口
 import LoginContainer from './LoginContainer'
-
 export default {
 
   name: "Login",
@@ -24,10 +24,12 @@ export default {
   },
   data() {
     return {
+      // 登录窗口是否显示
       login:true
     }
   },
   methods:{
+    //控制登录窗口显示，暂时用不到
     setLogin() {
       this.login = !this.login
     }
@@ -37,9 +39,10 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Reggae+One&display=swap');
 #login {
+  /*登录页面背景图*/
   background: url("../../assets/login.png");
+  /*登录页面占满*/
   width: 100%;
   height: 100%;
   position: fixed;

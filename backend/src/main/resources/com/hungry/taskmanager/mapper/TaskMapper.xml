@@ -7,14 +7,18 @@
         </if>
         <if test="teamName != null or teamId != null" >
             INNER JOIN team_task AS tt ON t.task_id = tt.task_id
+            INNER JOIN team AS t2 ON tt.team_id = t2.team_id
         </if>
         <if test="tag != null">
             INNER JOIN user_task_tag utt ON ut.ut_id = utt.ut_id
             INNER JOIN tag AS t3 ON utt.tag_id = t3.tag_id
         </if>
         <where>
+            <if test="onlyTopTask != null and onlyTopTask == true">
+                t.father_task IS NULL
+            </if>
             <if test="userId != null">
-                ut.user_id = #{userId}
+                AND ut.user_id = #{userId}
             </if>
             <if test="privilege != null">
                 AND t.privilege = #{privilege}

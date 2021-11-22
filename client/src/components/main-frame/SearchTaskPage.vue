@@ -52,6 +52,14 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
+              ``<!--position-->
+                <el-form-item label="任务地点" prop="position">
+                  <el-row>
+                        <el-col :span='14'>
+                            <el-input placeholder='请输入任务地点...' clearable v-model='fliterForm.position'></el-input>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
                 <!-- privilege -->
                 <el-form-item label="任务优先级:" prop="privilege">
                     <el-row>
@@ -176,6 +184,7 @@ export default {
               status:null,
               teamName:null,
               type:null,
+              position:null
 
           },
           finished:false,
@@ -208,7 +217,8 @@ export default {
                 tags:that.fliterForm.tags,
                 taskName:that.fliterForm.taskName,
                 teamName:that.fliterForm.teamName,
-                type:that.fliterForm.type
+                type:that.fliterForm.type,
+                position:that.fliterForm.position
               },
               {
                 headers:{
@@ -229,6 +239,7 @@ export default {
                       if(newToken != null) {
                         window.sessionStorage.setItem('token', newToken)
                       }
+                      that.handleFliterClose()
                   } else {
                       that.$message.error('查询失败')
                       let newToken = response.headers.authorization
@@ -257,8 +268,12 @@ export default {
       openFliter() {
           this.fliterDrawer = true
       },
-      handleTaskInfoClose() {
+      handleTaskInfoClose(a) {
           this.taskInfoDrawer = false
+          this.searchRequest()
+          for (let i in this.fliterForm) {
+            this.fliterForm[i] = null
+          }
       },
       handleFliterClose() {
           this.fliterDrawer = false
@@ -319,7 +334,11 @@ export default {
       emitTreeData(task) {
         this.treeDrawer = true
         this.treeData = task
-      }
+      },
+      closeTaskDrawer() {
+          this.$emit('closeTaskDrawer', {})
+          this.taskInfoDrawer = false
+      },
 
   }
 

@@ -115,7 +115,7 @@ public class TaskServiceImpl implements TaskService{
      */
     public List<Task> queryTask(QueryTaskDTO filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
-        filter.setUserId(userId);
+        filter.setUserId(userId).setOnlyTopTask(true);
         // configure range
         if (filter.getScheduledTask() != null && filter.getScheduledTask() == 1){
             switch(filter.getTimeRange()){

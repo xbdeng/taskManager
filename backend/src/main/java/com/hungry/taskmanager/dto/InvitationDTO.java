@@ -8,10 +8,10 @@ import lombok.experimental.Accessors;
 
 import java.math.BigInteger;
 
-//@Data
-//@Accessors(chain = true)
-//@AllArgsConstructor
-//@NoArgsConstructor
+@Data
+@Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class InvitationDTO {
     @ApiModelProperty(hidden=true)
     private String usernameFrom;

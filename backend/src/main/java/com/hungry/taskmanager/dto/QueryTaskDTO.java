@@ -36,4 +36,6 @@ public class QueryTaskDTO {
     private Integer scheduledTask;
     @ApiModelProperty(hidden = true)
     private LocalDateTime requiredDate;
+    @ApiModelProperty(hidden = true)
+    private Boolean onlyTopTask;
 }
