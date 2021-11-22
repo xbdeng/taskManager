@@ -8,7 +8,7 @@
           表示它的父亲任务的key，String(tIndex)表示在父亲任务的subTasks中的下标。
         v-if="task.subTasks": 表示如果有子任务的话，会递归调用这个模板。
         -->
-      <el-submenu :key="task.taskName" :index="taskLevel + String(tIndex)" v-if="task.subTasks">
+      <el-submenu :key="taskLevel + String(tIndex)" :index="taskLevel + String(tIndex)" v-if="task.subTasks">
           <template slot="title">
             <!-- 此处绑定changeTaskId，表示当点击某个任务时，会向父组件传递这个任务的key，一直传递到SearchTaskPage,GroupInfoPage或者是PersonalTaskPage -->
               <span slot="title" @click="changeTaskId(taskLevel + String(tIndex))">
@@ -37,7 +37,7 @@
           <TaskTree :taskData="task.subTasks" :taskLevel="taskLevel + String(tIndex)" :chosenTask="chosenTask" v-on:taskIdChanged='chooseTasks($event)'></TaskTree>
       </el-submenu>
       <!-- 如果任务没有子任务，就不用el-submenu递归显示，直接用el-menu-item显示 -->
-      <el-menu-item :key="task.taskName" :index="taskLevel + String(tIndex)" v-else>
+      <el-menu-item :key="taskLevel + String(tIndex)" :index="taskLevel + String(tIndex)" v-else>
           <span slot="title" @click="changeTaskId(taskLevel + String(tIndex))">
             <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="task.privilege === 3">
               <i class="el-icon-s-flag" style="color:red" v-if="task.privilege === 3"></i>

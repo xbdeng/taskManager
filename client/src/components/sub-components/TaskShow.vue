@@ -274,6 +274,8 @@ export default {
       invitedMembers:[],
       editedTaskName:null,
       editedDescription:'',
+      // 用于存储要新添加的任务，是字符串类型的数组
+      subTasksList:[],
       tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData)),
     }
   },
@@ -365,12 +367,12 @@ export default {
       this.editedDescription = null
     },
     addSubTask() {
+      const that = this
       let value = this.subTaskName
-      if(value != null) {
-        if(this.tempTaskForm.subTasks == null) {
-          this.tempTaskForm.subTasks = []
-        }
-        this.tempTaskForm.subTasks.push(value)
+      if(value != null && !(value === '')) {
+        this.subTasksList.push(value)
+      } else {
+        that.$message.error('要添加的子任务名不能为空')
       }
       this.subTaskName = null
     },
@@ -387,7 +389,7 @@ export default {
           members:that.tempTaskForm.members,
           privilege:that.tempTaskForm.privilege,
           status:that.tempTaskForm.status === 2 ? that.tempTaskForm.status - 1 : that.tempTaskForm.status,
-          subTasks:that.tempTaskForm.subTasks,
+          subTasks:that.subTasksList,
           tags:that.tempTaskForm.tags,
           taskName:that.tempTaskForm.taskName,
           type:that.tempTaskForm.type,
@@ -406,6 +408,8 @@ export default {
             })
             let newToken = response.headers.authorization
             if(newToken != null) window.sessionStorage.setItem('token', newToken)
+          //  重置数据
+            that.clearTaskForm()
           } else {
             that.$message.error('修改任务失败')
             let newToken = response.headers.authorization
@@ -424,7 +428,7 @@ export default {
       axios({
         method:'POST',
         url:'/task/deletetask',
-        params:{'id':that.tempTaskForm.taskId},
+        params:{id:that.tempTaskForm.taskId},
         headers:{
           Authorization:window.sessionStorage.getItem('token')
         }
@@ -439,6 +443,8 @@ export default {
               that.$emit('closeTaskDrawer',{})
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            //  重置数据
+              that.clearTaskForm()
             } else {
               that.$message.error('删除任务失败')
               let newToken = response.headers.authorization
@@ -452,6 +458,12 @@ export default {
     },
     emitTreeData() {
       this.$emit('emitTreeData',this.singleTaskData)
+    },
+    // 用于提交或者删除表单后，清空表单
+    clearTaskForm() {
+      //清空就是重新加载表单
+      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
+      this.subTasksList = []
     }
   }
   

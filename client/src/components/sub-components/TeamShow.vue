@@ -36,7 +36,7 @@
                       <span style="font-weight:bold">创建时间：</span>
                   </el-col>
                   <el-col>
-                      {{ this.singleTeamData.createDate }}
+                      {{ this.singleTeamData.creatTime }}
                   </el-col>
               </el-row>
             <!-- 显示组内成员，留接口修改 -->
@@ -413,14 +413,18 @@ export default {
       editDescription() {
         const that = this
         let teamId = this.singleTeamData.teamId
-        axios({
-          methods: 'POST',
-          url:'/editteam',
-          data:{
-            description:that.editedDescription,
-            teamId:teamId
-          }
-        }).then(
+        axios.post(
+            'team/editteam',
+            {
+                  description:that.editedTeamDescription,
+                  teamId:teamId
+            },
+            {
+              headers:{
+                    Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+            ).then(
             function(response) {
               if(response.data.code === 200) {
                 that.$message({
@@ -428,7 +432,7 @@ export default {
                   type:'success'
                 })
                 that.editedDescription = null
-                that.$emit('postTeamDataAgain', {})
+                that.$emit('postTeamInfoAgain', {})
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               } else {
