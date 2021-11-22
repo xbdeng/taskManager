@@ -138,6 +138,32 @@
             </el-row>
           </el-form-item>
 
+          <el-form-item>
+            <el-row>
+              <el-col :span="8">
+                <div>
+                  lastName
+                  <br>
+                  <el-input placeholder="xb" v-model="lastName" @change="handleLastName"></el-input>
+                </div>
+              </el-col>
+
+              <el-col :span="8">
+                <!--          <div>-->
+                <!--            ?-->
+                <!--            <br>-->
+                <!--            <el-input placeholder="?"></el-input>-->
+                <!--          </div>-->
+                <el-button @click="handleGithub" v-show="googlebind === null">bind to github</el-button>
+                <div v-show="githubbind">
+                  You are now bind with google profile
+                  <el-button @click="handleGithubUntie" v-show="googlebind !== null">Untie to github from {{this.githubbind}}</el-button>
+                </div>
+              </el-col>
+
+            </el-row>
+          </el-form-item>
+
         </el-form>
       </el-main>
     </el-container>
@@ -161,7 +187,8 @@ export default {
       phone: '',
       userId: -1,
       loading: false,
-      githubbind: ''
+      githubbind: '',
+      googlebind: ''
     }
   },
   mounted() {
@@ -203,6 +230,7 @@ export default {
             that.lastName = response.data.data.lastName
             that.userId = response.data.data.userId
             that.githubbind = response.data.data.githubName
+            that.googlebind = response.data.data.googleName
             // console.log(response)
           }
       )
@@ -412,6 +440,51 @@ export default {
       const that = this
       axios.post(
           'http://localhost:8081/api/user/unbundgithub',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.$message({
+                    message: 'Unite success',
+                    type: 'success'
+                  }
+              )
+              location.reload();
+            } else {
+              that.$message({
+                message: 'Unite failed',
+                type: 'error'
+              })
+            }
+          },
+          function (err) {
+            that.$message({
+                  message: 'server failed',
+                  type: 'error'
+                }
+            )
+          }
+      )
+    },
+    handleGoogle(event) {
+      //github登录授权页面
+      let oauth_uri = 'https://accounts.google.com/o/oauth2/v2/auth'
+      //github中获取
+      let client_id = '1015615497271-q5t9cf1h77n27f641i3n5pucunv9n95c.apps.googleusercontent.com'
+      //授权回调地址
+      let redirect_uri = 'http://localhost:8080/google/bind'
+      let scope = 'https://www.googleapis.com/auth/calendar'
+      window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
+    },
+    handleGoogleUntie(event) {
+      const that = this
+      axios.post(
+          'http://localhost:8081/api/user/unbundgoogle',
           {},
           {
             headers: {
