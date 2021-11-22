@@ -27,10 +27,11 @@
           </el-form-item>
           <!-- 登录注册按钮 -->
           <el-form-item>
-            <el-col :span="20" >
+            <el-col :span="24" >
               <el-button type="primary" @click="handleSubmit">登录</el-button>
               <el-button @click="handleRegister">注册</el-button>
-              <el-button @click="handleGithub">login with github</el-button>
+              <el-button @click="handleGithub">Github</el-button>
+              <el-button @click="handleGoogle">Google</el-button>
             </el-col>
           </el-form-item>
         </el-form>
@@ -132,6 +133,16 @@ export default {
       //授权回调地址
       let redirect_uri = 'http://localhost:8080/oauth/redirect'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}`
+    },
+    handleGoogle(event) {
+      //github登录授权页面
+      let oauth_uri = 'https://accounts.google.com/o/oauth2/v2/auth'
+      //github中获取
+      let client_id = '1015615497271-q5t9cf1h77n27f641i3n5pucunv9n95c.apps.googleusercontent.com'
+      //授权回调地址
+      let redirect_uri = 'http://localhost:8080/google/login'
+      let scope = 'https://www.googleapis.com/auth/calendar'
+      window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
     }
   }
 };

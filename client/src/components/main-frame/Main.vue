@@ -137,7 +137,7 @@
                 <ul class="demo-ul">
                   <li class="demo-li">Select dates and you will be prompted to create a new event</li>
                   <li class="demo-li">Drag, drop, and resize events</li>
-                  <li class="demo-li">Click an event to delete it</li>
+                  <li class="demo-li">Click an event to get detailed information</li>
                 </ul>
               </div>
               <div class='demo-app-sidebar-section'>
@@ -173,12 +173,33 @@
           </div>
           <!--弹出任务详细信息-->
           <el-dialog
-              title="提示"
+              title="任务详细信息"
               :visible.sync="CalendarDialog"
               width="30%"
               :modal-append-to-body='false'
               center>
-            <span>{{ this.CalendarClickTask }}</span>
+<!--            <span>{{ this.CalendarClickTask }}</span>-->
+            <el-form v-if="this.CalendarClickTask !== null">
+              <el-form-item label="任务名称">
+                <span>{{ this.CalendarClickTask.taskName }}</span>
+              </el-form-item>
+              <el-form-item label="描述">
+                <span>{{ this.CalendarClickTask.description }}</span>
+              </el-form-item>
+              <el-form-item label="开始时间">
+                <span>{{ this.CalendarClickTask.createDate }}</span>
+              </el-form-item>
+              <el-form-item label="截止时间">
+                <span>{{ this.CalendarClickTask.dueDate }}</span>
+              </el-form-item>
+              <el-form-item label="标识">
+                <span v-for="i in this.CalendarClickTask.tags"> {{i}} </span>
+<!--                <span>{{ this.CalendarClickTask.tags }}</span>-->
+              </el-form-item>
+              <el-form-item>
+
+              </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
               <el-button @click="CalendarDialog = false">取 消</el-button>
               <el-button type="primary" @click="CalendarDialog = false">确 定</el-button>
