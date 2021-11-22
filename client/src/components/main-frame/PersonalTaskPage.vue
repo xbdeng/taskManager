@@ -24,6 +24,7 @@
             <el-main>
               <el-container>
                 <el-main>
+                  <div class="test-div">
                 <el-menu :default-openeds="['today']">
                   <TaskTree
                       v-show="taskShow"
@@ -64,11 +65,12 @@
                   </el-submenu>
                   <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-menu>
+                  </div>
                 </el-main>
               </el-container>
             </el-main>
             <!-- 显示任务信息 -->
-            <el-drawer 
+            <el-drawer
             title="查看或编辑任务"
             :visible.sync="drawer"
             direction="rtl"
@@ -330,5 +332,8 @@ export default {
 </script>
 
 <style scoped>
-
+.test-div{
+  overflow-y:auto;
+  height: 90%;
+}
 </style>
