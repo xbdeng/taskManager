@@ -40,6 +40,14 @@ mo<template>
                             </el-col>
                         </el-row>
                     </el-form-item>
+                  <!--任务地点-->
+                    <el-form-item label="任务地点:" prop="position">
+                      <el-row>
+                        <el-col :span="14">
+                          <el-input placeholder='请输入任务地点...' clearable v-model='taskForm.position'></el-input>
+                        </el-col>
+                      </el-row>
+                    </el-form-item>
                     <!--Task DDL-->
                     <el-form-item label='任务截止时间:' prop='dueDate'>
                         <el-row>
@@ -127,22 +135,6 @@ export default {
         }
         callback()
     };
-  // DDL验证：1.不能为空，2.不能比当前时间早
-    var checkTaskDDL = (rule, value, callback)=>{
-        if (value === '') {
-            return callback(new Error('任务截止时间不能为空！'));
-        } else if(new Date(value) <= new Date()) {
-            return callback(new Error('任务的截止时间不能比当前时间还早'))
-        }
-        callback()
-    };
-    //优先级验证：不能为空
-    var checkTaskPriority = (rule, value, callback)=>{
-        if (value === '') {
-            return callback(new Error('任务优先级不能为空！'));
-        }
-        callback()
-    };
     //任务类型验证：不能为空
     var checkTaskType = (rule, value, callback)=>{
         if (value === '') {
@@ -150,22 +142,6 @@ export default {
         }
         callback()
     }
-    //开始时间验证：1.不能为空。2.不能比DDL晚
-    var checkTaskStartTime = (rule, value, callback)=>{
-        if (value === '') {
-            return callback(new Error('任务开始时间不能为空！'));
-        } else if(new Date(value) >= new Date(this.taskForm.dueDate)) {
-            return callback(new Error('任务的开始时间不能比结束时间还晚'))
-        }
-        callback()
-    };
-    //任务描述验证：不能为空
-    var checkTaskDescription = (rule, value, callback)=>{
-        if (value === '') {
-            return callback(new Error('任务描述信息不能为空！'));
-        }
-        callback()
-    };
     //组队任务分配的组：不能为空
     var checkTeams = (rule, value, callback)=>{
         if (value === '') {
@@ -186,6 +162,7 @@ export default {
             teamId:'',
             createDate:'',
             description:'',
+            position:''
         },
         //默认的优先级选项
         priorityArray:[
@@ -197,12 +174,13 @@ export default {
         //表单验证规则
         rules:{
             taskName:[{validator:checkTaskName, trigger:'blur'}],
-            dueDate:[{validator:checkTaskDDL, trigger:'blur'}],
-            privilege:[{validator:checkTaskPriority, trigger:'blur'}],
+            // dueDate:[{validator:checkTaskDDL, trigger:'blur'}],
+            // privilege:[{validator:checkTaskPriority, trigger:'blur'}],
             type:[{validator:checkTaskType, trigger:'blur'}],
-            createDate:[{validator:checkTaskStartTime, trigger:'blur'}],
-            description:[{validator:checkTaskDescription, trigger:'blur'}],
-            teams:[{validator:checkTeams, trigger:'blur'}]
+            // createDate:[{validator:checkTaskStartTime, trigger:'blur'}],
+            // description:[{validator:checkTaskDescription, trigger:'blur'}],
+            teams:[{validator:checkTeams, trigger:'blur'}],
+
         }
     }
   },
