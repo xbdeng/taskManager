@@ -36,7 +36,7 @@
           <el-menu>
             <el-menu-item v-for="(friend, index) in Friends" :key="index" @click="changeSelectedFriend(index)">
               {{ friend.username }}
-              <el-button type="danger" icon="el-icon-delete" circle @click="removeFriend"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="removeFriend(friend.username)"></el-button>
             </el-menu-item>
           </el-menu>
         </el-aside>

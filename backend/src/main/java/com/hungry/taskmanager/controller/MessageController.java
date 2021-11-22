@@ -30,11 +30,12 @@ public class MessageController {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             int code = messageService.sendRequest(invitationDTO.setFrom(username));
+            return new Result<String>(code, "successfully send request", "");
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
         }
-        return new Result<String>(200, "successfully send request", "");
+
     }
     @RequestMapping("/confirm")
     public Result<String> confirm(@RequestBody ConfirmDTO confirmDTO, HttpServletRequest request){

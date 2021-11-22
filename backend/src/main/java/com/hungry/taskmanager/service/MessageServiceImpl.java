@@ -4,14 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.component.WebSocketServer;
-import com.hungry.taskmanager.constant.MessageType;
 import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Message;
 import com.hungry.taskmanager.entity.Team;
 import com.hungry.taskmanager.entity.User;
-import com.hungry.taskmanager.entity.relation_entity.Contact;
-import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -56,7 +53,7 @@ public class MessageServiceImpl implements MessageService{
             case(0):{
                 // get sender receiver id
                 BigInteger sender = userMapper.getIdByName(invitation.getFrom());
-                BigInteger receiver = userMapper.getIdByName(invitation.getTo());
+                BigInteger receiver = userMapper.getIdByName(invitation.getUsernameTo());
                 // check whether user is already in team
                 if (teamService.isInTeam(receiver, BigInteger.valueOf(Long.parseLong(message.getContent())))) return 201;
                 // insert message into database
@@ -67,14 +64,14 @@ public class MessageServiceImpl implements MessageService{
                 Team team = teamMapper.selectById(invitation.getTeamId());
                 WebSocketMessageDTO wsm = new WebSocketMessageDTO().setFrom(invitation.getFrom()).setGroupName(team.getTeamName()).setType(type);
                 String text = JSON.toJSONString(wsm);
-                Session session = WebSocketServer.sessionMap.get(invitation.getTo());
+                Session session = WebSocketServer.sessionMap.get(invitation.getUsernameTo());
                 server.send(text, session);
                 break;
             }
             case(1):{
                 // get sender receiver id
                 BigInteger sender = userMapper.getIdByName(invitation.getFrom());
-                BigInteger receiver = userMapper.getIdByName(invitation.getTo());
+                BigInteger receiver = userMapper.getIdByName(invitation.getUsernameTo());
                 // check whether user is a friend
                 if (userService.hasAFriend(sender, receiver)) return 201;
                 // insert message into database
@@ -83,7 +80,7 @@ public class MessageServiceImpl implements MessageService{
                 // send invitation to the other user
                 WebSocketMessageDTO wsm = new WebSocketMessageDTO().setFrom(invitation.getFrom()).setType(type);
                 String text = JSON.toJSONString(wsm);
-                Session session = WebSocketServer.sessionMap.get(invitation.getTo());
+                Session session = WebSocketServer.sessionMap.get(invitation.getUsernameTo());
                 server.send(text, session);
                 break;
             }

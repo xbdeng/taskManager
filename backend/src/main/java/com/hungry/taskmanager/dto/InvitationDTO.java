@@ -17,7 +17,7 @@ public class InvitationDTO {
     @ApiModelProperty(hidden=true)
     private String from;
     @JSONField(serialize =false)
-    private String to;
+    private String usernameTo;
     private Integer type;
     private BigInteger teamId;
 }
