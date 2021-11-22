@@ -7,6 +7,7 @@ import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.User;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.Role;
@@ -32,17 +33,17 @@ public class ICal4jUtil {
     private static UserMapper userMapper;
 
     @Resource
-    public void setUserTaskMapper(UserTaskMapper userTaskMapper) {
+    private void setUserTaskMapper(UserTaskMapper userTaskMapper) {
         ICal4jUtil.userTaskMapper = userTaskMapper;
     }
 
     @Resource
-    public void setUserMapper(UserMapper userMapper) {
+    private void setUserMapper(UserMapper userMapper) {
         ICal4jUtil.userMapper = userMapper;
     }
 
 
-    public static VEvent TaskToVEvent(Task task) throws SocketException {
+    private static VEvent TaskToVEvent(Task task) throws SocketException {
         String title = task.getTaskName();
         String description = task.getDescription();
         Calendar startDate = new GregorianCalendar();
@@ -59,16 +60,34 @@ public class ICal4jUtil {
         DateTime endTime = new DateTime(endDate.getTime());
         VEvent vEvent = new VEvent(startTime, endTime, title);
 
+        //生成唯一标识
         Uid uid = new FixedUidGenerator("aba").generateUid();
         vEvent.getProperties().add(uid);
 
+        //设置描述
         Description eventDescription = new Description();
         eventDescription.setValue(description);
         vEvent.getProperties().add(eventDescription);
 
+        //设置地点
         Location location = new Location();
         location.setValue(task.getLocation());
         vEvent.getProperties().add(location);
+
+        //设置提醒时间
+        Calendar remindDate = new GregorianCalendar();
+        remindDate.set(task.getRemindDate().getYear(),task.getRemindDate().getMonthValue(),
+                task.getRemindDate().getDayOfMonth(),task.getRemindDate().getHour(),
+                task.getRemindDate().getMinute(),task.getRemindDate().getSecond());
+        DateTime remind = new DateTime(remindDate.getTime());
+        VAlarm vAlarm = new VAlarm(remind);
+        Action display = new Action("DISPLAY");
+        vAlarm.getProperties().add(display);
+        Action emailAction = new Action("EMAIL");
+        vAlarm.getProperties().add(emailAction);
+        Action audioAction = new Action("AUDIO");
+        vAlarm.getProperties().add(audioAction);
+        vEvent.getComponents().add(vAlarm);
 
         //添加协作者
         //获取队伍信息
@@ -81,7 +100,6 @@ public class ICal4jUtil {
             attendee.getParameters().add(new Cn(user.getUsername()));
             vEvent.getProperties().add(attendee);
         }
-
         return vEvent;
     }
 
