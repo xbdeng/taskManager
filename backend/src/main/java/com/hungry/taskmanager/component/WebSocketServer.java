@@ -36,7 +36,6 @@ public class WebSocketServer {
         JSONObject obj = JSONObject.parseObject(text);
         // exception?
         if (obj.containsKey("heartCheck") && (Integer) obj.get("heartCheck") == 1) {
-            System.out.println(username);
             send("1", sessionMap.get(username));
         } else if (obj.containsKey("heartCheck") && (Integer) obj.get("heartCheck") == 0) {
         }
@@ -54,6 +53,5 @@ public class WebSocketServer {
             e.printStackTrace();
         }
     }
-
 
 }

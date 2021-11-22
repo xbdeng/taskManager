@@ -12,12 +12,12 @@
                     <el-popover placement="bottom" width="200" trigger="click" title="添加好友">
                         <el-row>
                             <el-col>
-                                <el-input placeholder="请输入用户名"></el-input>
+                                <el-input placeholder="请输入用户名" v-model="addFriend"></el-input>
                             </el-col>
                         </el-row>
                         <el-row>
                             <el-col :offset="8">
-                                <el-button type='primary' plain size="small">确定</el-button>
+                                <el-button type='primary' plain size="small" @click="AddFriendRequest">确定</el-button>
                             </el-col>
                         </el-row>
                         <el-tooltip content="点击可修改组的描述信息" slot="reference">
@@ -25,7 +25,7 @@
                             <el-button type='primary' icon='el-icon-plus' circle ></el-button>
                         </el-tooltip>
                     </el-popover>
-                    
+
                 </el-col>
             </el-row>
         </el-header>
@@ -50,6 +50,7 @@
 
 <script>
 import FriendShow from '../sub-components/FriendShow.vue'
+import axios from "axios";
 export default {
 
   name: "AddressBookPage",
@@ -60,11 +61,44 @@ export default {
   data() {
       return {
           selectedFriend:0,
+          addFriend:''
       }
   },
   methods:{
       changeSelectedFriend(index) {
           this.selectedFriend = index
+      },
+      AddFriendRequest(friendName){
+        const that = this
+        axios.post(
+            'http://localhost:8081/api/message/sendrequest',
+            {
+              usernameTo: friendName,
+              type: 1
+            },
+            {
+              headers: {
+                Authorization: window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function (response){
+              if (response.data.code === 200) {
+                that.$message({
+                  message: 'send friend request success',
+                  type: 'success'
+                })
+              }
+              let newToken = response.headers.authorization
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            },
+            function (err){
+              that.$message({
+                message: 'server error',
+                type: 'error'
+              })
+            }
+        )
       }
   }
 
