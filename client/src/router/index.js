@@ -70,7 +70,7 @@ const router =  new VueRouter({
 router.beforeEach((to, from, next) => {
     let token = window.sessionStorage.getItem('token')
     if(token === null) {
-        if(to.name === 'login' || to.name === 'register' || to.name === 'github' || to.name === 'githubBind') {
+        if(to.name === 'login' || to.name === 'register' || to.name === 'github' || to.name === 'githubBind' || to.name === 'google' || to.name === 'googlebind') {
             next()
         } else {
             next(`/login`)

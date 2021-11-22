@@ -91,17 +91,17 @@
                 <el-form-item>
                   <el-row :gutter="20">
                     <el-col :span="15">
-                      <!--TODO : Team Name here-->
-                      lll
+                      {{data.teamName}}
                     </el-col>
                     <el-col :span="9">
-                      <el-button type="primary" plain @click="requestTeam">申请加入</el-button>
+                      <el-button type="primary" plain @click="requestTeam(data.teamId)">申请加入</el-button>
                     </el-col>
                   </el-row>
                 </el-form-item>
                 <el-form-item>
-                  <!--TODO : Team creator and information etc.-->
-                  hhh
+                  Creator Name:{{data.creatorName}}
+                  <br>
+                  Description:{{data.description}}
                 </el-form-item>
               </el-card>
             </el-form-item>
@@ -160,9 +160,7 @@ export default {
       },
       searchTeam: false,
       teamSearchName: '',
-      searchTeamList: [{
-        testtest: 'aa'
-      }]
+      searchTeamList: []
     }
   },
   methods: {
@@ -226,7 +224,7 @@ export default {
     searchTeamB(event) {
       const that = this
       axios.post(
-          'http://localhost:8081/api/team/querytask',
+          'http://localhost:8081/api/team/queryteam',
           {
             teamName: that.teamSearchName
           },

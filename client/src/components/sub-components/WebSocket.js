@@ -18,15 +18,15 @@ var websocket = {
             return;
         }
 
-        ws.onmessage = function (e) {
-            console.log("接收消息:" + e.data)
-            heartCheck.start()
-            if (e.data === 'ok') {//心跳消息不做处理
-                return
-            }
-            broken = false
-            //messageHandle(e.data)
-        }
+        // ws.onmessage = function (e) {
+        //     console.log("接收消息:" + e.data)
+        //     heartCheck.start()
+        //     if (e.data === 'ok') {//心跳消息不做处理
+        //         return
+        //     }
+        //     broken = false
+        //     //messageHandle(e.data)
+        // }
 
         ws.onclose = function () {
             console.log("连接已关闭")
@@ -145,7 +145,7 @@ export var heartCheck = {
             ws.send("{heartCheck: 1}");
             self.serverTimeoutObj = setTimeout(function () {
                 if (ws.readyState !== 1) {
-                    console.log(ws)
+                    // console.log(ws)
                     ws.close();
                 }
                 // createWebSocket();

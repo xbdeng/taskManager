@@ -78,12 +78,12 @@ export default {
       this.selectedFriend = index
     },
     //发送加好友请求
-    AddFriendRequest(friendName) {
+    AddFriendRequest(event) {
       const that = this
       axios.post(
           '/message/sendrequest',
           {
-            usernameTo: friendName,
+            usernameTo: that.addFriend,
             type: 1
           },
           {
@@ -97,6 +97,11 @@ export default {
               that.$message({
                 message: 'send friend request success',
                 type: 'success'
+              })
+            }else if(response.data.code === 201){
+              that.$message({
+                message: 'Friend is in list!',
+                type: 'error'
               })
             }
             let newToken = response.headers.authorization

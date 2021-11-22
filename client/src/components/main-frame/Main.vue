@@ -414,19 +414,19 @@ export default {
           return
         } else {
           if (tmp.type === 0) {
-            this.$notify.info({
+            that.$notify.info({
               title: tmp.from,
               message: '想要与你一起组队成为' + tmp.groupName
             });
           }
           if (tmp.type === 1) {
-            this.$notify.info({
+            that.$notify.info({
               title: tmp.from,
               message: '想要与你成为好友'
             });
           }
           if (tmp.type === 2) {
-            this.$notify.info({
+            that.$notify.info({
               title: tmp.from,
               message: '邀请你加入' + tmp.groupName
             });
