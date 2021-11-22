@@ -71,9 +71,11 @@ public class TaskController {
     @PostMapping("/edittask")
     @RequiresAuthentication
     @ApiOperation(value = "edit a task",notes = "modified information is required only")
-    public Result<String> editTask(@RequestBody EditTaskDTO params) {
+    public Result<String> editTask(@RequestBody EditTaskDTO params, HttpServletRequest request) {
         try {
-            taskServiceImpl.editTask(params);
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            taskServiceImpl.editTask(params.setUsername(username));
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", null);
