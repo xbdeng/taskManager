@@ -36,6 +36,10 @@ export default {
             let tmpusername = response.data.msg
             that.$router.push({name: 'Main', params: {username: tmpusername}})
           }else {
+            that.$message({
+              message: 'github帐号未绑定任何帐号，请重新登录',
+              type: 'error'
+            })
             that.$router.push({name: 'login'})
           }
         },
