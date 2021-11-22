@@ -104,8 +104,7 @@ public class UserServiceImpl implements UserService {
         HashMap<BigInteger, TeamDTO> teamMap = new HashMap<>();
         List<TeamDTO> returnList = new ArrayList<>();
         for (Team team: teams){
-            String creator = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", team.getCreator())).getUsername();
-            TeamDTO newTeam = new TeamDTO().setTeamId(team.getTeamId()).setTeamName(team.getTeamName()).setCreator(creator)
+            TeamDTO newTeam = new TeamDTO().setTeamId(team.getTeamId()).setTeamName(team.getTeamName())
                     .setDescription(team.getDescription()).setCreatTime(team.getCreateTime()).setAdmins(new ArrayList<>()).setMembers(new ArrayList<>());
             teamMap.put(team.getTeamId(), newTeam);
             returnList.add(newTeam);
@@ -115,12 +114,14 @@ public class UserServiceImpl implements UserService {
         for(HashMap<String, Object> map: teamUserMaps){
             String identity = (String)map.get("identity");
             if (identity != null) {
-                String userId = ((Long)map.get("user_id")).toString();
+                String username = (String)map.get("username");
                 BigInteger teamId = BigInteger.valueOf((Long)map.get("team_id"));
                 if ("admin".equals(identity))
-                    teamMap.get(teamId).getAdmins().add(userId);
+                    teamMap.get(teamId).getAdmins().add(username);
                 if ("member".equals(identity))
-                    teamMap.get(teamId).getMembers().add(userId);
+                    teamMap.get(teamId).getMembers().add(username);
+                if ("creator".equals(identity))
+                    teamMap.get(teamId).setCreator(username);
             }
         }
         // get all related task

@@ -20,8 +20,9 @@
     </insert>
 
     <select id="getTeamUserRelationships" resultType="HashMap">
-        SELECT tu.team_id, tu.user_id, tu.identity FROM team
+        SELECT tu.team_id, u.username, tu.identity FROM team
         INNER JOIN team_user AS tu ON team.team_id = tu.team_id
+        INNER JOIN user AS u ON tu.user_id = u.user_id
         WHERE team.team_id IN
         <foreach collection="teams" index="index" item="team" open="(" separator="," close=")">
             #{team.teamId}
