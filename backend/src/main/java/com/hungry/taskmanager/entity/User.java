@@ -1,6 +1,8 @@
 package com.hungry.taskmanager.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.hungry.taskmanager.dto.UserDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
+    @TableId(type= IdType.AUTO)
     private BigInteger userId;
     private String username;
     private String password;

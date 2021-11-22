@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("userService")
@@ -96,23 +97,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    private List<TeamDTO> getTeamDTOSbyTeamIds(List<BigInteger> teamsId) {
-//        List<Team> teams = teamMapper.selectList(new QueryWrapper<Team>().in("team_id", teamsId));
-//
-//        List<TeamDTO> re_turn = new ArrayList<>();
-//        for (Team team : teams) {
-//            List<BigInteger> membersId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("team_id", team.getTeamId()).eq("identity", "member")).stream().map(TeamUser::getUserId).collect(Collectors.toList());
-//            List<BigInteger> adminsId = teamUserMapper.selectList(new QueryWrapper<TeamUser>().eq("team_id", team.getTeamId()).eq("identity", "admin")).stream().map(TeamUser::getUserId).collect(Collectors.toList());
-//
-//            String creator = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", team.getCreator())).getUsername();
-//            List<String> members = userMapper.selectList(new QueryWrapper<User>().in("user_id", membersId)).stream().map(User::getUsername).collect(Collectors.toList());
-//            List<String> admins = userMapper.selectList(new QueryWrapper<User>().in("user_id", adminsId)).stream().map(User::getUsername).collect(Collectors.toList());
-//            TeamDTO teamDTO = new TeamDTO(team.getTeamId(), team.getTeamName(), team.getDescription(), team.getCreateTime()
-//                    , creator, members, admins);
-//            re_turn.add(teamDTO);
-//        }
-//        return re_turn;
-//    }
 
     private List<TeamDTO> getTeamDTOsByTeamIds(List<BigInteger> teamIds) throws Exception {
         // get all teams and put them into maps
@@ -120,7 +104,8 @@ public class UserServiceImpl implements UserService {
         HashMap<BigInteger, TeamDTO> teamMap = new HashMap<>();
         List<TeamDTO> returnList = new ArrayList<>();
         for (Team team: teams){
-            TeamDTO newTeam = new TeamDTO().setTeamId(team.getTeamId()).setTeamName(team.getTeamName()).setCreator(team.getCreator().toString())
+            String creator = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", team.getCreator())).getUsername();
+            TeamDTO newTeam = new TeamDTO().setTeamId(team.getTeamId()).setTeamName(team.getTeamName()).setCreator(creator)
                     .setDescription(team.getDescription()).setCreatTime(team.getCreateTime()).setAdmins(new ArrayList<>()).setMembers(new ArrayList<>());
             teamMap.put(team.getTeamId(), newTeam);
             returnList.add(newTeam);
@@ -138,7 +123,7 @@ public class UserServiceImpl implements UserService {
                     teamMap.get(teamId).getMembers().add(userId);
             }
         }
-        // get all related class
+        // get all related task
         for(TeamDTO team: teamMap.values()){
             team.setTeamTasks(taskService.queryTask(new QueryTaskDTO().setTeamId(team.getTeamId())));
         }
