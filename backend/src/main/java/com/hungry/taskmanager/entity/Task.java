@@ -32,6 +32,8 @@ public class Task {
     private LocalDateTime createDate;
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",timezone="GMT+8")
     private LocalDateTime dueDate;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",timezone="GMT+8")
+    private LocalDateTime remindDate;
     private Integer status;
     private BigInteger fatherTask;
     private Integer privilege;
