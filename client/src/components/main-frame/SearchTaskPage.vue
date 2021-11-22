@@ -52,6 +52,14 @@
                         </el-col>
                     </el-row>
                 </el-form-item>
+              ``<!--position-->
+                <el-form-item label="任务地点" prop="position">
+                  <el-row>
+                        <el-col :span='14'>
+                            <el-input placeholder='请输入任务地点...' clearable v-model='fliterForm.position'></el-input>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
                 <!-- privilege -->
                 <el-form-item label="任务优先级:" prop="privilege">
                     <el-row>
@@ -176,6 +184,7 @@ export default {
               status:null,
               teamName:null,
               type:null,
+              position:null
 
           },
           finished:false,
@@ -208,7 +217,8 @@ export default {
                 tags:that.fliterForm.tags,
                 taskName:that.fliterForm.taskName,
                 teamName:that.fliterForm.teamName,
-                type:that.fliterForm.type
+                type:that.fliterForm.type,
+                position:that.fliterForm.position
               },
               {
                 headers:{
