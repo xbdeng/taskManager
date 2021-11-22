@@ -22,45 +22,49 @@
 
             <!-- 显示今天,一周内，稍后,任务的侧边栏 -->
             <el-main>
+              <el-container>
+                <el-main>
                 <el-menu :default-openeds="['today']" >
+                  <TaskTree
+                      v-show="taskShow"
+                      :taskData="this.taskData"
+                      :taskLevel="''"
+                      :chosenTask="chosenTaskId"
+                      v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                  <el-submenu index='today' v-show="planedTaskShow">
+                    <template slot="title">
+                      <span slot="title" @click="setSpecifier(0)">今天</span>
+                    </template>
                     <TaskTree
-                    v-show="taskShow"
-                    :taskData="this.taskData" 
-                    :taskLevel="''" 
-                    :chosenTask="chosenTaskId" 
-                    v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
-                    <el-submenu index='today' v-show="planedTaskShow">
-                        <template slot="title">
-                            <span slot="title" @click="setSpecifier(0)">今天</span>
-                        </template>
-                        <TaskTree 
                         :taskData="this.todayTaskData"
                         :taskLevel="''"
                         :chosenTask="chosenTaskId"
                         v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
-                    </el-submenu>
-                    <el-submenu index='week' v-show="planedTaskShow">
-                        <template slot="title">
-                            <span slot="title" @click="setSpecifier(1)">一周内</span>
-                        </template>
-                        <TaskTree 
-                        :taskData="this.weekTaskData" 
-                        :taskLevel="''" 
+                  </el-submenu>
+                  <el-submenu index='week' v-show="planedTaskShow">
+                    <template slot="title">
+                      <span slot="title" @click="setSpecifier(1)">一周内</span>
+                    </template>
+                    <TaskTree
+                        :taskData="this.weekTaskData"
+                        :taskLevel="''"
                         :chosenTask="chosenTaskId"
                         v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
-                    </el-submenu>
-                    <el-submenu index='later' v-show="planedTaskShow">
-                        <template slot="title">
-                            <span slot="title" @click="setSpecifier(2)">稍后</span>
-                        </template>
-                        <TaskTree 
-                        :taskData="this.laterTaskData" 
-                        :taskLevel="''" 
-                        :chosenTask="chosenTaskId" 
+                  </el-submenu>
+                  <el-submenu index='later' v-show="planedTaskShow">
+                    <template slot="title">
+                      <span slot="title" @click="setSpecifier(2)">稍后</span>
+                    </template>
+                    <TaskTree
+                        :taskData="this.laterTaskData"
+                        :taskLevel="''"
+                        :chosenTask="chosenTaskId"
                         v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
-                        </el-submenu>
-                    <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
+                  </el-submenu>
+                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-menu>
+                </el-main>
+              </el-container>
             </el-main>
             <!-- 显示任务信息 -->
             <el-drawer 
@@ -85,7 +89,8 @@
             size='50%'>
                 <TreeTask
                 :TData="this.treeData"
-                v-on:closeTreeDrawer="handleTreeClose"></TreeTask>
+                v-on:closeTreeDrawer="handleTreeClose"
+                v-on:postTreeTaskAgain="postPersonalTaskAgain"></TreeTask>
             </el-drawer>
         </el-container>
     </div>
@@ -206,6 +211,7 @@ export default {
               that.addedTaskName = null
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              that.$emit('postPersonalTaskAgain',{})
             } else {
               that.$message.error('添加任务失败')
               let newToken = response.headers.authorization
@@ -218,8 +224,12 @@ export default {
       )
     },
     emitTreeData(task) {
-      this.treeDrawer = true
+      console.log(task)
       this.treeData = task
+      this.treeDrawer = true
+    },
+    postPersonalTaskAgain() {
+      this.$emit('postPersonalTaskAgain', {})
     }
 
   }

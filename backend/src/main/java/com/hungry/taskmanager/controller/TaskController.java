@@ -73,10 +73,7 @@ public class TaskController {
     @ApiOperation(value = "edit a task",notes = "modified information is required only")
     public Result<String> editTask(@RequestBody EditTaskDTO params) {
         try {
-            int result = taskServiceImpl.editTask(params);
-            if (result != 200){
-                throw new Exception("server error");
-            }
+            taskServiceImpl.editTask(params);
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", null);

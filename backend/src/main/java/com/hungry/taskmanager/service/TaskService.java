@@ -18,6 +18,6 @@ public interface TaskService {
 
     List<Task> queryTask(QueryTaskDTO filter) throws Exception;
 
-    int editTask(EditTaskDTO params) throws Exception;
+    void editTask(EditTaskDTO params) throws Exception;
 
 }

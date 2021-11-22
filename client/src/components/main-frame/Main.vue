@@ -115,7 +115,8 @@
               :todayTaskData="this.todayTaskData"
               :weekTaskData="this.weekTaskData"
               :laterTaskData="this.laterTaskData"
-              v-on:closeTaskDrawer="closeTaskDrawer($event)"></PersonalTaskPage>
+              v-on:closeTaskDrawer="closeTaskDrawer($event)"
+              v-on:postPersonalTaskAgain="postPersonalTaskAgain($event)"></PersonalTaskPage>
           <!-- 组队任务页面 -->
           <TeamInfoPage v-show="teamInfoShow"
                         :teamInfo="this.teamInfo"
@@ -961,6 +962,9 @@ export default {
     },
     postMyTeamAgain() {
       this.postMyTeams()
+    },
+    postPersonalTaskAgain() {
+      this.postTaskData();
     },
     logOut() {
       const that = this
