@@ -220,4 +220,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void removeFriend(String username, String friendName){
+        BigInteger userId = userMapper.getIdByName(username);
+        BigInteger friendId = userMapper.getIdByName(friendName);
+        contactMapper.delete(new QueryWrapper<Contact>().eq("person", userId).eq("friend", friendId));
+        contactMapper.delete(new QueryWrapper<Contact>().eq("friend", userId).eq("person", friendId));
+    }
+
 }

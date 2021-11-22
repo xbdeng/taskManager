@@ -55,4 +55,6 @@ public interface UserService {
     void addFriend(BigInteger usernameA, BigInteger usernameB);
 
     boolean hasAFriend(BigInteger person, BigInteger friend);
+
+    void removeFriend(String username, String friendName);
 }

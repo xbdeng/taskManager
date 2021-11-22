@@ -256,4 +256,21 @@ public class UserController {
         }
     }
 
+    @PostMapping("/removefriend")
+    @RequiresAuthentication
+    @ApiOperation(value="delete a friend")
+    public Result<String>  removeFriend(@RequestBody String friendName, HttpServletRequest request){
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            userService.removeFriend(username, friendName);
+            return new Result(200, "remove a friend successfully", "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500,"服务器错误",null);
+
+        }
+
+    }
+
 }
