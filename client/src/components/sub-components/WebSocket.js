@@ -1,12 +1,13 @@
-import { Notification } from 'element-ui'
+import {Notification} from 'element-ui'
 
 var url = 'ws://localhost:8081/messagepush/'
 var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
+var broken = false;
 
 var websocket = {
-    Init: function(clientId) {
+    Init: function (clientId) {
         if ("WebSocket" in window) {
             ws = new WebSocket(url + clientId);
         } else if ("MozWebSocket" in window) {
@@ -16,58 +17,66 @@ var websocket = {
             return;
         }
 
-        ws.onmessage = function(e) {
+        ws.onmessage = function (e) {
             console.log("接收消息:" + e.data)
             heartCheck.start()
-            if(e.data === 'ok'){//心跳消息不做处理
+            if (e.data === 'ok') {//心跳消息不做处理
                 return
             }
+            broken = false
             //messageHandle(e.data)
         }
 
-        ws.onclose = function() {
+        ws.onclose = function () {
             console.log("连接已关闭")
-            Notification({
-                title: '警告',
-                message: '连接已关闭',
-                type: 'warning'
-            });
+            if (broken === false) {
+                Notification({
+                    title: '警告',
+                    message: '连接已关闭',
+                    type: 'warning'
+                });
+            }
+            broken = true
             reconnect(clientId);
         }
 
-        ws.onopen = function() {
+        ws.onopen = function () {
             console.log("连接成功")
             Notification({
                 title: '成功',
                 message: '连接成功',
                 type: 'success'
             });
+            broken = false
             heartCheck.start();
         }
 
-        ws.onerror = function(e) {
+        ws.onerror = function (e) {
             console.log("数据传输发生错误");
-            Notification({
-                title: '警告',
-                message: '数据传输发生错误',
-                type: 'warning'
-            });
+            if (broken === false) {
+                Notification({
+                    title: '警告',
+                    message: '数据传输发生错误',
+                    type: 'warning'
+                });
+            }
+            broken = true
             reconnect(clientId)
         }
     },
 
-    Send:function(sender,reception,body,flag){
+    Send: function (sender, reception, body, flag) {
         let data = {
-            sender:sender,
-            reception:reception,
-            body:body,
-            flag:flag
+            sender: sender,
+            reception: reception,
+            body: body,
+            flag: flag
         }
-        let msg= JSON.stringify(data)
-        console.log("发送消息："+msg)
+        let msg = JSON.stringify(data)
+        console.log("发送消息：" + msg)
         ws.send(msg)
     },
-    getWebSocket(){
+    getWebSocket() {
         return ws;
     },
     getStatus() {
@@ -99,9 +108,10 @@ function messageHandle(message) {
 }
 
 function reconnect(sname) {
-    if(lockReconnect) {
+    if (lockReconnect) {
         return;
-    };
+    }
+    ;
     lockReconnect = true;
     //没连接上会一直重连，设置延迟避免请求过多
     tt && clearTimeout(tt);
@@ -117,18 +127,18 @@ export var heartCheck = {
     timeout: 5000,
     timeoutObj: null,
     serverTimeoutObj: null,
-    start: function(){
+    start: function () {
         // console.log('开始心跳检测');
         var self = this;
         this.timeoutObj && clearTimeout(this.timeoutObj);
         this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
-        this.timeoutObj = setTimeout(function(){
+        this.timeoutObj = setTimeout(function () {
             //这里发送一个心跳，后端收到后，返回一个心跳消息，
             //onmessage拿到返回的心跳就说明连接正常
             // console.log('心跳检测...');
             ws.send("{heartCheck: 1}");
-            self.serverTimeoutObj = setTimeout(function() {
-                if(ws.readyState !== 1){
+            self.serverTimeoutObj = setTimeout(function () {
+                if (ws.readyState !== 1) {
                     console.log(ws)
                     ws.close();
                 }
