@@ -22,9 +22,11 @@ public class CreateTaskDTO {
     private List<String> tags;
     private Integer privilege;
     private Integer type;
+    private String location;
     // attributes for team if type is team
     private BigInteger teamId;
     private String createDate;
     private String dueDate;
+    private String remindDate;
 
 }
