@@ -402,7 +402,7 @@ export default {
           if (tmp.type === 2) {
             this.$notify.info({
               title: tmp.from,
-              message: '想要与你成为好友'
+              message: '邀请你加入' + tmp.groupId
             });
           }
         }
