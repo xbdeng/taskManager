@@ -36,7 +36,7 @@
                       <span style="font-weight:bold">创建时间：</span>
                   </el-col>
                   <el-col>
-                      {{ this.singleTeamData.createDate }}
+                      {{ this.singleTeamData.creatTime }}
                   </el-col>
               </el-row>
             <!-- 显示组内成员，留接口修改 -->
