@@ -202,10 +202,10 @@ public class TaskServiceImpl implements TaskService{
         }
         // subtasks
         for (String taskName: params.getSubTasks()){
-            Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0);
-            UserTask newUT = new UserTask().setUserId(userId).setTaskId(taskId);
-            userTaskMapper.insert(newUT);
+            Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0).setFatherTask(taskId);
             taskMapper.insert(newTask);
+            UserTask newUT = new UserTask().setUserId(userId).setTaskId(newTask.getTaskId());
+            userTaskMapper.insert(newUT);
 
         }
     }
