@@ -5,6 +5,7 @@ var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
 var broken = false;
+export var reconnectvar = true;
 
 var websocket = {
     Init: function (clientId) {
@@ -37,7 +38,9 @@ var websocket = {
                 });
             }
             broken = true
-            reconnect(clientId);
+            if (reconnectvar === true) {
+                reconnect(clientId);
+            }
         }
 
         ws.onopen = function () {
@@ -89,6 +92,9 @@ var websocket = {
         } else if (ws.readyState === 3) {
             return "连接已关闭";
         }
+    },
+    setReconnectVar(bol){
+        reconnectvar = bol
     }
 }
 

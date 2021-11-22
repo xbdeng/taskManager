@@ -1,7 +1,6 @@
 <template>
   <div>
     <div>{{ githubUser }}</div>
-    <div>wwwwwwww</div>
   </div>
 </template>
 
@@ -11,7 +10,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      githubUser: "github登陆中..."
+      githubUser: "github绑定中..."
     };
   },
   name: "GithubBind",

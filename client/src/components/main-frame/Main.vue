@@ -271,6 +271,7 @@ export default {
   // 在载入页面前先获取日历数据
   mounted() {
     this.showCalendarData();
+    websocket.setReconnectVar(true)
     websocket.Init(this.username);
     this.eventMsg();
   },
@@ -383,6 +384,7 @@ export default {
       let that = this;
       websocket.getWebSocket().onmessage = function (res) {
         //处理接收的时间逻辑
+        // console.log(res)
         heartCheck.start()
         let tmp = JSON.parse(res.data)
         if (tmp.heartCheck === 1) {
@@ -983,7 +985,9 @@ export default {
                 message: '登出成功',
                 type: 'success'
               })
-              that.$router.push({name: 'Login'})
+              websocket.setReconnectVar(false)
+              websocket.getWebSocket().close()
+              that.$router.push({name: 'login'})
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
