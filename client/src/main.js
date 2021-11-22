@@ -7,11 +7,13 @@ import md5 from 'js-md5'
 import animated from 'animate.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'lib-flexible/flexible'
+import ws from '../src/components/sub-components/ws'
 
 Vue.use(ElementUI);
 Vue.use(animated)
 Vue.config.productionTip = false
 Vue.prototype.$md5 = md5
+Vue.prototype.ws = ws
 
 /* eslint-disable no-new */
 new Vue({

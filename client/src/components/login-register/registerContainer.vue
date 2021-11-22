@@ -331,8 +331,6 @@ export default {
       let that = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          //todo 登录注册验证方式同步
-          // 向后端提交登录数据
           axios.post(
               '/user/register',
               {
@@ -345,22 +343,29 @@ export default {
               }
           ).then(
               function (response) {
-                alert('注册成功')
-                // 清空表单
-                let username = that.ruleForm.username
-                that.ruleForm.username = ''
-                that.ruleForm.pass = ''
-                that.ruleForm.email = ''
-                // that.ruleForm.age = ''
-                that.ruleForm.phone = ''
-                that.ruleForm.firstName = ''
-                that.ruleForm.lastName = ''
-                that.resetForm('ruleForm')
-                // 跳转路由
-                that.$router.push('/login')
+                if(response.data.code === 200) {
+                  that.$message({
+                    message:'注册成功',
+                    type:'success'
+                  })
+                  let username = that.ruleForm.username
+                  that.ruleForm.username = ''
+                  that.ruleForm.pass = ''
+                  that.ruleForm.email = ''
+                  // that.ruleForm.age = ''
+                  that.ruleForm.phone = ''
+                  that.ruleForm.firstName = ''
+                  that.ruleForm.lastName = ''
+                  that.resetForm('ruleForm')
+                  // 跳转路由
+                  that.$router.push('/login')
+                }
+                else {
+                  that.$message.error('注册失败')
+                }
               },
               function (err) {
-                alert('注册失败');
+                alert('响应失败,注册失败');
               }
           )
         } else {
