@@ -60,6 +60,32 @@
                 <el-button v-else class="button-new-tag" size="small" @click="showInput">+添加新标签</el-button>
               </el-col>
             </el-row>
+            <!-- 显示任务地点-->
+            <el-row type="flex" justify="start">
+              <el-col :span="4">
+                <span style="font-weight:bold">任务地点：</span>
+              </el-col>
+              <el-col :span="20">
+                {{ tempTaskForm.position }}
+              </el-col>
+              <el-popover placement="bottom" width="200" trigger="click" title="修改任务的地点" >
+                  <el-row>
+                      <el-col>
+                          <el-input placeholder="请输入修改后的任务地点..." v-model="editedPosition"></el-input>
+                      </el-col>
+                  </el-row>
+                  <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small" @click="editPosition">确定</el-button>
+                      </el-col>
+                  </el-row>
+                    <el-tooltip content="点击可修改任务的地点" slot="reference">
+                      <el-link type='primary'>
+                        <i class="el-icon-edit"></i>
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
+            </el-row>
             <!-- 显示任务优先级 -->
             <el-row type="flex" align="middle">
               <el-col :span="4">
@@ -224,6 +250,7 @@
                     </el-tooltip>
                 </el-popover>
             </el-row>
+            <!--查看树形图-->
             <el-row>
               <el-button type="primary" @click="emitTreeData">查看树形图</el-button>
             </el-row>
@@ -274,6 +301,9 @@ export default {
       invitedMembers:[],
       editedTaskName:null,
       editedDescription:'',
+      editedPosition:null,
+      // 用于存储要新添加的任务，是字符串类型的数组
+      subTasksList:[],
       tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData)),
     }
   },
@@ -329,6 +359,13 @@ export default {
         this.$message.error('修改失败，修改后的任务名不能为空')
       }
     },
+    editPosition() {
+      let value = this.editedPosition
+      if(value != null) {
+        this.tempTaskForm.positon = value
+      }
+      this.editedPosition = null
+    },
     editPriority() {
       let value = this.editedPriority
       if(value != null) {
@@ -365,12 +402,12 @@ export default {
       this.editedDescription = null
     },
     addSubTask() {
+      const that = this
       let value = this.subTaskName
-      if(value != null) {
-        if(this.tempTaskForm.subTasks == null) {
-          this.tempTaskForm.subTasks = []
-        }
-        this.tempTaskForm.subTasks.push(value)
+      if(value != null && !(value === '')) {
+        this.subTasksList.push(value)
+      } else {
+        that.$message.error('要添加的子任务名不能为空')
       }
       this.subTaskName = null
     },
@@ -387,11 +424,12 @@ export default {
           members:that.tempTaskForm.members,
           privilege:that.tempTaskForm.privilege,
           status:that.tempTaskForm.status === 2 ? that.tempTaskForm.status - 1 : that.tempTaskForm.status,
-          subTasks:that.tempTaskForm.subTasks,
+          subTasks:that.subTasksList,
           tags:that.tempTaskForm.tags,
           taskName:that.tempTaskForm.taskName,
           type:that.tempTaskForm.type,
-          taskId:that.tempTaskForm.taskId
+          taskId:that.tempTaskForm.taskId,
+          position:that.tempTaskForm.position
         },
         headers:{
           Authorization:window.sessionStorage.getItem('token')
@@ -406,6 +444,8 @@ export default {
             })
             let newToken = response.headers.authorization
             if(newToken != null) window.sessionStorage.setItem('token', newToken)
+          //  重置数据
+            that.clearTaskForm()
           } else {
             that.$message.error('修改任务失败')
             let newToken = response.headers.authorization
@@ -424,7 +464,7 @@ export default {
       axios({
         method:'POST',
         url:'/task/deletetask',
-        params:{'id':that.tempTaskForm.taskId},
+        params:{id:that.tempTaskForm.taskId},
         headers:{
           Authorization:window.sessionStorage.getItem('token')
         }
@@ -439,6 +479,8 @@ export default {
               that.$emit('closeTaskDrawer',{})
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            //  重置数据
+              that.clearTaskForm()
             } else {
               that.$message.error('删除任务失败')
               let newToken = response.headers.authorization
@@ -452,6 +494,12 @@ export default {
     },
     emitTreeData() {
       this.$emit('emitTreeData',this.singleTaskData)
+    },
+    // 用于提交或者删除表单后，清空表单
+    clearTaskForm() {
+      //清空就是重新加载表单
+      this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
+      this.subTasksList = []
     }
   }
   
