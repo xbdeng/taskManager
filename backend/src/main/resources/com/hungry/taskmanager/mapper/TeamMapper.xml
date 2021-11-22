@@ -29,4 +29,10 @@
         </foreach>
     </select>
 
+    <select id="getTeamCreatorAndAdministrators" resultType="User" parameterType="BigInteger">
+        select u.* FROM team_user AS tu
+                                   INNER JOIN user AS u ON tu.user_id = u.user_id
+        WHERE tu.team_id = #{teamId} AND tu.identity IN ('creator', 'administrator')
+    </select>
+
 </mapper>

@@ -1,6 +1,8 @@
 package com.hungry.taskmanager.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,11 +15,11 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Message {
-    @JSONField(deserialize=false)
+    @TableId(type= IdType.AUTO)
     private BigInteger messageId;
-    private String usernameFrom;
-    private String usernameTo;
+    private BigInteger sender;
+    private BigInteger receiver;
     private String content;
-    @JSONField(deserialize=false)
-    private Boolean isRead;
+    private String type;
+    private Integer isRead;
 }

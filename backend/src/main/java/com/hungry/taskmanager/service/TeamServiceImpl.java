@@ -170,4 +170,14 @@ public class TeamServiceImpl implements TeamService {
         teamMapper.update(team, wrapper);
         return Result.succ("修改成功");
     }
+
+    @Override
+    public boolean isInTeam(BigInteger userId, BigInteger teamId){
+        Long count = teamUserMapper.selectCount(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId));
+        if (count > 0 ){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

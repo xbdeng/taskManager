@@ -1,7 +1,10 @@
 package com.hungry.taskmanager.controller;
 
 
+import com.hungry.taskmanager.dto.ConfirmDTO;
 import com.hungry.taskmanager.dto.InvitationDTO;
+import com.hungry.taskmanager.dto.MessageDTO;
+import com.hungry.taskmanager.entity.Message;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.service.MessageService;
 import com.hungry.taskmanager.utils.JWTUtil;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -24,11 +29,37 @@ public class MessageController {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            messageService.sendRequest(invitationDTO.setUsernameFrom(username));
+            int code = messageService.sendRequest(invitationDTO.setFrom(username));
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
         }
         return new Result<String>(200, "successfully send request", "");
+    }
+    @RequestMapping("/confirm")
+    public Result<String> confirm(@RequestBody ConfirmDTO confirmDTO, HttpServletRequest request){
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            messageService.confirm(confirmDTO.setFrom(username));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result<String>(500, "server error", "");
+        }
+        return new Result<String>(200, "successfully confirm", "");
+    }
+
+    @RequestMapping("/getmessages")
+    public Result<List<MessageDTO>> getMessages(HttpServletRequest request){
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            List<MessageDTO> data = messageService.getMessages(username);
+            return new Result<List<MessageDTO>>(200, "query message successfully", data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result<List<MessageDTO>>(500, "server error", new ArrayList<>());
+
+        }
     }
 }

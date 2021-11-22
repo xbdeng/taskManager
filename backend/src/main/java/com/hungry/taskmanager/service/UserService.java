@@ -4,6 +4,7 @@ package com.hungry.taskmanager.service;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.*;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface UserService {
@@ -49,4 +50,9 @@ public interface UserService {
 
     //根据GitHub name 查找用户
     User getUserByGithub(String githubName);
+
+    // add a friend
+    void addFriend(BigInteger usernameA, BigInteger usernameB);
+
+    boolean hasAFriend(BigInteger person, BigInteger friend);
 }

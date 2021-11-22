@@ -202,4 +202,22 @@ public class UserServiceImpl implements UserService {
         return userMapper.selectOne(queryWrapper);
     }
 
+    @Override
+    public void addFriend(BigInteger idA, BigInteger idB){
+        Contact contactA = new Contact().setPerson(idA).setFriend(idB);
+        Contact contactB = new Contact().setPerson(idB).setFriend(idA);
+        contactMapper.insert(contactA);
+        contactMapper.insert(contactB);
+    }
+
+    @Override
+    public boolean hasAFriend(BigInteger person, BigInteger friend){
+        Long count = contactMapper.selectCount(new QueryWrapper<Contact>().eq("person", person).eq("friend", friend));
+        if (count > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 }

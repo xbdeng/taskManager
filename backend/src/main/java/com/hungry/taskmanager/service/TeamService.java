@@ -22,4 +22,6 @@ public interface TeamService {
     Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
 
     Result editTeam(EditTeamDTO params,String operator);
+
+    boolean isInTeam(BigInteger userId, BigInteger teamId);
 }

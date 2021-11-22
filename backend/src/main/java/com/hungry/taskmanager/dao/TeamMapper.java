@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 //import com.github.yulichang.base.MPJBaseMapper;
 import com.hungry.taskmanager.dto.CreateTeamDTO;
 import com.hungry.taskmanager.entity.Team;
+import com.hungry.taskmanager.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,18 +15,10 @@ import java.util.Set;
 
 public interface TeamMapper extends BaseMapper<Team> {
 
-//    @Insert("INSERT INTO team(team_name, description, creator) values (" +
-//            "#{teamName},#{description},#{creator})")
-//    void createTeam(String teamName, String description, String creator);
-//
-//    @Select("SELECT team_id from team WHERE team_name = #{teamName} and creator = #{creator}")
-//    BigInteger getTeamId(String teamName, String creator);
-//
-//    void addMember(BigInteger teamId, List<BigInteger> members);
-//
-//    void addCreator(BigInteger teamId, BigInteger creator);
-//
-//    void addAdmin(BigInteger teamId, List<BigInteger> admins);
-
     List<HashMap<String, Object>> getTeamUserRelationships(List<Team> teams);
+
+    List<User> getTeamCreatorAndAdministrators(BigInteger teamId);
+
+    @Select("SELECT team_name FROM team WHERE team_id = #{teamId}")
+    String getTeamNameById(BigInteger teamId);
 }
