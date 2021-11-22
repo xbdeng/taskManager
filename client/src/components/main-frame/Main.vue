@@ -116,6 +116,7 @@
               :todayTaskData="this.todayTaskData"
               :weekTaskData="this.weekTaskData"
               :laterTaskData="this.laterTaskData"
+              :transData="this.transData"
               v-on:closeTaskDrawer="closeTaskDrawer($event)"
               v-on:postPersonalTaskAgain="postPersonalTaskAgain($event)"></PersonalTaskPage>
           <!-- 组队任务页面 -->
@@ -136,7 +137,7 @@
                 <ul class="demo-ul">
                   <li class="demo-li">Select dates and you will be prompted to create a new event</li>
                   <li class="demo-li">Drag, drop, and resize events</li>
-                  <li class="demo-li">Click an event to delete it</li>
+                  <li class="demo-li">Click an event to get detailed information</li>
                 </ul>
               </div>
               <div class='demo-app-sidebar-section'>
@@ -172,12 +173,33 @@
           </div>
           <!--弹出任务详细信息-->
           <el-dialog
-              title="提示"
+              title="任务详细信息"
               :visible.sync="CalendarDialog"
               width="30%"
               :modal-append-to-body='false'
               center>
-            <span>{{ this.CalendarClickTask }}</span>
+<!--            <span>{{ this.CalendarClickTask }}</span>-->
+            <el-form v-if="this.CalendarClickTask !== null">
+              <el-form-item label="任务名称">
+                <span>{{ this.CalendarClickTask.taskName }}</span>
+              </el-form-item>
+              <el-form-item label="描述">
+                <span>{{ this.CalendarClickTask.description }}</span>
+              </el-form-item>
+              <el-form-item label="开始时间">
+                <span>{{ this.CalendarClickTask.createDate }}</span>
+              </el-form-item>
+              <el-form-item label="截止时间">
+                <span>{{ this.CalendarClickTask.dueDate }}</span>
+              </el-form-item>
+              <el-form-item label="标识">
+                <span v-for="i in this.CalendarClickTask.tags"> {{i}} </span>
+<!--                <span>{{ this.CalendarClickTask.tags }}</span>-->
+              </el-form-item>
+              <el-form-item>
+
+              </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
               <el-button @click="CalendarDialog = false">取 消</el-button>
               <el-button type="primary" @click="CalendarDialog = false">确 定</el-button>
@@ -376,7 +398,8 @@ export default {
           userId: '',
           username: ''
         }]
-      }]
+      }],
+      transData: []
     }
   },
   methods: {
@@ -391,21 +414,21 @@ export default {
           return
         } else {
           if (tmp.type === 0) {
-            this.$notify.info({
+            that.$notify.info({
               title: tmp.from,
-              message: '想要与你一起组队成为' + tmp.message
+              message: '想要与你一起组队成为' + tmp.groupName
             });
           }
           if (tmp.type === 1) {
-            this.$notify.info({
+            that.$notify.info({
               title: tmp.from,
               message: '想要与你成为好友'
             });
           }
           if (tmp.type === 2) {
-            this.$notify.info({
+            that.$notify.info({
               title: tmp.from,
-              message: '邀请你加入' + tmp.message
+              message: '邀请你加入' + tmp.groupName
             });
           }
         }
@@ -747,6 +770,8 @@ export default {
                 type: 'success'
               })
               that.taskData = response.data.data
+              // that.transferData(that.taskData)
+              that.transData = that.transferData(that.taskData)
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
@@ -759,6 +784,20 @@ export default {
             that.$message.error('响应失败，请求“任务”数据失败')
           }
       )
+    },
+    transferData(task){
+      let transferList = []
+      for(let i in task){
+        let tmp = {
+          id: task[i].taskId,
+          parent_id: task[i].fatherTask,
+          order: 0,
+          name: task[i].taskName,
+          lists: this.transferData(task[i].subTasks),
+        }
+        transferList.push(tmp)
+      }
+      return transferList
     },
     //请求“今天”
     postTodayTaskData() {

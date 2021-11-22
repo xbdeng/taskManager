@@ -7,6 +7,8 @@ import profile from "../components/profile/profile";
 import tree from '../components/main-frame/TreeTask'
 import Github from "../components/sub-components/Github";
 import GithubBind from "../components/sub-components/GithubBind";
+import Google from "../components/sub-components/Google";
+import GoogleBind from "../components/sub-components/GoogleBind";
 
 Vue.use(VueRouter);
 
@@ -50,6 +52,16 @@ const router =  new VueRouter({
             path: "/oauth/bind",
             name: "githubBind",
             component: GithubBind
+        },
+        {
+            path: "/google/login",
+            name: "google",
+            component: Google
+        },
+        {
+            path: "/google/bind",
+            name: "googleBind",
+            component: GoogleBind
         }
     ],
 
@@ -58,7 +70,7 @@ const router =  new VueRouter({
 router.beforeEach((to, from, next) => {
     let token = window.sessionStorage.getItem('token')
     if(token === null) {
-        if(to.name === 'login' || to.name === 'register' || to.name === 'github' || to.name === 'githubBind') {
+        if(to.name === 'login' || to.name === 'register' || to.name === 'github' || to.name === 'githubBind' || to.name === 'google' || to.name === 'googlebind') {
             next()
         } else {
             next(`/login`)
