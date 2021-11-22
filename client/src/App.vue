@@ -11,6 +11,7 @@ import Login from './components/login-register/Login'
 import register from './components/login-register/register'
 import Profile from './components/profile/profile.vue'
 import tree from './components/main-frame/TreeTask.vue'
+import ws from "./components/sub-components/WebSocket";
 
 export default {
   name: 'App',
@@ -21,7 +22,7 @@ export default {
     Profile,
     tree
   },
-  router
+  router,
 }
 </script>
 
