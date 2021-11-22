@@ -13,12 +13,4 @@
                 </foreach>
         </if>
     </select>
-<!--    <resultMap id="tagsByUserTasksMap" type="TaskTagMap">-->
-<!--        <result property="taskId" column="task_id"/>-->
-<!--        <association property="tag" javaType="Tag">-->
-<!--            <id property="tagId" column="tag_id"/>-->
-<!--            <result property="tagName" column="tag_name"/>-->
-<!--            <result property="userId" column="user_id"/>-->
-<!--        </association>-->
-<!--    </resultMap>-->
 </mapper>

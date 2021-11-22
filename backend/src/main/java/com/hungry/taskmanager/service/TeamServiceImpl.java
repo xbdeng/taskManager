@@ -174,6 +174,16 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public boolean isInTeam(BigInteger userId, BigInteger teamId){
+        Long count = teamUserMapper.selectCount(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId));
+        if (count > 0 ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
     public Result<List<QueryTeamDTO>> queryTeam(String teamName, BigInteger teamId) {
         if(teamId!=null){
             Team team = teamMapper.selectOne(new QueryWrapper<Team>().eq("team_id",teamId));

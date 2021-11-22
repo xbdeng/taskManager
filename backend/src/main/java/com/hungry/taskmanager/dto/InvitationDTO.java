@@ -1,5 +1,6 @@
 package com.hungry.taskmanager.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +15,9 @@ import java.math.BigInteger;
 @NoArgsConstructor
 public class InvitationDTO {
     @ApiModelProperty(hidden=true)
-    private String usernameFrom;
-    private String usernameTo;
+    private String from;
+    @JSONField(serialize =false)
+    private String to;
     private Integer type;
-    private BigInteger grouId;
+    private BigInteger teamId;
 }

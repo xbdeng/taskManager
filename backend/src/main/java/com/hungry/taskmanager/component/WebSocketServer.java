@@ -1,17 +1,14 @@
 package com.hungry.taskmanager.component;
 
 
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.hungry.taskmanager.dto.MessageDTO;
-import com.hungry.taskmanager.entity.Message;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,7 +34,6 @@ public class WebSocketServer {
         // exception?
         if (obj.containsKey("heartCheck") && (Integer) obj.get("heartCheck") == 1) {
             send("1", sessionMap.get(username));
-        } else if (obj.containsKey("heartCheck") && (Integer) obj.get("heartCheck") == 0) {
         }
     }
 
@@ -46,9 +42,20 @@ public class WebSocketServer {
         error.printStackTrace();
     }
 
-    private synchronized void send(String message, Session sessionTo) {
+    public synchronized void send(String message, Session sessionTo) {
         try {
             sessionTo.getAsyncRemote().sendText(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void broadcast(String message, List<String> memberList){
+        try {
+            for (String username: memberList){
+                Session session = sessionMap.get(username);
+                session.getAsyncRemote().sendText(message);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

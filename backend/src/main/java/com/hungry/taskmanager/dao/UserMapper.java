@@ -35,6 +35,10 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("SELECT user_id FROM user WHERE username = #{username}")
     BigInteger getIdByName(String username);
 
+    // query name by id
+    @Select("SELECT username FROM user WHERE username = #{userId}")
+    String getUsernameById(BigInteger userId);
+
     //根据用户名和密码查询用户
     @Select("SELECT * from user WHERE username = #{username} and password = #{password}")
     User getUserByPass(String username, String password);

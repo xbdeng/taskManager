@@ -21,5 +21,8 @@ public interface TeamService {
 
     Result editTeam(EditTeamDTO params,String operator);
 
+    boolean isInTeam(BigInteger userId, BigInteger teamId);
+
     Result<List<QueryTeamDTO>> queryTeam(String teamName, BigInteger teamId);
+
 }
