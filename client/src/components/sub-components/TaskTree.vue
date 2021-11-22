@@ -57,7 +57,7 @@
     </template>
   </div>
 </template>
- 
+
 <script>
 
 export default {
@@ -69,7 +69,7 @@ export default {
     chosenTask: 当前选中的任务的key，用于向上传递
    */
   props: ['taskData', 'taskLevel', 'chosenTask'],
-  
+
   methods: {
     // 点击某个任务后，调用this.$emit函数发出taskIdChanged信号，并向父组件传递选中的任务id
     changeTaskId(id) {

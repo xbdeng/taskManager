@@ -116,6 +116,7 @@
               :todayTaskData="this.todayTaskData"
               :weekTaskData="this.weekTaskData"
               :laterTaskData="this.laterTaskData"
+              :transData="this.transData"
               v-on:closeTaskDrawer="closeTaskDrawer($event)"
               v-on:postPersonalTaskAgain="postPersonalTaskAgain($event)"></PersonalTaskPage>
           <!-- 组队任务页面 -->
@@ -376,7 +377,8 @@ export default {
           userId: '',
           username: ''
         }]
-      }]
+      }],
+      transData: []
     }
   },
   methods: {
@@ -393,7 +395,7 @@ export default {
           if (tmp.type === 0) {
             this.$notify.info({
               title: tmp.from,
-              message: '想要与你一起组队成为' + tmp.message
+              message: '想要与你一起组队成为' + tmp.groupName
             });
           }
           if (tmp.type === 1) {
@@ -405,7 +407,7 @@ export default {
           if (tmp.type === 2) {
             this.$notify.info({
               title: tmp.from,
-              message: '邀请你加入' + tmp.message
+              message: '邀请你加入' + tmp.groupName
             });
           }
         }
@@ -747,6 +749,8 @@ export default {
                 type: 'success'
               })
               that.taskData = response.data.data
+              // that.transferData(that.taskData)
+              that.transData = that.transferData(that.taskData)
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
@@ -759,6 +763,20 @@ export default {
             that.$message.error('响应失败，请求“任务”数据失败')
           }
       )
+    },
+    transferData(task){
+      let transferList = []
+      for(let i in task){
+        let tmp = {
+          id: task[i].taskId,
+          parent_id: task[i].fatherTask,
+          order: 0,
+          name: task[i].taskName,
+          lists: this.transferData(task[i].subTasks),
+        }
+        transferList.push(tmp)
+      }
+      return transferList
     },
     //请求“今天”
     postTodayTaskData() {

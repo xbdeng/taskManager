@@ -26,13 +26,35 @@
                 <el-main>
                   <div class="test-div">
                 <el-menu :default-openeds="['today']">
-                  <TaskTree
-                      v-show="taskShow"
-                      :taskData="this.taskData"
-                      :taskLevel="''"
-                      :chosenTask="chosenTaskId"
+<!--                  <TaskTree-->
+<!--                      v-show="taskShow"-->
+<!--                      :taskData="this.taskData"-->
+<!--                      :taskLevel="''"-->
+<!--                      :chosenTask="chosenTaskId"-->
+<!--                      v-on:taskIdChanged="chooseTasks($event)"></TaskTree>-->
+                  <dragTreeTable
+                      ref="table"
+                      :data="{columns: this.colprop,lists: this.transData}"
+                      @drag="onTreeDataChange"
+                      resize
+                      fixed
+                      :isdraggable="true"
+                      v-show="taskShow">
+                    <template #selection="{row}">
+                      {{ row.name }}
+                    </template>
 
-                      v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                    <template #id="{row}">
+                      {{ row.id }}
+                    </template>
+
+                    <template #action="{row}">
+                      <a class="action-item" @click.stop.prevent="add(row)">添加子节点</a>
+                      <a class="action-item" @click.stop.prevent="edit(row)">修改子节点</a>
+                      <a class="action-item" @click.stop.prevent="onDel(row)"><i>删除</i></a>
+                    </template>
+                  </dragTreeTable>
+
                   <el-submenu index='today' v-show="planedTaskShow">
                     <template slot="title">
                       <span slot="title" @click="setSpecifier(0)">今天</span>
@@ -107,15 +129,17 @@ import TaskShow from '../sub-components/TaskShow.vue'
 import TreeTask from './TreeTask'
 import axios from 'axios'
 import process from "_shelljs@0.7.8@shelljs";
+import dragTreeTable from "drag-tree-table";
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "PersonalTaskPage",
   components: {
     TaskTree,
     TaskShow,
-    TreeTask
+    TreeTask,
+    dragTreeTable
   },
-  props:['username','taskData','todayTaskData','weekTaskData','laterTaskData'],
+  props:['username','taskData','todayTaskData','weekTaskData','laterTaskData', 'transData'],
   data() {
     return {
         chosenTaskId:'-1',
@@ -127,7 +151,8 @@ export default {
         treeDrawer:false,
         treeData:null,
         tagArray:[],
-        myTeamInfo:[]
+        myTeamInfo:[],
+        colprop:null
     }
   },
   watch:{
@@ -137,7 +162,43 @@ export default {
       this.postMyTeams()
     }
   },
+  mounted() {
+    this.colprop = [
+      {
+        type: "selection",
+        title: "<a>Task Name</a>",
+        field: "name",
+        width: 200,
+        align: "left",
+        titleAlign: "left",
+      },
+      {
+        title: "Task ID",
+        type: "id",
+        width: 100,
+        align: "center"
+      },
+      {
+        title: "Action",
+        type: "action",
+        flex: 1,
+        align: "center",
+      },
+    ];
+  },
   methods: {
+    onTreeDataChange(list) {
+      console.log(list)
+    },
+    add(row) {
+      console.log('add!')
+    },
+    edit(row) {
+      console.log('edit!')
+    },
+    onDel(item) {
+      console.log('del!')
+    },
     showTask() {
         this.taskShow = true
         this.planedTaskShow = false
@@ -223,14 +284,15 @@ export default {
                 type:'success'
               })
               that.addedTaskName = null
-              let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
               that.$emit('postPersonalTaskAgain',{})
-            } else {
-              that.$message.error('添加任务失败')
-              let newToken = response.headers.authorization
-              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            }else if(response.data.code === 201){
+              that.$message.error('你们已添加过好友')
             }
+            else {
+              that.$message.error('添加任务失败')
+            }
+            let newToken = response.headers.authorization
+            if(newToken != null) window.sessionStorage.setItem('token', newToken)
           },
           function(err) {
             that.$message.error('响应失败，添加任务失败')
