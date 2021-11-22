@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Tag;
 import com.hungry.taskmanager.entity.User;
@@ -259,10 +260,11 @@ public class UserController {
     @PostMapping("/removefriend")
     @RequiresAuthentication
     @ApiOperation(value="delete a friend")
-    public Result<String>  removeFriend(@RequestBody String friendName, HttpServletRequest request){
+    public Result<String>  removeFriend(@RequestBody String friend, HttpServletRequest request){
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
+            String friendName = JSONObject.parseObject(friend).getString("username");
             userService.removeFriend(username, friendName);
             return new Result(200, "remove a friend successfully", "");
         } catch (Exception e) {
