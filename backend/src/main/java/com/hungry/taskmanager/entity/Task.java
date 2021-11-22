@@ -26,6 +26,7 @@ public class Task {
     private BigInteger creator;
     private String taskName;
     private String description;
+    private String location;
     private BigInteger type;
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",timezone="GMT+8")
     private LocalDateTime createDate;
