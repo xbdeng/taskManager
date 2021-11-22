@@ -24,3 +24,6 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 server:
   port: 8081
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
