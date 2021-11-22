@@ -26,8 +26,8 @@ class TaskManagerApplicationTests {
     @Test
     void contextLoads() throws Exception {
         List<String> tags = new ArrayList<>();
-        tags.add("tom");
-        tags.add("jerry");
+        tags.add("ll");
+        tags.add("oo");
 //        CreateTaskDTO params = new CreateTaskDTO().setUsername("ddd").setTaskName("try").setDescription("try")
 //                .setTags(new ArrayList<>()).setPrivilege(1).setType(0).setCreateDate("2020-11-16T00:01:45.000Z").setDueDate("2020-11-15T00:01:45.000Z");
 //        int result =taskServiceImpl.addTask(params);
@@ -36,6 +36,8 @@ class TaskManagerApplicationTests {
 //        for (Task task: tasks){
 //            System.out.println(task.toString());
 //        }
+        EditTaskDTO edit = new EditTaskDTO().setTaskId(BigInteger.valueOf(59)).setCreateDate(null).setTaskName("thomas").setDescription("tsetas").setStatus(1).setFatherTask(BigInteger.valueOf(59)).setTags(tags).setUsername("ComgLq").setPrivilege(0);
+        taskServiceImpl.editTask(edit);
 //        List<Tag> ts = userService.selectTags(new TagDTO().setUsername("ddd"));
 //        System.out.println(ts.toString());
 //        EditTeamDTO dto = new EditTeamDTO().setTeamId(BigInteger.valueOf(9)).setDescription("description");
