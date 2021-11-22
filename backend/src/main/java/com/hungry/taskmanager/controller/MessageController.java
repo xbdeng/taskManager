@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/message")
+@RequestMapping("api/message")
 public class MessageController {
     @Resource
     MessageService messageService;
