@@ -333,6 +333,7 @@ export default {
 
 <style scoped>
 .test-div{
-  overflow: scroll
+  overflow-y:auto;
+  height: 90%;
 }
 </style>
