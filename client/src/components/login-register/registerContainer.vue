@@ -191,8 +191,33 @@ export default {
           callback(new Error('名称不能小于三个字母'));
         } else {
           // this.enable[1] = true;
-          this.$set(this.enable, 0, true);
-          callback();
+          const that = this
+          axios.post(
+              'http://localhost:8081/api/user/checkname',
+              {
+                username:value
+              }
+          ).then(
+              function (response){
+                if(response.data.code === 200){
+                  that.$set(that.enable, 0, true);
+                  callback()
+                }
+                else {
+                  that.$set(that.enable, 0, false);
+                  callback('该用户名被占用')
+                }
+              },
+              function (err){
+                that.$set(that.enable, 0, false);
+                that.$message({
+                  message: '服务器掉线，请检查链接',
+                  type: 'error'
+                })
+              }
+          )
+          // this.$set(this.enable, 0, true);
+          // callback();
         }
       }
     };
