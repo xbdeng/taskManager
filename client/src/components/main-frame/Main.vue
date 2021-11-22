@@ -111,6 +111,7 @@
           <!-- 个人任务页面 -->
           <PersonalTaskPage
               v-show="personalTaskShow"
+              :username="this.username"
               :taskData="this.taskData"
               :todayTaskData="this.todayTaskData"
               :weekTaskData="this.weekTaskData"
@@ -195,7 +196,8 @@
           </el-drawer>
 
           <!-- 任务搜索 -->
-          <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
+          <SearchTaskPage
+              v-show="searchTaskShow"></SearchTaskPage>
         </el-main>
       </el-container>
     </el-container>
@@ -218,7 +220,6 @@ import axios from 'axios'
 import process from "_shelljs@0.7.8@shelljs";
 import websocket from "../sub-components/WebSocket";
 import {heartCheck} from "../sub-components/WebSocket";
-
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "Main",
@@ -234,14 +235,16 @@ export default {
   },
   props: ['username'],
   watch: {
+    //监听：是否显示添加任务的表单
+    //显示的话，请求用户标签数据，用户创建或管理的组
     'addTaskShow': function () {
       if (this.addTaskShow) {
         this.postTags()
         this.postMyTeams()
       }
     },
-    'addTeamShow': function () {
-    },
+    //监听：是否显示“个人任务”
+    //如果显示，请求“任务”，计划内任务的“今天”，“一周内”，“稍后”
     'personalTaskShow': function () {
       if (this.personalTaskShow) {
         this.postTaskData()
@@ -250,18 +253,21 @@ export default {
         this.postLaterTaskData()
       }
     },
+    //监听，是否显示“组队任务”
+    //如果显示，请求:用户加入的组，以及用户的所有好友
     'teamInfoShow': function () {
       if (this.teamInfoShow) {
         this.postTeamInfo()
         this.postAddressBook()
       }
     },
+    //监听：是否显示：“通讯录”
+    //如果显示，请求：用户的好友数据
     'addressBookShow': function () {
       if (this.addressBookShow) {
         this.postAddressBook()
       }
     },
-    // TODO:监听，如果显示日历界面，获取日历数据,放入calendarTasks中
     calendarShow(newValue, oldValue) {
       if (newValue === true) {
         this.showCalendarData();
@@ -298,18 +304,7 @@ export default {
       calendarDateOn: ' ',
       CalendarDialog: false,
       CalendarClickTask: null,
-      taskForm: {
-        taskName: '',
-        tags: '',
-        dueDate: '',
-        privilege: '',
-        type: '',
-        subtasks: [],
-        members: [],
-        createDate: '',
-        description: '',
-        status: 0,
-      },
+      //用户加入的所有组
       teamInfo: [{
         admins: [],
         createTime: '',
@@ -349,15 +344,19 @@ export default {
         */
       },
       currentEvents: [],
-      // AddTaskForm
+      // 传递给子组件的标签数据
       tagArray: [],
+      //传递给子组件的用户创建或管理的组的数据
       myTeamInfo: [],
-      // PersonalTaskPage
+      // "任务"
       taskData: [],
+      //"今天"
       todayTaskData: [],
+      //"一周内"
       weekTaskData: [],
+      //"稍后"
       laterTaskData: [],
-      //  AddressBook
+      //通讯录数据
       Friends: [{
         email: '',
         firstname: '',
@@ -367,6 +366,7 @@ export default {
         username: 'a'
       }],
       timeout: 5000,
+      //如果Friends为空，传递给子组件时会报错，防止报错定义一个sampleFriends
       sampleFriends: [{
         sampleFriends: [{
           email: '',
@@ -411,12 +411,15 @@ export default {
         }
       }
     },
+    //跳转到个人主页
     toProfile(event) {
       this.$router.push({name: 'Profile', params: {username: this.username}});
     },
+    //接收子组件跳转回日历界面的请求
     toCalendar() {
       this.showCalendar()
     },
+    // 控制页面显示
     showPersonalTask() {
       this.personalTaskShow = true
       this.teamInfoShow = false
@@ -634,11 +637,10 @@ export default {
           }
       )
     },
-
     handleEvents(events) {
       this.currentEvents = events
     },
-    // AddTaskForm
+    // 请求用户所有的标签
     postTags() {
       let that = this
       axios.post(
@@ -682,6 +684,7 @@ export default {
           }
       )
     },
+    //请求用户创建或者管理的组
     postMyTeams() {
       let that = this;
       axios.post(
@@ -714,7 +717,7 @@ export default {
           }
       );
     },
-    // PersonalTaskPage
+    // 请求“任务”数据
     postTaskData() {
       let that = this
       axios.post(
@@ -757,6 +760,7 @@ export default {
           }
       )
     },
+    //请求“今天”
     postTodayTaskData() {
       let that = this
       axios.post(
@@ -801,6 +805,7 @@ export default {
           }
       )
     },
+    //“一周内”
     postWeekTaskData() {
       let that = this
       axios.post(
@@ -845,6 +850,7 @@ export default {
           }
       )
     },
+    //"稍后"
     postLaterTaskData() {
       let that = this
       axios.post(
@@ -889,7 +895,7 @@ export default {
           }
       )
     },
-    // TeamInfoShow
+    // 请求用户加入的组的数据
     postTeamInfo() {
       let that = this
       axios.post(
@@ -922,7 +928,7 @@ export default {
           }
       )
     },
-    // addressBookShow
+    // 请求用户的好友数据
     postAddressBook() {
       let that = this
       axios.post(
@@ -955,19 +961,25 @@ export default {
           }
       )
     },
-    // 编辑或删除任务完，重新请求任务
+    // 重新请求“任务”，“今天”，“一周内”，“稍后”
     closeTaskDrawer() {
       this.postTaskData()
       this.postTodayTaskData()
       this.postWeekTaskData()
       this.postLaterTaskData()
     },
+    //重新请求：用户创建或管理的组
     postMyTeamAgain() {
       this.postMyTeams()
     },
+    //重新请求"任务"
     postPersonalTaskAgain() {
-      this.postTaskData();
+      this.postTaskData()
+      this.postTodayTaskData()
+      this.postWeekTaskData()
+      this.postLaterTaskData()
     },
+    //登出操作
     logOut() {
       const that = this
       axios.post(
@@ -985,11 +997,13 @@ export default {
                 message: '登出成功',
                 type: 'success'
               })
+
               websocket.setReconnectVar(false)
               websocket.getWebSocket().close()
               that.$router.push({name: 'login'})
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
+
             } else {
               that.$message.error('登出失败')
               let newToken = response.headers.authorization
@@ -1001,6 +1015,7 @@ export default {
           }
       )
     },
+    //重新请求：用户加入的组
     postTeamInfoAgain() {
       this.postTeamInfo()
     },

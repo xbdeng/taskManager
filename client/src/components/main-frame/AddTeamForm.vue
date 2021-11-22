@@ -1,9 +1,11 @@
 <template>
     <div class='addTeamForm'>
         <el-container>
+<!--          表单标题：新建组别-->
             <el-header>
                 <h1>新建组别</h1>
             </el-header>
+<!--          表单项-->
             <el-main>
                 <el-form label-width="150px" ref='teamForm' :model='teamForm' :rules="rules" status-icon>
                     <!--输入组别名称-->
@@ -22,7 +24,7 @@
                     </el-form-item>
                 </el-form> 
             </el-main>
-
+<!--          表单尾部，按钮-->
             <el-footer>
                 <el-button type='primary' @click="submitForm('teamForm')" >新建</el-button>
                 <el-button type="danger" @click="this.toCalendar">取消</el-button>
@@ -38,12 +40,14 @@ axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: 'AddTeamForm',
   data () {
+    //验证：队伍名不能为空
     var checkTeamName = (rule, value, callback)=>{
         if (value === '') {
             return callback(new Error('队名不能为空！'));
         }
         callback()
     };
+    //验证：队伍表述信息不能为空
     var checkDescription = (rule, value, callback)=>{
         if(value === '') {
             return callback(new Error('描述信息不能为空！'));
@@ -51,10 +55,12 @@ export default {
         callback()
     };
     return {
+        //提交的表单
         teamForm:{
             teamName:'',
             description:''
         },
+        //验证规则
         rules:{
             teamName:[{validator:checkTeamName, trigger:'blur'}],
             description:[{validator:checkDescription, trigger:'blur'}]
@@ -62,10 +68,13 @@ export default {
     }
   },
   methods:{
+      //提交表单后，跳转到日历界面
       toCalendar() {
+          //清空表单
           for(let i in this.teamForm) {
               this.teamForm[i] = null
           }
+        //  向父组件发送跳转信息
         this.$emit('toCalendar',{});
       },
       submitForm(formName) {
@@ -87,15 +96,12 @@ export default {
                     }
                 ).then(
                     function(response) {
-                        //alert(response.data.msg)
                         if(response.data.code === 200) {
                             that.$message({
                                 message:'新建组成功',
                                 type:'success'
                             })
-                            for(let i in that.teamForm) {
-                                that.teamForm[i] = ''
-                            }
+                            //跳转到日历界面
                             that.toCalendar()
                             let newToken = response.headers.authorization
                             if(newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -110,7 +116,7 @@ export default {
                     }
                 )
               } else {
-                  alert('error submit !!')
+                  that.$message.error('表单验证失败')
                   return false
               }
           });
