@@ -60,7 +60,8 @@
             size='50%'>
                 <TreeTask
                 :TData="this.treeData"
-                v-on:closeTreeDrawer="handleTreeClose"></TreeTask>
+                v-on:closeTreeDrawer="handleTreeClose"
+                v-on:postTreeTaskAgain="postTreeTaskAgain"></TreeTask>
             </el-drawer>
             <!-- 用于显示组的信息 -->
 
@@ -164,6 +165,9 @@ export default {
       if(this.teamInfo.length !== 0)
         return this.teamInfo[this.selectedTeam].teamTasks
       else return []
+    },
+    postTreeTaskAgain() {
+      this.$emit('postTeamInfoAgain',{})
     }
 }
 

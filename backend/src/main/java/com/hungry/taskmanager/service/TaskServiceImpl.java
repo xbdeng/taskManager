@@ -167,20 +167,44 @@ public class TaskServiceImpl implements TaskService{
     /**
      *  modify status of a task
      */
-    public int editTask(EditTaskDTO params) throws Exception {
+    public void editTask(EditTaskDTO params) throws Exception {
+        // get userid
+        BigInteger userId = userMapper.getIdByName(params.getUsername());
         // get task object
-        BigInteger taskId = BigInteger.valueOf(params.getTaskId());
+        BigInteger taskId = params.getTaskId();
         UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", taskId);
+        LocalDateTime createDate = convertGMT(params.getCreateDate());
+        LocalDateTime dueDate = convertGMT(params.getDueDate());
         // configuration
-        if (params.getTaskName() != null) wrapper.set("task_name", params.getTaskName());
-        if (params.getDescription() != null) wrapper.set("description", params.getDescription());
-        if (params.getCreateDate() != null) wrapper.set("create_date", convertGMT(params.getCreateDate()));
-        if (params.getDueDate() != null) wrapper.set("due_date", convertGMT(params.getDueDate()));
-        if (params.getStatus() != null && (params.getStatus() == 0 || params.getStatus() == 1)) wrapper.set("status", params.getStatus());
-        if (params.getFatherTask() != null) wrapper.set("father_task", params.getFatherTask());
-        if (params.getPrivilege() != null) wrapper.set("privilege", params.getPrivilege());
+        wrapper.set("task_name", params.getTaskName()).set("description", params.getDescription()).set("privilege", params.getPrivilege())
+                .set("create_date", createDate).set("due_date", dueDate).set("father_task", params.getFatherTask())
+                .set("status", params.getStatus());
         taskMapper.update(null, wrapper);
-        return 200;
+        // tags
+        List<String> tags = params.getTags();
+        List<Tag> insertedTags = new ArrayList<>();
+        if (tags != null && tags.size() > 0){
+            for (String s : tags) {
+                Tag tag = new Tag().setUserId(userId).setTagName(s);
+                tagMapper.insert(tag);
+            }
+            QueryWrapper<Tag> tagWrapper = new QueryWrapper<Tag>().eq("user_id", userId).in("tag_name", tags);
+            insertedTags = tagMapper.selectList(tagWrapper);
+        }
+        // get user task tag
+        UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id", userId).eq("task_id", taskId));
+        // get user task tag
+        userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", ut.getUtId()));
+        for (Tag tag : insertedTags){
+            UserTaskTag utt = new UserTaskTag();
+            utt.setUtId(ut.getUtId()).setTagId(tag.getTagId());
+            userTaskTagMapper.insert(utt);
+        }
+        // subtasks
+        for (String taskName: params.getSubTasks()){
+            Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0);
+            taskMapper.insert(newTask);
+        }
     }
 
     public void addSubTask(AddSubTaskDTO params){
