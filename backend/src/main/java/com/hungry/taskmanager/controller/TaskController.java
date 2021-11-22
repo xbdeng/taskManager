@@ -34,7 +34,7 @@ public class TaskController {
             return new Result<BigInteger>(200, "successfully add a task", result);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result<BigInteger>(500, "server error", null);
+            return Result.fail(500, "server error", null);
         }
 
     }

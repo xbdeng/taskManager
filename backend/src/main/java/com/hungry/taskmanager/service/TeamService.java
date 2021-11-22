@@ -1,12 +1,10 @@
 package com.hungry.taskmanager.service;
 
-import com.hungry.taskmanager.dto.CreateTeamDTO;
-import com.hungry.taskmanager.dto.EditTeamDTO;
-import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
-import com.hungry.taskmanager.dto.TeamDTO;
+import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public interface TeamService {
     Result createTeam(CreateTeamDTO createTeamDTO,String creatorName);
@@ -24,4 +22,7 @@ public interface TeamService {
     Result editTeam(EditTeamDTO params,String operator);
 
     boolean isInTeam(BigInteger userId, BigInteger teamId);
+
+    Result<List<QueryTeamDTO>> queryTeam(String teamName, BigInteger teamId);
+
 }

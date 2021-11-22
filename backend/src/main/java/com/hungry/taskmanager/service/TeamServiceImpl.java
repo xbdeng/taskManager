@@ -8,6 +8,7 @@ import com.hungry.taskmanager.dao.UserMapper;
 import com.hungry.taskmanager.dto.CreateTeamDTO;
 import com.hungry.taskmanager.dto.EditTeamDTO;
 import com.hungry.taskmanager.dto.OppoTeamMemberDTO;
+import com.hungry.taskmanager.dto.QueryTeamDTO;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Team;
 import com.hungry.taskmanager.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -179,5 +181,25 @@ public class TeamServiceImpl implements TeamService {
         }else{
             return false;
         }
+    }
+
+    @Override
+    public Result<List<QueryTeamDTO>> queryTeam(String teamName, BigInteger teamId) {
+        if(teamId!=null){
+            Team team = teamMapper.selectOne(new QueryWrapper<Team>().eq("team_id",teamId));
+            QueryTeamDTO queryTeamDTO = new QueryTeamDTO(team.getTeamId(),team.getTeamName(),team.getDescription(),
+                    userMapper.selectById(team.getCreator()).getUsername());
+            List<QueryTeamDTO> re = new ArrayList<>(1);
+            re.add(queryTeamDTO);
+            return new Result<>(200,"查询成功",re);
+        }
+        List<Team> teams = teamMapper.selectList(new QueryWrapper<Team>().like("team_name",teamName));
+        List<QueryTeamDTO> queryTeamDTOS = new ArrayList<>();
+        for(Team team:teams){
+            QueryTeamDTO queryTeamDTO = new QueryTeamDTO(team.getTeamId(),team.getTeamName(),team.getDescription(),
+                    userMapper.selectById(team.getCreator()).getUsername());
+            queryTeamDTOS.add(queryTeamDTO);
+        }
+        return new Result<>(200,"查询成功",queryTeamDTOS);
     }
 }

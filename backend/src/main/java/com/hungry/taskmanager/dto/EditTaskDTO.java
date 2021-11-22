@@ -24,6 +24,8 @@ public class EditTaskDTO {
     private Integer privilege;
     private String createDate;
     private String dueDate;
+    private String remindDate;
+    private String location;
     // other parameters necessary for modifying a task
     private BigInteger fatherTask;
     private List<String> subTasks;
