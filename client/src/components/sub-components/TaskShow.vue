@@ -8,7 +8,11 @@
             <el-row :gutter="10" type="flex" align="middle">
               <el-col :span="3">
                 <el-tooltip content="完成任务：在已完成和未完成任务之间切换" placement="top-end">
-                  <i class="el-icon-success" :id="this.Id" v-on:mouseover="changeToActive($event)" v-on:mouseout="changeToOrigin($event)" @click="postTaskFinished($event)"></i>
+                  <i class="el-icon-success"
+                     :id="this.tempTaskForm.status === 0 ? 'origin' : (this.tempTaskForm.status === 1 ? 'active' : 'defined') "
+                     v-on:mouseover="changeToActive($event)"
+                     v-on:mouseout="changeToOrigin($event)"
+                     @click="postTaskFinished($event)"></i>
                 </el-tooltip>
               </el-col>
 
@@ -271,25 +275,22 @@ export default {
       editedTaskName:null,
       editedDescription:'',
       tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData)),
-      Id:this.tempTaskForm.status === 0 ? "origin" : "active"
     }
   },
   methods:{
     changeToActive($event) {
-      if(this.Id === 'origin')
-        this.Id = 'active'
+      if(document.getElementById('origin') != null)
+        this.tempTaskForm.status = 1
     },
     changeToOrigin($event) {
-      if(this.Id === 'active')
-        this.Id = 'origin'
+      if(document.getElementById('active') != null)
+        this.tempTaskForm.status = 0
     },
     postTaskFinished($event) {
-      if(this.Id === 'active') {
-        this.Id = 'defined'
-        this.tempTaskForm.status = 1
-      } 
-      else if(this.Id === 'defined') {
-        this.Id = 'origin'
+      if(document.getElementById('active') != null) {
+        this.tempTaskForm.status = 2
+      }
+      else if(document.getElementById('defined') != null) {
         this.tempTaskForm.status = 0
       }
     },
@@ -385,7 +386,7 @@ export default {
           //fatherTask
           members:that.tempTaskForm.members,
           privilege:that.tempTaskForm.privilege,
-          status:that.tempTaskForm.status,
+          status:that.tempTaskForm.status === 2 ? that.tempTaskForm.status - 1 : that.tempTaskForm.status,
           subTasks:that.tempTaskForm.subTasks,
           tags:that.tempTaskForm.tags,
           taskName:that.tempTaskForm.taskName,
