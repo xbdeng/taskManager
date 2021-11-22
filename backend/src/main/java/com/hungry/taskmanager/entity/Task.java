@@ -26,11 +26,11 @@ public class Task {
     private String description;
     private String location;
     private BigInteger type;
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone="Europe/Zagreb")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createDate;
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", timezone ="Europe/London")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime dueDate;
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",timezone="GMT+8")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime remindDate;
     private Integer status;
     private BigInteger fatherTask;

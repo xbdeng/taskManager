@@ -222,7 +222,7 @@ public class TaskServiceImpl implements TaskService{
             return null;
         }
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        return LocalDateTime.parse(date, f).atZone(ZoneId.from(ZoneOffset.UTC)).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+        return LocalDateTime.parse(date, f).atZone(ZoneId.from(ZoneOffset.UTC)).withZoneSameInstant(ZoneId.from(ZoneOffset.UTC)).toLocalDateTime();
     }
 
 }
