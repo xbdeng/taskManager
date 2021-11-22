@@ -111,6 +111,7 @@
           <!-- 个人任务页面 -->
           <PersonalTaskPage
               v-show="personalTaskShow"
+              :username="this.username"
               :taskData="this.taskData"
               :todayTaskData="this.todayTaskData"
               :weekTaskData="this.weekTaskData"
@@ -195,7 +196,8 @@
           </el-drawer>
 
           <!-- 任务搜索 -->
-          <SearchTaskPage v-show="searchTaskShow"></SearchTaskPage>
+          <SearchTaskPage
+              v-show="searchTaskShow"></SearchTaskPage>
         </el-main>
       </el-container>
     </el-container>
@@ -970,7 +972,10 @@ export default {
     },
     //重新请求"任务"
     postPersonalTaskAgain() {
-      this.postTaskData();
+      this.postTaskData()
+      this.postTodayTaskData()
+      this.postWeekTaskData()
+      this.postLaterTaskData()
     },
     //登出操作
     logOut() {

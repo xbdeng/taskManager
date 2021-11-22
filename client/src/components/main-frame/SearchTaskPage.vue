@@ -229,6 +229,7 @@ export default {
                       if(newToken != null) {
                         window.sessionStorage.setItem('token', newToken)
                       }
+                      that.handleFliterClose()
                   } else {
                       that.$message.error('查询失败')
                       let newToken = response.headers.authorization
@@ -257,8 +258,12 @@ export default {
       openFliter() {
           this.fliterDrawer = true
       },
-      handleTaskInfoClose() {
+      handleTaskInfoClose(a) {
           this.taskInfoDrawer = false
+          this.searchRequest()
+          for (let i in this.fliterForm) {
+            this.fliterForm[i] = null
+          }
       },
       handleFliterClose() {
           this.fliterDrawer = false
@@ -319,7 +324,11 @@ export default {
       emitTreeData(task) {
         this.treeDrawer = true
         this.treeData = task
-      }
+      },
+      closeTaskDrawer() {
+          this.$emit('closeTaskDrawer', {})
+          this.taskInfoDrawer = false
+      },
 
   }
 

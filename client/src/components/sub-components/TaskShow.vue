@@ -428,7 +428,7 @@ export default {
       axios({
         method:'POST',
         url:'/task/deletetask',
-        params:{'id':that.tempTaskForm.taskId},
+        params:{id:that.tempTaskForm.taskId},
         headers:{
           Authorization:window.sessionStorage.getItem('token')
         }

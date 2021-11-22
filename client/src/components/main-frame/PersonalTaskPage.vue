@@ -90,6 +90,8 @@
             size='50%'>
                 <TreeTask
                 :TData="this.treeData"
+                :tagArray="this.tagArray"
+                :myTeamInfo="this.myTeamInfo"
                 v-on:closeTreeDrawer="handleTreeClose"
                 v-on:postTreeTaskAgain="postPersonalTaskAgain"></TreeTask>
             </el-drawer>
@@ -111,7 +113,7 @@ export default {
     TaskShow,
     TreeTask
   },
-  props:['taskData','todayTaskData','weekTaskData','laterTaskData'],
+  props:['username','taskData','todayTaskData','weekTaskData','laterTaskData'],
   data() {
     return {
         chosenTaskId:'-1',
@@ -122,6 +124,15 @@ export default {
         addedTaskName:'',
         treeDrawer:false,
         treeData:null,
+        tagArray:[],
+        myTeamInfo:[]
+    }
+  },
+  watch:{
+    //监听，一旦树形图打开，自动请求标签和用户创建或管理的组
+    'treeDrawer':function() {
+      this.postTags()
+      this.postMyTeams()
     }
   },
   methods: {
@@ -228,10 +239,90 @@ export default {
       console.log(task)
       this.treeData = task
       this.treeDrawer = true
+
     },
     postPersonalTaskAgain() {
+      this.drawer = false
+      this.treeDrawer = false
       this.$emit('postPersonalTaskAgain', {})
-    }
+    },
+    //请求用户的标签数据
+    postTags() {
+      let that = this
+      axios.post(
+          '/user/selecttags',
+          {
+            username: this.username
+          },
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            //alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '获取标签成功',
+                type: 'success'
+              })
+              that.tagArray = []
+              for (let i in response.data.data) {
+                let content = response.data.data[i]
+                let obj = {
+                  label: content.tagName,
+                  value: content.tagName
+                }
+
+                that.tagArray.push(obj)
+              }
+              let newToken = response.headers.authorization
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            } else {
+              that.$message.error('获取Tags数据失败')
+              let newToken = response.headers.authorization
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+          },
+          function (err) {
+            that.$message.error('响应错误,获取Tags数据失败')
+          }
+      )
+    },
+    // 请求用户创建或管理的组
+    postMyTeams() {
+      let that = this;
+      axios.post(
+          '/user/myteams/admin',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            //alert(response.data.msg)
+            if (response.data.code === 200) {
+              that.$message({
+                message: '请求用户创建或管理的组成功',
+                type: 'success'
+              })
+              that.myTeamInfo = response.data.data
+              let newToken = response.headers.authorization
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            } else {
+              that.$message.error('请求用户创建或管理的组失败')
+              let newToken = response.headers.authorization
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+          },
+          function (err) {
+            that.$message.error('响应错误,请求用户创建或管理的组失败')
+          }
+      );
+    },
 
   }
 

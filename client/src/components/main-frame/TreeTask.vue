@@ -56,7 +56,10 @@
     </el-container>
 
     <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" :modal-append-to-body="false" :modal="false">
-      <add-task-form :fatherTaskId="this.fatherTaskId"></add-task-form>
+      <add-task-form
+          :fatherTaskId="this.fatherTaskId"
+          :tagArray="this.tagArray"
+          :myTeamInfo="this.myTeamInfo"></add-task-form>
     </el-dialog>
 
   </div>
@@ -74,7 +77,7 @@ export default {
     tree,
     popUpOnHoverText
   },
-  props:['TData'],
+  props:['TData', 'tagArray','myTeamInfo'],
   watch:{
     'TData':function() {
       this.taskData = this.TData
@@ -147,10 +150,13 @@ export default {
       console.log(node)
       let deletedTaskId = parseInt(data.name.split(':')[0])
       axios({
-        methods:'POST',
+        method:'POST',
         url:'/task/deletetask',
         params:{
-          'id':deletedTaskId
+          id:deletedTaskId
+        },
+        headers:{
+          Authorization:window.sessionStorage.getItem('token')
         }
       }).then(
           function(response) {

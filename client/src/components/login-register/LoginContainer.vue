@@ -18,7 +18,11 @@
           </el-form-item>
           <!-- 密码输入框 -->
           <el-form-item prop="password" label='密码'>
-            <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="请输入密码"
+            <el-input type="password"
+                      v-model="loginForm.password"
+                      auto-complete="off"
+                      placeholder="请输入密码"
+                      @keyup.enter.native="handleSubmit"
                       show-password></el-input>
           </el-form-item>
           <!-- 登录注册按钮 -->

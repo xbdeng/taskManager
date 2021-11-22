@@ -278,7 +278,7 @@ export default {
         // 如果是在树形结构中调用AddTaskForm，参数中fatherTaskId不为null，这时要多执行一步添加子任务的步骤
         let fTaskId = this.fatherTaskId
         //子任务的id
-        let cTaskId = null
+        var cTaskId = null
         this.$refs[formName].validate((valid)=>{
             if(valid) {
               axios({
@@ -314,9 +314,42 @@ export default {
                             that.taskForm[key] = ''
                         }
                         //获取添加该任务后，该任务的id
-                        cTaskId = response.data.data.taskId
+                        cTaskId = response.data.data
+                        alert(cTaskId)
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                        //添加子任务
+                        const there = that
+                        if(fTaskId != null) {
+                          //请求添加父子任务
+                          axios.post(
+                              '/task/addsubtask',
+                              {
+                                fatherTask:fTaskId,
+                                subTask:cTaskId
+                              },
+                              {
+                                headers:{
+                                  Authorization:window.sessionStorage.getItem('token')
+                                }
+                              }
+
+                          ).then(
+                              function(response) {
+                                if(response.data.code === 200) {
+                                  there.$message({
+                                    message:'添加子任务成功',
+                                    type:'success'
+                                  })
+                                } else {
+                                  there.$message.error('添加子任务失败')
+                                }
+                              },
+                              function(err) {
+                                there.$message.error('响应失败，添加子任务失败')
+                              }
+                          )
+                        }
                         //添加完任务，直接跳转到日历界面
                         that.toCalendar()
                     } else {
@@ -335,32 +368,7 @@ export default {
                 return false
             }
         });
-        //添加子任务
-        if(fTaskId != null) {
-          //请求添加父子任务
-          axios.post(
-              '/task/addsubtask',
-              {
-                fatherId:fTaskId,
-                childId:cTaskId
-              },
 
-          ).then(
-              function(response) {
-                if(response.data.code === 200) {
-                  that.$message({
-                    message:'添加子任务成功',
-                    type:'success'
-                  })
-                } else {
-                  that.$message.error('添加子任务失败')
-                }
-              },
-              function(err) {
-                that.$message.error('响应失败，添加子任务失败')
-              }
-          )
-        }
     },
   }
 }
