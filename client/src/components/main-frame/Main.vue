@@ -391,7 +391,7 @@ export default {
           if (tmp.type === 0) {
             this.$notify.info({
               title: tmp.from,
-              message: '想要与你一起组队成为' + tmp.groupId
+              message: '想要与你一起组队成为' + tmp.message
             });
           }
           if (tmp.type === 1) {
@@ -403,7 +403,7 @@ export default {
           if (tmp.type === 2) {
             this.$notify.info({
               title: tmp.from,
-              message: '邀请你加入' + tmp.groupId
+              message: '邀请你加入' + tmp.message
             });
           }
         }
