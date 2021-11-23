@@ -177,14 +177,14 @@ export default {
   /* background: aquamarine; */
   background-size: 100% 100%;
   padding: 0%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+  /*box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)*/
 }
 
 .address_aside {
   /* background: darkorange; */
   height: 100vh;
   background-size: 100% 100%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+  /*box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)*/
 }
 
 .address_main {
@@ -201,5 +201,16 @@ export default {
   top: 50%;
   transform: translateY(-50%);
 }
+.el-menu-item.is-active，.el-submenu .el-menu-item.is-active {
+  background-color: red !important;
+}
 
+.el-menu-item.is-active:hover，.el-submenu .el-menu-item:hover {
+  background-color: rgb(179, 13, 13) !important;
+}
+
+.el-menu-item:hover {
+  background-color: #ccc;
+// border-right: 10px solid #000;
+}
 </style>

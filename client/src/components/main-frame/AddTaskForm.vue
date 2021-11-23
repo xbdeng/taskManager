@@ -126,7 +126,7 @@ export default {
   //tagArray:Main中请求用户的标签信息，传递到子组件
   //myTeamInfo:Main中请求用户创建或管理的组
   //fatherTaskId:TreeTask中，点击节点添加子任务时，传递的父任务的id
-  props:['username','tagArray','myTeamInfo','fatherTaskId'],
+  props:['username','tagArray','myTeamInfo','fatherTaskId', 'startDate','endDate'],
   data () {
     //任务名验证：不能为空
     var checkTaskName = (rule, value, callback)=>{
@@ -156,11 +156,11 @@ export default {
         taskForm:{
             taskName:'',
             tags: [],
-            dueDate:null,
+            dueDate:this.endDate === null ? '' : this.endDate,
             privilege:0,
             type: '',
             teamId:'',
-            createDate:null,
+            createDate:this.startDate === null ? '' : this.startDate,
             description:'',
             position:''
         },

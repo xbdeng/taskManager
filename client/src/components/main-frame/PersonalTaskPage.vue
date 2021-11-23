@@ -413,4 +413,16 @@ export default {
   overflow-y:auto;
   height: 90%;
 }
+.el-menu-item.is-active，.el-submenu .el-menu-item.is-active {
+  background-color: red !important;
+}
+
+.el-menu-item.is-active:hover，.el-submenu .el-menu-item:hover {
+  background-color: rgb(179, 13, 13) !important;
+}
+
+.el-menu-item:hover {
+  background-color: #ccc;
+// border-right: 10px solid #000;
+}
 </style>

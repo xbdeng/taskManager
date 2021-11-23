@@ -27,9 +27,13 @@
           </el-form-item>
           <!-- 登录注册按钮 -->
           <el-form-item>
-            <el-col :span="24" >
+            <el-col :span="18" >
               <el-button type="primary" @click="handleSubmit">登录</el-button>
               <el-button @click="handleRegister">注册</el-button>
+            </el-col>
+          </el-form-item>
+          <el-form-item>
+            <el-col :span="18">
               <el-button @click="handleGithub">Github</el-button>
 <!--              <el-button @click="handleOutlook">Outlook</el-button>-->
             </el-col>
