@@ -1242,7 +1242,7 @@ export default {
       let client_id = '70f26831-fd49-4b56-a707-3a1ba1ae66d6'
       //授权回调地址
       let redirect_uri = 'http://localhost:8080/outlook/login'
-      let scope = 'https://graph.microsoft.com/Calendars.ReadWrite.Shared https://graph.microsoft.com/email https://graph.microsoft.com/offline_access https://graph.microsoft.com/openid https://graph.microsoft.com/profile https://graph.microsoft.com/User.Read'
+      let scope = 'https://graph.microsoft.com/Calendars.ReadWrite'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
     }
   }
