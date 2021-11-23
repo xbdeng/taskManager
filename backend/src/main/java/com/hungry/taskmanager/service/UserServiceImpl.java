@@ -232,4 +232,15 @@ public class UserServiceImpl implements UserService {
         contactMapper.delete(new QueryWrapper<Contact>().eq("friend", userId).eq("person", friendId));
     }
 
+    @Override
+    public void uploadImage(String username, String url){
+        userMapper.update(null, new UpdateWrapper<User>().eq("username", username).set("img", url));
+    }
+
+    @Override
+    public String getImage(String username){
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
+        return user.getImg();
+    }
+
 }

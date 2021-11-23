@@ -57,4 +57,8 @@ public interface UserService {
     boolean hasAFriend(BigInteger person, BigInteger friend);
 
     void removeFriend(String username, String friendName);
+
+    void uploadImage(String username, String url);
+
+    String getImage(String username);
 }

@@ -14,6 +14,7 @@ import com.hungry.taskmanager.utils.RedisUtil;
 import com.hungry.taskmanager.entity.Result;
 import io.swagger.annotations.*;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.http.*;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
@@ -100,7 +101,7 @@ public class UserController {
             long currentTimeMillis = System.currentTimeMillis();
             String token = JWTUtil.createToken(user.getUsername(), currentTimeMillis);
             redisUtil.set(user.getUsername(), currentTimeMillis, 30 * 60); //放入缓存（登录）
-            return new Result<String>(200, user.getUsername(), token);
+            return new Result<>(200, user.getUsername(), token);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
@@ -270,36 +271,55 @@ public class UserController {
             String username = JWTUtil.getUsername(token);
             String friendName = JSONObject.parseObject(friend).getString("username");
             userService.removeFriend(username, friendName);
-            return new Result(200, "remove a friend successfully", "");
+            return new Result<>(200, "remove a friend successfully", "");
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.fail(500, "服务器错误", null);
+            return new Result<>(500, "server error", "");
         }
     }
 
     @PostMapping("/uploadimage")
     @RequiresAuthentication
     @ApiOperation(value = "upload image")
-    public Result<String> uploadImage(@RequestParam("img")MultipartFile img, HttpServletRequest request, HttpSession session){
+    public Result<String> uploadImage(@RequestParam("file")MultipartFile img, HttpServletRequest request, HttpSession session){
         try{
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             String originalFileName = img.getOriginalFilename();
             // todo : validate image type
             String filename = UUID.randomUUID()+originalFileName;
-            String path = request.getSession().getServletContext().getRealPath("/upload");
+            String path = request.getServletContext().getRealPath("/upload");
             File dir = new File(path);
             if(! dir.exists()){
                 dir.mkdir();
             }
             File filePath = new File(dir, filename);
+            System.out.println(filePath);
             img.transferTo(filePath);
-            return new Result<String>(200, "successfully upload img", "");
+            userService.uploadImage(username, "/upload/"+filename);
+            return new Result<>(200, "successfully upload img", "");
         }catch(Exception e){
             e.printStackTrace();
-            return Result.fail(500, "", null);
+            return new Result<>(500, "server error", "");
         }
     }
+
+    @PostMapping("/getimage")
+    @RequiresAuthentication
+    @ApiOperation(value = "upload image")
+    public Result<String> getImage(HttpServletRequest request){
+        try{
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            String img = userService.getImage(username);
+            return new Result<>(200, "successfully get img", img);
+        }catch(Exception e){
+            e.printStackTrace();
+            return new Result<>(500, "server error", "");
+        }
+    }
+
+
 
 
 }

@@ -29,7 +29,7 @@ public class User implements Serializable {
     private String email;
     private String phone;
     private String githubName;
-
+    private String img;
     //定义角色集合
     @TableField(exist = false)
     private List<Role> roles;
