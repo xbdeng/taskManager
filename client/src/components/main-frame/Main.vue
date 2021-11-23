@@ -90,6 +90,11 @@
                 <span slot="title">消息通知</span>
               </el-badge>
             </el-menu-item>
+
+            <el-menu-item index="9">
+                <i class="el-icon-circle-check" v-if="!this.offline"></i>
+                <i class="el-icon-warning-outline" v-if="this.offline"></i>
+            </el-menu-item>
           </el-menu>
 
         </el-aside>
@@ -409,7 +414,8 @@ export default {
         }]
       }],
       transData: [],
-      showMessageNote : ''
+      showMessageNote : '',
+      offline: false
     }
   },
   methods: {
@@ -425,10 +431,10 @@ export default {
             type: 'warning'
           });
         }
+        that.offline = true
         websocket.setBroken(true)
         that.reconnect(that.username)
       }
-
           websocket.getWebSocket().onopen = function () {
             console.log("连接成功")
             Notification({
@@ -436,6 +442,7 @@ export default {
               message: '连接成功',
               type: 'success'
             });
+            that.offline = false
             websocket.setBroken(false)
             heartCheck.start();
           }
@@ -449,6 +456,7 @@ export default {
                 type: 'warning'
               });
             }
+            that.offline = true
             websocket.setBroken(true)
             if (websocket.getReconnectVar() === true) {
               that.reconnect(that.username);
@@ -457,6 +465,7 @@ export default {
 
 
       websocket.getWebSocket().onmessage = function (res) {
+        that.offline = false
         //处理接收的时间逻辑
         // console.log(res)
         heartCheck.start()

@@ -43,6 +43,8 @@
 
 <script>
 import axios from "axios";
+import websocket from "../sub-components/WebSocket";
+import {storeRequest} from "../sub-components/cache";
 
 export default {
   name: "MessagePage",
@@ -131,6 +133,14 @@ export default {
       )
     },
     clickBottom(messageId, operation) {
+      if(websocket.getStatus() === "连接已关闭" || websocket.getStatus() === "未连接" ){
+        storeRequest('/api/message/confirm',{messageId: messageId, operation: operation})
+        this.$message({
+          message: 'Offline request, request cache',
+          type: 'error'
+        })
+        return
+      }
       const that = this
       axios.post(
           'http://localhost:8081/api/message/confirm',
