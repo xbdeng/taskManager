@@ -14,7 +14,7 @@
             INNER JOIN tag AS t3 ON utt.tag_id = t3.tag_id
         </if>
         <where>
-            <if test="onlyTopTask != null and onlyTopTask == true">
+            <if test="querySubTasks == null or querySubTasks == false">
                 t.father_task IS NULL
             </if>
             <if test="userId != null">

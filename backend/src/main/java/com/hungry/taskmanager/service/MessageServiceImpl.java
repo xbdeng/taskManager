@@ -62,6 +62,7 @@ public class MessageServiceImpl implements MessageService{
                     Message message = new Message().setSender(sender).setReceiver(receiver.getUserId()).setType("g_invitation").setContent(invitation.getTeamId().toString());
                     messageMapper.insert(message);
                 }
+                if (receivers.size() == 0) return 202;
                 Team team = teamMapper.selectById(invitation.getTeamId());
                 WebSocketMessageDTO wsm = new WebSocketMessageDTO().setFrom(invitation.getFrom()).setGroupName(team.getTeamName()).setType(type);
                 String text = JSON.toJSONString(wsm);
@@ -73,6 +74,7 @@ public class MessageServiceImpl implements MessageService{
                 // get sender receiver id
                 BigInteger sender = userMapper.getIdByName(invitation.getFrom());
                 BigInteger receiver = userMapper.getIdByName(invitation.getUsernameTo().get(0));
+                if(receiver == null) return 202;
                 // check whether user is a friend
                 if (userService.hasAFriend(sender, receiver)) return 201;
                 // insert message into database
@@ -81,7 +83,7 @@ public class MessageServiceImpl implements MessageService{
                 // send invitation to the other user
                 WebSocketMessageDTO wsm = new WebSocketMessageDTO().setFrom(invitation.getFrom()).setType(type);
                 String text = JSON.toJSONString(wsm);
-                Session session = WebSocketServer.sessionMap.get(invitation.getUsernameTo());
+                Session session = WebSocketServer.sessionMap.get(invitation.getUsernameTo().get(0));
                 server.send(text, session);
                 break;
             }

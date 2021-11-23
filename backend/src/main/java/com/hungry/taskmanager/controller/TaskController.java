@@ -61,7 +61,7 @@ public class TaskController {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            return result.setData(taskServiceImpl.queryTask(filter.setUsername(username).setOnlyTopTask(true))).setCode(200).setMsg("query successfully") ;
+            return result.setData(taskServiceImpl.queryTask(filter.setUsername(username))).setCode(200).setMsg("query successfully") ;
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<List<Task>>(500, "server error", null);

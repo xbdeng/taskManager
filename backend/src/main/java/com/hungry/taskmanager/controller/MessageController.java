@@ -8,10 +8,7 @@ import com.hungry.taskmanager.entity.Message;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.service.MessageService;
 import com.hungry.taskmanager.utils.JWTUtil;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +21,7 @@ import java.util.List;
 public class MessageController {
     @Resource
     MessageService messageService;
-    @RequestMapping("/sendrequest")
+    @PostMapping("/sendrequest")
     public Result<String> sendRequest(@RequestBody InvitationDTO invitationDTO, HttpServletRequest request){
         try {
             String token = request.getHeader("Authorization");
@@ -37,7 +34,7 @@ public class MessageController {
         }
 
     }
-    @RequestMapping("/confirm")
+    @PostMapping("/confirm")
     public Result<String> confirm(@RequestBody ConfirmDTO confirmDTO, HttpServletRequest request){
         try {
             String token = request.getHeader("Authorization");
@@ -50,7 +47,7 @@ public class MessageController {
         return new Result<String>(200, "successfully confirm", "");
     }
 
-    @RequestMapping("/getmessages")
+    @PostMapping("/getmessages")
     public Result<List<MessageDTO>> getMessages(HttpServletRequest request){
         try {
             String token = request.getHeader("Authorization");
