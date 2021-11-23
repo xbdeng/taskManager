@@ -214,7 +214,7 @@
               :before-close="handleMessageClose"
               :append-to-body='true'
               size="400px">
-            <MessagePage></MessagePage>
+            <MessagePage :message-show="MessageShow"></MessagePage>
           </el-drawer>
 
           <!-- 任务搜索 -->
