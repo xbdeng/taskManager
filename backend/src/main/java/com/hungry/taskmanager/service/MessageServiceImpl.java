@@ -93,7 +93,7 @@ public class MessageServiceImpl implements MessageService{
                 // get all group administrator and creator username
                 List<User> ac = teamMapper.getTeamCreatorAndAdministrators(invitation.getTeamId());
                 // check whether user is already in team
-                if (teamService.isInTeam(sender, BigInteger.valueOf(Long.parseLong(message.getContent())))) return 201;
+                if (teamService.isInTeam(sender, invitation.getTeamId())) return 201;
                 // get team
                 Team team = teamMapper.selectById(invitation.getTeamId());
                 List<String> usernames = new ArrayList<>();
