@@ -17,8 +17,6 @@ public class GitHubUtil {
         String accessTokenUrl_ = accessTokenUrl + code;
         String s = request.postForObject(accessTokenUrl_, String.class, String.class, map);
         System.out.println("accessTokenUrl返回的数据:" + s);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         String[] str = s.split("&");
         String access_token = str[0].substring(str[0].indexOf("=")).substring(1);
         getGithubUserName(access_token);

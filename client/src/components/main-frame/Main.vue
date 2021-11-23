@@ -36,7 +36,7 @@
                 <span slot="title"></span>
                 <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
                 <el-menu-item index="1-2">页面设置</el-menu-item>
-                <el-menu-item index="1-3">数据同步</el-menu-item>
+                <el-menu-item index="1-3" @click="handleOutlook">数据同步</el-menu-item>
                 <el-menu-item index="1-4" @click="logOut">账号登出</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
@@ -91,6 +91,11 @@
                 <i class="el-icon-message"></i>
                 <span slot="title">消息通知</span>
               </el-badge>
+            </el-menu-item>
+
+            <el-menu-item index="9">
+              <i class="el-icon-circle-check" v-if="!this.offline"></i>
+              <i class="el-icon-warning-outline" v-if="this.offline"></i>
             </el-menu-item>
           </el-menu>
 
@@ -216,7 +221,8 @@
               :before-close="handleMessageClose"
               :append-to-body='true'
               size="440px">
-            <div slot="title"><i class="el-icon-message-solid" style="font-size: 30px"></i><span style="font-size: 30px; text-align: center">Your Notification</span></div>
+            <div slot="title"><i class="el-icon-message-solid" style="font-size: 30px"></i><span
+                style="font-size: 30px; text-align: center">Your Notification</span></div>
             <MessagePage :message-show="MessageShow"></MessagePage>
           </el-drawer>
 
@@ -411,7 +417,8 @@ export default {
         }]
       }],
       transData: [],
-      showMessageNote : ''
+      showMessageNote: '',
+      offline: false
     }
   },
   methods: {
@@ -427,38 +434,41 @@ export default {
             type: 'warning'
           });
         }
+        that.offline = true
         websocket.setBroken(true)
         that.reconnect(that.username)
       }
+      websocket.getWebSocket().onopen = function () {
+        console.log("连接成功")
+        Notification({
+          title: '成功',
+          message: '连接成功',
+          type: 'success'
+        });
+        that.offline = false
+        websocket.setBroken(false)
+        heartCheck.start();
+      }
 
-          websocket.getWebSocket().onopen = function () {
-            console.log("连接成功")
-            Notification({
-              title: '成功',
-              message: '连接成功',
-              type: 'success'
-            });
-            websocket.setBroken(false)
-            heartCheck.start();
-          }
-
-          websocket.getWebSocket().onclose = function () {
-            console.log("连接已关闭")
-            if (websocket.getBroken() === false) {
-              Notification({
-                title: '警告',
-                message: '连接已关闭',
-                type: 'warning'
-              });
-            }
-            websocket.setBroken(true)
-            if (websocket.getReconnectVar() === true) {
-              that.reconnect(that.username);
-            }
-          }
+      websocket.getWebSocket().onclose = function () {
+        console.log("连接已关闭")
+        if (websocket.getBroken() === false) {
+          Notification({
+            title: '警告',
+            message: '连接已关闭',
+            type: 'warning'
+          });
+        }
+        that.offline = true
+        websocket.setBroken(true)
+        if (websocket.getReconnectVar() === true) {
+          that.reconnect(that.username);
+        }
+      }
 
 
       websocket.getWebSocket().onmessage = function (res) {
+        that.offline = false
         //处理接收的时间逻辑
         // console.log(res)
         heartCheck.start()
@@ -496,22 +506,22 @@ export default {
         }
       }
     },
-reconnect(sname) {
-  const that = this
-  if (websocket.getlockReconnect()) {
-    return;
-  }
-  websocket.setlockReconnect(true)
-  //没连接上会一直重连，设置延迟避免请求过多
-  websocket.gettt() && clearTimeout(websocket.gettt());
-  websocket.settt(setTimeout(function () {
-    websocket.getWebSocket().close()
-    console.log("执行断线重连...")
-    // ws = new WebSocket(url + sname);
-    that.Initwebscoket()
-    websocket.setlockReconnect(false)
-  }, 5000))
-},
+    reconnect(sname) {
+      const that = this
+      if (websocket.getlockReconnect()) {
+        return;
+      }
+      websocket.setlockReconnect(true)
+      //没连接上会一直重连，设置延迟避免请求过多
+      websocket.gettt() && clearTimeout(websocket.gettt());
+      websocket.settt(setTimeout(function () {
+        websocket.getWebSocket().close()
+        console.log("执行断线重连...")
+        // ws = new WebSocket(url + sname);
+        that.Initwebscoket()
+        websocket.setlockReconnect(false)
+      }, 5000))
+    },
     // eventMsg() {
     //   let that = this;
     //     if ("WebSocket" in window) {
@@ -1227,6 +1237,16 @@ reconnect(sname) {
         timeout: 60000,
       });
     },
+    handleOutlook(event) {
+      //github登录授权页面
+      let oauth_uri = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
+      //github中获取
+      let client_id = '70f26831-fd49-4b56-a707-3a1ba1ae66d6'
+      //授权回调地址
+      let redirect_uri = 'http://localhost:8080/outlook/login'
+      let scope = 'https://graph.microsoft.com/Calendars.ReadWrite'
+      window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
+    }
   }
 }
 </script>

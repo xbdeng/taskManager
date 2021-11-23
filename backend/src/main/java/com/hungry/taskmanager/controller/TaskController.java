@@ -1,5 +1,6 @@
 package com.hungry.taskmanager.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hungry.taskmanager.dto.AddSubTaskDTO;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
@@ -8,6 +9,7 @@ import com.hungry.taskmanager.dto.EditTaskDTO;
 import com.hungry.taskmanager.dto.QueryTaskDTO;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import com.hungry.taskmanager.utils.JWTUtil;
+import com.hungry.taskmanager.utils.MicrosoftUtil;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.web.bind.annotation.*;
@@ -61,7 +63,7 @@ public class TaskController {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            return result.setData(taskServiceImpl.queryTask(filter.setUsername(username).setOnlyTopTask(true))).setCode(200).setMsg("query successfully") ;
+            return result.setData(taskServiceImpl.queryTask(filter.setUsername(username))).setCode(200).setMsg("query successfully") ;
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<List<Task>>(500, "server error", null);
@@ -96,6 +98,17 @@ public class TaskController {
         return new Result<String>(200, "successfully add a subtask", null);
     }
 
-
+    @PostMapping("/getmicrosofttask")
+    @RequiresAuthentication
+    public Result<List<Task>> getMicrosoftTask(@RequestBody String code) {
+        try {
+            String code_ = JSONObject.parseObject(code).getString("code");
+            List<Task> tasks = MicrosoftUtil.getTasksByCode(code_);
+            return new Result<>(200, "请求成功", tasks);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 }
 
