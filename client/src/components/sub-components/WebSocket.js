@@ -1,22 +1,25 @@
 import {Notification} from 'element-ui'
+import {removeRequest} from "./cache";
+import App from "../../App";
 
 var url = 'ws://localhost:8081/messagepush/'
-var ws;
+export var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
 var broken = false;
-export var reconnectvar = true;
+var reconnectvar = true;
+var clientId = ''
 
 var websocket = {
-    Init: function (clientId) {
-        if ("WebSocket" in window) {
-            ws = new WebSocket(url + clientId);
-        } else if ("MozWebSocket" in window) {
-            ws = new MozWebSocket(url + clientId);
-        } else {
-            console.log("您的浏览器不支持 WebSocket!");
-            return;
-        }
+    // Init: function (clientId) {
+    //     if ("WebSocket" in window) {
+    //         ws = new WebSocket(url + clientId);
+    //     } else if ("MozWebSocket" in window) {
+    //         ws = new MozWebSocket(url + clientId);
+    //     } else {
+    //         console.log("您的浏览器不支持 WebSocket!");
+    //         return;
+    //     }
 
         // ws.onmessage = function (e) {
         //     console.log("接收消息:" + e.data)
@@ -28,45 +31,45 @@ var websocket = {
         //     //messageHandle(e.data)
         // }
 
-        ws.onclose = function () {
-            console.log("连接已关闭")
-            if (broken === false) {
-                Notification({
-                    title: '警告',
-                    message: '连接已关闭',
-                    type: 'warning'
-                });
-            }
-            broken = true
-            if (reconnectvar === true) {
-                reconnect(clientId);
-            }
-        }
+        // ws.onclose = function () {
+        //     console.log("连接已关闭")
+        //     if (broken === false) {
+        //         Notification({
+        //             title: '警告',
+        //             message: '连接已关闭',
+        //             type: 'warning'
+        //         });
+        //     }
+        //     broken = true
+        //     if (reconnectvar === true) {
+        //         reconnect(clientId);
+        //     }
+        // }
 
-        ws.onopen = function () {
-            console.log("连接成功")
-            Notification({
-                title: '成功',
-                message: '连接成功',
-                type: 'success'
-            });
-            broken = false
-            heartCheck.start();
-        }
+        // ws.onopen = function () {
+        //     console.log("连接成功")
+        //     Notification({
+        //         title: '成功',
+        //         message: '连接成功',
+        //         type: 'success'
+        //     });
+        //     broken = false
+        //     heartCheck.start();
+        // }
 
-        ws.onerror = function (e) {
-            console.log("数据传输发生错误");
-            if (broken === false) {
-                Notification({
-                    title: '警告',
-                    message: '数据传输发生错误',
-                    type: 'warning'
-                });
-            }
-            broken = true
-            reconnect(clientId)
-        }
-    },
+    //     ws.onerror = function (e) {
+    //         console.log("数据传输发生错误");
+    //         if (broken === false) {
+    //             Notification({
+    //                 title: '警告',
+    //                 message: '数据传输发生错误',
+    //                 type: 'warning'
+    //             });
+    //         }
+    //         broken = true
+    //         reconnect(clientId)
+    //     }
+    // },
 
     Send: function (sender, reception, body, flag) {
         let data = {
@@ -95,6 +98,34 @@ var websocket = {
     },
     setReconnectVar(bol){
         reconnectvar = bol
+    },
+    setBroken(bol){
+        broken = bol
+    },
+    setInit(inId){
+        ws = new WebSocket(url + inId);
+        clientId = inId
+    },
+    getBroken(){
+        return broken
+    },
+    getReconnectVar(){
+        return reconnectvar
+    },
+    setclientId(val){
+        clientId = val
+    },
+    getlockReconnect(){
+        return lockReconnect
+    },
+    gettt(){
+        return tt
+    },
+    setlockReconnect(val){
+        lockReconnect = val
+    },
+    settt(val){
+        tt = val
     }
 }
 
@@ -113,20 +144,20 @@ function messageHandle(message) {
     }
 }
 
-function reconnect(sname) {
-    if (lockReconnect) {
-        return;
-    }
-    ;
-    lockReconnect = true;
-    //没连接上会一直重连，设置延迟避免请求过多
-    tt && clearTimeout(tt);
-    tt = setTimeout(function () {
-        console.log("执行断线重连...")
-        websocket.Init(sname);
-        lockReconnect = false;
-    }, 5000);
-}
+// export function reconnect(sname) {
+//     if (lockReconnect) {
+//         return;
+//     };
+//     lockReconnect = true;
+//     //没连接上会一直重连，设置延迟避免请求过多
+//     tt && clearTimeout(tt);
+//     tt = setTimeout(function () {
+//         ws.close()
+//         console.log("执行断线重连...")
+//         ws = new WebSocket(url + sname);
+//         lockReconnect = false;
+//     }, 5000);
+// }
 
 //心跳检测
 export var heartCheck = {
@@ -134,7 +165,7 @@ export var heartCheck = {
     timeoutObj: null,
     serverTimeoutObj: null,
     start: function () {
-        // console.log('开始心跳检测');
+        console.log('开始心跳检测');
         var self = this;
         this.timeoutObj && clearTimeout(this.timeoutObj);
         this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
