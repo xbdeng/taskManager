@@ -31,7 +31,7 @@
               <el-button type="primary" @click="handleSubmit">登录</el-button>
               <el-button @click="handleRegister">注册</el-button>
               <el-button @click="handleGithub">Github</el-button>
-              <el-button @click="handleOutlook">Outlook</el-button>
+<!--              <el-button @click="handleOutlook">Outlook</el-button>-->
             </el-col>
           </el-form-item>
         </el-form>
@@ -133,16 +133,6 @@ export default {
       //授权回调地址
       let redirect_uri = 'http://localhost:8080/oauth/redirect'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}`
-    },
-    handleOutlook(event) {
-      //github登录授权页面
-      let oauth_uri = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
-      //github中获取
-      let client_id = '70f26831-fd49-4b56-a707-3a1ba1ae66d6'
-      //授权回调地址
-      let redirect_uri = 'http://localhost:8080/outlook/login'
-      let scope = 'https://graph.microsoft.com/Calendars.ReadWrite'
-      window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
     }
   }
 };

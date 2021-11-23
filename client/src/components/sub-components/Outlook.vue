@@ -10,7 +10,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      googleUser: "google登陆中..."
+      googleUser: "Microsoft登陆中..."
     };
   },
   mounted() {
@@ -19,36 +19,20 @@ export default {
     console.log(code)
     const that = this
     axios.post(
-        'http://localhost:8081/api/user/loginbygoogle',
+        'http://localhost:8081/api/task/getmicrosofttask',
         {
           code:code
+        },
+        {
+          headers: {
+            Authorization: window.sessionStorage.getItem('token')
+          }
         }
     ).then(
         function (response) {
-          if(response.data.code === 200){
-            that.$message({
-              message: 'google login success',
-              type: 'success'
-            })
-            console.log(response)
-            let token = response.data.data
-            window.sessionStorage.setItem('token', token)
-            let tmpusername = response.data.msg
-            that.$router.push({name: 'Main', params: {username: tmpusername}})
-          }else {
-            that.$message({
-              message: 'google帐号未绑定任何帐号，请重新登录',
-              type: 'error'
-            })
-            that.$router.push({name: 'login'})
-          }
+          console.log(response)
         },
         function (err) {
-          that.$message({
-            message: 'google login failed, please register',
-            type: 'error'
-          })
-          that.$router.push({name: 'login'})
         }
     )
     // console.log(code)
