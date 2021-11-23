@@ -482,6 +482,7 @@ export default {
           )
       },
       removeMe() {
+        // TODO:修改
           let that = this
           let teamId = this.singleTeamData.teamId
           axios.post(
