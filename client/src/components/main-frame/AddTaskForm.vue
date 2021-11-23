@@ -156,11 +156,11 @@ export default {
         taskForm:{
             taskName:'',
             tags: [],
-            dueDate:'',
-            privilege:'',
+            dueDate:null,
+            privilege:0,
             type: '',
             teamId:'',
-            createDate:'',
+            createDate:null,
             description:'',
             position:''
         },
