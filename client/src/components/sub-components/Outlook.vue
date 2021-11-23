@@ -10,7 +10,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      googleUser: "google登陆中..."
+      googleUser: "Microsoft登陆中..."
     };
   },
   mounted() {
@@ -22,6 +22,11 @@ export default {
         'http://localhost:8081/api/user/loginbygoogle',
         {
           code:code
+        },
+        {
+          headers: {
+            Authorization: window.sessionStorage.getItem('token')
+          }
         }
     ).then(
         function (response) {
