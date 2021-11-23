@@ -3,7 +3,7 @@
   <div class='teamInfo'>
     <el-container>
       <!-- 侧边栏，用于显示所有组的信息 -->
-      <el-aside>
+      <el-aside style="height: 100vh">
         <el-menu class="main-frame-menu">
           <!-- 显示所有的组 -->
           <el-button icon="el-icon-search" circle @click="searchTeam = true"></el-button>

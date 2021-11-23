@@ -85,7 +85,7 @@
 
             <!-- 消息推送 -->
             <el-menu-item index="8" @click="showMessage">
-              <el-badge :value="12" class="item">
+              <el-badge :value="showMessageNote" class="item">
                 <i class="el-icon-message"></i>
                 <span slot="title">消息通知</span>
               </el-badge>
@@ -208,12 +208,12 @@
 
           <!--弹出消息推送-->
           <el-drawer
-              :title="this.username + ' --- Your notifications'"
               :visible.sync="MessageShow"
               direction="rtl"
               :before-close="handleMessageClose"
               :append-to-body='true'
-              size="400px">
+              size="440px">
+            <div slot="title"><i class="el-icon-message-solid" style="font-size: 30px"></i><span style="font-size: 30px; text-align: center">Your Notification</span></div>
             <MessagePage :message-show="MessageShow"></MessagePage>
           </el-drawer>
 
@@ -406,7 +406,8 @@ export default {
           username: ''
         }]
       }],
-      transData: []
+      transData: [],
+      showMessageNote : ''
     }
   },
   methods: {
@@ -469,6 +470,7 @@ export default {
               title: tmp.from,
               message: '想要与你一起组队成为' + tmp.groupName
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '想要与你一起组队成为' + tmp.groupName);
           }
           if (tmp.type === 1) {
@@ -476,6 +478,7 @@ export default {
               title: tmp.from,
               message: '想要与你成为好友'
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '想要与你成为好友');
           }
           if (tmp.type === 2) {
@@ -483,6 +486,7 @@ export default {
               title: tmp.from,
               message: '邀请你加入' + tmp.groupName
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
         }
@@ -659,6 +663,7 @@ reconnect(sname) {
       this.searchTaskShow = true
     },
     showMessage() {
+      this.showMessageNote = '';
       this.MessageShow = true;
     },
     handleMessageClose(done) {
@@ -1245,7 +1250,7 @@ reconnect(sname) {
 }
 
 .main-frame-menu {
-  height: 900px;
+  height: 100vh;
 }
 
 .mainFrameHeader {
