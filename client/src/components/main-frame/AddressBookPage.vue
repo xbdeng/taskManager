@@ -82,7 +82,7 @@ export default {
     //发送加好友请求
     AddFriendRequest(event) {
       if(websocket.getStatus() === "连接已关闭" || websocket.getStatus() === "未连接" ){
-        storeRequest('/message/sendrequest',{usernameTo: this.addFriend, type: 1})
+        storeRequest('/message/sendrequest',{usernameTo: [this.addFriend], type: 1})
         this.$message({
           message: 'Offline request, request cache',
           type: 'error'
