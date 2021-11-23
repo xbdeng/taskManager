@@ -96,6 +96,16 @@ export default {
               })
             }
             that.Message = response.data.data
+            console.log(that.Message)
+            that.Message = that.Message.sort(
+                function(a, b){
+                  var x = a.status.toLowerCase();
+                  var y = b.status.toLowerCase();
+                  if (x < y) {return 1;}
+                  if (x > y) {return -1;}
+                  return 0;
+                }
+            )
             let newToken = response.headers.authorization
             if (newToken != null) window.sessionStorage.setItem('token', newToken)
           },
