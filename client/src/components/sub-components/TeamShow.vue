@@ -398,7 +398,8 @@ export default {
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     } else {
-                        that.$message.error('发送邀请失败')
+                        if(response.data.code === 201)
+                          that.$message.error('发送邀请失败')
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
@@ -481,6 +482,7 @@ export default {
           )
       },
       removeMe() {
+        // TODO:修改
           let that = this
           let teamId = this.singleTeamData.teamId
           axios.post(
