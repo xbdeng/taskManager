@@ -18,11 +18,15 @@ import org.springframework.http.*;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -272,5 +276,30 @@ public class UserController {
             return Result.fail(500, "服务器错误", null);
         }
     }
+
+    @PostMapping("/uploadimage")
+    @RequiresAuthentication
+    @ApiOperation(value = "upload image")
+    public Result<String> uploadImage(@RequestParam("img")MultipartFile img, HttpServletRequest request, HttpSession session){
+        try{
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            String originalFileName = img.getOriginalFilename();
+            // todo : validate image type
+            String filename = UUID.randomUUID()+originalFileName;
+            String path = request.getSession().getServletContext().getRealPath("/upload");
+            File dir = new File(path);
+            if(! dir.exists()){
+                dir.mkdir();
+            }
+            File filePath = new File(dir, filename);
+            img.transferTo(filePath);
+            return new Result<String>(200, "successfully upload img", "");
+        }catch(Exception e){
+            e.printStackTrace();
+            return Result.fail(500, "", null);
+        }
+    }
+
 
 }

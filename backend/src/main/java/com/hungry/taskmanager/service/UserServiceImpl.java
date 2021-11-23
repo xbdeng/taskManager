@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         //获取全部的teams
         //获取全部的teams
         if(teamsId.isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
         try{
             return getTeamDTOsByTeamIds(teamsId);//todo
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
         //获取全部的teams
         if(teamsId.isEmpty()){
-            return null;
+            return new ArrayList<>();
         }
         try{
             return getTeamDTOsByTeamIds(teamsId);
