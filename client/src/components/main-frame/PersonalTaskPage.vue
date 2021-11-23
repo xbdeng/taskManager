@@ -252,6 +252,7 @@ export default {
     },
     handleTreeClose() {
       this.treeDrawer = false
+      this.$emit('postPersonalTaskAgain',{})
     },
     setSpecifier(num) {
         this.Specifier = num

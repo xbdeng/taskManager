@@ -59,7 +59,8 @@
       <add-task-form
           :fatherTaskId="this.fatherTaskId"
           :tagArray="this.tagArray"
-          :myTeamInfo="this.myTeamInfo"></add-task-form>
+          :myTeamInfo="this.myTeamInfo"
+      v-on:postTree="closeTreeDrawer"></add-task-form>
     </el-dialog>
 
   </div>
@@ -178,6 +179,9 @@ export default {
     handleClose(done){
       this.dialogVisible = false
       done()
+    },
+    postTree() {
+      this.$emit('postTree')
     }
   }
 }
