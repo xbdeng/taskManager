@@ -137,6 +137,7 @@ export default {
             }
             let newToken = response.headers.authorization
             if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            that.$emit("updateAddressBook")
             that.$forceUpdate()
           },
           function (err) {
