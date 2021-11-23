@@ -54,6 +54,8 @@ import FriendShow from '../sub-components/FriendShow.vue'
 import axios from "axios";
 //设置axios请求的baseURL
 import process from "_shelljs@0.7.8@shelljs";
+import websocket from "../sub-components/WebSocket";
+import {storeRequest} from "../sub-components/cache";
 
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
@@ -79,6 +81,14 @@ export default {
     },
     //发送加好友请求
     AddFriendRequest(event) {
+      if(websocket.getStatus() === "连接已关闭" || websocket.getStatus() === "未连接" ){
+        storeRequest('/message/sendrequest',{usernameTo: this.addFriend, type: 1})
+        this.$message({
+          message: 'Offline request, request cache',
+          type: 'error'
+        })
+        return
+      }
       const that = this
       axios.post(
           '/message/sendrequest',
