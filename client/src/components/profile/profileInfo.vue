@@ -140,13 +140,6 @@
 
           <el-form-item>
             <el-row>
-              <el-col :span="8">
-                <div>
-                  lastName
-                  <br>
-                  <el-input placeholder="xb" v-model="lastName" @change="handleLastName"></el-input>
-                </div>
-              </el-col>
 
               <el-col :span="8">
                 <!--          <div>-->
