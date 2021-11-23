@@ -128,7 +128,7 @@
                         v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow"
-                           :Friends="this.Friends.length === 0 ? this.sampleFriends : this.Friends"></AddressBookPage>
+                           :Friends="this.Friends" v-on:updateAddressBook="postAddressBook"></AddressBookPage>
           <!-- 日历视图 -->
           <div class='demo-app' v-show="calendarShow">
             <div class='demo-app-sidebar'>
@@ -214,7 +214,7 @@
               :before-close="handleMessageClose"
               :append-to-body='true'
               size="400px">
-            <MessagePage></MessagePage>
+            <MessagePage :message-show="MessageShow"></MessagePage>
           </el-drawer>
 
           <!-- 任务搜索 -->
@@ -242,6 +242,8 @@ import axios from 'axios'
 import process from "_shelljs@0.7.8@shelljs";
 import websocket from "../sub-components/WebSocket";
 import {heartCheck} from "../sub-components/WebSocket";
+import Push from 'push.js'
+
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "Main",
@@ -302,6 +304,9 @@ export default {
     websocket.setReconnectVar(true)
     websocket.Init(this.username);
     this.eventMsg();
+  },
+  created(){
+    Push.Permission.request();
   },
   data() {
     return {
@@ -418,18 +423,21 @@ export default {
               title: tmp.from,
               message: '想要与你一起组队成为' + tmp.groupName
             });
+            that.pushMessage(tmp.from, '想要与你一起组队成为' + tmp.groupName);
           }
           if (tmp.type === 1) {
             that.$notify.info({
               title: tmp.from,
               message: '想要与你成为好友'
             });
+            that.pushMessage(tmp.from, '想要与你成为好友');
           }
           if (tmp.type === 2) {
             that.$notify.info({
               title: tmp.from,
               message: '邀请你加入' + tmp.groupName
             });
+            that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
         }
       }
@@ -1057,6 +1065,14 @@ export default {
     //重新请求：用户加入的组
     postTeamInfoAgain() {
       this.postTeamInfo()
+    },
+    pushMessage(header ,message){
+      Push.create(header, {
+        body: message,
+        requireInteraction: true,
+        //icon: '/icon.png',
+        timeout: 60000,
+      });
     },
   }
 }

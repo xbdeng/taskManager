@@ -41,6 +41,7 @@ import axios from "axios";
 
 export default {
   name: "MessagePage",
+  props: ['MessageShow'],
   data() {
     return {
       Message: [{
@@ -64,6 +65,12 @@ export default {
   },
   beforeUpdate() {
     // this.getMessage()
+  },
+  watch:{
+    MessageShow(newName, oldName) {
+      this.getMessage()
+      this.$forceUpdate()
+    }
   },
   methods: {
     getMessage() {
