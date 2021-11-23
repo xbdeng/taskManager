@@ -143,6 +143,7 @@ export default {
   data() {
     return {
         chosenTaskId:'-1',
+        //任务
         taskShow:true,
         planedTaskShow:false,
         Specifier:0,
@@ -187,8 +188,12 @@ export default {
     ];
   },
   methods: {
+    //list是拖拽后形成的新的任务列表
     onTreeDataChange(list) {
       console.log(list)
+    },
+    findFatherAndChild(oldList, newList) {
+
     },
     add(row) {
       console.log('add!')
