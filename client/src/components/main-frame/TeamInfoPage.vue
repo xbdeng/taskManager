@@ -224,7 +224,7 @@ export default {
     searchTeamB(event) {
       const that = this
       axios.post(
-          'http://localhost:8081/api/team/queryteam',
+          '/team/queryteam',
           {
             teamName: that.teamSearchName
           },

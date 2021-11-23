@@ -112,7 +112,7 @@
                       <el-popover placement="top" width="900" trigger="click" title="邀请成员">
                         <el-row>
                             <el-col>
-                                <el-transfer :data="friends" filterable :button-texts="['取消邀请','邀请进组']" v-model="invitedMembers" :titles="['我的好友','邀请名单']"></el-transfer>
+                                <el-transfer :data="this.friends" filterable :button-texts="['取消邀请','邀请进组']" v-model="invitedMembers" :titles="['我的好友','邀请名单']"></el-transfer>
                             </el-col>
                         </el-row>
                         <el-row>
@@ -187,7 +187,7 @@ export default {
           for(let i in this.singleTeamData.members) {
               data.push({
                   key:this.singleTeamData.members[i],
-                  value:this.singleTeamData.members[i]
+                  label:this.singleTeamData.members[i]
               });
           }
           return data
@@ -197,8 +197,8 @@ export default {
         const data = []
           for(let i in this.Friends) {
               data.push({
-                  key:this.Friends[i],
-                  value:this.Friends[i]
+                  key:this.Friends[i].username,
+                  label:this.Friends[i].username
               });
           }
           return data
@@ -209,7 +209,7 @@ export default {
           for(let i in this.singleTeamData.admins) {
               data.push({
                   key:this.singleTeamData.admins[i],
-                  value:this.singleTeamData.admins[i]
+                  label:this.singleTeamData.admins[i]
               });
           }
           return data
@@ -281,7 +281,7 @@ export default {
                       message:'删除组员成功',
                       type:'success'
                     })
-                    that.$emit('postTeamDataAgain',{})
+                    that.$emit('postTeamInfoAgain',{})
                     let newToken = response.headers.authorization
                     if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   } else {
@@ -316,7 +316,7 @@ export default {
                     type:'success'
                   })
                   that.editedTeamName = null
-                  that.$emit('postTeamDataAgain',{})
+                  that.$emit('postTeamInfoAgain',{})
                   let newToken = response.headers.authorization
                   if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 } else {
@@ -354,7 +354,7 @@ export default {
                           type:'success'
                         })
                         that.editedAdmins = []
-                        that.$emit('postTeamDataAgain',{})
+                        that.$emit('postTeamInfoAgain',{})
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     } else {
@@ -376,10 +376,11 @@ export default {
           let teamId = this.singleTeamData.teamId
           if(value != null) {
               axios.post(
-                  '/team/addmember',
+                  '/message/sendrequest',
                   {
                       teamId:teamId,
-                      userName:value
+                      usernameTo:value,
+                      type:0
                   },
                   {
                     headers:{
@@ -390,25 +391,23 @@ export default {
                   function(response) {
                       if(response.data.code === 200) {
                         that.$message({
-                          message:'邀请组员成功',
+                          message:'发送邀请成功',
                           type:'success'
                         })
-                        that.invitedMembers = []
-                        that.$emit('postTeamDataAgain',{})
+                        that.$emit('postTeamInfoAgain',{})
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     } else {
-                        that.$message.error('邀请组员失败')
+                        that.$message.error('发送邀请失败')
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
                   },
                   function(err) {
-                      that.$message.error('响应失败,邀请成员失败')
+                      that.$message.error('响应失败,发送邀请失败')
                   }
               )
           }
-          this.invitedMembers = null
       },
       editDescription() {
         const that = this
@@ -541,7 +540,7 @@ export default {
                           type:'success'
                         })
                         that.removedAdmins = null
-                        that.$emit('postTeamDataAgain',{})
+                        that.$emit('postTeamInfoAgain',{})
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     } else {
