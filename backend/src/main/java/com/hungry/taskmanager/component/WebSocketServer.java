@@ -44,7 +44,11 @@ public class WebSocketServer {
 
     public synchronized void send(String message, Session sessionTo) {
         try {
-            sessionTo.getAsyncRemote().sendText(message);
+            if (sessionTo != null) {
+                sessionTo.getAsyncRemote().sendText(message);
+            }else{
+                System.out.println("session is null");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
