@@ -115,7 +115,6 @@ public class TaskServiceImpl implements TaskService{
      */
     public List<Task> queryTask(QueryTaskDTO filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
-        filter.setUserId(userId).setOnlyTopTask(true);
         // configure range
         if (filter.getScheduledTask() != null && filter.getScheduledTask() == 1){
             switch(filter.getTimeRange()){
@@ -151,7 +150,7 @@ public class TaskServiceImpl implements TaskService{
             taskMap.put(task.getTaskId(), task);
             task.setTags(new ArrayList<>());
             QueryTaskDTO subfilter = new QueryTaskDTO().setFatherTask(task.getTaskId()).setUserId(filter.getUserId());
-            task.setSubTasks(taskMapper.queryTask(subfilter));
+            task.setSubTasks(queryTask(subfilter));
             task.updateDate();
         }
         List<HashMap<String, Object>> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());

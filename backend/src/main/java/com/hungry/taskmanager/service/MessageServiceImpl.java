@@ -48,30 +48,31 @@ public class MessageServiceImpl implements MessageService{
     @Override
     public int sendRequest(InvitationDTO invitation) throws Exception {
         Integer type = invitation.getType();
-        Message message = new Message();
+
         switch(type){
             case(0):{
                 // get sender receiver id
                 BigInteger sender = userMapper.getIdByName(invitation.getFrom());
-                BigInteger receiver = userMapper.getIdByName(invitation.getUsernameTo());
-                // check whether user is already in team
-                if (teamService.isInTeam(receiver, BigInteger.valueOf(Long.parseLong(message.getContent())))) return 201;
+                List<User> receivers = userMapper.selectList(new QueryWrapper<User>().in("username", invitation.getUsernameTo()));
+                List<Message> messages = new ArrayList<>();
                 // insert message into database
-                message.setSender(sender).setReceiver(receiver).setType("g_invitation").setContent(invitation.getTeamId().toString());
-                messageMapper.insert(message);
-                // send invitation to the other user
-                // construct dto
+                for(User receiver: receivers){
+                    // check whether user is already in team
+                    if (teamService.isInTeam(receiver.getUserId(), invitation.getTeamId())) return 201;
+                    Message message = new Message().setSender(sender).setReceiver(receiver.getUserId()).setType("g_invitation").setContent(invitation.getTeamId().toString());
+                    messageMapper.insert(message);
+                }
                 Team team = teamMapper.selectById(invitation.getTeamId());
                 WebSocketMessageDTO wsm = new WebSocketMessageDTO().setFrom(invitation.getFrom()).setGroupName(team.getTeamName()).setType(type);
                 String text = JSON.toJSONString(wsm);
-                Session session = WebSocketServer.sessionMap.get(invitation.getUsernameTo());
-                server.send(text, session);
+                server.broadcast(text, invitation.getUsernameTo());
                 break;
             }
             case(1):{
+                Message message = new Message();
                 // get sender receiver id
                 BigInteger sender = userMapper.getIdByName(invitation.getFrom());
-                BigInteger receiver = userMapper.getIdByName(invitation.getUsernameTo());
+                BigInteger receiver = userMapper.getIdByName(invitation.getUsernameTo().get(0));
                 // check whether user is a friend
                 if (userService.hasAFriend(sender, receiver)) return 201;
                 // insert message into database
@@ -85,6 +86,7 @@ public class MessageServiceImpl implements MessageService{
                 break;
             }
             case(2):{
+                Message message = new Message();
                 BigInteger sender = userMapper.getIdByName(invitation.getFrom());
                 // get all group administrator and creator username
                 List<User> ac = teamMapper.getTeamCreatorAndAdministrators(invitation.getTeamId());
