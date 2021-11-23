@@ -20,15 +20,15 @@
             <el-form-item>
               <!-- TODO : token maybe && url api needed-->
               <el-upload
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action="http://localhost:8081/api/user/uploadimage"
                   :show-file-list="false"
                   :accept="'image/*'"
-                  :headers="{Authorization: this.username}"
+                  :headers="{Authorization: this.token_up}"
                   :on-success="handleSuccess"
                   :on-error="handleError"
                   :before-upload="handleBeforeUpload"
                   :on-progress="handleProgress">
-                <el-button>上传<i class="el-icon-upload el-icon--right"></i></el-button>
+                <el-button @click="handletoken">上传<i class="el-icon-upload el-icon--right"></i></el-button>
                 <!--              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
               </el-upload>
             </el-form-item>
@@ -181,13 +181,20 @@ export default {
       userId: -1,
       loading: false,
       githubbind: '',
-      googlebind: ''
+      googlebind: '',
+      token_up:''
     }
   },
   mounted() {
     this.showInfo()
   },
   methods: {
+    getImage(){
+      const that = this
+      axios.post(
+
+      )
+    },
     showInfo() {
       const that = this;
       axios.post(
@@ -509,6 +516,9 @@ export default {
           }
       )
     },
+    handletoken(){
+      this.token_up = window.sessionStorage.getItem('token')
+    }
   }
 }
 </script>
