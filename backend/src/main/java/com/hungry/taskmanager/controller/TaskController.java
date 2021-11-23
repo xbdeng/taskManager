@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -100,8 +101,11 @@ public class TaskController {
 
     @PostMapping("/getmicrosofttask")
     @RequiresAuthentication
-    public Result<List<Task>> getMicrosoftTask(@RequestBody String code) {
+    public Result<List<Task>> getMicrosoftTask(@RequestBody String code, HttpServletRequest request, HttpServletResponse httpServletResponse) {
         try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            httpServletResponse.setHeader("username",username);
             String code_ = JSONObject.parseObject(code).getString("code");
             List<Task> tasks = MicrosoftUtil.getTasksByCode(code_);
             return new Result<>(200, "请求成功", tasks);
