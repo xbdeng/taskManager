@@ -10,7 +10,7 @@
 
             <el-form-item>
               <div class="avatardiv">
-                <img src="../../assets/Test.png" alt="" class="up-icon">
+                <img :src=this.image_uri alt="" class="up-icon">
               </div>
             </el-form-item>
 
@@ -182,17 +182,35 @@ export default {
       loading: false,
       githubbind: '',
       googlebind: '',
-      token_up:''
+      token_up:'',
+      image_uri:''
     }
   },
   mounted() {
     this.showInfo()
+    this.getImage()
   },
   methods: {
     getImage(){
       const that = this
       axios.post(
+        '/user/getimage',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response){
+            that.image_uri = response.data.data
+            that.image_uri = "http://localhost:8081" + that.image_uri
+            let newToken = response.headers.authorization
+            if(newToken != null) window.sessionStorage.setItem('token', newToken)
+          },
+          function (err){
 
+          }
       )
     },
     showInfo() {
