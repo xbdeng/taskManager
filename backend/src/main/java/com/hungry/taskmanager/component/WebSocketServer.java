@@ -58,7 +58,11 @@ public class WebSocketServer {
         try {
             for (String username: memberList){
                 Session session = sessionMap.get(username);
-                session.getAsyncRemote().sendText(message);
+                if (session != null) {
+                    session.getAsyncRemote().sendText(message);
+                }else{
+                    System.out.println("session is null");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
