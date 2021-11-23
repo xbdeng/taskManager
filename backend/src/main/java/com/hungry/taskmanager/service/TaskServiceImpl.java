@@ -178,6 +178,11 @@ public class TaskServiceImpl implements TaskService{
         wrapper.set("task_name", params.getTaskName()).set("description", params.getDescription()).set("privilege", params.getPrivilege())
                 .set("create_date", createDate).set("due_date", dueDate).set("father_task", params.getFatherTask())
                 .set("status", params.getStatus());
+        //之前的状态 非完成
+        int status = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", taskId)).getStatus();
+        if(status!=1 && params.getStatus()==1){ //新完成
+            wrapper.set("finish_date",LocalDateTime.now());
+        }
         taskMapper.update(null, wrapper);
         // tags
         List<String> tags = params.getTags();
