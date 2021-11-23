@@ -25,4 +25,6 @@ public interface TeamService {
 
     Result<List<QueryTeamDTO>> queryTeam(String teamName, BigInteger teamId);
 
+    Result withdraw(BigInteger teamId, String username);
+
 }
