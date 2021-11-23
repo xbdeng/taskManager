@@ -273,17 +273,4 @@ public class UserController {
         }
     }
 
-    @PostMapping("/getmicrosofttask")
-    @RequiresAuthentication
-    public Result<List<Task>> getMicrosoftTask(@RequestBody String code) {
-        try {
-            String code_ = JSONObject.parseObject(code).getString("code");
-            List<Task> tasks = MicrosoftUtil.getTasksByCode(code_);
-            return new Result<>(200, "请求成功", tasks);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(500, "服务器错误", null);
-        }
-    }
-
 }
