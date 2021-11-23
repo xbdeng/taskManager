@@ -42,7 +42,7 @@
         </el-aside>
         <!-- 主页面，用于显示好友信息 -->
         <el-main class='address_main'>
-          <FriendShow :friend="Friends[this.selectedFriend]"></FriendShow>
+          <FriendShow :friend="Friends[this.selectedFriend]" v-if="Friends[this.selectedFriend] !== undefined"></FriendShow>
         </el-main>
       </el-container>
     </el-container>
