@@ -10,11 +10,10 @@
         </el-header>
         <el-main>
             <el-menu>
-                <TaskTree 
-                :taskData="searchedResult" 
-                :taskLevel="''" 
-                :chosenTask="chosenTaskId" 
-                v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                <DragTaskTree
+                  :taskData="searchedResult"
+                  v-on:taskIdChanged="chooseTasks($event)"
+                  v-on:postTaskDataAgain="postQueryAgain($event)"></DragTaskTree>
             </el-menu>
         </el-main>
         <el-drawer 
@@ -154,6 +153,7 @@
 import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
 import TreeTask from './TreeTask'
+import DragTaskTree from "../sub-components/DragTaskTree";
 import axios from 'axios'
 import process from "_shelljs@0.7.8@shelljs";
 axios.defaults.baseURL = process.env.API_ROOT
@@ -163,7 +163,8 @@ export default {
   components: {
       TaskTree,
       TaskShow,
-      TreeTask
+      TreeTask,
+      DragTaskTree
   },
   data() {
       var checkDueDate = (rule, value, callback)=> {
@@ -234,7 +235,6 @@ export default {
                           message:'查询成功',
                           type:'success'
                       })
-                      that.clear()
                       let newToken = response.headers.authorization
                       if(newToken != null) {
                         window.sessionStorage.setItem('token', newToken)
@@ -277,7 +277,6 @@ export default {
       },
       handleFliterClose() {
           this.fliterDrawer = false
-          this.clear()
       },
       handleInputConfirm() {
           let inputValue = this.addedTag;
@@ -339,6 +338,9 @@ export default {
           this.$emit('closeTaskDrawer', {})
           this.taskInfoDrawer = false
       },
+      postQueryAgain() {
+        this.searchRequest()
+      }
 
   }
 
