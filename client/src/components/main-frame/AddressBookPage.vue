@@ -20,7 +20,7 @@
                   <el-button type='primary' plain size="small" @click="AddFriendRequest">确定</el-button>
                 </el-col>
               </el-row>
-              <el-tooltip content="点击可修改组的描述信息" slot="reference">
+              <el-tooltip content="点击可添加好友" slot="reference">
                 <!-- TODO:点击添加好友 -->
                 <el-button type='primary' icon='el-icon-plus' circle></el-button>
               </el-tooltip>
