@@ -93,7 +93,7 @@ export default {
       axios.post(
           '/message/sendrequest',
           {
-            usernameTo: that.addFriend,
+            usernameTo: [that.addFriend],
             type: 1
           },
           {
@@ -126,6 +126,14 @@ export default {
       )
     },
     removeFriend(friendName) {
+      if(websocket.getStatus() === "连接已关闭" || websocket.getStatus() === "未连接" ){
+        storeRequest('/api/user/removefriend',{username: friendName})
+        this.$message({
+          message: 'Offline request, request cache',
+          type: 'error'
+        })
+        return
+      }
       const that = this
       axios.post(
           'http://localhost:8081/api/user/removefriend',
@@ -174,6 +182,7 @@ export default {
 
 .address_aside {
   /* background: darkorange; */
+  height: 100vh;
   background-size: 100% 100%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }

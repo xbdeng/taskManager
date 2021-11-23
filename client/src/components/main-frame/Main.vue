@@ -85,10 +85,15 @@
 
             <!-- 消息推送 -->
             <el-menu-item index="8" @click="showMessage">
-              <el-badge :value="12" class="item">
+              <el-badge :value="showMessageNote" class="item">
                 <i class="el-icon-message"></i>
                 <span slot="title">消息通知</span>
               </el-badge>
+            </el-menu-item>
+
+            <el-menu-item index="9">
+                <i class="el-icon-circle-check" v-if="!this.offline"></i>
+                <i class="el-icon-warning-outline" v-if="this.offline"></i>
             </el-menu-item>
           </el-menu>
 
@@ -125,7 +130,8 @@
                         :username="this.username"
                         :Friends="this.Friends"
                         v-on:postTeamInfoAgain="postTeamInfoAgain($event)"
-                        v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
+                        v-on:postMyTeamAgain="postMyTeamAgain($event)"
+                        v-on:postPersonalTaskAgain='postPersonalTaskAgain($event)'></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow"
                            :Friends="this.Friends" v-on:updateAddressBook="postAddressBook"></AddressBookPage>
@@ -208,18 +214,19 @@
 
           <!--弹出消息推送-->
           <el-drawer
-              :title="this.username + ' --- Your notifications'"
               :visible.sync="MessageShow"
               direction="rtl"
               :before-close="handleMessageClose"
               :append-to-body='true'
-              size="400px">
+              size="440px">
+            <div slot="title"><i class="el-icon-message-solid" style="font-size: 30px"></i><span style="font-size: 30px; text-align: center">Your Notification</span></div>
             <MessagePage :message-show="MessageShow"></MessagePage>
           </el-drawer>
 
           <!-- 任务搜索 -->
           <SearchTaskPage
-              v-show="searchTaskShow"></SearchTaskPage>
+              v-show="searchTaskShow"
+              v-on:postPersonalTaskAgain='postPersonalTaskAgain($event)'></SearchTaskPage>
         </el-main>
       </el-container>
     </el-container>
@@ -406,7 +413,9 @@ export default {
           username: ''
         }]
       }],
-      transData: []
+      transData: [],
+      showMessageNote : '',
+      offline: false
     }
   },
   methods: {
@@ -422,10 +431,10 @@ export default {
             type: 'warning'
           });
         }
+        that.offline = true
         websocket.setBroken(true)
         that.reconnect(that.username)
       }
-
           websocket.getWebSocket().onopen = function () {
             console.log("连接成功")
             Notification({
@@ -433,6 +442,7 @@ export default {
               message: '连接成功',
               type: 'success'
             });
+            that.offline = false
             websocket.setBroken(false)
             heartCheck.start();
           }
@@ -446,6 +456,7 @@ export default {
                 type: 'warning'
               });
             }
+            that.offline = true
             websocket.setBroken(true)
             if (websocket.getReconnectVar() === true) {
               that.reconnect(that.username);
@@ -454,6 +465,7 @@ export default {
 
 
       websocket.getWebSocket().onmessage = function (res) {
+        that.offline = false
         //处理接收的时间逻辑
         // console.log(res)
         heartCheck.start()
@@ -469,6 +481,7 @@ export default {
               title: tmp.from,
               message: '想要与你一起组队成为' + tmp.groupName
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '想要与你一起组队成为' + tmp.groupName);
           }
           if (tmp.type === 1) {
@@ -476,6 +489,7 @@ export default {
               title: tmp.from,
               message: '想要与你成为好友'
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '想要与你成为好友');
           }
           if (tmp.type === 2) {
@@ -483,6 +497,7 @@ export default {
               title: tmp.from,
               message: '邀请你加入' + tmp.groupName
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
         }
@@ -659,6 +674,7 @@ reconnect(sname) {
       this.searchTaskShow = true
     },
     showMessage() {
+      this.showMessageNote = '';
       this.MessageShow = true;
     },
     handleMessageClose(done) {
@@ -1245,7 +1261,7 @@ reconnect(sname) {
 }
 
 .main-frame-menu {
-  height: 900px;
+  height: 100vh;
 }
 
 .mainFrameHeader {

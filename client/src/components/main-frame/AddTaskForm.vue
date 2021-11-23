@@ -156,11 +156,11 @@ export default {
         taskForm:{
             taskName:'',
             tags: [],
-            dueDate:'',
-            privilege:'',
+            dueDate:null,
+            privilege:0,
             type: '',
             teamId:'',
-            createDate:'',
+            createDate:null,
             description:'',
             position:''
         },
@@ -293,7 +293,6 @@ export default {
                         }
                         //获取添加该任务后，该任务的id
                         cTaskId = response.data.data
-                        alert(cTaskId)
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                         //添加子任务
@@ -319,6 +318,7 @@ export default {
                                     message:'添加子任务成功',
                                     type:'success'
                                   })
+                                  that.$emit('postTree',{})
                                 } else {
                                   there.$message.error('添加子任务失败')
                                 }
@@ -348,6 +348,7 @@ export default {
         });
 
     },
+
   }
 }
 </script>

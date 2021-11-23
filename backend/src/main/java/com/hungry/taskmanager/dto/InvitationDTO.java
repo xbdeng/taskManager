@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -17,7 +18,7 @@ public class InvitationDTO {
     @ApiModelProperty(hidden=true)
     private String from;
     @JSONField(serialize =false)
-    private String usernameTo;
+    private List<String> usernameTo;
     private Integer type;
     private BigInteger teamId;
 }

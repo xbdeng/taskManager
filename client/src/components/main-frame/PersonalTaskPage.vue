@@ -26,64 +26,38 @@
                 <el-main>
                   <div class="test-div">
                 <el-menu :default-openeds="['today']">
-<!--                  <TaskTree-->
-<!--                      v-show="taskShow"-->
-<!--                      :taskData="this.taskData"-->
-<!--                      :taskLevel="''"-->
-<!--                      :chosenTask="chosenTaskId"-->
-<!--                      v-on:taskIdChanged="chooseTasks($event)"></TaskTree>-->
-                  <dragTreeTable
-                      ref="table"
-                      :data="{columns: this.colprop,lists: this.transData}"
-                      @drag="onTreeDataChange"
-                      resize
-                      fixed
-                      :isdraggable="true"
-                      v-show="taskShow">
-                    <template #selection="{row}">
-                      {{ row.name }}
-                    </template>
-
-                    <template #id="{row}">
-                      {{ row.id }}
-                    </template>
-
-                    <template #action="{row}">
-                      <a class="action-item" @click.stop.prevent="add(row)">添加子节点</a>
-                      <a class="action-item" @click.stop.prevent="edit(row)">修改子节点</a>
-                      <a class="action-item" @click.stop.prevent="onDel(row)"><i>删除</i></a>
-                    </template>
-                  </dragTreeTable>
+                  <DragTaskTree
+                  :taskData="this.taskData"
+                  v-on:taskIdChanged="chooseTasks($event)"
+                  v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                  v-show="this.taskShow"></DragTaskTree>
 
                   <el-submenu index='today' v-show="planedTaskShow">
                     <template slot="title">
                       <span slot="title" @click="setSpecifier(0)">今天</span>
                     </template>
-                    <TaskTree
-                        :taskData="this.todayTaskData"
-                        :taskLevel="''"
-                        :chosenTask="chosenTaskId"
-                        v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                    <DragTaskTree
+                    :taskData="this.todayTaskData"
+                    v-on:taskIdChanged="chooseTasks($event)"
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
                   </el-submenu>
                   <el-submenu index='week' v-show="planedTaskShow">
                     <template slot="title">
                       <span slot="title" @click="setSpecifier(1)">一周内</span>
                     </template>
-                    <TaskTree
-                        :taskData="this.weekTaskData"
-                        :taskLevel="''"
-                        :chosenTask="chosenTaskId"
-                        v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                    <DragTaskTree
+                    :taskData="this.weekTaskData"
+                    v-on:taskIdChanged="chooseTasks($event)"
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
                   </el-submenu>
                   <el-submenu index='later' v-show="planedTaskShow">
                     <template slot="title">
                       <span slot="title" @click="setSpecifier(2)">稍后</span>
                     </template>
-                    <TaskTree
-                        :taskData="this.laterTaskData"
-                        :taskLevel="''"
-                        :chosenTask="chosenTaskId"
-                        v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
+                    <DragTaskTree
+                    :taskData="this.laterTaskData"
+                    v-on:taskIdChanged="chooseTasks($event)"
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
                   </el-submenu>
                   <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-menu>
@@ -130,6 +104,7 @@ import TreeTask from './TreeTask'
 import axios from 'axios'
 import process from "_shelljs@0.7.8@shelljs";
 import dragTreeTable from "drag-tree-table";
+import DragTaskTree from "../sub-components/DragTaskTree";
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: "PersonalTaskPage",
@@ -137,12 +112,14 @@ export default {
     TaskTree,
     TaskShow,
     TreeTask,
-    dragTreeTable
+    dragTreeTable,
+    DragTaskTree
   },
   props:['username','taskData','todayTaskData','weekTaskData','laterTaskData', 'transData'],
   data() {
     return {
         chosenTaskId:'-1',
+        //任务
         taskShow:true,
         planedTaskShow:false,
         Specifier:0,
@@ -187,10 +164,46 @@ export default {
     ];
   },
   methods: {
+    //list是拖拽后形成的新的任务列表
     onTreeDataChange(list) {
-      console.log(list)
+      console.log(this.findNewEdge(this.transData,list))
+    },
+    getEdgeSet(father) {
+      if(father.lists.length === 0) {
+        return []
+      }
+      let edgeSet = []
+      for(let i in father.lists) {
+        let child = father.lists[i]
+        edgeSet.push(father.id + '-' + child.id)
+        let edges = this.getEdgeSet(child)
+        if(!(edges.length === 0)) {
+          edgeSet.push.apply(edgeSet, edges)
+        }
+      }
+      return edgeSet
+    },
+    getForestEdgeSet(list) {
+      let edgeSet = []
+      for (let i in list) {
+        edgeSet.push.apply(edgeSet, this.getEdgeSet(list[i]))
+      }
+      return edgeSet
+    },
+    findNewEdge(oldList, newList) {
+      let edges1 = this.getForestEdgeSet(oldList)
+      let edges2 = this.getForestEdgeSet(newList)
+      for(let i in edges1) {
+        let oldEdge = edges1[i]
+        let index = edges2.indexOf(oldEdge)
+        if(index > -1) {
+          edges2.splice(index, 1)
+        }
+      }
+      return edges2
     },
     add(row) {
+      console.log(row)
       console.log('add!')
     },
     edit(row) {
@@ -221,8 +234,7 @@ export default {
         if (id.length === 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
     },
-    getTask(id)
-    {
+    getTask(id) {
         switch(this.Specifier) {
             case 0:
                 return this.getTaskById(this.taskShow ? this.taskData : this.todayTaskData, id)
@@ -240,6 +252,7 @@ export default {
     },
     handleTreeClose() {
       this.treeDrawer = false
+      this.$emit('postPersonalTaskAgain',{})
     },
     setSpecifier(num) {
         this.Specifier = num
@@ -303,7 +316,6 @@ export default {
       console.log(task)
       this.treeData = task
       this.treeDrawer = true
-
     },
     postPersonalTaskAgain() {
       this.drawer = false
@@ -387,6 +399,9 @@ export default {
           }
       );
     },
+    postTaskDataAgain() {
+      this.$emit('postPersonalTaskAgain', {})
+    }
 
   }
 
