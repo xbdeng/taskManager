@@ -202,4 +202,18 @@ public class TeamServiceImpl implements TeamService {
         }
         return new Result<>(200,"查询成功",queryTeamDTOS);
     }
+
+    @Override
+    public Result withdraw(BigInteger teamId, String username) {
+        BigInteger userId = userMapper.getIdByName(username);
+        TeamUser teamUser = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId));
+        if(teamUser == null){
+            return Result.fail(201,"改成员不在组内",null);
+        }
+        if(teamUser.getIdentity().equals("creator")){
+            return Result.fail(201,"群主不能退群",null);
+        }
+        teamUserMapper.delete(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId));
+        return Result.succ("退群成功");
+    }
 }

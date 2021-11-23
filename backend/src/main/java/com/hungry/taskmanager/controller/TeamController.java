@@ -1,6 +1,7 @@
 package com.hungry.taskmanager.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Team;
@@ -131,4 +132,19 @@ public class TeamController {
             return Result.fail(500,"服务器错误",null);
         }
     }
+
+    @PostMapping("/withdraw")
+    @RequiresAuthentication
+    public Result withdraw(@RequestBody String teamId,HttpServletRequest httpServletRequest){
+        try {
+            BigInteger teamId_ = JSONObject.parseObject(teamId).getBigInteger("teamId");
+            String token = httpServletRequest.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return teamService.withdraw(teamId_, username);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500,"服务器错误",null);
+        }
+    }
+
 }
