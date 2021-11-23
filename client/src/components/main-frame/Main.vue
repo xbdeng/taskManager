@@ -125,7 +125,8 @@
                         :username="this.username"
                         :Friends="this.Friends"
                         v-on:postTeamInfoAgain="postTeamInfoAgain($event)"
-                        v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
+                        v-on:postMyTeamAgain="postMyTeamAgain($event)"
+                        v-on:postPersonalTaskAgain='postPersonalTaskAgain($event)'></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow"
                            :Friends="this.Friends" v-on:updateAddressBook="postAddressBook"></AddressBookPage>
@@ -219,7 +220,8 @@
 
           <!-- 任务搜索 -->
           <SearchTaskPage
-              v-show="searchTaskShow"></SearchTaskPage>
+              v-show="searchTaskShow"
+              v-on:postPersonalTaskAgain='postPersonalTaskAgain($event)'></SearchTaskPage>
         </el-main>
       </el-container>
     </el-container>
