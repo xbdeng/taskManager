@@ -3,7 +3,7 @@
   <div class='teamInfo'>
     <el-container>
       <!-- 侧边栏，用于显示所有组的信息 -->
-      <el-aside>
+      <el-aside style="height: 100vh">
         <el-menu class="main-frame-menu">
           <!-- 显示所有的组 -->
           <el-button icon="el-icon-search" circle @click="searchTeam = true"></el-button>
@@ -14,13 +14,10 @@
       </el-aside>
       <!-- 侧边栏，用于显示这个组的所有任务 -->
       <el-main>
-        <el-menu>
-          <TaskTree
+          <DragTaskTree
               :taskData="generateTaskTreeData()"
-              :taskLevel="''"
-              :chosenTask="chosenTaskId"
-              v-on:taskIdChanged="chooseTasks($event)"></TaskTree>
-        </el-menu>
+              v-on:taskIdChanged="chooseTasks($event)"
+              v-on:postTaskDataAgain="postTeamAgain($event)"></DragTaskTree>
       </el-main>
 
       <!-- 用于显示组内任务的抽屉组件 -->
@@ -118,6 +115,7 @@ import TaskTree from '../sub-components/TaskTree.vue'
 import TaskShow from '../sub-components/TaskShow.vue'
 import TeamShow from '../sub-components/TeamShow.vue'
 import TreeTask from './TreeTask'
+import DragTaskTree from "../sub-components/DragTaskTree";
 import axios from "axios";
 
 export default {
@@ -127,7 +125,8 @@ export default {
     TaskTree,
     TaskShow,
     TeamShow,
-    TreeTask
+    TreeTask,
+    DragTaskTree
   },
   props: ['teamInfo', 'username', 'Friends'],
   data() {
@@ -224,7 +223,7 @@ export default {
     searchTeamB(event) {
       const that = this
       axios.post(
-          'http://localhost:8081/api/team/queryteam',
+          '/team/queryteam',
           {
             teamName: that.teamSearchName
           },
@@ -302,6 +301,9 @@ export default {
             })
           }
       )
+    },
+    postTeamAgain() {
+      this.$emit('postTeamInfoAgain', {})
     }
   }
 

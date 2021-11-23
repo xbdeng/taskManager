@@ -85,7 +85,7 @@
 
             <!-- 消息推送 -->
             <el-menu-item index="8" @click="showMessage">
-              <el-badge :value="12" class="item">
+              <el-badge :value="showMessageNote" class="item">
                 <i class="el-icon-message"></i>
                 <span slot="title">消息通知</span>
               </el-badge>
@@ -125,7 +125,8 @@
                         :username="this.username"
                         :Friends="this.Friends"
                         v-on:postTeamInfoAgain="postTeamInfoAgain($event)"
-                        v-on:postMyTeamAgain="postMyTeamAgain($event)"></TeamInfoPage>
+                        v-on:postMyTeamAgain="postMyTeamAgain($event)"
+                        v-on:postPersonalTaskAgain='postPersonalTaskAgain($event)'></TeamInfoPage>
           <!-- 通讯录 -->
           <AddressBookPage v-show="addressBookShow"
                            :Friends="this.Friends" v-on:updateAddressBook="postAddressBook"></AddressBookPage>
@@ -178,7 +179,7 @@
               width="30%"
               :modal-append-to-body='false'
               center>
-<!--            <span>{{ this.CalendarClickTask }}</span>-->
+            <!--            <span>{{ this.CalendarClickTask }}</span>-->
             <el-form v-if="this.CalendarClickTask !== null">
               <el-form-item label="任务名称">
                 <span>{{ this.CalendarClickTask.taskName }}</span>
@@ -193,8 +194,8 @@
                 <span>{{ this.CalendarClickTask.dueDate }}</span>
               </el-form-item>
               <el-form-item label="标识">
-                <span v-for="i in this.CalendarClickTask.tags"> {{i}} </span>
-<!--                <span>{{ this.CalendarClickTask.tags }}</span>-->
+                <span v-for="i in this.CalendarClickTask.tags"> {{ i }} </span>
+                <!--                <span>{{ this.CalendarClickTask.tags }}</span>-->
               </el-form-item>
               <el-form-item>
 
@@ -208,18 +209,19 @@
 
           <!--弹出消息推送-->
           <el-drawer
-              :title="this.username + ' --- Your notifications'"
               :visible.sync="MessageShow"
               direction="rtl"
               :before-close="handleMessageClose"
               :append-to-body='true'
-              size="400px">
+              size="440px">
+            <div slot="title"><i class="el-icon-message-solid" style="font-size: 30px"></i><span style="font-size: 30px; text-align: center">Your Notification</span></div>
             <MessagePage :message-show="MessageShow"></MessagePage>
           </el-drawer>
 
           <!-- 任务搜索 -->
           <SearchTaskPage
-              v-show="searchTaskShow"></SearchTaskPage>
+              v-show="searchTaskShow"
+              v-on:postPersonalTaskAgain='postPersonalTaskAgain($event)'></SearchTaskPage>
         </el-main>
       </el-container>
     </el-container>
@@ -240,9 +242,10 @@ import interactionPlugin from '@fullcalendar/interaction'
 import MessagePage from "./MessagePage";
 import axios from 'axios'
 import process from "_shelljs@0.7.8@shelljs";
-import websocket from "../sub-components/WebSocket";
-import {heartCheck} from "../sub-components/WebSocket";
+import websocket, {heartCheck} from "../sub-components/WebSocket";
 import Push from 'push.js'
+import {removeRequest} from "../sub-components/cache";
+import {Notification} from "_element-ui@2.15.6@element-ui";
 
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
@@ -301,11 +304,12 @@ export default {
   // 在载入页面前先获取日历数据
   mounted() {
     this.showCalendarData();
-    websocket.setReconnectVar(true)
-    websocket.Init(this.username);
-    this.eventMsg();
+    // websocket.setReconnectVar(true)
+    // websocket.Init(this.username);
+    // this.eventMsg();
+    this.Initwebscoket()
   },
-  created(){
+  created() {
     Push.Permission.request();
   },
   data() {
@@ -404,17 +408,62 @@ export default {
           username: ''
         }]
       }],
-      transData: []
+      transData: [],
+      showMessageNote : ''
     }
   },
   methods: {
-    eventMsg() {
-      let that = this;
+    Initwebscoket() {
+      let that = this
+      websocket.setInit(that.username)
+      websocket.getWebSocket().onerror = function (e) {
+        console.log("数据传输发生错误");
+        if (websocket.getBroken() === false) {
+          Notification({
+            title: '警告',
+            message: '数据传输发生错误',
+            type: 'warning'
+          });
+        }
+        websocket.setBroken(true)
+        that.reconnect(that.username)
+      }
+
+          websocket.getWebSocket().onopen = function () {
+            console.log("连接成功")
+            Notification({
+              title: '成功',
+              message: '连接成功',
+              type: 'success'
+            });
+            websocket.setBroken(false)
+            heartCheck.start();
+          }
+
+          websocket.getWebSocket().onclose = function () {
+            console.log("连接已关闭")
+            if (websocket.getBroken() === false) {
+              Notification({
+                title: '警告',
+                message: '连接已关闭',
+                type: 'warning'
+              });
+            }
+            websocket.setBroken(true)
+            if (websocket.getReconnectVar() === true) {
+              that.reconnect(that.username);
+            }
+          }
+
+
       websocket.getWebSocket().onmessage = function (res) {
         //处理接收的时间逻辑
         // console.log(res)
         heartCheck.start()
+        websocket.setBroken(false)
         let tmp = JSON.parse(res.data)
+        // console.log(res)
+        removeRequest()
         if (tmp.heartCheck === 1) {
           return
         } else {
@@ -423,6 +472,7 @@ export default {
               title: tmp.from,
               message: '想要与你一起组队成为' + tmp.groupName
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '想要与你一起组队成为' + tmp.groupName);
           }
           if (tmp.type === 1) {
@@ -430,6 +480,7 @@ export default {
               title: tmp.from,
               message: '想要与你成为好友'
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '想要与你成为好友');
           }
           if (tmp.type === 2) {
@@ -437,11 +488,110 @@ export default {
               title: tmp.from,
               message: '邀请你加入' + tmp.groupName
             });
+            that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
         }
       }
     },
+reconnect(sname) {
+  const that = this
+  if (websocket.getlockReconnect()) {
+    return;
+  }
+  websocket.setlockReconnect(true)
+  //没连接上会一直重连，设置延迟避免请求过多
+  websocket.gettt() && clearTimeout(websocket.gettt());
+  websocket.settt(setTimeout(function () {
+    websocket.getWebSocket().close()
+    console.log("执行断线重连...")
+    // ws = new WebSocket(url + sname);
+    that.Initwebscoket()
+    websocket.setlockReconnect(false)
+  }, 5000))
+},
+    // eventMsg() {
+    //   let that = this;
+    //     if ("WebSocket" in window) {
+    //       ws = new WebSocket(url + clientId);
+    //     }
+    //
+    //   websocket.getWebSocket().onerror = function (e) {
+    //     console.log("数据传输发生错误");
+    //     if (broken === false) {
+    //       Notification({
+    //         title: '警告',
+    //         message: '数据传输发生错误',
+    //         type: 'warning'
+    //       });
+    //     }
+    //     websocket.setBroken(true)
+    //     reconnect(clientId)
+    //   },
+    //
+    //   websocket.getWebSocket().onopen = function () {
+    //     console.log("连接成功")
+    //     Notification({
+    //       title: '成功',
+    //       message: '连接成功',
+    //       type: 'success'
+    //     });
+    //     broken = false
+    //     heartCheck.start();
+    //   },
+    //
+    //   websocket.getWebSocket().onclose = function () {
+    //     console.log("连接已关闭")
+    //     if (broken === false) {
+    //       Notification({
+    //         title: '警告',
+    //         message: '连接已关闭',
+    //         type: 'warning'
+    //       });
+    //     }
+    //     broken = true
+    //     if (reconnectvar === true) {
+    //       reconnect(clientId);
+    //     }
+    //   }
+    //
+    //
+    //   websocket.getWebSocket().onmessage = function (res) {
+    //     //处理接收的时间逻辑
+    //     // console.log(res)
+    //     heartCheck.start()
+    //     websocket.setBroken(false)
+    //     let tmp = JSON.parse(res.data)
+    //     // console.log(res)
+    //     removeRequest()
+    //     if (tmp.heartCheck === 1) {
+    //       return
+    //     } else {
+    //       if (tmp.type === 0) {
+    //         that.$notify.info({
+    //           title: tmp.from,
+    //           message: '想要与你一起组队成为' + tmp.groupName
+    //         });
+    //         that.pushMessage(tmp.from, '想要与你一起组队成为' + tmp.groupName);
+    //       }
+    //       if (tmp.type === 1) {
+    //         that.$notify.info({
+    //           title: tmp.from,
+    //           message: '想要与你成为好友'
+    //         });
+    //         that.pushMessage(tmp.from, '想要与你成为好友');
+    //       }
+    //       if (tmp.type === 2) {
+    //         that.$notify.info({
+    //           title: tmp.from,
+    //           message: '邀请你加入' + tmp.groupName
+    //         });
+    //         that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
+    //       }
+    //     }
+    //   }
+    // },
+
     //跳转到个人主页
     toProfile(event) {
       this.$router.push({name: 'Profile', params: {username: this.username}});
@@ -515,6 +665,7 @@ export default {
       this.searchTaskShow = true
     },
     showMessage() {
+      this.showMessageNote = '';
       this.MessageShow = true;
     },
     handleMessageClose(done) {
@@ -793,9 +944,9 @@ export default {
           }
       )
     },
-    transferData(task){
+    transferData(task) {
       let transferList = []
-      for(let i in task){
+      for (let i in task) {
         let tmp = {
           id: task[i].taskId,
           parent_id: task[i].fatherTask,
@@ -1066,7 +1217,7 @@ export default {
     postTeamInfoAgain() {
       this.postTeamInfo()
     },
-    pushMessage(header ,message){
+    pushMessage(header, message) {
       Push.create(header, {
         body: message,
         requireInteraction: true,
@@ -1101,7 +1252,7 @@ export default {
 }
 
 .main-frame-menu {
-  height: 900px;
+  height: 100vh;
 }
 
 .mainFrameHeader {
