@@ -17,7 +17,7 @@
     </template>
   </div>
 </template>
- 
+
 <script>
 
 export default {
@@ -25,6 +25,9 @@ export default {
   name: 'FriendShow',
   // 这个组件接收的参数是一个任务对象
   props: ['friend'],
-  
+  mounted() {
+    console.log(this.friend)
+  }
+
 }
 </script>

@@ -14,9 +14,11 @@
                 <span v-show="data.type === 2">Group application</span>
               </el-col>
               <el-col :span=11>
-                <el-button type="success" icon="el-icon-check" circle v-if="data.status !== 'handle' && data.status !== 'read'"
+                <el-button type="success" icon="el-icon-check" circle
+                           v-if="data.status !== 'handle' && data.status !== 'read'"
                            @click="clickBottom(data.messageId, 0)"></el-button>
-                <el-button type="danger" icon="el-icon-close" circle v-if="data.status !== 'handle' && data.status !== 'read'"
+                <el-button type="danger" icon="el-icon-close" circle
+                           v-if="data.status !== 'handle' && data.status !== 'read'"
                            @click="clickBottom(data.messageId, 1)"></el-button>
                 <el-button type="warning" icon="el-icon-delete" circle v-if="data.status !== 'read'"
                            @click="clickBottom(data.messageId, 2)"></el-button>
@@ -66,10 +68,12 @@ export default {
   beforeUpdate() {
     // this.getMessage()
   },
-  watch:{
+  watch: {
     MessageShow(newName, oldName) {
-      this.getMessage()
-      this.$forceUpdate()
+      if (newName === true) {
+        this.getMessage()
+        this.$forceUpdate()
+      }
     }
   },
   methods: {
