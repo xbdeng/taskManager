@@ -36,7 +36,7 @@ public interface UserMapper extends BaseMapper<User> {
     BigInteger getIdByName(String username);
 
     // query name by id
-    @Select("SELECT username FROM user WHERE username = #{userId}")
+    @Select("SELECT username FROM user WHERE user_id = #{userId}")
     String getUsernameById(BigInteger userId);
 
     //根据用户名和密码查询用户
