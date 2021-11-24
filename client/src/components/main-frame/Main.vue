@@ -28,16 +28,24 @@
                    :collapse="true"
                     background-color="#FFFFFF">
             <!-- 个人面板弹框 -->
-            <el-submenu index="1">
+            <el-submenu index="1" class="avatarmenu">
               <template slot="title">
-                <i class="el-icon-user-solid"></i>
+                  <i class="el-icon-my-export"></i>
                 <span slot="title">个人面板</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
-                <el-menu-item index="1-2">页面设置</el-menu-item>
-                <el-menu-item index="1-3" @click="handleOutlook">数据同步</el-menu-item>
-                <el-menu-item index="1-4" @click="logOut">账号登出</el-menu-item>
+                <el-menu-item index="1-1" @click="toProfile">
+                  <i class="el-icon-s-custom" style="color:#00a6ff"></i>
+                  <span slot="title">个人主页</span>
+                </el-menu-item>
+                <el-menu-item index="1-2" @click="handleOutlook">
+                  <i class="iconfont el-icon-githubOUTLOOK" style="color:#00a6ff"></i>
+                  <span slot="title">Outlook数据同步</span>
+                </el-menu-item>
+                <el-menu-item index="1-3" @click="logOut">
+                  <i class="el-icon-remove-outline" style="color:#00a6ff"></i>
+                  <span slot="title">账号登出</span>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 
@@ -49,8 +57,14 @@
               </template>
               <el-menu-item-group>
                 <span slot="title">新建...</span>
-                <el-menu-item index="2-1" @click='showTask'>任务</el-menu-item>
-                <el-menu-item index="2-2" @click='showGroup'>组别</el-menu-item>
+                <el-menu-item index="2-1" @click='showTask'>
+                  <i class="el-icon-s-order" style="color:#00a6ff"></i>
+                  <span slot="title">任务</span>
+                </el-menu-item>
+                <el-menu-item index="2-2" @click='showGroup'>
+                  <i class="iconfont el-icon-githubteam" style="color:#00a6ff"></i>
+                  <span slot="title">组别</span>
+                </el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 
@@ -1333,17 +1347,30 @@ export default {
   margin-right: 40px;
 }
 
-.el-menu-item.is-active，.el-submenu .el-menu-item.is-active {
-  background-color: red !important;
-}
+/*.el-menu-item.is-active，.el-submenu .el-menu-item.is-active {*/
+/*  background-color: red !important;*/
+/*}*/
 
-.el-menu-item.is-active:hover，.el-submenu .el-menu-item:hover {
-  background-color: rgb(179, 13, 13) !important;
-}
+/*.el-menu-item.is-active:hover，.el-submenu .el-menu-item:hover {*/
+/*  background-color: rgb(179, 13, 13) !important;*/
+/*}*/
 
 .el-menu-item:hover {
   background-color: #ccc;
 // border-right: 10px solid #000;
 }
-
+.el-icon-my-export{
+    background: url(https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7) center no-repeat;
+    background-size: cover;
+    border-radius: 5px;
+}
+.el-icon-my-export:before{
+    content: "替";
+    font-size: 30px;
+    visibility: hidden;
+}
+.avatarmenu{
+  width:64px !important;
+  height: 56px !important;
+}
 </style>

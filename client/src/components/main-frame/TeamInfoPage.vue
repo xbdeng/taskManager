@@ -4,17 +4,30 @@
     <el-container>
       <!-- 侧边栏，用于显示所有组的信息 -->
       <el-aside style="height: 100vh">
-        <el-menu class="main-frame-menu">
+        <el-button icon="el-icon-search" circle @click="searchTeam = true"></el-button>
+        <el-menu class="main-frame-menu" :default-openeds="['1']">
           <!-- 显示所有的组 -->
-          <el-button icon="el-icon-search" circle @click="searchTeam = true"></el-button>
-          <el-menu-item v-for='(team, teamIndex) in this.teamInfo' :key=team.teamId :index=team.teamName>
-            <span @click="showSelectedTeam(teamIndex)" class="teamNameCSS">{{ team.teamName }}</span>
-          </el-menu-item>
+          <el-submenu index="1">
+            <template slot="title">
+              <i class="iconfont el-icon-githubteam"></i>
+              <span slot="title" class="teamNameCSS">我加入的组</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item
+                  v-for='(team, teamIndex) in this.teamInfo'
+                  :key=team.teamId
+                  :index=team.teamName
+                  @click.native="showSelectedTeam2(teamIndex)">
+                <span @click="showSelectedTeam(teamIndex)" class="teamNameCSS">{{ team.teamName }}</span>
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <!-- 侧边栏，用于显示这个组的所有任务 -->
       <el-main>
           <DragTaskTree
+              v-show="!(generateTaskTreeData() === [])"
               :taskData="generateTaskTreeData()"
               v-on:taskIdChanged="chooseTasks($event)"
               v-on:postTaskDataAgain="postTeamAgain($event)"></DragTaskTree>
@@ -166,6 +179,9 @@ export default {
     // 用于根据用户的点击，显示特定的组别
     showSelectedTeam(teamId) {
       this.teamInfoDrawer = true
+      this.selectedTeam = teamId
+    },
+    showSelectedTeam2(teamId) {
       this.selectedTeam = teamId
     },
     // 接收子组件传递的任务的key

@@ -8,6 +8,7 @@
                     <!-- 显示侧边栏中对应的"任务"的数据 -->
                     <el-menu-item index="1" @click="showTask">
                         <template slot="title">
+
                             <span slot="title" class="taskFont">任务</span>
                         </template>
                     </el-menu-item>
@@ -34,7 +35,8 @@
 
                   <el-submenu index='today' v-show="planedTaskShow">
                     <template slot="title">
-                      <span slot="title" @click="setSpecifier(0)">今天</span>
+                      <i class="iconfont el-icon-githubjintian"></i>
+                      <span slot="title" @click="setSpecifier(0)" class="taskFont">今天</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.todayTaskData"
@@ -43,7 +45,8 @@
                   </el-submenu>
                   <el-submenu index='week' v-show="planedTaskShow">
                     <template slot="title">
-                      <span slot="title" @click="setSpecifier(1)">一周内</span>
+                      <i class="iconfont el-icon-githubjinyizhou"></i>
+                      <span slot="title" @click="setSpecifier(1)" class="taskFont">一周内</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.weekTaskData"
@@ -52,16 +55,17 @@
                   </el-submenu>
                   <el-submenu index='later' v-show="planedTaskShow">
                     <template slot="title">
-                      <span slot="title" @click="setSpecifier(2)">稍后</span>
+                      <i class="el-icon-githubshaohouchuli"></i>
+                      <span slot="title" @click="setSpecifier(2)" class="taskFont">稍后</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.laterTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
                     v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
                   </el-submenu>
-                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-menu>
                   </div>
+                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-main>
               </el-container>
             </el-main>
@@ -72,7 +76,7 @@
             direction="rtl"
             :before-close="handleClose"
             :modal-append-to-body='false'
-            size='30%'>
+            size='40%'>
                 <TaskShow
                     :singleTaskData="getTask(chosenTaskId)"
                     v-on:closeTaskDrawer='closeTaskDrawer($event)'
@@ -427,4 +431,5 @@ font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
   font-weight: bold;
 }
+
 </style>
