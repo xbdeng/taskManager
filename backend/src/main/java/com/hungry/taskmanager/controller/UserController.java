@@ -321,7 +321,7 @@ public class UserController {
 
     @PostMapping("/searchfriend")
     @RequiresAuthentication
-    public Result<List<UserDTO>> searchFriend(String username) {
+    public Result<List<UserDTO>> searchFriend(@RequestBody String username) {
         try {
             String name = JSONObject.parseObject(username).getString("username");
             if(name == null || name.trim().equals("")){
