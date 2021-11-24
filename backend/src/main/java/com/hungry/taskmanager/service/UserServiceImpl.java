@@ -246,7 +246,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<List<UserDTO>> searchFriend(String name) {
         List<UserDTO> userDTOS = userMapper.selectList(new QueryWrapper<User>().like("username",name)).stream().map(User::toUserDTO).collect(Collectors.toList());
-        if(userDTOS.isEmpty()){
+        if(userDTOS == null || userDTOS.isEmpty()){
             return Result.fail(201,"用户不存在",null);
         }
         return new Result<List<UserDTO>>(200,"查询成功",userDTOS);
