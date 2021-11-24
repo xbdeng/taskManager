@@ -6,9 +6,7 @@
         <!-- 头部栏显示组名称，并留有接口供用户修改 -->
         <el-header>
           <el-row :gutter="10" type="flex" align="middle">
-            <el-col :span="3">
-              <span class="title">{{ this.singleTeamData.teamName }}</span>
-            </el-col>
+            <el-col :span="4">
             <el-popover placement="top" width="200" trigger="click" title="修改组名">
               <el-row>
                 <el-col>
@@ -21,30 +19,31 @@
                 </el-col>
               </el-row>
               <el-tooltip content="点击可修改组的名称" slot="reference">
-                <el-link type='primary'>
-                  <i class="el-icon-edit"></i>
+                <el-link>
+                  <span class="title">{{ this.singleTeamData.teamName }}</span>
                 </el-link>
               </el-tooltip>
             </el-popover>
+              </el-col>
           </el-row>
         </el-header>
         <el-main>
           <el-row :gutter="40">
             <el-col :span="18">
               <!-- 显示创建时间，没有接口修改 -->
-              <el-row type="flex" justify="start">
-                <el-col :span="4">
-                  <span style="font-weight:bold">创建时间：</span>
+              <el-row type="flex" justify="start" align="middle">
+                <el-col :span="7">
+                  <span style="font-weight:bold;font-size: 18px">创建时间: </span>
                 </el-col>
-                <el-col>
-                  {{ this.singleTeamData.creatTime }}
+                <el-col :span="17">
+                  {{ this.convertTime(this.singleTeamData.creatTime) }}
                 </el-col>
               </el-row>
               <!-- 显示组内成员，留接口修改 -->
-              <el-row type="flex" justify="start">
+              <el-row type="flex" justify="start" align="middle">
                 <!-- 显示组内成员的组件 -->
-                <el-col :span="4">
-                  <span style="font-weight:bold">组内成员：</span>
+                <el-col :span="8">
+                  <span style="font-weight:bold;font-size: 18px">组内成员：</span>
                 </el-col>
                 <!-- 下拉菜单 -->
                 <el-col :span="7">
@@ -67,7 +66,7 @@
                   </el-dropdown>
                 </el-col>
                 <!-- 添加管理员的接口 -->
-                <el-col :span="7">
+                <el-col :span="4">
                   <el-popover placement="top" width="900" trigger="click" title="设置管理员">
                     <el-row>
                       <el-col>
@@ -90,7 +89,7 @@
                   </el-popover>
                 </el-col>
                 <!-- 取消管理员的接口 -->
-                <el-col :span="7">
+                <el-col :span="3">
                   <el-popover placement="top" width="900" trigger="click" title="删除管理员">
                     <el-row>
                       <el-col>
@@ -113,7 +112,7 @@
                   </el-popover>
                 </el-col>
                 <!-- 添加成员的接口 -->
-                <el-col :span="3">
+                <el-col :span="4">
                   <el-popover placement="top" width="900" trigger="click" title="邀请成员">
                     <el-row>
                       <el-col>
@@ -137,11 +136,11 @@
                 </el-col>
               </el-row>
               <!-- 显示任务描述信息 -->
-              <el-row type="flex" justify="start">
-                <el-col :span="6">
-                  <span style="font-weight:bold">队伍描述信息：</span>
+              <el-row type="flex" justify="start" align="middle">
+                <el-col :span="8">
+                  <span style="font-weight:bold;font-size: 18px">队伍描述信息：</span>
                 </el-col>
-                <el-col>{{ singleTeamData.description }}</el-col>
+                <el-col>
                 <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
                   <el-row>
                     <el-col>
@@ -154,14 +153,38 @@
                       <el-button type='primary' plain size="small" @click="editDescription">确定</el-button>
                     </el-col>
                   </el-row>
+
                   <el-tooltip content="点击可修改组的描述信息" slot="reference">
-                    <el-link type='primary'>
-                      <i class="el-icon-edit"></i>
+                    <el-link>
+                      {{ singleTeamData.description }}
                     </el-link>
                   </el-tooltip>
                 </el-popover>
+                </el-col>
               </el-row>
-              <el-row type="flex" justify="start">
+              <el-row type="flex" justify="start" align="middle" :gutter="20">
+                  <el-col>
+                    <el-card>
+                      <div>
+                        <el-progress type="circle" :percentage="25"></el-progress>
+                      </div>
+                      <div>
+                        team ,,,
+                      </div>
+                    </el-card>
+                  </el-col>
+                  <el-col>
+                    <el-card>
+                      <div>
+                        <el-progress :text-inside="true" :stroke-width="26" :percentage="70"></el-progress>
+                      </div>
+                      <div>
+                        done task
+                      </div>
+                    </el-card>
+                  </el-col>
+              </el-row>
+              <el-row type="flex" justify="start" align="middle">
                 <el-col>
                   <el-button type="primary" @click="closeTeamDrawer">确定</el-button>
                 </el-col>
@@ -172,32 +195,6 @@
                   <el-button type="warning" @click="dismissTeam">解散该组</el-button>
                 </el-col>
               </el-row>
-            </el-col>
-
-            <el-col :span="6">
-              <el-form>
-                <el-form-item>
-                  <el-card>
-                    <div>
-                      <el-progress type="circle" :percentage="25"></el-progress>
-                    </div>
-                    <div>
-                      team ,,,
-                    </div>
-                  </el-card>
-                </el-form-item>
-
-                <el-form-item>
-                  <el-card>
-                    <div>
-                      <el-progress :text-inside="true" :stroke-width="26" :percentage="70"></el-progress>
-                    </div>
-                    <div>
-                      done task
-                    </div>
-                  </el-card>
-                </el-form-item>
-              </el-form>
             </el-col>
           </el-row>
         </el-main>
@@ -595,7 +592,11 @@ export default {
     closeTeamDrawer() {
       this.$emit('closeTeamDrawer', {})
     },
-
+    convertTime(time) {
+      if (time === null) return '未设定'
+      let date = new Date(time)
+      return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDay() + '日' + date.getHours() + '时' + date.getMinutes() + '分' + date.getSeconds() + '秒'
+    },
   }
 
 }
