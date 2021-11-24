@@ -46,6 +46,9 @@ public class TaskServiceImpl implements TaskService{
         // operations according to different types
             // individual task set type column 0
             // team task find id of the team set type id of the team
+        if (params.getType() == null){
+            params.setType(0);
+        }
         BigInteger type = BigInteger.valueOf(params.getType());
         // set date
         LocalDateTime createDate = convertGMT(params.getCreateDate());
@@ -175,6 +178,8 @@ public class TaskServiceImpl implements TaskService{
         LocalDateTime createDate = convertGMT(params.getCreateDate());
         LocalDateTime dueDate = convertGMT(params.getDueDate());
         // configuration
+        // null check
+        if (params.getPrivilege() == null) params.setPrivilege(0);
         wrapper.set("task_name", params.getTaskName()).set("description", params.getDescription()).set("privilege", params.getPrivilege())
                 .set("create_date", createDate).set("due_date", dueDate).set("father_task", params.getFatherTask())
                 .set("status", params.getStatus());
