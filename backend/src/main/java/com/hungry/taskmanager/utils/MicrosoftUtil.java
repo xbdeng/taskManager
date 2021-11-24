@@ -118,7 +118,7 @@ public class MicrosoftUtil {
 
     private static LocalDateTime stringToLocalDateTime(String string) {
         int year = Integer.parseInt(string.substring(0, 4));
-        int mouth = Integer.parseInt(string.substring(5, 7)) - 1;
+        int mouth = Integer.parseInt(string.substring(5, 7));
         int day = Integer.parseInt(string.substring(8, 10));
         int hour = Integer.parseInt(string.substring(11, 13));
         int minute = Integer.parseInt(string.substring(14, 16));
