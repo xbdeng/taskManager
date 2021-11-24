@@ -12,14 +12,10 @@
                      :id="this.tempTaskForm.status === 0 ? 'origin' : (this.tempTaskForm.status === 1 ? 'active' : 'defined') "
                      v-on:mouseover="changeToActive($event)"
                      v-on:mouseout="changeToOrigin($event)"
-                     @click="postTaskFinished($event)"></i>
+                     @click="postTaskFinished($event)"
+                     style="font-size: 20px"></i>
                 </el-tooltip>
               </el-col>
-
-              <el-col :span="3">
-                <span class="title">{{ tempTaskForm.taskName }}</span>
-              </el-col>
-
               <el-popover placement="top" width="200" trigger="click" title="修改任务名">
                   <el-row>
                       <el-col>
@@ -32,8 +28,10 @@
                       </el-col>
                   </el-row>
                     <el-tooltip content="点击可修改任务名称" slot="reference">
-                      <el-link type='primary'>
-                        <i class="el-icon-edit"></i>
+                      <el-link>
+                        <el-col :span="15">
+                          <span class="title">{{ tempTaskForm.taskName }}</span>
+                        </el-col>
                       </el-link>
                     </el-tooltip>
                 </el-popover>
@@ -42,9 +40,9 @@
           <!-- 主页面显示任务的描述信息 -->
           <el-main>
             <!-- 显示任务标签，可以动态添加，删除 -->
-            <el-row type="flex" justify="start">
-              <el-col :span="3">
-                <span style="font-weight:bold">任务标签: </span>
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">任务标签: </span>
               </el-col>
               <el-col :span="17">
                 <el-tag :key="tag"
@@ -61,49 +59,34 @@
               </el-col>
             </el-row>
             <!-- 显示任务地点-->
-            <el-row type="flex" justify="start">
-              <el-col :span="4">
-                <span style="font-weight:bold">任务地点：</span>
-              </el-col>
-              <el-col :span="20">
-                {{ tempTaskForm.position }}
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">任务地点: </span>
               </el-col>
               <el-popover placement="bottom" width="200" trigger="click" title="修改任务的地点" >
                   <el-row>
                       <el-col>
-                          <el-input placeholder="请输入修改后的任务地点..." v-model="editedPosition"></el-input>
+                          <el-input placeholder="请输入修改后的任务地点..." v-model="editedlocation"></el-input>
                       </el-col>
                   </el-row>
                   <el-row>
                       <el-col :offset="8">
-                          <el-button type='primary' plain size="small" @click="editPosition">确定</el-button>
+                          <el-button type='primary' plain size="small" @click="editlocation">确定</el-button>
                       </el-col>
                   </el-row>
                     <el-tooltip content="点击可修改任务的地点" slot="reference">
-                      <el-link type='primary'>
-                        <i class="el-icon-edit"></i>
+                      <el-link>
+                        <el-col :span="18" align="middle">
+                          {{ tempTaskForm.location === '' ||  tempTaskForm.location === null? '未设定地点' : tempTaskForm.location}}
+                        </el-col>
                       </el-link>
                     </el-tooltip>
                 </el-popover>
             </el-row>
             <!-- 显示任务优先级 -->
-            <el-row type="flex" align="middle">
-              <el-col :span="4">
-                <span style="font-weight:bold">任务优先级：</span>
-              </el-col>
-              <el-col :span="5">
-                <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="tempTaskForm.privilege === 3">
-                  <i class="el-icon-s-flag" style="color:red" v-if="tempTaskForm.privilege === 3"></i>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="tempTaskForm.privilege === 2">
-                  <i class="el-icon-s-flag" style="color:#FFA500" v-if="tempTaskForm.privilege === 2"></i>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="tempTaskForm.privilege === 1">
-                  <i class="el-icon-s-flag" style="color:#00BFFF" v-if="tempTaskForm.privilege === 1"></i>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="tempTaskForm.privilege === 0">
-                  <i class="el-icon-s-flag" style="color:#7CFC00" v-if="tempTaskForm.privilege === 0"></i>
-                </el-tooltip>
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">任务优先级: </span>
               </el-col>
               <!-- 修改任务优先级的接口 -->
               <el-col :span="5">
@@ -120,19 +103,30 @@
                   </el-row>
                     <el-tooltip content="点击可修改任务名称" slot="reference">
                       <el-link type='primary'>
-                        <i class="el-icon-edit"></i>
+<!--                        <i class="el-icon-edit"></i>-->
+                        <el-col :span="5">
+                          <el-tooltip effect="dark" content="优先级：很高" placement="top-end" v-if="tempTaskForm.privilege === 3">
+                            <i class="el-icon-s-flag" style="color:red;font-size: 20px" v-if="tempTaskForm.privilege === 3"></i>
+                          </el-tooltip>
+                          <el-tooltip effect="dark" content="优先级：高" placement="top-end" v-if="tempTaskForm.privilege === 2">
+                            <i class="el-icon-s-flag" style="color:#FFA500;font-size: 20px" v-if="tempTaskForm.privilege === 2"></i>
+                          </el-tooltip>
+                          <el-tooltip effect="dark" content="优先级：中" placement="top-end" v-if="tempTaskForm.privilege === 1">
+                            <i class="el-icon-s-flag" style="color:#00BFFF;font-size: 20px" v-if="tempTaskForm.privilege === 1"></i>
+                          </el-tooltip>
+                          <el-tooltip effect="dark" content="优先级：低" placement="top-end" v-if="tempTaskForm.privilege === 0">
+                            <i class="el-icon-s-flag" style="color:#7CFC00;font-size: 20px" v-if="tempTaskForm.privilege === 0"></i>
+                          </el-tooltip>
+                        </el-col>
                       </el-link>
                     </el-tooltip>
                 </el-popover>
               </el-col>
             </el-row>
             <!-- 显示任务的开始时间 -->
-            <el-row>
-              <el-col :span="4">
-                <span style="font-weight:bold">任务开始时间：</span>
-              </el-col>
-              <el-col :span="15">
-                {{ tempTaskForm.createDate }}
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">开始时间：</span>
               </el-col>
               <el-col :span="3">
                   <el-popover placement="top" width="200" trigger="click" title="修改任务开始时间">
@@ -147,22 +141,23 @@
                       </el-col>
                     </el-row>
                     <el-tooltip content="点击可修改任务的开始时间" slot="reference">
-                      <el-link type='primary'>
-                        <i class="el-icon-edit"></i>
+                      <el-link>
+<!--                        <i class="el-icon-edit"></i>-->
+                        <el-col :span="18">
+                          {{ this.convertTime(tempTaskForm.createDate) }}
+                        </el-col>
                       </el-link>
                     </el-tooltip>
                 </el-popover>
               </el-col>
             </el-row>
             <!-- 显示任务的结束时间 -->
-            <el-row>
-              <el-col :span="4">
-                <span style="font-weight:bold">任务结束时间：</span>
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">结束时间: </span>
               </el-col>
-              <el-col :span="15">
-                {{ tempTaskForm.dueDate }}
-              </el-col>
-              <el-col :span="3">
+
+              <el-col :span="17">
                   <el-popover placement="top" width="200" trigger="click" title="修改任务结束时间">
                     <el-row type="flex" justify="start">
                         <el-col>
@@ -175,15 +170,17 @@
                       </el-col>
                     </el-row>
                     <el-tooltip content="点击可修改任务的结束时间" slot="reference">
-                      <el-link type='primary'>
-                        <i class="el-icon-edit"></i>
+                      <el-link>
+                        <el-col :span="18">
+                          {{ this.convertTime(tempTaskForm.dueDate) }}
+                        </el-col>
                       </el-link>
                     </el-tooltip>
                 </el-popover>
               </el-col>
             </el-row>
             <!-- 如果是组队任务，显示这个任务覆盖的组员 -->
-            <el-row v-show="tempTaskForm.type===1 || tempTaskForm.type==='1'">
+            <el-row v-show="tempTaskForm.type===1 || tempTaskForm.type==='1'" type="flex" justify="start" align="middle">
               <!-- 显示组内成员的组件 -->
                   <el-col :span="4">
                       <span style="font-weight:bold">任务成员：</span>
@@ -225,12 +222,9 @@
                   </el-col>
             </el-row>
             <!-- 显示任务描述信息 -->
-            <el-row type="flex" justify="start">
-              <el-col :span="4">
-                <span style="font-weight:bold">任务描述：</span>
-              </el-col>
-              <el-col :span="20">
-                {{ tempTaskForm.description }}
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">任务描述：</span>
               </el-col>
               <el-popover placement="bottom" width="200" trigger="click" title="修改任务的描述信息" >
                   <el-row>
@@ -244,8 +238,10 @@
                       </el-col>
                   </el-row>
                     <el-tooltip content="点击可修改任务的描述信息" slot="reference">
-                      <el-link type='primary'>
-                        <i class="el-icon-edit"></i>
+                      <el-link>
+                        <el-col :span="15">
+                          {{ tempTaskForm.description === null ? '描述信息为空' : tempTaskForm.description}}
+                        </el-col>
                       </el-link>
                     </el-tooltip>
                 </el-popover>
@@ -301,7 +297,7 @@ export default {
       invitedMembers:[],
       editedTaskName:null,
       editedDescription:'',
-      editedPosition:null,
+      editedlocation:null,
       // 用于存储要新添加的任务，是字符串类型的数组
       subTasksList:[],
       tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData)),
@@ -359,12 +355,12 @@ export default {
         this.$message.error('修改失败，修改后的任务名不能为空')
       }
     },
-    editPosition() {
-      let value = this.editedPosition
+    editlocation() {
+      let value = this.editedlocation
       if(value != null) {
-        this.tempTaskForm.positon = value
+        this.tempTaskForm.location = value
       }
-      this.editedPosition = null
+      this.editedlocation = null
     },
     editPriority() {
       let value = this.editedPriority
@@ -429,7 +425,7 @@ export default {
           taskName:that.tempTaskForm.taskName,
           type:that.tempTaskForm.type,
           taskId:that.tempTaskForm.taskId,
-          position:that.tempTaskForm.position
+          location:that.tempTaskForm.location
         },
         headers:{
           Authorization:window.sessionStorage.getItem('token')
@@ -500,6 +496,12 @@ export default {
       //清空就是重新加载表单
       this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
       this.subTasksList = []
+    },
+  //  用于将标准日期字符串转换成用户方便阅读的时间格式
+    convertTime(time) {
+      if (time === null) return '未设定'
+      let date = new Date(time)
+      return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDay() + '日' + date.getHours() + '时' + date.getMinutes() + '分' + date.getSeconds() + '秒'
     }
   }
   
@@ -509,6 +511,7 @@ export default {
 <style scoped>
 .title {
   font-weight: bold;
+  font-size: 30px;
 }
 #active {
   color:rgb(63, 205, 50)
