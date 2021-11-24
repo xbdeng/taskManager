@@ -8,19 +8,38 @@
         fixed
         :isdraggable="true">
       <template #selection="{row}">
-        {{ row.name }}
+        <span style="font-weight: bold">{{ row.name }}</span>
       </template>
       <template #id="{row}">
         {{ row.id }}
       </template>
       <template #priority="{row}">
-        {{ row.priority }}
+        <el-tooltip effect="dark" content="优先级：很高" placement="top-end">
+          <i class="el-icon-s-flag" style="color:red;font-size: 20px" v-if="row.priority === 3"></i>
+        </el-tooltip>
+        <el-tooltip effect="dark" content="优先级：高" placement="top-end">
+          <i class="el-icon-s-flag" style="color:#FFA500;font-size: 20px" v-if="row.priority === 2"></i>
+        </el-tooltip>
+        <el-tooltip effect="dark" content="优先级：中" placement="top-end">
+          <i class="el-icon-s-flag" style="color:#00BFFF;font-size: 20px" v-if="row.priority === 1"></i>
+        </el-tooltip>
+        <el-tooltip effect="dark" content="优先级：低" placement="top-end">
+          <i class="el-icon-s-flag" style="color:#7CFC00;font-size: 20px" v-if="row.priority === 0"></i>
+        </el-tooltip>
       </template>
-      <template #status="{row}">
-        {{ row.status }}
+      <template #status="{row}">;
+        <el-tooltip effect="dark" content="任务正在进行中" placement="top-end">
+          <i class="iconfont el-icon-githubzhengzaijinhang" style="color:deepskyblue;font-size: 20px" v-if="row.status === 0"></i>
+        </el-tooltip>
+        <el-tooltip effect="dark" content="任务已完成，辛苦啦" placement="top-end">
+          <i class="el-icon-success" style="color:#2afc00;font-size: 20px" v-if="row.status === 1"></i>
+        </el-tooltip>
+        <el-tooltip effect="dark" content="该任务未能在DDL之前完成" placement="top-end">
+          <i class="el-icon-error" style="color:red;font-size: 20px" v-if="row.status === 2"></i>
+        </el-tooltip>
       </template>
       <template #action="{row}">
-        <a class="action-item" @click.stop.prevent="emitTaskId(row)">查看任务详细信息</a>
+        <a class="action-item" @click.stop.prevent="emitTaskId(row)">详细信息</a>
       </template>
     </dragTreeTable>
   </div>
@@ -59,13 +78,13 @@ export default {
         },
         {
           title:"任务优先级",
-          field:'priority',
+          type:'priority',
           width:100,
           align: 'center'
         },
         {
           title:"任务状态",
-          field:"status",
+          type:"status",
           width:100,
           align:'center'
         },
@@ -132,6 +151,7 @@ export default {
         )
       }
       that.$emit('postTaskDataAgain',{})
+      that.$forceUpdate()
     },
     getEdgeSet(father) {
       if(father.lists.length === 0) {

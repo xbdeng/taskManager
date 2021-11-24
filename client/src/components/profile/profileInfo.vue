@@ -138,24 +138,24 @@
             </el-row>
           </el-form-item>
 
-          <el-form-item>
-            <el-row>
+<!--          <el-form-item>-->
+<!--            <el-row>-->
 
-              <el-col :span="8">
-                <!--          <div>-->
-                <!--            ?-->
-                <!--            <br>-->
-                <!--            <el-input placeholder="?"></el-input>-->
-                <!--          </div>-->
-                <el-button @click="handleGithub" v-show="googlebind === null">bind to github</el-button>
-                <div v-show="githubbind">
-                  You are now bind with google profile
-                  <el-button @click="handleGithubUntie" v-show="googlebind !== null">Untie to github from {{this.githubbind}}</el-button>
-                </div>
-              </el-col>
+<!--              <el-col :span="8">-->
+<!--                &lt;!&ndash;          <div>&ndash;&gt;-->
+<!--                &lt;!&ndash;            ?&ndash;&gt;-->
+<!--                &lt;!&ndash;            <br>&ndash;&gt;-->
+<!--                &lt;!&ndash;            <el-input placeholder="?"></el-input>&ndash;&gt;-->
+<!--                &lt;!&ndash;          </div>&ndash;&gt;-->
+<!--                <el-button @click="handleGithub" v-show="googlebind === null">bind to github</el-button>-->
+<!--                <div v-show="githubbind">-->
+<!--                  You are now bind with google profile-->
+<!--                  <el-button @click="handleGithubUntie" v-show="googlebind !== null">Untie to github from {{this.githubbind}}</el-button>-->
+<!--                </div>-->
+<!--              </el-col>-->
 
-            </el-row>
-          </el-form-item>
+<!--            </el-row>-->
+<!--          </el-form-item>-->
 
         </el-form>
       </el-main>
@@ -262,6 +262,8 @@ export default {
         type: 'success'
       });
       this.loading = false;
+      this.getImage()
+      this.$forceUpdate()
     },
     handleError() {
       this.$notify.error({

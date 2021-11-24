@@ -26,9 +26,9 @@
                   </el-menu>
                   <el-button type="primary" size="mini" icon="el-icon-setting" slot="reference">显示设置</el-button>
                 </el-popover>
-                <el-tooltip content="点击返回" >
-                  <el-button type="primary" icon="el-icon-back" circle @click="closeTreeDrawer" size="mini"></el-button>
-                </el-tooltip>
+<!--                <el-tooltip content="点击返回" >-->
+<!--                  <el-button type="primary" icon="el-icon-back" circle @click="closeTreeDrawer" size="mini"></el-button>-->
+<!--                </el-tooltip>-->
               </el-col>
             </el-row>
           </el-header>
