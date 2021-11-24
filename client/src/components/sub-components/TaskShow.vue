@@ -209,7 +209,8 @@
                       <el-popover placement="top" width="900" trigger="click" title="邀请成员">
                         <el-row>
                             <el-col>
-                                <el-transfer :data="this.CU(this.list1, this.list2)" filterable :button-texts="['取消添加','添加任务成员']" v-model="invitedMembers" :titles="['组内成员','分配名单']"></el-transfer>
+<!--                              TODO-->
+                                <el-transfer :data="this.list1" filterable :button-texts="['取消添加','添加任务成员']" v-model="invitedMembers" :titles="['组内成员','分配名单']"></el-transfer>
                             </el-col>
                         </el-row>
                         <el-row>
