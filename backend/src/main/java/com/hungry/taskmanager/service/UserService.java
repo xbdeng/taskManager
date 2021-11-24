@@ -64,4 +64,7 @@ public interface UserService {
 
     //模糊查询用户
     Result<List<UserDTO>> searchFriend(String name);
+
+    //统计个人任务完成情况
+    Result<PersonalStatisticsDTO> personalStatistics(String username);
 }

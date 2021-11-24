@@ -20,7 +20,7 @@ public interface UserMapper extends BaseMapper<User> {
             "#{lastName}," +
             "#{email}," +
             "#{phone})")
-    void register(RegisterInfoDTO registerInfoDTO);//todo 异常处理
+    void register(RegisterInfoDTO registerInfoDTO);
 
 //    User findByUserName(String username);
 

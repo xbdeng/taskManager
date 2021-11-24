@@ -334,4 +334,17 @@ public class UserController {
         }
     }
 
+    @PostMapping("/personalstatistics")
+    @RequiresAuthentication
+    public Result<PersonalStatisticsDTO> personalStatistics(HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return userService.personalStatistics(username);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
 }
