@@ -321,12 +321,12 @@ public class UserController {
 
     @PostMapping("/searchfriend")
     @RequiresAuthentication
-    public Result<List<UserDTO>> searchFriend(String username) {
-        if(username == null || username.trim().equals("")){
-            return Result.fail(203,"用户名为空",null);
-        }
+    public Result<List<UserDTO>> searchFriend(@RequestBody String username) {
         try {
             String name = JSONObject.parseObject(username).getString("username");
+            if(name == null || name.trim().equals("")){
+                return Result.fail(203,"用户名为空",null);
+            }
             return userService.searchFriend(name);
         } catch (Exception e) {
             e.printStackTrace();
