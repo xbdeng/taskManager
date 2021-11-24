@@ -24,7 +24,7 @@
       <el-drawer
           title="查看或编辑组内信息"
           :visible.sync="teamInfoDrawer"
-          direction="ltr"
+          direction="ttb"
           :before-close="handleTeamInfoClose"
           :modal-append-to-body='false'
           size='50%'>
