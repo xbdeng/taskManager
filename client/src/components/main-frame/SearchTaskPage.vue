@@ -4,16 +4,22 @@
     <el-container>
         <!-- 头部栏，用于显示搜索框 -->
         <el-header class='search_header'>
-            <el-row type="flex" align="middle" :gutter="20">
+            <el-row type="flex" justify="start" align="middle" :gutter="20">
                 <el-button type="success" icon="el-icon-search" circle @click="openFliter"></el-button>
             </el-row>
         </el-header>
         <el-main>
             <el-menu>
                 <DragTaskTree
+                  v-show="!(searchedResult.length === 0)"
                   :taskData="searchedResult"
                   v-on:taskIdChanged="chooseTasks($event)"
                   v-on:postTaskDataAgain="postQueryAgain($event)"></DragTaskTree>
+              <div v-show="(searchedResult.length === 0)">
+                <p><img src="../../assets/query.svg" /></p>
+                <p style="font-weight: bold;font-size: 20px">暂无查询结果</p>
+              </div>
+
             </el-menu>
         </el-main>
         <el-drawer 
@@ -22,12 +28,11 @@
             direction="ltr"
             :before-close="handleFliterClose"
             :modal-append-to-body='false'
-            size='60%'
-            >
+            size='40%'>
             <el-form label-width="150px" ref='fliterForm' :model='fliterForm' :rules="rules" status-icon>
                 <!-- taskName -->
                 <el-form-item label="任务名称:" prop="taskName">
-                    <el-row>
+                    <el-row type="flex" justify="start" align="middle">
                         <el-col :span='14'>
                             <el-input placeholder='请输入任务名...' clearable v-model='fliterForm.taskName'></el-input>
                         </el-col>
@@ -35,8 +40,8 @@
                 </el-form-item>
                 <!-- tags -->
                 <el-form-item label="任务标签:" prop="tags">
-                    <el-row type="flex" justify="start">
-                        <el-col :span="17">
+                    <el-row type="flex" justify="start" align="middle">
+                        <el-col :span="13">
                             <el-tag :key="tag"
                             v-for="tag in fliterForm.tags" 
                             closable 
@@ -52,7 +57,7 @@
                     </el-row>
                 </el-form-item>
               ``<!--position-->
-                <el-form-item label="任务地点" prop="position">
+                <el-form-item label="任务地点:" prop="position">
                   <el-row>
                         <el-col :span='14'>
                             <el-input placeholder='请输入任务地点...' clearable v-model='fliterForm.position'></el-input>
@@ -61,16 +66,16 @@
                 </el-form-item>
                 <!-- privilege -->
                 <el-form-item label="任务优先级:" prop="privilege">
-                    <el-row>
-                      <el-col>
-                          <el-rate :texts="this.texts" show-text :max="4" v-model="fliterForm.privilege"></el-rate>
+                    <el-row align="middle" >
+                      <el-col :span="8" class="rate">
+                          <el-rate :texts="this.texts" show-text :max="4" v-model="fliterForm.privilege" ></el-rate>
                       </el-col>
                   </el-row>
                 </el-form-item>
                 <!-- createDate -->
-                <el-form-item label="任务开始时间" prop="createDate">
+                <el-form-item label="任务开始时间:" prop="createDate">
                     <el-row>
-                        <el-col>
+                        <el-col :span="5">
                             <el-date-picker v-model="fliterForm.createDate" type="datetime" placeholder="请选择任务的开始时间"></el-date-picker>
                         </el-col>
                     </el-row>
@@ -78,7 +83,7 @@
                 <!-- dueDate -->
                 <el-form-item label="任务结束时间:" prop="dueDate">
                     <el-row>
-                        <el-col>
+                        <el-col :span="5">
                             <el-date-picker v-model="fliterForm.dueDate" type="datetime" placeholder="请选择任务的结束时间"></el-date-picker>
                         </el-col>
                     </el-row>
@@ -86,7 +91,7 @@
                 <!-- status -->
                 <el-form-item label="任务状态:" prop="status">
                     <el-row>
-                        <el-col>
+                        <el-col :span="17">
                             <el-checkbox v-model="this.notFinished">未完成</el-checkbox>
                             <el-checkbox v-model="this.finished">已完成</el-checkbox>
                             <el-checkbox v-model="this.expired">已过期</el-checkbox>
@@ -96,7 +101,7 @@
                 <!-- type -->
                 <el-form-item label="任务类型:" prop="type">
                     <el-row>
-                        <el-col>
+                        <el-col :span="13">
                             <el-radio label="0" v-model="fliterForm.type">个人任务</el-radio>
                             <el-radio label="1" v-model="fliterForm.type">组队任务</el-radio>
                         </el-col>
@@ -112,10 +117,10 @@
                 </el-form-item>
             </el-form>
             <el-row>
-                <el-col :span="5">
+                <el-col :span="9">
                     <el-button type='primary' @click="searchRequest">确定</el-button>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="7">
                     <el-button type='danger' @click="handleFliterClose">取消</el-button>
                 </el-col>
             </el-row>
@@ -348,6 +353,11 @@ export default {
 </script>
 
 <style scoped>
+.rate{
+  position: relative;
+  top:50%;
+  transform:translateY(50%);
+}
 .button-new-tag {
   margin-left: 10px;
   height: 32px;

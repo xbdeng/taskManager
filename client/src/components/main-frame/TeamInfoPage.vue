@@ -27,10 +27,14 @@
       <!-- 侧边栏，用于显示这个组的所有任务 -->
       <el-main>
           <DragTaskTree
-              v-show="!(generateTaskTreeData() === [])"
+              v-show="!(generateTaskTreeData().length === 0)"
               :taskData="generateTaskTreeData()"
               v-on:taskIdChanged="chooseTasks($event)"
               v-on:postTaskDataAgain="postTeamAgain($event)"></DragTaskTree>
+          <div v-show="(generateTaskTreeData().length === 0)">
+            <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+            <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+          </div>
       </el-main>
 
       <!-- 用于显示组内任务的抽屉组件 -->
