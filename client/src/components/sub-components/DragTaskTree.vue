@@ -6,7 +6,8 @@
         @drag="onTreeDataChange"
         resize
         fixed
-        :isdraggable="true">
+        :isdraggable="true"
+        height="700">
       <template #selection="{row}">
         <span style="font-weight: bold">{{ row.name }}</span>
       </template>

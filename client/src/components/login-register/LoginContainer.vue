@@ -14,6 +14,7 @@
                       v-model="loginForm.username"
                       auto-complete="off"
                       placeholder="请输入用户名"
+                      class="input-text"
             ></el-input>
           </el-form-item>
           <!-- 密码输入框 -->
@@ -23,7 +24,8 @@
                       auto-complete="off"
                       placeholder="请输入密码"
                       @keyup.enter.native="handleSubmit"
-                      show-password></el-input>
+                      show-password
+                      class="input-text"></el-input>
           </el-form-item>
           <!-- 登录注册按钮 -->
           <el-form-item>
@@ -158,7 +160,7 @@ export default {
 }
 .login-page {
   -webkit-border-radius: 5px;
-  border-radius: 30px;
+  border-radius: 20px;
   margin: 180px auto;
   width: 500px;
   height: 300px;
@@ -171,5 +173,13 @@ export default {
 label.el-checkbox.rememberme {
   margin: 0 0 15px;
   text-align: left;
+}
+
+.input-text >>> .el-input__inner {
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  font-size: 17px;
+  border-bottom-width: 1px;
 }
 </style>
