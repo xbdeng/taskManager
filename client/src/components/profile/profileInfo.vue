@@ -10,7 +10,7 @@
 
             <el-form-item>
               <div class="avatardiv">
-                <img src="../../assets/Test.png" alt="" class="up-icon">
+                <img :src=this.image_uri alt="" class="up-icon">
               </div>
             </el-form-item>
 
@@ -20,15 +20,15 @@
             <el-form-item>
               <!-- TODO : token maybe && url api needed-->
               <el-upload
-                  action="https://jsonplaceholder.typicode.com/posts/"
+                  action="http://localhost:8081/api/user/uploadimage"
                   :show-file-list="false"
                   :accept="'image/*'"
-                  :headers="{Authorization: this.username}"
+                  :headers="{Authorization: this.token_up}"
                   :on-success="handleSuccess"
                   :on-error="handleError"
                   :before-upload="handleBeforeUpload"
                   :on-progress="handleProgress">
-                <el-button>上传<i class="el-icon-upload el-icon--right"></i></el-button>
+                <el-button @click="handletoken">上传<i class="el-icon-upload el-icon--right"></i></el-button>
                 <!--              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
               </el-upload>
             </el-form-item>
@@ -181,13 +181,38 @@ export default {
       userId: -1,
       loading: false,
       githubbind: '',
-      googlebind: ''
+      googlebind: '',
+      token_up:'',
+      image_uri:''
     }
   },
   mounted() {
     this.showInfo()
+    this.getImage()
   },
   methods: {
+    getImage(){
+      const that = this
+      axios.post(
+        '/user/getimage',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response){
+            that.image_uri = response.data.data
+            that.image_uri = "http://localhost:8081" + that.image_uri
+            let newToken = response.headers.authorization
+            if(newToken != null) window.sessionStorage.setItem('token', newToken)
+          },
+          function (err){
+
+          }
+      )
+    },
     showInfo() {
       const that = this;
       axios.post(
@@ -509,6 +534,9 @@ export default {
           }
       )
     },
+    handletoken(){
+      this.token_up = window.sessionStorage.getItem('token')
+    }
   }
 }
 </script>

@@ -180,7 +180,7 @@ public class TaskServiceImpl implements TaskService{
                 .set("status", params.getStatus());
         //之前的状态 非完成
         int status = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", taskId)).getStatus();
-        if(status!=1 && params.getStatus()==1){ //新完成
+        if(status!=1 && params.getStatus()!=null && params.getStatus()==1){ //新完成
             wrapper.set("finish_date",LocalDateTime.now());
         }
         taskMapper.update(null, wrapper);
