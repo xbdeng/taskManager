@@ -1284,6 +1284,7 @@ export default {
   position: fixed;
   padding: 0%;
   margin: 0%;
+
 }
 
 .taskManager {

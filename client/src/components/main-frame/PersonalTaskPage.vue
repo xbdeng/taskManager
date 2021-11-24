@@ -25,14 +25,17 @@
             <el-main>
               <el-container>
                 <el-main>
-                  <div class="test-div">
+<!--                  <div class="test-div">-->
                 <el-menu :default-openeds="['today']">
                   <DragTaskTree
                   :taskData="this.taskData"
                   v-on:taskIdChanged="chooseTasks($event)"
                   v-on:postTaskDataAgain="postTaskDataAgain($event)"
-                  v-show="this.taskShow"></DragTaskTree>
-
+                  v-show="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
+                  <div v-show="this.taskShow && (this.taskData.length === 0)">
+                    <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                    <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                  </div>
                   <el-submenu index='today' v-show="planedTaskShow">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjintian"></i>
@@ -41,7 +44,12 @@
                     <DragTaskTree
                     :taskData="this.todayTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.todayTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.todayTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                   <el-submenu index='week' v-show="planedTaskShow">
                     <template slot="title">
@@ -51,20 +59,30 @@
                     <DragTaskTree
                     :taskData="this.weekTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.weekTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.weekTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                   <el-submenu index='later' v-show="planedTaskShow">
                     <template slot="title">
-                      <i class="el-icon-githubshaohouchuli"></i>
+                      <i class="iconfont el-icon-githubshaohouchuli"></i>
                       <span slot="title" @click="setSpecifier(2)" class="taskFont">稍后</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.laterTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.laterTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.laterTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                 </el-menu>
-                  </div>
+<!--                  </div>-->
                   <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-main>
               </el-container>

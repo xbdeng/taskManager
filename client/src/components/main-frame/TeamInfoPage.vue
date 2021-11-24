@@ -27,17 +27,21 @@
       <!-- 侧边栏，用于显示这个组的所有任务 -->
       <el-main>
           <DragTaskTree
-              v-show="!(generateTaskTreeData() === [])"
+              v-show="!(generateTaskTreeData().length === 0)"
               :taskData="generateTaskTreeData()"
               v-on:taskIdChanged="chooseTasks($event)"
               v-on:postTaskDataAgain="postTeamAgain($event)"></DragTaskTree>
+          <div v-show="(generateTaskTreeData().length === 0)">
+            <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+            <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+          </div>
       </el-main>
 
       <!-- 用于显示组内任务的抽屉组件 -->
       <el-drawer
           title="查看或编辑组内信息"
           :visible.sync="teamInfoDrawer"
-          direction="ttb"
+          direction="ltr"
           :before-close="handleTeamInfoClose"
           :modal-append-to-body='false'
           size='50%'>
@@ -55,9 +59,10 @@
           direction="rtl"
           :before-close="handleTaskInfoClose"
           :modal-append-to-body='false'
-          size='50%'>
+          size='40%'>
         <TaskShow
             :singleTaskData="teamInfo.length === 0 ? this.taskSample :getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
+            :singleTeamData="this.teamInfo === 0 ? this.teamSample: teamInfo[selectedTeam]"
             v-on:closeTaskDrawer='closeTaskDrawer($event)'
             v-on:emitTreeData="emitTreeData($event)"></TaskShow>
       </el-drawer>
@@ -327,6 +332,7 @@ export default {
 </script>
 
 <style scoped>
+
 .box-card {
   width: 100%;
   height: 200px;
