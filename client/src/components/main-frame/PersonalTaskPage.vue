@@ -8,13 +8,13 @@
                     <!-- 显示侧边栏中对应的"任务"的数据 -->
                     <el-menu-item index="1" @click="showTask">
                         <template slot="title">
-                            <span slot="title">任务</span>
+                            <span slot="title" class="taskFont">任务</span>
                         </template>
                     </el-menu-item>
                     <!-- 显示侧边栏中对应的“计划内任务”的数据 -->
                     <el-menu-item index="2" @click="showPlanedTask">
                         <template slot="title">
-                            <span slot="title">计划内任务</span>
+                            <span slot="title" class="taskFont">计划内任务</span>
                         </template>
                     </el-menu-item>
                 </el-menu>
@@ -413,16 +413,18 @@ export default {
   overflow-y:auto;
   height: 90%;
 }
-.el-menu-item.is-active，.el-submenu .el-menu-item.is-active {
-  background-color: red !important;
-}
 
-.el-menu-item.is-active:hover，.el-submenu .el-menu-item:hover {
-  background-color: rgb(179, 13, 13) !important;
+.el-menu-item.is-active:hover,.el-submenu .el-menu-item:hover {
+  background-color: #ccc !important;
 }
 
 .el-menu-item:hover {
   background-color: #ccc;
 // border-right: 10px solid #000;
+}
+.taskFont{
+font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
 }
 </style>

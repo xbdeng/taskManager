@@ -25,7 +25,8 @@
         <el-aside class='mainFrameAside' width='64px'>
           <el-menu default-active="6"
                    class="main-frame-menu"
-                   :collapse="true">
+                   :collapse="true"
+                    background-color="#FFFFFF">
             <!-- 个人面板弹框 -->
             <el-submenu index="1">
               <template slot="title">
@@ -33,7 +34,6 @@
                 <span slot="title">个人面板</span>
               </template>
               <el-menu-item-group>
-                <span slot="title"></span>
                 <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
                 <el-menu-item index="1-2">页面设置</el-menu-item>
                 <el-menu-item index="1-3" @click="handleOutlook">数据同步</el-menu-item>
@@ -62,7 +62,7 @@
 
             <!-- 展示组别任务 -->
             <el-menu-item index="4" @click="showTeamInfo">
-              <i class="el-icon-platform-eleme"></i>
+              <i class="iconfont el-icon-githubteam"></i>
               <span slot="title">组队任务</span>
             </el-menu-item>
 

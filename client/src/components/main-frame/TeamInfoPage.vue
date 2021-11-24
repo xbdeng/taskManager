@@ -8,7 +8,7 @@
           <!-- 显示所有的组 -->
           <el-button icon="el-icon-search" circle @click="searchTeam = true"></el-button>
           <el-menu-item v-for='(team, teamIndex) in this.teamInfo' :key=team.teamId :index=team.teamName>
-            <span @click="showSelectedTeam(teamIndex)">{{ team.teamName }}</span>
+            <span @click="showSelectedTeam(teamIndex)" class="teamNameCSS">{{ team.teamName }}</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -314,5 +314,10 @@ export default {
 .box-card {
   width: 100%;
   height: 200px;
+}
+.teamNameCSS{
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size:15px;
 }
 </style>
