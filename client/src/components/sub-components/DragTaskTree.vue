@@ -132,6 +132,7 @@ export default {
         )
       }
       that.$emit('postTaskDataAgain',{})
+      that.$forceUpdate()
     },
     getEdgeSet(father) {
       if(father.lists.length === 0) {

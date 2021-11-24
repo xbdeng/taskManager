@@ -107,6 +107,9 @@
                 :username='username'
                 :tagArray='this.tagArray'
                 :myTeamInfo='this.myTeamInfo'
+                :startDate="this.cstart"
+                :endDate="this.cend"
+                :show="addTaskShow"
                 v-on:toCalendar='toCalendar($event)'></AddTaskForm>
           </el-dialog>
           <!-- 添加组别的表单 -->
@@ -246,6 +249,7 @@ import SearchTaskPage from './SearchTaskPage.vue'
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
+import listMonth from '@fullcalendar/list'
 import interactionPlugin from '@fullcalendar/interaction'
 import MessagePage from "./MessagePage";
 import axios from 'axios'
@@ -358,12 +362,13 @@ export default {
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
-          interactionPlugin // needed for dateClick
+          interactionPlugin,
+          listMonth// needed for dateClick
         ],
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
         },
         initialView: 'dayGridMonth',
         events: this.calendarTasks, // alternatively, use the `events` setting to fetch from a feed
@@ -418,7 +423,9 @@ export default {
       }],
       transData: [],
       showMessageNote: '',
-      offline: false
+      offline: false,
+      cstart: '',
+      cend: ''
     }
   },
   methods: {
@@ -611,6 +618,9 @@ export default {
     //接收子组件跳转回日历界面的请求
     toCalendar() {
       this.showCalendar()
+      // clear
+      this.cstart = ''
+      this.cend = ''
     },
     // 控制页面显示
     showPersonalTask() {
@@ -698,8 +708,10 @@ export default {
       //   calendarApi.addEvent({
       //     id: createEventId(),
       //     title,
-      //     start: selectInfo.startStr,
-      //     end: selectInfo.endStr,
+      this.cstart = selectInfo.startStr
+      this.cend = selectInfo.endStr
+      // console.log(this.cstart)
+      // console.log(this.cend)
       //     allDay: selectInfo.allDay
       //   })
       // }
