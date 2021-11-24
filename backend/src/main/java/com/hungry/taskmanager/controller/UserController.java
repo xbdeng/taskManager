@@ -319,7 +319,16 @@ public class UserController {
         }
     }
 
-
-
+    @PostMapping("/searchfriend")
+    @RequiresAuthentication
+    public Result<List<UserDTO>> searchFriend(String username) {
+        try {
+            String name = JSONObject.parseObject(username).getString("username");
+            return userService.searchFriend(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 
 }

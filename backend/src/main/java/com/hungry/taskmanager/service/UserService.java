@@ -61,4 +61,7 @@ public interface UserService {
     void uploadImage(String username, String url);
 
     String getImage(String username);
+
+    //模糊查询用户
+    Result<List<UserDTO>> searchFriend(String name);
 }
