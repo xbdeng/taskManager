@@ -3,12 +3,10 @@ package com.hungry.taskmanager.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hungry.taskmanager.dao.*;
-import com.hungry.taskmanager.dto.AddSubTaskDTO;
+import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.*;
-import com.hungry.taskmanager.dto.CreateTaskDTO;
-import com.hungry.taskmanager.dto.EditTaskDTO;
-import com.hungry.taskmanager.dto.QueryTaskDTO;
 import com.hungry.taskmanager.entity.relation_entity.TeamTask;
+import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.lang.NonNull;
@@ -20,6 +18,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService{
@@ -37,6 +36,8 @@ public class TaskServiceImpl implements TaskService{
     private TeamMapper teamMapper;
     @Resource
     private TeamTaskMapper teamTaskMapper;
+    @Resource
+    private TeamUserMapper teamUserMapper;
 
     /**
      * create a new task and insert insert into database
@@ -217,6 +218,30 @@ public class TaskServiceImpl implements TaskService{
             userTaskMapper.insert(newUT);
 
         }
+    }
+
+    @Override
+    public Result assignTask(AssignTaskDTO assignTaskDTO, String username) {
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id",assignTaskDTO.getTaskId()));
+        if(task.getType().intValue() == 0){
+            return Result.fail(201,"个人任务不能分配",null);
+        }
+        //分配者必须有分配权限 todo
+
+        //被分配者必须在组内
+        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("user_id",assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
+        BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id",assignTaskDTO.getTaskId()).select("team_id")).getTeamId();
+        for(BigInteger userId : userIds){
+            long c = teamUserMapper.selectCount(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId));
+            if(c==0){
+                return Result.fail(202,"该成员不在组内",null);
+            }
+        }
+
+        for(BigInteger userId:userIds){
+            userTaskMapper.insert(new UserTask().setUserId(userId).setTaskId(assignTaskDTO.getTaskId()));
+        }
+        return Result.succ("分配任务成功");
     }
 
     public void addSubTask(AddSubTaskDTO params){

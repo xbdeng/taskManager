@@ -95,8 +95,8 @@ public class MicrosoftUtil {
         JSONObject originJson = JSONObject.parseObject(calendarString);
         JSONArray jsonArray = originJson.getJSONArray("value");
         List<JSONObject> jsonObjects = new ArrayList<>();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            jsonObjects.add((JSONObject) jsonArray.get(i));
+        for (Object o : jsonArray) {
+            jsonObjects.add((JSONObject) o);
         }
         return jsonObjects;
     }
