@@ -37,7 +37,7 @@
       <el-drawer
           title="查看或编辑组内信息"
           :visible.sync="teamInfoDrawer"
-          direction="ttb"
+          direction="ltr"
           :before-close="handleTeamInfoClose"
           :modal-append-to-body='false'
           size='50%'>
@@ -55,9 +55,10 @@
           direction="rtl"
           :before-close="handleTaskInfoClose"
           :modal-append-to-body='false'
-          size='50%'>
+          size='40%'>
         <TaskShow
             :singleTaskData="teamInfo.length === 0 ? this.taskSample :getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
+            :singleTeamData="this.teamInfo === 0 ? this.teamSample: teamInfo[selectedTeam]"
             v-on:closeTaskDrawer='closeTaskDrawer($event)'
             v-on:emitTreeData="emitTreeData($event)"></TaskShow>
       </el-drawer>
@@ -327,6 +328,7 @@ export default {
 </script>
 
 <style scoped>
+
 .box-card {
   width: 100%;
   height: 200px;
