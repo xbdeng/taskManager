@@ -482,14 +482,12 @@ export default {
           )
       },
       removeMe() {
-        // TODO:修改
           let that = this
           let teamId = this.singleTeamData.teamId
           axios.post(
-              '/team/removemember',
+              '/team/withdraw',
               {
                   teamId:teamId,
-                  userName:that.username
               },
               {
                 headers:{
