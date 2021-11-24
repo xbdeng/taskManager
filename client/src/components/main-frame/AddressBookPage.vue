@@ -182,7 +182,7 @@ export default {
 
 .address_aside {
   /* background: darkorange; */
-  height: 100vh;
+  height: 100%;
   background-size: 100% 100%;
   /*box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)*/
 }
