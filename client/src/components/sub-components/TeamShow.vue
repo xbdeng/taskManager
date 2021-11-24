@@ -9,7 +9,6 @@
             <el-col :span="3">
               <span class="title">{{ this.singleTeamData.teamName }}</span>
             </el-col>
-
             <el-popover placement="top" width="200" trigger="click" title="修改组名">
               <el-row>
                 <el-col>
@@ -125,8 +124,8 @@
                     <el-row>
                       <el-col :offset="8">
                         <el-button type='primary' @click="editInvitedMembers">确定</el-button>
-                        <!-- TODO:点击取消后的动作 -->
-                        <el-button type="danger">取消</el-button>
+<!--                        &lt;!&ndash; TODO:点击取消后的动作 &ndash;&gt;-->
+<!--                        <el-button type="danger">取消</el-button>-->
                       </el-col>
                     </el-row>
                     <el-tooltip content="点击可邀请成员进组" slot="reference">
@@ -595,7 +594,7 @@ export default {
     },
     closeTeamDrawer() {
       this.$emit('closeTeamDrawer', {})
-    }
+    },
 
   }
 
@@ -605,6 +604,7 @@ export default {
 <style scoped>
 .title {
   font-weight: bold;
+  font-size:30px;
 }
 
 .el-row {
