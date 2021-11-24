@@ -28,13 +28,13 @@
           <!-- 登录注册按钮 -->
           <el-form-item>
             <el-col :span="18" >
-              <el-button type="primary" @click="handleSubmit">登录</el-button>
-              <el-button @click="handleRegister">注册</el-button>
+              <el-button type="primary" @click="handleSubmit" icon="el-icon-user">登录</el-button>
+              <el-button @click="handleRegister" icon="el-icon-s-promotion">注册</el-button>
             </el-col>
           </el-form-item>
           <el-form-item>
             <el-col :span="18">
-              <el-button @click="handleGithub">Github</el-button>
+              <el-button @click="handleGithub" icon="iconfont el-icon-githubgithub">Github</el-button>
 <!--              <el-button @click="handleOutlook">Outlook</el-button>-->
             </el-col>
           </el-form-item>
@@ -143,6 +143,9 @@ export default {
 </script>
 
 <style scoped>
+.title {
+  font-size: 25px;
+}
 .login-container {
   width: 100%;
   height: 100%;

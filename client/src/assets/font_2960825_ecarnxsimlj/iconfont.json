@@ -1,0 +1,37 @@
+{
+  "id": "2960825",
+  "name": "taskManager",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-github",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "4628502",
+      "name": "OUTLOOK",
+      "font_class": "OUTLOOK",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "4766294",
+      "name": "team",
+      "font_class": "team",
+      "unicode": "e7ae",
+      "unicode_decimal": 59310
+    },
+    {
+      "icon_id": "8760187",
+      "name": "github",
+      "font_class": "github",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "11307823",
+      "name": "Directory tree",
+      "font_class": "Directory-tree",
+      "unicode": "e892",
+      "unicode_decimal": 59538
+    }
+  ]
+}

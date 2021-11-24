@@ -89,7 +89,7 @@ export default {
     return {
       taskData: this.TData,
       tree: this.taskToTree(this.TData),
-      layoutType: 'horizontal',
+      layoutType: 'vertical',
       linkLayout:'bezier',
       dialogVisible: false,
       fatherTaskId:null,

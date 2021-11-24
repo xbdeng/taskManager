@@ -3,29 +3,30 @@
   <div class='mainFrame'>
     <el-container>
       <!-- 头部栏 -->
-      <el-header class="mainFrameHeader">
-        <el-row type="flex" align="middle" justify="start">
-          <!-- 标题 -->
-          <el-col :span="20">
-            <span class="taskManager">Task Manager</span>
-          </el-col>
-          <!-- 打招呼 -->
-          <el-col :span="10" :offset="19">
-            <span>你好, {{ username }}</span>
-          </el-col>
-          <!-- 头像 -->
-          <el-col :span="2" :offset="1">
-            <el-avatar
-                src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>
-          </el-col>
-        </el-row>
-      </el-header>
+<!--      <el-header class="mainFrameHeader">-->
+<!--        <el-row type="flex" align="middle" justify="start">-->
+<!--          &lt;!&ndash; 标题 &ndash;&gt;-->
+<!--          <el-col :span="20">-->
+<!--            <span class="taskManager">Task Manager</span>-->
+<!--          </el-col>-->
+<!--          &lt;!&ndash; 打招呼 &ndash;&gt;-->
+<!--          <el-col :span="10" :offset="19">-->
+<!--            <span>你好, {{ username }}</span>-->
+<!--          </el-col>-->
+<!--          &lt;!&ndash; 头像 &ndash;&gt;-->
+<!--          <el-col :span="2" :offset="1">-->
+<!--            <el-avatar-->
+<!--                src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--      </el-header>-->
       <el-container>
         <!-- 侧边栏 -->
         <el-aside class='mainFrameAside' width='64px'>
           <el-menu default-active="6"
                    class="main-frame-menu"
-                   :collapse="true">
+                   :collapse="true"
+                    background-color="#FFFFFF">
             <!-- 个人面板弹框 -->
             <el-submenu index="1">
               <template slot="title">
@@ -33,7 +34,6 @@
                 <span slot="title">个人面板</span>
               </template>
               <el-menu-item-group>
-                <span slot="title"></span>
                 <el-menu-item index="1-1" @click="toProfile">个人主页</el-menu-item>
                 <el-menu-item index="1-2">页面设置</el-menu-item>
                 <el-menu-item index="1-3" @click="handleOutlook">数据同步</el-menu-item>
@@ -62,7 +62,7 @@
 
             <!-- 展示组别任务 -->
             <el-menu-item index="4" @click="showTeamInfo">
-              <i class="el-icon-platform-eleme"></i>
+              <i class="iconfont el-icon-githubteam"></i>
               <span slot="title">组队任务</span>
             </el-menu-item>
 
