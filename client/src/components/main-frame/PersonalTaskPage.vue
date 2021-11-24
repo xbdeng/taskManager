@@ -55,7 +55,7 @@
                   </el-submenu>
                   <el-submenu index='later' v-show="planedTaskShow">
                     <template slot="title">
-                      <i class="el-icon-githubshaohouchuli"></i>
+                      <i class="iconfont el-icon-githubshaohouchuli"></i>
                       <span slot="title" @click="setSpecifier(2)" class="taskFont">稍后</span>
                     </template>
                     <DragTaskTree
