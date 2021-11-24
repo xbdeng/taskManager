@@ -31,8 +31,11 @@
                   :taskData="this.taskData"
                   v-on:taskIdChanged="chooseTasks($event)"
                   v-on:postTaskDataAgain="postTaskDataAgain($event)"
-                  v-show="this.taskShow"></DragTaskTree>
-
+                  v-show="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
+                  <div v-show="this.taskShow && (this.taskData.length === 0)">
+                    <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                    <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                  </div>
                   <el-submenu index='today' v-show="planedTaskShow">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjintian"></i>
@@ -41,7 +44,12 @@
                     <DragTaskTree
                     :taskData="this.todayTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.todayTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.todayTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                   <el-submenu index='week' v-show="planedTaskShow">
                     <template slot="title">
@@ -51,7 +59,12 @@
                     <DragTaskTree
                     :taskData="this.weekTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.weekTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.weekTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                   <el-submenu index='later' v-show="planedTaskShow">
                     <template slot="title">
@@ -61,7 +74,12 @@
                     <DragTaskTree
                     :taskData="this.laterTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.laterTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.laterTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                 </el-menu>
                   </div>

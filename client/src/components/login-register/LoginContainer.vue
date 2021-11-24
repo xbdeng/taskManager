@@ -119,6 +119,8 @@ export default {
               function (err) {
                 that.$message.error('用户名或密码错误')
                 that.logining = false
+                that.loginForm.username = ''
+                that.loginForm.password = ''
               }
           )
         } else {
