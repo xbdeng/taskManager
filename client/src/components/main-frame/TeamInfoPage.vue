@@ -90,11 +90,11 @@
           :modal-append-to-body='false'
           size="25%">
         <div>
-          <el-form>
+          <el-form @submit.native.prevent>
             <el-form-item>
               <el-row>
                 <el-col :span="15">
-                  <el-input v-model="teamSearchName"></el-input>
+                  <el-input v-model="teamSearchName" @keyup.enter.native="searchTeamB"></el-input>
                 </el-col>
                 <el-col :span="9">
                   <el-button type="success" @click="searchTeamB">搜索群组消息</el-button>
@@ -244,7 +244,7 @@ export default {
     handleTeamClose() {
       this.searchTeam = false
     },
-    searchTeamB(event) {
+    searchTeamB() {
       const that = this
       axios.post(
           '/team/queryteam',
