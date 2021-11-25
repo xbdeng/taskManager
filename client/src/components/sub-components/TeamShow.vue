@@ -212,7 +212,7 @@ axios.defaults.baseURL = process.env.API_ROOT
 export default {
   name: 'TeamShow',
   // 这个组件接收的参数是一个组对象
-  props: ['singleTeamData', 'username', 'Friends'],
+  props: ['singleTeamData', 'username', 'Friends', 'show'],
 
   data() {
     // 生成普通成员的穿梭框信息
