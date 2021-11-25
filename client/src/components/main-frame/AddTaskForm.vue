@@ -78,7 +78,7 @@
                         </el-row>
                     </el-form-item>
                     <!-- 如果选择了组队任务，会多出一个多选框，选择给哪个队伍分配任务 -->
-                    <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === '1'">
+                    <el-form-item label='分配组别:' prop='teamId' v-if="taskForm.type === '1'">
                         <el-col :span='10'>
                             <!-- 单选 -->
                             <el-select placeholder='请选择任务分配的组别' v-model='taskForm.teamId'>
@@ -181,7 +181,7 @@ export default {
             type:[{validator:checkTaskType, trigger:'blur'}],
             // createDate:[{validator:checkTaskStartTime, trigger:'blur'}],
             // description:[{validator:checkTaskDescription, trigger:'blur'}],
-            teams:[{validator:checkTeams, trigger:'blur'}],
+            teamId:[{validator:checkTeams, trigger:'blur'}],
 
         }
     }
