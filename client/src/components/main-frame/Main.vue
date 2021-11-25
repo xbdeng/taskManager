@@ -3,34 +3,36 @@
   <div class='mainFrame'>
     <el-container>
       <!-- 头部栏 -->
-<!--      <el-header class="mainFrameHeader">-->
-<!--        <el-row type="flex" align="middle" justify="start">-->
-<!--          &lt;!&ndash; 标题 &ndash;&gt;-->
-<!--          <el-col :span="20">-->
-<!--            <span class="taskManager">Task Manager</span>-->
-<!--          </el-col>-->
-<!--          &lt;!&ndash; 打招呼 &ndash;&gt;-->
-<!--          <el-col :span="10" :offset="19">-->
-<!--            <span>你好, {{ username }}</span>-->
-<!--          </el-col>-->
-<!--          &lt;!&ndash; 头像 &ndash;&gt;-->
-<!--          <el-col :span="2" :offset="1">-->
-<!--            <el-avatar-->
-<!--                src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>-->
-<!--          </el-col>-->
-<!--        </el-row>-->
-<!--      </el-header>-->
+      <!--      <el-header class="mainFrameHeader">-->
+      <!--        <el-row type="flex" align="middle" justify="start">-->
+      <!--          &lt;!&ndash; 标题 &ndash;&gt;-->
+      <!--          <el-col :span="20">-->
+      <!--            <span class="taskManager">Task Manager</span>-->
+      <!--          </el-col>-->
+      <!--          &lt;!&ndash; 打招呼 &ndash;&gt;-->
+      <!--          <el-col :span="10" :offset="19">-->
+      <!--            <span>你好, {{ username }}</span>-->
+      <!--          </el-col>-->
+      <!--          &lt;!&ndash; 头像 &ndash;&gt;-->
+      <!--          <el-col :span="2" :offset="1">-->
+      <!--            <el-avatar-->
+      <!--                src="https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7"></el-avatar>-->
+      <!--          </el-col>-->
+      <!--        </el-row>-->
+      <!--      </el-header>-->
       <el-container>
         <!-- 侧边栏 -->
         <el-aside class='mainFrameAside' width='64px'>
           <el-menu default-active="6"
                    class="main-frame-menu"
                    :collapse="true"
-                    background-color="#FFFFFF">
+                   background-color="#FFFFFF">
             <!-- 个人面板弹框 -->
             <el-submenu index="1" class="avatarmenu">
               <template slot="title">
-                  <i class="el-icon-my-export"></i>
+                <!--                  <i class="el-icon-my-export">-->
+                <img :src=this.image_uri alt="" class="el-icon-my-export">
+                <!--                  </i>-->
                 <span slot="title">个人面板</span>
               </template>
               <el-menu-item-group>
@@ -156,35 +158,35 @@
                            :Friends="this.Friends" v-on:updateAddressBook="postAddressBook"></AddressBookPage>
           <!-- 日历视图 -->
           <div class='demo-app' v-show="calendarShow">
-<!--            <div class='demo-app-sidebar'>-->
-<!--              <div class='demo-app-sidebar-section'>-->
-<!--                <h2 class="demo-h2">Instructions</h2>-->
-<!--                <ul class="demo-ul">-->
-<!--                  <li class="demo-li">Select dates and you will be prompted to create a new event</li>-->
-<!--                  <li class="demo-li">Drag, drop, and resize events</li>-->
-<!--                  <li class="demo-li">Click an event to get detailed information</li>-->
-<!--                </ul>-->
-<!--              </div>-->
-<!--              <div class='demo-app-sidebar-section'>-->
-<!--                <label>-->
-<!--                  <input-->
-<!--                      type='checkbox'-->
-<!--                      :checked='calendarOptions.weekends'-->
-<!--                      @change='handleWeekendsToggle'-->
-<!--                  />-->
-<!--                  toggle weekends-->
-<!--                </label>-->
-<!--              </div>-->
-<!--              <div class='demo-app-sidebar-section'>-->
-<!--                <h2 class="demo-h2">All Events ({{ currentEvents.length }})</h2>-->
-<!--                <ul class="demo-ul">-->
-<!--                  <li class="demo-li" v-for='event in currentEvents' :key='event.id'>-->
-<!--                    <b class="demo-b">{{ event.startStr }}</b>-->
-<!--                    <i>{{ event.title }}</i>-->
-<!--                  </li>-->
-<!--                </ul>-->
-<!--              </div>-->
-<!--            </div>-->
+            <!--            <div class='demo-app-sidebar'>-->
+            <!--              <div class='demo-app-sidebar-section'>-->
+            <!--                <h2 class="demo-h2">Instructions</h2>-->
+            <!--                <ul class="demo-ul">-->
+            <!--                  <li class="demo-li">Select dates and you will be prompted to create a new event</li>-->
+            <!--                  <li class="demo-li">Drag, drop, and resize events</li>-->
+            <!--                  <li class="demo-li">Click an event to get detailed information</li>-->
+            <!--                </ul>-->
+            <!--              </div>-->
+            <!--              <div class='demo-app-sidebar-section'>-->
+            <!--                <label>-->
+            <!--                  <input-->
+            <!--                      type='checkbox'-->
+            <!--                      :checked='calendarOptions.weekends'-->
+            <!--                      @change='handleWeekendsToggle'-->
+            <!--                  />-->
+            <!--                  toggle weekends-->
+            <!--                </label>-->
+            <!--              </div>-->
+            <!--              <div class='demo-app-sidebar-section'>-->
+            <!--                <h2 class="demo-h2">All Events ({{ currentEvents.length }})</h2>-->
+            <!--                <ul class="demo-ul">-->
+            <!--                  <li class="demo-li" v-for='event in currentEvents' :key='event.id'>-->
+            <!--                    <b class="demo-b">{{ event.startStr }}</b>-->
+            <!--                    <i>{{ event.title }}</i>-->
+            <!--                  </li>-->
+            <!--                </ul>-->
+            <!--              </div>-->
+            <!--            </div>-->
             <div class='demo-app-main'>
               <FullCalendar ref="fullCalendar"
                             class='demo-app-calendar'
@@ -337,6 +339,7 @@ export default {
     // websocket.Init(this.username);
     // this.eventMsg();
     this.Initwebscoket()
+    this.getImage()
   },
   created() {
     Push.Permission.request();
@@ -444,7 +447,8 @@ export default {
       showMessageNote: '',
       offline: false,
       cstart: '',
-      cend: ''
+      cend: '',
+      image_uri: ''
     }
   },
   methods: {
@@ -530,10 +534,10 @@ export default {
             that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
           // TODO
-          if(tmp.type === 3){
+          if (tmp.type === 3) {
 
           }
-          if(tmp.type === 4){
+          if (tmp.type === 4) {
             that.$notify.info({
               title: tmp.from,
               message: '您的好友请求已被' + tmp.from + ' 接受'
@@ -541,7 +545,7 @@ export default {
             that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '您的好友请求已被' + tmp.from + ' 接受');
           }
-          if(tmp.type === 5){
+          if (tmp.type === 5) {
             that.$notify.info({
               title: tmp.from,
               message: '您的好友请求已被' + tmp.from + ' 拒绝'
@@ -549,29 +553,29 @@ export default {
             that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '您的好友请求已被' + tmp.from + ' 拒绝');
           }
-          if(tmp.type === 6){
+          if (tmp.type === 6) {
             that.$notify.info({
               title: tmp.from,
-              message: '您的入组邀请' + tmp.groupName +'已被' + tmp.from + ' 接受'
+              message: '您的入组邀请' + tmp.groupName + '已被' + tmp.from + ' 接受'
             });
             that.showMessageNote = 'new'
-            that.pushMessage(tmp.from, '您的入组邀请' + tmp.groupName +'已被' + tmp.from + ' 接受');
+            that.pushMessage(tmp.from, '您的入组邀请' + tmp.groupName + '已被' + tmp.from + ' 接受');
           }
-          if(tmp.type === 7){
+          if (tmp.type === 7) {
             that.$notify.info({
               title: tmp.from,
-              message: '您的入组邀请'+ tmp.groupName +'已被' + tmp.from + ' 拒绝'
+              message: '您的入组邀请' + tmp.groupName + '已被' + tmp.from + ' 拒绝'
             });
             that.showMessageNote = 'new'
-            that.pushMessage(tmp.from, '您的入组邀请'+ tmp.groupName +'已被' + tmp.from + ' 拒绝');
+            that.pushMessage(tmp.from, '您的入组邀请' + tmp.groupName + '已被' + tmp.from + ' 拒绝');
           }
-          if(tmp.type === 8){
+          if (tmp.type === 8) {
             that.$notify.info({
               title: tmp.from,
-              message: '您的入组请求'+ tmp.groupName +'已被' + tmp.from + ' 拒绝'
+              message: '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 拒绝'
             });
             that.showMessageNote = 'new'
-            that.pushMessage(tmp.from, '您的入组请求'+ tmp.groupName +'已被' + tmp.from + ' 拒绝');
+            that.pushMessage(tmp.from, '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 拒绝');
           }
         }
       }
@@ -817,11 +821,10 @@ export default {
     changeCalendarData(taskId, start, end) {
       const that = this;
       axios.post(
-          '/task/edittask',
+          '/task/edit/startdate',
           {
             taskId: taskId,
-            createDate: start,
-            dueDate: end
+            dateTime: start,
           },
           {
             headers: {
@@ -830,15 +833,47 @@ export default {
           }
       ).then(
           function (response) {
-            // console.log(response)
             if (response.data.code === 200) {
-              that.$message({
-                message: 'update success',
-                type: 'success'
-              });
-              let newToken = response.headers.authorization
-              if (newToken != null) window.sessionStorage.setItem('token', newToken)
-            } else {
+              const thatthat = that
+              axios.post(
+                  '/task/edit/duedate',
+                  {
+                    taskId: taskId,
+                    dateTime: end,
+                  },
+                  {
+                    headers: {
+                      Authorization: window.sessionStorage.getItem('token')
+                    }
+                  }
+              ).then(
+                  function (response) {
+                    if (response.data.code === 200) {
+                      thatthat.$message({
+                        message: 'update success',
+                        type: 'success'
+                      });
+                      let newToken = response.headers.authorization
+                      if (newToken != null) window.sessionStorage.setItem('token', newToken)
+                    } else {
+                      thatthat.$message({
+                        message: 'fetch error',
+                        type: 'error'
+                      })
+                      let newToken = response.headers.authorization
+                      if (newToken != null) window.sessionStorage.setItem('token', newToken)
+                    }
+                    thatthat.showCalendarData()
+                  },
+                  function (err) {
+                    that.$message({
+                      message: 'server error',
+                      type: 'error'
+                    })
+                  }
+              )
+            }
+            else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
@@ -846,7 +881,23 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
-            that.showCalendarData()
+            // console.log(response)
+            // if (response.data.code === 200) {
+            //   that.$message({
+            //     message: 'update success',
+            //     type: 'success'
+            //   });
+            //   let newToken = response.headers.authorization
+            //   if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            // } else {
+            //   that.$message({
+            //     message: 'fetch error',
+            //     type: 'error'
+            //   })
+            //   let newToken = response.headers.authorization
+            //   if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            // }
+            // that.showCalendarData()
           },
           function (err) {
             that.$message({
@@ -1324,8 +1375,30 @@ export default {
       let redirect_uri = 'http://localhost:8080/outlook/login'
       let scope = 'https://graph.microsoft.com/Calendars.ReadWrite'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
-    }
-  }
+    },
+    getImage() {
+      const that = this
+      axios.post(
+          '/user/getimage',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            that.image_uri = response.data.data
+            that.image_uri = "http://localhost:8081" + that.image_uri
+            let newToken = response.headers.authorization
+            if (newToken != null) window.sessionStorage.setItem('token', newToken)
+          },
+          function (err) {
+
+          }
+      )
+    },
+  },
 }
 </script>
 
@@ -1422,20 +1495,28 @@ export default {
 
 .el-menu-item:hover {
   background-color: #ccc;
-// border-right: 10px solid #000;
+/ / border-right: 10 px solid #000;
 }
-.el-icon-my-export{
-    background: url(https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7) center no-repeat;
-    background-size: cover;
-    border-radius: 5px;
+
+.el-icon-my-export {
+  /*background: url(https://tse3-mm.cn.bing.net/th/id/OIP-C.1w4B8x7dI4cjN3LITLC7uwHaHZ?w=213&h=212&c=7&r=0&o=5&dpr=2&pid=1.7) center no-repeat;*/
+  /*background-size: cover;*/
+  overflow: hidden;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin: auto;
+  max-width: 80px;
+  max-height: 80px;
 }
-.el-icon-my-export:before{
-    content: "替";
-    font-size: 30px;
-    visibility: hidden;
+
+.el-icon-my-export:before {
+  content: "替";
+  font-size: 30px;
+  visibility: hidden;
 }
-.avatarmenu{
-  width:64px !important;
+
+.avatarmenu {
+  width: 64px !important;
   height: 56px !important;
 }
 </style>
