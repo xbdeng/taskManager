@@ -1,8 +1,10 @@
 package com.hungry.taskmanager.service;
 
+import com.hungry.taskmanager.dto.AssignTaskDTO;
 import com.hungry.taskmanager.dto.CreateTaskDTO;
 import com.hungry.taskmanager.dto.EditTaskDTO;
 import com.hungry.taskmanager.dto.QueryTaskDTO;
+import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 
 import org.springframework.lang.NonNull;
@@ -19,5 +21,7 @@ public interface TaskService {
     List<Task> queryTask(QueryTaskDTO filter) throws Exception;
 
     void editTask(EditTaskDTO params) throws Exception;
+
+    Result assignTask(AssignTaskDTO assignTaskDTO, String username);
 
 }

@@ -319,7 +319,32 @@ public class UserController {
         }
     }
 
+    @PostMapping("/searchfriend")
+    @RequiresAuthentication
+    public Result<List<UserDTO>> searchFriend(@RequestBody String username) {
+        try {
+            String name = JSONObject.parseObject(username).getString("username");
+            if(name == null || name.trim().equals("")){
+                return Result.fail(203,"用户名为空",null);
+            }
+            return userService.searchFriend(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 
-
+    @PostMapping("/personalstatistics")
+    @RequiresAuthentication
+    public Result<PersonalStatisticsDTO> personalStatistics(HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return userService.personalStatistics(username);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 
 }

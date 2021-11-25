@@ -1,12 +1,9 @@
 package com.hungry.taskmanager.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hungry.taskmanager.dto.AddSubTaskDTO;
+import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
-import com.hungry.taskmanager.dto.CreateTaskDTO;
-import com.hungry.taskmanager.dto.EditTaskDTO;
-import com.hungry.taskmanager.dto.QueryTaskDTO;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import com.hungry.taskmanager.utils.JWTUtil;
 import com.hungry.taskmanager.utils.MicrosoftUtil;
@@ -109,6 +106,19 @@ public class TaskController {
             List<Task> tasks = MicrosoftUtil.getTasksByCode(code_);
             return new Result<>(200, username, tasks);
         } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/assigntask")
+    @RequiresAuthentication //todo 分配者权限未验证
+    public Result assignTask(@RequestBody AssignTaskDTO assignTaskDTO,HttpServletRequest request){
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.assignTask(assignTaskDTO, username);
+        }catch (Exception e){
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }

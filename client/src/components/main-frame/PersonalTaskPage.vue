@@ -8,6 +8,7 @@
                     <!-- 显示侧边栏中对应的"任务"的数据 -->
                     <el-menu-item index="1" @click="showTask">
                         <template slot="title">
+
                             <span slot="title" class="taskFont">任务</span>
                         </template>
                     </el-menu-item>
@@ -24,44 +25,65 @@
             <el-main>
               <el-container>
                 <el-main>
-                  <div class="test-div">
+<!--                  <div class="test-div">-->
                 <el-menu :default-openeds="['today']">
                   <DragTaskTree
                   :taskData="this.taskData"
                   v-on:taskIdChanged="chooseTasks($event)"
                   v-on:postTaskDataAgain="postTaskDataAgain($event)"
-                  v-show="this.taskShow"></DragTaskTree>
-
+                  v-show="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
+                  <div v-show="this.taskShow && (this.taskData.length === 0)">
+                    <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                    <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                  </div>
                   <el-submenu index='today' v-show="planedTaskShow">
                     <template slot="title">
-                      <span slot="title" @click="setSpecifier(0)">今天</span>
+                      <i class="iconfont el-icon-githubjintian"></i>
+                      <span slot="title" @click="setSpecifier(0)" class="taskFont">今天</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.todayTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.todayTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.todayTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                   <el-submenu index='week' v-show="planedTaskShow">
                     <template slot="title">
-                      <span slot="title" @click="setSpecifier(1)">一周内</span>
+                      <i class="iconfont el-icon-githubjinyizhou"></i>
+                      <span slot="title" @click="setSpecifier(1)" class="taskFont">一周内</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.weekTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.weekTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.weekTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
                   <el-submenu index='later' v-show="planedTaskShow">
                     <template slot="title">
-                      <span slot="title" @click="setSpecifier(2)">稍后</span>
+                      <i class="iconfont el-icon-githubshaohouchuli"></i>
+                      <span slot="title" @click="setSpecifier(2)" class="taskFont">稍后</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.laterTaskData"
                     v-on:taskIdChanged="chooseTasks($event)"
-                    v-on:postTaskDataAgain="postTaskDataAgain($event)"></DragTaskTree>
+                    v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                    v-show="!(this.laterTaskData.length === 0)"></DragTaskTree>
+                    <div v-show="(this.laterTaskData.length === 0)">
+                      <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
+                      <p style="font-weight: bold;font-size: 40px">暂无任务</p>
+                    </div>
                   </el-submenu>
-                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-menu>
-                  </div>
+<!--                  </div>-->
+                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-main>
               </el-container>
             </el-main>
@@ -72,7 +94,7 @@
             direction="rtl"
             :before-close="handleClose"
             :modal-append-to-body='false'
-            size='30%'>
+            size='40%'>
                 <TaskShow
                     :singleTaskData="getTask(chosenTaskId)"
                     v-on:closeTaskDrawer='closeTaskDrawer($event)'
@@ -427,4 +449,5 @@ font-family: Arial, Helvetica, sans-serif;
   font-size: 15px;
   font-weight: bold;
 }
+
 </style>

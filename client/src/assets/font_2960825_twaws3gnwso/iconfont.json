@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4784094",
+      "name": "近一周",
+      "font_class": "jinyizhou",
+      "unicode": "e654",
+      "unicode_decimal": 58964
+    },
+    {
+      "icon_id": "4784096",
+      "name": "今天",
+      "font_class": "jintian",
+      "unicode": "e655",
+      "unicode_decimal": 58965
+    },
+    {
+      "icon_id": "9703597",
+      "name": "正在进行",
+      "font_class": "zhengzaijinhang",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "16397035",
+      "name": "稍后处理",
+      "font_class": "shaohouchuli",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
       "icon_id": "4628502",
       "name": "OUTLOOK",
       "font_class": "OUTLOOK",

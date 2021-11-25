@@ -47,7 +47,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
                     }
                     msg=result;
                 }
-                throw new RuntimeException(msg); //todo 异常处理
+                System.out.println(msg);
+//                throw new RuntimeException(msg); //todo 异常处理
 //                responseError(response,msg);
             }
         }
