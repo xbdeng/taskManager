@@ -25,4 +25,6 @@ public interface TaskService {
 
 
     Result editStatus(EditStatusDTO editStatusDTO);
+
+    Result editTaskName(EditTaskNameDTO editTaskNameDTO);
 }

@@ -145,5 +145,16 @@ public class TaskController {
             return Result.fail(500, "服务器错误", null);
         }
     }
+
+    @PostMapping("/edit/taskname")
+    @RequiresAuthentication
+    public Result editTaskName(@RequestBody EditTaskNameDTO editTaskNameDTO){
+        try {
+            return taskServiceImpl.editTaskName(editTaskNameDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 }
 
