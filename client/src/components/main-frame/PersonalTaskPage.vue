@@ -97,7 +97,8 @@
                     :singleTaskData="getTask(this.chosenTaskId)"
                     v-on:closeTaskDrawer='closeTaskDrawer($event)'
                     v-on:emitTreeData="emitTreeData($event)"
-                    v-on:update="update($event)"></TaskShow>
+                    v-on:update="update($event)"
+                    v-on:closeIfNecessary="closeIfNecessary($event)"></TaskShow>
             </el-drawer>
 
             <el-drawer
@@ -188,6 +189,9 @@ export default {
     //list是拖拽后形成的新的任务列表
     onTreeDataChange(list) {
       console.log(this.findNewEdge(this.transData,list))
+    },
+    closeIfNecessary() {
+      this.drawer = false
     },
     getEdgeSet(father) {
       if(father.lists.length === 0) {
