@@ -15,4 +15,6 @@ public interface TaskMapper extends BaseMapper<Task> {
 
     List<Task> queryTask(QueryTaskDTO filter);
 
+    List<String> getAssignedUsernames(BigInteger taskId);
+
 }

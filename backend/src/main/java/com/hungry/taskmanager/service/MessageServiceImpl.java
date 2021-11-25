@@ -346,7 +346,7 @@ public class MessageServiceImpl implements MessageService{
         return data;
     }
 
-    private void sendMessages(WebSocketMessageDTO wsm, List<String> names, List<Message> messages){
+    public void sendMessages(WebSocketMessageDTO wsm, List<String> names, List<Message> messages){
         // broadcast
         server.broadcast(wsm.toJsonString(), names);
         // insert into database
