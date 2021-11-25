@@ -132,24 +132,24 @@ public class TeamServiceImpl implements TeamService {
         return Result.succ("撤销权限成功");
     }
 
-    private boolean isAdmin(String username, BigInteger teamId) {
+    public boolean isAdmin(String username, BigInteger teamId) {
         BigInteger userId = userMapper.getIdByName(username);
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity", "admin"));
         return t != null;
     }
 
-    private boolean isAdmin(BigInteger userId, BigInteger teamId){
+    public boolean isAdmin(BigInteger userId, BigInteger teamId){
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity", "admin"));
         return t != null;
     }
 
-    private boolean isCreator(String username, BigInteger teamId) {
+    public boolean isCreator(String username, BigInteger teamId) {
         BigInteger userId = userMapper.getIdByName(username);
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity","creator"));
         return t != null;
     }
 
-    private boolean isCreator(BigInteger userId, BigInteger teamId){
+    public boolean isCreator(BigInteger userId, BigInteger teamId){
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity","creator"));
         return t != null;
     }
