@@ -10,6 +10,7 @@ import com.hungry.taskmanager.entity.relation_entity.TeamTask;
 import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
+import com.hungry.taskmanager.exception.LimitsAuthority;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -41,11 +42,21 @@ public class TaskServiceImpl implements TaskService {
     private TeamUserMapper teamUserMapper;
     @Resource
     private MessageService messageService;
+    @Resource
+    private TeamService teamService;
 
     /**
      * create a new task and insert insert into database
      */
     public BigInteger addTask(CreateTaskDTO params) throws Exception {
+        if(params.getType() == 1){ //组队任务
+            BigInteger teamId = params.getTeamId();
+            String creator = params.getUsername();
+            if(!(teamService.isCreator(creator,teamId) || teamService.isAdmin(creator,teamId))){
+                throw new LimitsAuthority();
+            }
+        }
+
         BigInteger creator = userMapper.getIdByName(params.getUsername());
         // operations according to different types
         // individual task set type column 0
@@ -105,7 +116,15 @@ public class TaskServiceImpl implements TaskService {
     /**
      * delete an existing task
      */
-    public int deleteTask(@NonNull long taskId) throws Exception {
+    public int deleteTask(@NonNull long taskId,String username) throws Exception {
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id",taskId));
+        if(task.getType().intValue() == 1){
+            BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id",taskId)).getTeamId();
+            if(!(teamService.isCreator(username,teamId) || teamService.isAdmin(username,teamId))){
+                throw new LimitsAuthority();
+            }
+        }
+
         BigInteger id = BigInteger.valueOf(taskId);
         UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("task_id", taskId));
         BigInteger utId = ut.getUtId();
@@ -238,13 +257,14 @@ public class TaskServiceImpl implements TaskService {
 //    }
 
     @Override
-    public Result assignTask(AssignTaskDTO assignTaskDTO, String username) {
+    public Result assignTask(AssignTaskDTO assignTaskDTO, String username) throws LimitsAuthority {
         Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", assignTaskDTO.getTaskId()));
         if (task.getType().intValue() == 0) {
             return Result.fail(201, "个人任务不能分配", null);
         }
-        //分配者必须有分配权限 todo
-
+        if(!isSuper(username,assignTaskDTO.getTaskId())){
+            throw new LimitsAuthority();
+        }
         //被分配者必须在组内
         List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("username", assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
         BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id", assignTaskDTO.getTaskId()).select("team_id")).getTeamId();
@@ -390,8 +410,23 @@ public class TaskServiceImpl implements TaskService {
         return Result.succ("更新成功");
     }
 
-    public void addSubTask(AddSubTaskDTO params) {
+    public void addSubTask(AddSubTaskDTO params,String username) throws LimitsAuthority {
+        BigInteger fatherId = params.getFatherTask();
+        if(!isSuper(username,fatherId)){
+            throw new LimitsAuthority();
+        }
         taskMapper.update(new Task(), new UpdateWrapper<Task>().eq("task_id", params.getSubTask()).set("father_task", params.getFatherTask()));
+    }
+
+    private boolean isSuper(String username, BigInteger taskId){
+        BigInteger userId = userMapper.getIdByName(username);
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id",taskId));
+        if(task.getType().intValue() == 0){
+            return true;
+        }else{
+            BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id",taskId)).getTeamId();
+            return teamService.isAdmin(userId,teamId) || teamService.isCreator(userId,teamId);
+        }
     }
 
 

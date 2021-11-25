@@ -4,6 +4,7 @@ import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 
+import com.hungry.taskmanager.exception.LimitsAuthority;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,13 +16,13 @@ public interface TaskService {
 
     BigInteger addTask(CreateTaskDTO params) throws Exception;
 
-    int deleteTask(@NonNull long taskId) throws Exception;
+    int deleteTask(@NonNull long taskId,String username) throws Exception;
 
     List<TaskDTO> queryTask(QueryTaskDTO filter) throws Exception;
 
 //    void editTask(EditTaskDTO params) throws Exception;
 
-    Result assignTask(AssignTaskDTO assignTaskDTO, String username);
+    Result assignTask(AssignTaskDTO assignTaskDTO, String username) throws LimitsAuthority;
 
     Result unassignTask(AssignTaskDTO assignTaskDTO, String username);
 
@@ -45,4 +46,6 @@ public interface TaskService {
     Result addTaskTag(EditTaskTag editTaskTag, String username);
 
     Result deleteTaskTag(EditTaskTag editTaskTag, String username);
+
+    void addSubTask(AddSubTaskDTO params,String username) throws LimitsAuthority;
 }
