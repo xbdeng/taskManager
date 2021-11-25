@@ -45,4 +45,6 @@ public interface TaskService {
     Result addTaskTag(EditTaskTag editTaskTag, String username);
 
     Result deleteTaskTag(EditTaskTag editTaskTag, String username);
+
+    void updateDate();
 }

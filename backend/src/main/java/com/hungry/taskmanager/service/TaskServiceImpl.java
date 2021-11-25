@@ -77,7 +77,6 @@ public class TaskServiceImpl implements TaskService {
                 .setDescription(params.getDescription()).setType(type).setCreateDate(createDate).setDueDate(dueDate)
                 .setStatus(status).setFatherTask(fatherTask).setPrivilege(params.getPrivilege());
         // insert task into database
-        task.updateDate();
         taskMapper.insert(task);
         BigInteger taskId = task.getTaskId();
         if (params.getType() != null && params.getType() == 1) {
@@ -175,7 +174,6 @@ public class TaskServiceImpl implements TaskService {
         }
         Map<BigInteger, TaskDTO> taskMap = new HashMap<>();
         for (Task task : tasks) {
-            task.updateDate();
             // construct new DTO from task
             String creatorName = userMapper.getUsernameById(task.getCreator());
             TaskDTO newTaskDTO = new TaskDTO().setTaskId(task.getTaskId()).setCreator(creatorName).setTaskName(task.getTaskName())
@@ -196,6 +194,12 @@ public class TaskServiceImpl implements TaskService {
             taskMap.get(taskId).getTags().add(tagName);
         }
         return returnList;
+    }
+
+    public void updateDate(){
+        LocalDateTime now = LocalDateTime.now().atZone(ZoneId.of("Asia/Shanghai")).withZoneSameInstant(ZoneId.of("Europe/London")).toLocalDateTime();
+        taskMapper.update(null, new UpdateWrapper<Task>().eq("status", 0).lt("due_date", now).set("status", 2));
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("status", 0).lt("due_date", now));
     }
 
 
