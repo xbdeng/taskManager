@@ -22,9 +22,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -394,5 +396,16 @@ public class UserController {
         }
     }
 
-
+    @PostMapping("/exporttask")
+    @RequiresAuthentication
+    public Result exportTask(HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return userService.exportTask(username);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 }

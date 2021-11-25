@@ -3,9 +3,14 @@ package com.hungry.taskmanager.service;
 
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.*;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.net.SocketException;
 import java.util.List;
 
 public interface UserService {
@@ -76,4 +81,7 @@ public interface UserService {
 
     //解绑邮箱
     Result unbindEmail(String username);
+
+    //任务数据导出
+    Result exportTask(String username) throws IOException, MessagingException;
 }
