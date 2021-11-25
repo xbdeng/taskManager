@@ -681,7 +681,6 @@ export default {
     //     }
     //   }
     // },
-
     //跳转到个人主页
     toProfile(event) {
       this.$router.push({name: 'Profile', params: {username: this.username}});
@@ -876,8 +875,7 @@ export default {
                     })
                   }
               )
-            }
-            else {
+            } else {
               that.$message({
                 message: 'fetch error',
                 type: 'error'
@@ -1391,7 +1389,7 @@ export default {
             }
           }
       ).then(
-      function (response) {
+          function (response) {
             that.image_uri = response.data.data
             that.image_uri = "http://localhost:8081" + that.image_uri
             let newToken = response.headers.authorization
@@ -1412,23 +1410,23 @@ export default {
             headers: {
               Authorization: window.sessionStorage.getItem('token')
             }
-          })
-  },
-          function(response) {
-            if(response.data.code === 200) {
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
               that.$message({
-                message:'导出成功',
-                type:'success'
+                message: '导出成功',
+                type: 'success'
               })
             } else {
               that.$message.error('导出失败')
             }
           },
-          function(err) {
+          function (err) {
             that.$message.error('响应失败，导出失败')
           }
       )
-    },
+    }
   }
 }
 </script>
