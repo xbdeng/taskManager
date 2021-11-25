@@ -2,7 +2,7 @@
   <div class="bigchart-wrapper">
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
-      <el-tab-pane label="本月" name="first">
+      <el-tab-pane label="本年" name="first">
         <el-row :gutter="20">
           <el-col :span="15">
             <div class="chart-wrapper-t">
@@ -47,7 +47,7 @@
         </el-row>
       </el-tab-pane>
 
-      <el-tab-pane label="本年" name="second">
+      <el-tab-pane label="近五年" name="second">
         <el-row :gutter="20">
           <el-col :span="15">
             <div class="chart-wrapper-t">
@@ -72,7 +72,7 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="近五年" name="third">
+      <el-tab-pane label="本月" name="third">
         <el-row :gutter="20">
           <el-col :span="15">
             <div class="chart-wrapper-t">
