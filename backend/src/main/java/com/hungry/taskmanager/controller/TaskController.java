@@ -190,5 +190,27 @@ public class TaskController {
             return Result.fail(500, "服务器错误", null);
         }
     }
+
+    @PostMapping("/edit/reminddate")
+    @RequiresAuthentication
+    public Result editTaskRemindDate(@RequestBody EditTaskTime editTaskTime) {
+        try {
+            return taskServiceImpl.editTaskRemindDate(editTaskTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/edit/location")
+    @RequiresAuthentication
+    public Result editTaskLocation(@RequestBody EditTaskLocationDTO editTaskLocationDTO) {
+        try {
+            return taskServiceImpl.editTaskLocation(editTaskLocationDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 }
 
