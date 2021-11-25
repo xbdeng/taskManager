@@ -532,6 +532,14 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public Result unbindEmail(String username) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("username",username).set("email_verify",0).set("email",null);
+        userMapper.update(null,updateWrapper);
+        return Result.succ("解绑成功");
+    }
 }
 
 @Data
