@@ -5,11 +5,11 @@
         <el-col :span="6">
           <div class="grid-content bg-purple">
 
-            <ChartCard title="项目总数" :total="projectData.count">
-              <div class="chart-wrapper">
-                <line-chart :chart-data="datacollection_A" :options="options" class="chart"></line-chart>
+            <ChartCard title="项目总数" :total="this.totalStart.toString()">
+              <div class="chart-wrapper" v-if="this.Father_Mount">
+                <line-chart :chart-data="datacollection_A" :options="options" class="chart" :show="true"></line-chart>
               </div>
-              <template slot="footer">本年立项<span>3</span></template>
+              <template slot="footer">本年立项:<span>{{this.totalStart}}</span></template>
             </ChartCard>
           </div>
         </el-col>
@@ -18,11 +18,11 @@
         <el-col :span="6">
           <div class="grid-content bg-purple">
 
-            <ChartCard title="项目总数" :total="projectData.count">
-              <div class="chart-wrapper">
+            <ChartCard title="项目完成总数" :total="this.totalFinish.toString()">
+              <div class="chart-wrapper" v-if="this.Father_Mount">
                 <bar-chart :chart-data="datacollection" :options="options_B" class="chart"></bar-chart>
               </div>
-              <template slot="footer">本年完成<span>3</span></template>
+              <template slot="footer">本年完成:<span>{{this.totalFinish}}</span></template>
             </ChartCard>
           </div>
         </el-col>
@@ -30,8 +30,8 @@
         <el-col :span="6">
           <div class="grid-content bg-purple">
 
-            <doughnut-card title="项目分布" :total="projectData.count">
-              <div class="chart-wrapper">
+            <doughnut-card title="项目分布" :total="this.totalStart.toString()+'/'+this.totalFinish.toString()+'/'+this.totalDue">
+              <div class="chart-wrapper" v-if="this.Father_Mount">
                 <doughnut-chart :chart-data="doughnutdata" :options="options" class="chart"></doughnut-chart>
               </div>
             </doughnut-card>
@@ -41,7 +41,7 @@
         <el-col :span="6">
           <div class="grid-content bg-purple">
 
-            <doughnut-card title="总任务进度" :total="projectData.count">
+            <doughnut-card title="组队任务">
               <div class="chart-wrapper">
                 <el-progress type="circle" :percentage="this.progress_Rate_A" status="exception"></el-progress>
                 <el-progress :percentage="this.progress_Rate_B" status="exception"></el-progress>
@@ -53,7 +53,7 @@
       </el-row>
     </el-form-item>
     <el-form-item>
-      <BigChart></BigChart>
+      <BigChart :Month_data="this.BigChart_Month" :Year_data="this.BigChart_Year" :Day_data="this.BigChart_Days" :Father_Mount="this.Father_Mount"></BigChart>
     </el-form-item>
   </el-form>
 </template>
@@ -81,8 +81,11 @@ export default {
   },
   data() {
     return {
+      totalStart: 0,
+      totalFinish: 0,
+      totalDue: 0,
       progress_rate_A: [],
-      doughnutdata: null,
+      doughnutdata: {},
       // doughnutdata: {
       //   labels: [
       //     'Red',
@@ -112,7 +115,8 @@ export default {
       //     data: [65, 59, 20, 81, 56, 55, 40],
       //   }]
       // },
-      datacollection_A: null,
+      datacollection_A: {},
+      Father_Mount: false,
       // datacollection: {
       //   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
       //   datasets: [{
@@ -125,7 +129,7 @@ export default {
       //     data: [65, 59, 20, 81, 56, 55, 40],
       //   }]
       // },
-      datacollection: null,
+      datacollection: {},
       options: {
         maintainAspectRatio: false,
         responsive: true,
@@ -205,7 +209,10 @@ export default {
         },
       },
       progress_Rate_A: 0,
-      progress_Rate_B: 0
+      progress_Rate_B: 0,
+      BigChart_Month: [],
+      BigChart_Year: [],
+      BigChart_Days: []
     }
   },
   mounted() {
@@ -225,7 +232,7 @@ export default {
           }
       ).then(
           function (response) {
-            console.log(response)
+            // console.log(response)
             if (response.data.code === 200) {
               // 饼状图
               that.doughnutdata = {
@@ -290,15 +297,93 @@ export default {
               }
 
               // Now progress rate
-              that.progress_Rate_A = Math.ceil(((response.data.data.totalTaskNumber-response.data.data.totalOverdueTaskNumber-response.data.data.totalFinishTaskNumber)/response.data.data.totalTaskNumber)*100)
-              that.progress_Rate_B = Math.ceil(((response.data.data.totalTaskNumber-response.data.data.totalFinishTaskNumber)/response.data.data.totalTaskNumber)*100)
+              // that.progress_Rate_A = Math.ceil(((response.data.data.totalTaskNumber - response.data.data.totalOverdueTaskNumber - response.data.data.totalFinishTaskNumber) / response.data.data.totalTaskNumber) * 100)
+              // that.progress_Rate_B = Math.ceil(((response.data.data.totalTaskNumber - response.data.data.totalFinishTaskNumber) / response.data.data.totalTaskNumber) * 100)
               // console.log(that.progress_Rate_A)
+              that.progress_Rate_A = response.data.data.totalFinishTeamTaskNumber/response.data.data.totalTeamTaskNumber
+              that.progress_Rate_B = (response.data.data.totalFinishTeamTaskNumber - response.data.data.totalOverdueTeamTaskNumber)/response.data.data.totalFinishTeamTaskNumber
+              // Big Chart
+              // due
+              let month_due = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              let year_due = [0, 0, 0, 0, 0]
+              let day_due = new Array(32).fill(0);
 
+              // finish
+              let month_finish = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              let year_finish = [0, 0, 0, 0, 0]
+              let day_finish = new Array(32).fill(0);
 
+              // start
+              let month_start = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+              let year_start = [0, 0, 0, 0, 0]
+              let day_start = new Array(32).fill(0);
+
+              // due
+              for (let i in response.data.data.dueTaskNumberByYears) {
+                if (Math.abs(response.data.data.dueTaskNumberByYears[i].year - date.getFullYear()) <= 2) {
+                  year_due[2 + response.data.data.dueTaskNumberByYears[i].year - date.getFullYear()] = response.data.data.dueTaskNumberByYears[i].count
+                }
+              }
+              for (let i in response.data.data.dueTaskNumbersByMonths) {
+                if (response.data.data.dueTaskNumbersByMonths[i].year === date.getFullYear()) {
+                  month_due[date.getMonth()] = response.data.data.dueTaskNumbersByMonths[i].count
+                }
+              }
+              for (let i in response.data.data.dueTaskNumbersByDays) {
+                if (response.data.data.dueTaskNumbersByDays[i].year === date.getFullYear() && response.data.data.dueTaskNumbersByDays[i].month === date.getMonth() + 1) {
+                  day_due[date.getDay()] = response.data.data.dueTaskNumbersByDays[i].count
+                }
+              }
+
+              // finish
+              for (let i in response.data.data.finishTaskNumberByYears) {
+                if (Math.abs(response.data.data.finishTaskNumbersByMonths[i].year - date.getFullYear()) <= 2) {
+                  year_finish[2 + response.data.data.finishTaskNumbersByMonths[i].year - date.getFullYear()] = response.data.data.finishTaskNumbersByMonths[i].count
+                }
+              }
+              for (let i in response.data.data.finishTaskNumbersByMonths) {
+                if (response.data.data.finishTaskNumbersByMonths[i].year === date.getFullYear()) {
+                  month_finish[date.getMonth()] = response.data.data.finishTaskNumbersByMonths[i].count
+                }
+              }
+              for (let i in response.data.data.finishTaskNumbersByDays) {
+                if (response.data.data.finishTaskNumbersByDays[i].year === date.getFullYear() && response.data.data.finishTaskNumbersByDays[i].month === date.getMonth() + 1) {
+                  day_finish[date.getDay()] = response.data.data.finishTaskNumbersByDays[i].count
+                }
+              }
+
+              // start
+              for (let i in response.data.data.startTaskNumberByYears) {
+                if (Math.abs(response.data.data.startTaskNumbersByMonths[i].year - date.getFullYear()) <= 2) {
+                  year_start[2 + response.data.data.startTaskNumbersByMonths[i].year - date.getFullYear()] = response.data.data.startTaskNumbersByMonths[i].count
+                }
+              }
+              for (let i in response.data.data.startTaskNumbersByMonths) {
+                if (response.data.data.startTaskNumbersByMonths[i].year === date.getFullYear()) {
+                  month_start[date.getMonth()] = response.data.data.startTaskNumbersByMonths[i].count
+                }
+              }
+              for (let i in response.data.data.startTaskNumbersByDays) {
+                if (response.data.data.startTaskNumbersByDays[i].year === date.getFullYear() && response.data.data.startTaskNumbersByDays[i].month === date.getMonth() + 1) {
+                  day_start[date.getDay()] = response.data.data.startTaskNumbersByDays[i].count
+                }
+              }
+
+              that.BigChart_Month = [month_start, month_due, month_finish]
+              that.BigChart_Year = [year_start, year_due, year_finish]
+              that.BigChart_Days = [day_start, day_due, day_finish]
+              that.totalStart = response.data.data.totalTaskNumber
+              that.totalFinish = response.data.data.totalFinishTaskNumber
+              that.totalDue = response.data.data.totalOverdueTaskNumber
+              // console.log(that.totalDue)
+              that.Father_Mount = true
             }
           },
           function (err) {
-
+            that.$notify({
+              message: 'server error',
+              type: 'error'
+            })
           }
       )
     },
