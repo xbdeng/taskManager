@@ -263,6 +263,14 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
+    public Result editDescription(EditTaskDescription editTaskDescription) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskDescription.getTaskId()).set("description",editTaskDescription.getDescription());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
     public Result editStatus(EditStatusDTO editStatusDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id",editStatusDTO.getTaskId());
