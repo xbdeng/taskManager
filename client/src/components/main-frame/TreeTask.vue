@@ -167,12 +167,15 @@ export default {
                 message:'删除任务成功'
               })
               that.$emit('postTreeTaskAgain',{})
-            } else {
-              that.$message.error('删除任务失败')
+            } else if(response.data.code === 201) {
+              that.$message.error('权限不足')
+            }
+            else {
+              that.$message.error('服务器错误')
             }
           },
           function(err) {
-            that.$message.error('响应失败，删除任务失败')
+            that.$message.error('响应失败')
           }
       )
     },

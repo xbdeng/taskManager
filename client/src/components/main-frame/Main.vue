@@ -580,6 +580,14 @@ export default {
           if (tmp.type === 8) {
             that.$notify.info({
               title: tmp.from,
+              message: '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 接受'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 接受');
+          }
+          if (tmp.type === 9) {
+            that.$notify.info({
+              title: tmp.from,
               message: '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 拒绝'
             });
             that.showMessageNote = 'new'
@@ -960,7 +968,7 @@ export default {
           },
           function (err) {
             that.$message({
-              message: 'server error',
+              message: '响应失败',
               type: 'error'
             })
           }
@@ -1081,13 +1089,13 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('请求“任务”数据失败')
+              that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，请求“任务”数据失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -1140,13 +1148,13 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('请求“今天任务”数据失败')
+              that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，请求“今天任务”数据失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -1185,13 +1193,13 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('请求“一周内”数据失败')
+              that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，请求“一周内”数据失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -1230,13 +1238,13 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('请求“稍后”数据失败')
+              that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，请求“稍后”数据失败')
+            that.$message.error('响应失败')
           }
       )
     },
