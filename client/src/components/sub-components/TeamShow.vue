@@ -77,8 +77,6 @@
                     <el-row>
                       <el-col :offset="8">
                         <el-button type='primary' @click="editAdmins">确定</el-button>
-                        <!-- TODO:点击取消后的动作 -->
-                        <el-button type="danger">取消</el-button>
                       </el-col>
                     </el-row>
                     <el-tooltip content="点击可设置管理员" slot="reference">
@@ -100,8 +98,6 @@
                     <el-row>
                       <el-col :offset="8">
                         <el-button type='primary' @click="removeAdmins">确定</el-button>
-                        <!-- TODO:点击取消后的动作 -->
-                        <el-button type="danger">取消</el-button>
                       </el-col>
                     </el-row>
                     <el-tooltip content="点击可撤销管理员" slot="reference">
