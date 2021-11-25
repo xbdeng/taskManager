@@ -89,7 +89,14 @@
                 <div>
                   email
                   <br>
-                  <el-input placeholder="Put your email address here" v-model="email" @change="handleEmail"></el-input>
+                  <el-row>
+                    <el-col :span="18">
+                      <el-input placeholder="Put your email address here" v-model="email" @change="handleEmail"></el-input>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-button type="primary" plain @click>验证邮箱</el-button>
+                    </el-col>
+                  </el-row>
                 </div>
               </el-col>
 
