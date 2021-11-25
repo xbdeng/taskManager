@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Random;
 
 
@@ -42,6 +44,22 @@ public class MailServiceImpl implements MailService{
     }
 
     @Override
+    public void sendRemindEmail(String username, String email, Task task) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("taskmanager@foxmail.com");
+        message.setTo(email);
+        message.setSubject("【taskmanager】任务提醒");
+        message.setText("task name: " +task.getTaskName()+
+                "\ntask description: "+task.getDescription()+
+                "\ntask location" + task.getLocation()+
+                "\n\n\nhungry团队");
+        LocalDateTime localDateTime = task.getRemindDate();
+        Date date = new Date(localDateTime.getYear(),localDateTime.getMonthValue()-1,localDateTime.getDayOfMonth(),localDateTime.getHour(),localDateTime.getMinute(),localDateTime.getSecond());
+        message.setSentDate(date);
+        mailSender.send(message);
+    }
+
+    @Override
     public void sendCalendar(String username, String email, Calendar calendar) throws IOException, MessagingException {
         FileOutputStream fout = new FileOutputStream(username + "_calendar.ics");
         CalendarOutputter outputter = new CalendarOutputter();
@@ -61,10 +79,6 @@ public class MailServiceImpl implements MailService{
         file.delete();
     }
 
-    @Override
-    public void sendRemindEmail(String username, String email, Task task) {
-
-    }
 
 
     private static String getRandomNumCode(){
