@@ -42,6 +42,8 @@ public class Task {
     private List<Task> subTasks;
     @TableField(exist=false)
     private List<String> tags;
+    @TableField(exist = false)
+    private List<String> members;
 
     public void updateDate(){
         if (dueDate != null && LocalDateTime.now().isAfter(dueDate)){
