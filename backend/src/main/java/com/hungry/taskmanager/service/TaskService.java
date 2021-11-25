@@ -30,4 +30,8 @@ public interface TaskService {
     Result editTaskName(EditTaskNameDTO editTaskNameDTO);
 
     Result editDescription(EditTaskDescription editTaskDescription);
+
+    Result editStartDate(EditTaskTime editTaskTime);
+
+    Result editDueDate(EditTaskTime editTaskTime);
 }
