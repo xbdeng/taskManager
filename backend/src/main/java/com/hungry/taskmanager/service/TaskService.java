@@ -22,4 +22,7 @@ public interface TaskService {
     Result assignTask(AssignTaskDTO assignTaskDTO, String username);
 
     Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO);
+
+
+    Result editStatus(EditStatusDTO editStatusDTO);
 }
