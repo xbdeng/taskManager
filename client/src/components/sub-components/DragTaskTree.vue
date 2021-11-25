@@ -7,7 +7,7 @@
         resize
         fixed
         :isdraggable="true"
-        height="700">
+        height>
       <template #id="{row}">
         {{ row.id }}
       </template>
