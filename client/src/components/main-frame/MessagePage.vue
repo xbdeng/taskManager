@@ -15,7 +15,7 @@
                 <i class="el-icon-check" style="font-size: 50px" v-if="data.type === 6"></i>
                 <i class="el-icon-close" style="font-size: 50px" v-if="data.type === 7"></i>
                 <i class="el-icon-circle-check" style="font-size: 50px" v-if="data.type === 8"></i>
-                <i class="el-icon-circle-close" style="font-size: 50px" v-if="data.type === 8"></i>
+                <i class="el-icon-circle-close" style="font-size: 50px" v-if="data.type === 9"></i>
 <!--                <div class="card__icon"><i class="fas fa-bolt"></i></div>-->
               </el-col>
               <el-col :span="8">
