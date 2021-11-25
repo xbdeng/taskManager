@@ -23,7 +23,8 @@ import java.util.List;
 public class TaskController {
     @Resource
     private TaskServiceImpl taskServiceImpl;
-    @ApiOperation(value = "create a task",notes = "前后端测试通过 \n type, taskName, privilege and createDate is required\n father task, members, status,subtask is unnecessary")
+
+    @ApiOperation(value = "create a task", notes = "前后端测试通过 \n type, taskName, privilege and createDate is required\n father task, members, status,subtask is unnecessary")
     @PostMapping("/addtask")
     @RequiresAuthentication
     public Result<BigInteger> addTask(@RequestBody CreateTaskDTO params, HttpServletRequest request) {
@@ -44,7 +45,7 @@ public class TaskController {
     public Result<String> deleteTask(@RequestParam("id") long taskId) {
         try {
             int result = taskServiceImpl.deleteTask(taskId);
-            if (result != 200){
+            if (result != 200) {
                 throw new Exception("server error");
             }
         } catch (Exception e) {
@@ -56,12 +57,12 @@ public class TaskController {
 
     @PostMapping("/query")
     @RequiresAuthentication
-    public Result<List<Task>> queryTask(@RequestBody QueryTaskDTO filter, HttpServletRequest request){
+    public Result<List<Task>> queryTask(@RequestBody QueryTaskDTO filter, HttpServletRequest request) {
         Result<List<Task>> result = new Result<>();
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            return result.setData(taskServiceImpl.queryTask(filter.setUsername(username))).setCode(200).setMsg("query successfully") ;
+            return result.setData(taskServiceImpl.queryTask(filter.setUsername(username))).setCode(200).setMsg("query successfully");
         } catch (Exception e) {
             e.printStackTrace();
             return new Result<List<Task>>(500, "server error", null);
@@ -70,7 +71,7 @@ public class TaskController {
 
     @PostMapping("/edittask")
     @RequiresAuthentication
-    @ApiOperation(value = "edit a task",notes = "modified information is required only")
+    @ApiOperation(value = "edit a task", notes = "modified information is required only")
     public Result<String> editTask(@RequestBody EditTaskDTO params, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization");
@@ -85,7 +86,7 @@ public class TaskController {
 
     @PostMapping("/addsubtask")
     @RequiresAuthentication
-    @ApiOperation(value = "edit a task",notes = "modified information is required only")
+    @ApiOperation(value = "edit a task", notes = "modified information is required only")
     public Result<String> setSubTask(@RequestBody AddSubTaskDTO params) {
         try {
             taskServiceImpl.addSubTask(params);
@@ -113,12 +114,12 @@ public class TaskController {
 
     @PostMapping("/assigntask")
     @RequiresAuthentication //todo 分配者权限未验证
-    public Result assignTask(@RequestBody AssignTaskDTO assignTaskDTO,HttpServletRequest request){
+    public Result assignTask(@RequestBody AssignTaskDTO assignTaskDTO, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return taskServiceImpl.assignTask(assignTaskDTO, username);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -126,10 +127,10 @@ public class TaskController {
 
     @PostMapping("/edit/privilege")
     @RequiresAuthentication
-    public Result editPrivilege(@RequestBody EditPrivilegeDTO editPrivilegeDTO){
+    public Result editPrivilege(@RequestBody EditPrivilegeDTO editPrivilegeDTO) {
         try {
             return taskServiceImpl.editPrivilege(editPrivilegeDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -137,10 +138,10 @@ public class TaskController {
 
     @PostMapping("/edit/status")
     @RequiresAuthentication
-    public Result editStatus(@RequestBody EditStatusDTO editStatusDTO){
+    public Result editStatus(@RequestBody EditStatusDTO editStatusDTO) {
         try {
             return taskServiceImpl.editStatus(editStatusDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -148,10 +149,10 @@ public class TaskController {
 
     @PostMapping("/edit/taskname")
     @RequiresAuthentication
-    public Result editTaskName(@RequestBody EditTaskNameDTO editTaskNameDTO){
+    public Result editTaskName(@RequestBody EditTaskNameDTO editTaskNameDTO) {
         try {
             return taskServiceImpl.editTaskName(editTaskNameDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -159,10 +160,32 @@ public class TaskController {
 
     @PostMapping("/edit/description")
     @RequiresAuthentication
-    public Result editDescription(@RequestBody EditTaskDescription editTaskDescription){
-        try{
+    public Result editDescription(@RequestBody EditTaskDescription editTaskDescription) {
+        try {
             return taskServiceImpl.editDescription(editTaskDescription);
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/edit/startdate")
+    @RequiresAuthentication
+    public Result editTaskStartDate(@RequestBody EditTaskTime editTaskTime) {
+        try {
+            return taskServiceImpl.editStartDate(editTaskTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/edit/duedate")
+    @RequiresAuthentication
+    public Result editTaskDueDate(@RequestBody EditTaskTime editTaskTime) {
+        try {
+            return taskServiceImpl.editDueDate(editTaskTime);
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }

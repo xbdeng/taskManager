@@ -271,6 +271,22 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
+    public Result editStartDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("create_date",editTaskTime.getDateTime());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editDueDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("due_date",editTaskTime.getDateTime());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
     public Result editStatus(EditStatusDTO editStatusDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id",editStatusDTO.getTaskId());
@@ -288,6 +304,11 @@ public class TaskServiceImpl implements TaskService{
                     updateWrapper.set("status",0);
                 }
             }
+        }
+
+        //已完成
+        if(editStatusDTO.getStatus() == 1){
+            updateWrapper.set("finish_date",LocalDateTime.now());
         }
         taskMapper.update(null,updateWrapper);
         return Result.succ("更新成功");
