@@ -210,6 +210,7 @@ export default {
             })
           }
       )
+      this.searchFriend = false
     },
     removeFriend(friendName) {
       if (websocket.getStatus() === "连接已关闭" || websocket.getStatus() === "未连接") {

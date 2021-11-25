@@ -445,7 +445,7 @@ export default {
     },
     editTaskName() {
       let value = this.editedTaskName
-      if(value != null) {
+      if(value != null && value !== '') {
         this.tempTaskForm.taskName = value
         const that = this
         axios.post(
@@ -488,7 +488,7 @@ export default {
     },
     editlocation() {
       let value = this.editedlocation
-      if(value != null) {
+      if(value != null && value !== '') {
         this.tempTaskForm.location = value
         const that = this
         axios.post(
@@ -528,7 +528,7 @@ export default {
     },
     editPriority() {
       let value = this.editedPriority
-      if(value != null) {
+      if(value != null && value !== '') {
         this.tempTaskForm.privilege = this.editedPriority - 1
         const that = this
         axios.post(
@@ -569,7 +569,7 @@ export default {
     },
     editStartTime() {
       let value = this.editedStartTime
-      if(value != null) {
+      if(value != null && value !== '') {
         this.tempTaskForm.createDate = value
         const that = this
         that.taskStartVisible = false
