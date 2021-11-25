@@ -30,7 +30,7 @@
                     <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
                     <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                   </div>
-                <el-menu :default-openeds="['today']" unique-opened>
+                <el-menu unique-opened>
                   <DragTaskTree
                   :taskData="this.taskData"
                   v-on:taskIdChanged="chooseTasks($event)"
@@ -95,7 +95,7 @@
             :modal-append-to-body='false'
             size='40%'>
                 <TaskShow
-                    :singleTaskData="getTask(chosenTaskId)"
+                    :singleTaskData="getTask(this.chosenTaskId)"
                     v-on:closeTaskDrawer='closeTaskDrawer($event)'
                     v-on:emitTreeData="emitTreeData($event)"
                     v-on:update="update($event)"></TaskShow>
@@ -250,8 +250,10 @@ export default {
         if (id === '-1') return {
             taskName:'Please choose your task'
         }
-        if (parseInt(id[0]) >= taskList.length) return {
-            taskName:'Please choose your task'
+        if (parseInt(id[0]) >= taskList.length) {
+          return {
+            taskName: 'Please choose your task'
+          }
         }
         if (id.length === 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
