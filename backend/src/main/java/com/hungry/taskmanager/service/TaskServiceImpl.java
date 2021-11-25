@@ -257,7 +257,7 @@ public class TaskServiceImpl implements TaskService {
 //    }
 
     @Override
-    public Result assignTask(AssignTaskDTO assignTaskDTO, String username) throws LimitsAuthority {
+    public Result assignTask(AssignTaskDTO assignTaskDTO, String username) {
         Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", assignTaskDTO.getTaskId()));
         if (task.getType().intValue() == 0) {
             return Result.fail(201, "个人任务不能分配", null);
@@ -294,13 +294,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Result unassignTask(AssignTaskDTO assignTaskDTO, String username) {
+        if(!isSuper(username,assignTaskDTO.getTaskId())){
+            throw new LimitsAuthority();
+        }
         List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("user_id",assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
         userTaskMapper.delete(new QueryWrapper<UserTask>().in("user_id",userIds).eq("task_id",assignTaskDTO.getTaskId()));
         return Result.succ("取消分配成功");
     }
 
     @Override
-    public Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO) {
+    public Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO,String username) {
+        if(!isSuper(username,editPrivilegeDTO.getTaskId())){
+            throw new LimitsAuthority();
+        }
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editPrivilegeDTO.getTaskId()).set("privilege", editPrivilegeDTO.getPrivilege());
         taskMapper.update(null, updateWrapper);
@@ -308,7 +314,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Result editTaskName(EditTaskNameDTO editTaskNameDTO) {
+    public Result editTaskName(EditTaskNameDTO editTaskNameDTO,String username) {
+        if(!isSuper(username,editTaskNameDTO.getTaskId())){
+            throw new LimitsAuthority();
+        }
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editTaskNameDTO.getTaskId()).set("task_name", editTaskNameDTO.getTaskName());
         taskMapper.update(null, updateWrapper);
@@ -316,7 +325,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Result editDescription(EditTaskDescription editTaskDescription) {
+    public Result editDescription(EditTaskDescription editTaskDescription,String username) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editTaskDescription.getTaskId()).set("description", editTaskDescription.getDescription());
         taskMapper.update(null, updateWrapper);
@@ -324,7 +333,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Result editStartDate(EditTaskTime editTaskTime) {
+    public Result editStartDate(EditTaskTime editTaskTime,String username) {
+        if(!isSuper(username,editTaskTime.getTaskId())){
+            throw new LimitsAuthority();
+        }
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editTaskTime.getTaskId()).set("create_date", editTaskTime.getDateTime());
         taskMapper.update(null, updateWrapper);
@@ -332,7 +344,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Result editDueDate(EditTaskTime editTaskTime) {
+    public Result editDueDate(EditTaskTime editTaskTime,String username) {
+        if(!isSuper(username,editTaskTime.getTaskId())){
+            throw new LimitsAuthority();
+        }
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editTaskTime.getTaskId()).set("due_date", editTaskTime.getDateTime());
         taskMapper.update(null, updateWrapper);
@@ -340,7 +355,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Result editTaskRemindDate(EditTaskTime editTaskTime) {
+    public Result editTaskRemindDate(EditTaskTime editTaskTime,String username) {
+        if(!isSuper(username,editTaskTime.getTaskId())){
+            throw new LimitsAuthority();
+        }
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editTaskTime.getTaskId()).set("remind_date", editTaskTime.getDateTime());
         taskMapper.update(null, updateWrapper);
@@ -348,7 +366,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO) {
+    public Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO,String username) {
+        if(!isSuper(username,editTaskLocationDTO.getTaskId())){
+            throw new LimitsAuthority();
+        }
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editTaskLocationDTO.getTaskId()).set("location", editTaskLocationDTO.getLocation());
         taskMapper.update(null, updateWrapper);
@@ -357,6 +378,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Result addTaskTag(EditTaskTag editTaskTag, String username) {
+        if(!isAssign(username,editTaskTag.getTaskId())){
+            throw new LimitsAuthority();
+        }
+
         BigInteger userId = userMapper.getIdByName(username);
         List<Tag> userTags = tagMapper.selectTagsByUser(userId);
         BigInteger utId = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id",userId).eq("task_id",editTaskTag.getTaskId()).select("ut_id")).getUtId();
@@ -375,6 +400,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Result deleteTaskTag(EditTaskTag editTaskTag, String username) {
+        if(!isAssign(username,editTaskTag.getTaskId())){
+            throw new LimitsAuthority();
+        }
         BigInteger userId = userMapper.getIdByName(username);
         BigInteger tagId = tagMapper.selectOne(new QueryWrapper<Tag>().eq("tag_name",editTaskTag.getTagName()).eq("user_id",userId).select("tag_id")).getTagId();
         BigInteger utId = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id",userId).eq("task_id",editTaskTag.getTaskId()).select("ut_id")).getUtId();
@@ -382,8 +410,18 @@ public class TaskServiceImpl implements TaskService {
         return Result.succ("删除标签成功");
     }
 
+    private boolean isAssign(String username,BigInteger taskId){
+        BigInteger userId = userMapper.getIdByName(username);
+        long i = userTaskMapper.selectCount(new QueryWrapper<UserTask>().eq("task_id",taskId).eq("user_id",userId));
+        return i != 0;
+    }
+
+
     @Override
-    public Result editStatus(EditStatusDTO editStatusDTO) {
+    public Result editStatus(EditStatusDTO editStatusDTO,String username) {
+        if(!isAssign(username,editStatusDTO.getTaskId())){
+            throw new LimitsAuthority();
+        }
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editStatusDTO.getTaskId());
         if (editStatusDTO.getDueDate() == null) { //没有截止时间
@@ -410,7 +448,7 @@ public class TaskServiceImpl implements TaskService {
         return Result.succ("更新成功");
     }
 
-    public void addSubTask(AddSubTaskDTO params,String username) throws LimitsAuthority {
+    public void addSubTask(AddSubTaskDTO params,String username){
         BigInteger fatherId = params.getFatherTask();
         if(!isSuper(username,fatherId)){
             throw new LimitsAuthority();

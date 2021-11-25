@@ -34,7 +34,7 @@ public class TaskController {
             BigInteger result = taskServiceImpl.addTask(params.setUsername(username));
             return new Result<BigInteger>(200, "successfully add a task", result);
         } catch (LimitsAuthority e) {
-            return Result.fail(201,"权限不足",null);
+            return Result.fail(201, "权限不足", null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "server error", null);
@@ -47,14 +47,13 @@ public class TaskController {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
-            int result = taskServiceImpl.deleteTask(taskId,username);
+            int result = taskServiceImpl.deleteTask(taskId, username);
             if (result != 200) {
                 throw new Exception("server error");
             }
-        }catch (LimitsAuthority e){
-            return Result.fail(201,"权限不足",null);
-        }
-        catch (Exception e) {
+        } catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
         }
@@ -84,11 +83,10 @@ public class TaskController {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             taskServiceImpl.addSubTask(params, username);
-        }catch (LimitsAuthority e){
+        } catch (LimitsAuthority e) {
             e.printStackTrace();
-            return Result.fail(201,"权限不足",null);
-        }
-        catch (Exception e) {
+            return Result.fail(201, "权限不足", null);
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", null);
         }
@@ -117,11 +115,10 @@ public class TaskController {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return taskServiceImpl.assignTask(assignTaskDTO, username);
-        }catch (LimitsAuthority e) {
+        } catch (LimitsAuthority e) {
             e.printStackTrace();
-            return Result.fail(201,"权限不足",null);
-        }
-        catch (Exception e) {
+            return Result.fail(201, "权限不足", null);
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -129,11 +126,13 @@ public class TaskController {
 
     @PostMapping("/unassigntask")
     @RequiresAuthentication
-    public Result unassignTask(@RequestBody AssignTaskDTO assignTaskDTO,HttpServletRequest request) {
+    public Result unassignTask(@RequestBody AssignTaskDTO assignTaskDTO, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return taskServiceImpl.unassignTask(assignTaskDTO, username);
+        } catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
@@ -142,9 +141,13 @@ public class TaskController {
 
     @PostMapping("/edit/privilege")
     @RequiresAuthentication
-    public Result editPrivilege(@RequestBody EditPrivilegeDTO editPrivilegeDTO) {
+    public Result editPrivilege(@RequestBody EditPrivilegeDTO editPrivilegeDTO, HttpServletRequest request) {
         try {
-            return taskServiceImpl.editPrivilege(editPrivilegeDTO);
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editPrivilege(editPrivilegeDTO, username);
+        } catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
@@ -153,9 +156,13 @@ public class TaskController {
 
     @PostMapping("/edit/status")
     @RequiresAuthentication
-    public Result editStatus(@RequestBody EditStatusDTO editStatusDTO) {
+    public Result editStatus(@RequestBody EditStatusDTO editStatusDTO, HttpServletRequest request) {
         try {
-            return taskServiceImpl.editStatus(editStatusDTO);
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editStatus(editStatusDTO, username);
+        } catch (LimitsAuthority e) {
+            return Result.fail(202, "你未被分配改任务", null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
@@ -164,9 +171,13 @@ public class TaskController {
 
     @PostMapping("/edit/taskname")
     @RequiresAuthentication
-    public Result editTaskName(@RequestBody EditTaskNameDTO editTaskNameDTO) {
+    public Result editTaskName(@RequestBody EditTaskNameDTO editTaskNameDTO, HttpServletRequest request) {
         try {
-            return taskServiceImpl.editTaskName(editTaskNameDTO);
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editTaskName(editTaskNameDTO, username);
+        } catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
@@ -175,9 +186,13 @@ public class TaskController {
 
     @PostMapping("/edit/description")
     @RequiresAuthentication
-    public Result editDescription(@RequestBody EditTaskDescription editTaskDescription) {
+    public Result editDescription(@RequestBody EditTaskDescription editTaskDescription, HttpServletRequest request) {
         try {
-            return taskServiceImpl.editDescription(editTaskDescription);
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editDescription(editTaskDescription, username);
+        } catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
@@ -186,9 +201,13 @@ public class TaskController {
 
     @PostMapping("/edit/startdate")
     @RequiresAuthentication
-    public Result editTaskStartDate(@RequestBody EditTaskTime editTaskTime) {
+    public Result editTaskStartDate(@RequestBody EditTaskTime editTaskTime, HttpServletRequest request) {
         try {
-            return taskServiceImpl.editStartDate(editTaskTime);
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editStartDate(editTaskTime, username);
+        } catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
@@ -197,10 +216,14 @@ public class TaskController {
 
     @PostMapping("/edit/duedate")
     @RequiresAuthentication
-    public Result editTaskDueDate(@RequestBody EditTaskTime editTaskTime) {
+    public Result editTaskDueDate(@RequestBody EditTaskTime editTaskTime,HttpServletRequest request) {
         try {
-            return taskServiceImpl.editDueDate(editTaskTime);
-        } catch (Exception e) {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editDueDate(editTaskTime,username);
+        }catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
+        }catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -208,10 +231,15 @@ public class TaskController {
 
     @PostMapping("/edit/reminddate")
     @RequiresAuthentication
-    public Result editTaskRemindDate(@RequestBody EditTaskTime editTaskTime) {
+    public Result editTaskRemindDate(@RequestBody EditTaskTime editTaskTime,HttpServletRequest request) {
         try {
-            return taskServiceImpl.editTaskRemindDate(editTaskTime);
-        } catch (Exception e) {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editTaskRemindDate(editTaskTime,username);
+        }
+        catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
+        }catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -219,10 +247,15 @@ public class TaskController {
 
     @PostMapping("/edit/location")
     @RequiresAuthentication
-    public Result editTaskLocation(@RequestBody EditTaskLocationDTO editTaskLocationDTO) {
+    public Result editTaskLocation(@RequestBody EditTaskLocationDTO editTaskLocationDTO,HttpServletRequest request) {
         try {
-            return taskServiceImpl.editTaskLocation(editTaskLocationDTO);
-        } catch (Exception e) {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.editTaskLocation(editTaskLocationDTO,username);
+        }catch (LimitsAuthority e) {
+            return Result.fail(201, "权限不足", null);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -235,7 +268,10 @@ public class TaskController {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return taskServiceImpl.addTaskTag(editTaskTag, username);
-        } catch (Exception e) {
+        }catch (LimitsAuthority e) {
+            return Result.fail(202, "你未被分配改任务", null);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
@@ -248,7 +284,10 @@ public class TaskController {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return taskServiceImpl.deleteTaskTag(editTaskTag, username);
-        } catch (Exception e) {
+        }catch (LimitsAuthority e) {
+            return Result.fail(202, "你未被分配改任务", null);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
