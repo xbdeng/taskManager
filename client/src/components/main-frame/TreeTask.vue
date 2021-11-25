@@ -192,7 +192,7 @@ export default {
   padding: 0;
 }
 .treeclass {
-  height: 870px;
+  height: 710px;
 }
 >>> .treeclass .nodetree text {
   font:18px Consolas !important;

@@ -26,17 +26,17 @@
               <el-container>
                 <el-main>
 <!--                  <div class="test-div">-->
-                <el-menu :default-openeds="['today']">
-                  <DragTaskTree
-                  :taskData="this.taskData"
-                  v-on:taskIdChanged="chooseTasks($event)"
-                  v-on:postTaskDataAgain="postTaskDataAgain($event)"
-                  v-show="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
                   <div v-show="this.taskShow && (this.taskData.length === 0)">
                     <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
                     <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                   </div>
-                  <el-submenu index='today' v-show="planedTaskShow">
+                <el-menu :default-openeds="['today']" unique-opened>
+                  <DragTaskTree
+                  :taskData="this.taskData"
+                  v-on:taskIdChanged="chooseTasks($event)"
+                  v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                  v-if="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
+                  <el-submenu index='today' v-if="planedTaskShow">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjintian"></i>
                       <span slot="title" @click="setSpecifier(0)" class="taskFont">今天</span>
@@ -51,7 +51,7 @@
                       <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                     </div>
                   </el-submenu>
-                  <el-submenu index='week' v-show="planedTaskShow">
+                  <el-submenu index='week' v-if="planedTaskShow">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjinyizhou"></i>
                       <span slot="title" @click="setSpecifier(1)" class="taskFont">一周内</span>
@@ -66,7 +66,7 @@
                       <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                     </div>
                   </el-submenu>
-                  <el-submenu index='later' v-show="planedTaskShow">
+                  <el-submenu index='later' v-if="planedTaskShow">
                     <template slot="title">
                       <i class="iconfont el-icon-githubshaohouchuli"></i>
                       <span slot="title" @click="setSpecifier(2)" class="taskFont">稍后</span>
@@ -82,7 +82,6 @@
                     </div>
                   </el-submenu>
                 </el-menu>
-<!--                  </div>-->
                   <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-main>
               </el-container>
