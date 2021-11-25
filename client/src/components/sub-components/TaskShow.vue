@@ -174,6 +174,31 @@
                 </el-popover>
               </el-col>
             </el-row>
+            <!--任务的提醒时间-->
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">提醒时间: </span>
+              </el-col>
+              <el-col :span="17">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务提醒时间" ref="taskRemindVisible">
+                    <el-row type="flex" justify="start">
+                        <el-col>
+                            <el-date-picker v-model="editedRemindDate" type="datetime" placeholder="请选择任务的提醒时间"></el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small" @click="editRemindDate">确定</el-button>
+                      </el-col>
+                    </el-row>
+                    <el-tooltip content="点击可修改任务的提醒时间" slot="reference">
+                      <el-link>
+                          {{ this.convertTime(tempTaskForm.remindDate) }}
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
+              </el-col>
+            </el-row>
             <!-- 如果是组队任务，显示这个任务覆盖的组员 -->
             <el-row v-show="(tempTaskForm.type===1 || tempTaskForm.type==='1') && !(this.singleTeamData == null)" type="flex" justify="start" align="middle">
               <!-- 显示组内成员的组件 -->
@@ -331,6 +356,7 @@ export default {
       editedTaskName:null,
       editedDescription:'',
       editedlocation:null,
+      editedRemindDate:null,
       // 用于存储要新添加的任务，是字符串类型的数组
       subTasksList:[],
       memberList:[],
@@ -464,7 +490,39 @@ export default {
       let value = this.editedlocation
       if(value != null) {
         this.tempTaskForm.location = value
-        this.taskLocationVisible = false
+        const that = this
+        axios.post(
+            '/task/edit/location',
+            {
+              taskId:that.tempTaskForm.taskId,
+              location:that.tempTaskForm.location
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$emit('update',{})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$refs.taskLocationVisible.doClose()
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
       this.editedlocation = null
     },
@@ -497,13 +555,13 @@ export default {
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.taskPriorityVisible.doClose()
               } else {
-                that.$message.error('修改任务优先级失败')
+                that.$message.error('修改失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改任务优先级失败')
+              that.$message.error('响应失败，修改失败')
             }
         )
       }
@@ -540,13 +598,13 @@ export default {
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.editedStartTime = null
               } else {
-                that.$message.error('修改任务开始时间失败')
+                that.$message.error('修改失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改任务开始时间失败')
+              that.$message.error('响应失败，修改失败')
             }
         )
       }
@@ -581,13 +639,13 @@ export default {
                 that.$emit('closeIfNecessary',{})
                 that.$refs.taskEndVisible.doClose()
               } else {
-                that.$message.error('修改任务截止时间失败')
+                that.$message.error('修改失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改任务截止时间失败')
+              that.$message.error('响应失败，修改失败')
             }
         )
       }
@@ -656,17 +714,58 @@ export default {
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               } else {
-                that.$message.error('修改任务描述信息失败')
+                that.$message.error('修改失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改任务描述信息失败')
+              that.$message.error('响应失败，修改失败')
             }
         )
       }
       this.editedDescription = null
+    },
+    editRemindDate() {
+      let value = this.editedRemindDate
+      if(value != null) {
+        this.tempTaskForm.remindDate = value
+        const that = this
+        axios.post(
+            '/task/edit/reminddate',
+            {
+              dateTime:that.tempTaskForm.remindDate,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$forceUpdate()
+                that.$emit('update',{})
+                that.$refs.taskRemindVisible.doClose()
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.editedStartTime = null
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
+      }
     },
     addSubTask() {
       const that = this

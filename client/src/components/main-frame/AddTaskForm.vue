@@ -60,6 +60,14 @@
                             </el-col>
                         </el-row>
                     </el-form-item>
+                    <!--Task Remind-->
+                    <el-form-item label='任务提醒时间:' prop='remindDate'>
+                          <el-row>
+                              <el-col :span='8'>
+                                  <el-date-picker type='datetime' placeholder="请选择任务的提醒时间" v-model="taskForm.remindDate"></el-date-picker>
+                              </el-col>
+                          </el-row>
+                      </el-form-item>
                     <!--Task Priority-->
                     <el-form-item label='任务优先级：' prop='privilege'>
                         <el-row>
@@ -166,7 +174,8 @@ export default {
             teamId:'',
             createDate:'',
             description:'',
-            location:''
+            location:'',
+            remindDate:'',
         },
       tmpcreateDate:null,
       tmpDueDate:null,
