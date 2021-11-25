@@ -52,7 +52,7 @@
                     <el-form-item label='任务截止时间:' prop='dueDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='datetime' placeholder="请选择任务的截止时间" v-model="taskForm.dueDate"></el-date-picker>
+                                <el-date-picker type='datetime' placeholder="请选择任务的截止时间" v-model="this.tmpDueDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -91,7 +91,7 @@
                     <el-form-item label='开始时间:' prop='createDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='datetime' placeholder="请选择任务的开始时间" v-model="taskForm.createDate"></el-date-picker>
+                                <el-date-picker type='datetime' placeholder="请选择任务的开始时间" v-model="this.tmpcreateDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -156,14 +156,16 @@ export default {
         taskForm:{
             taskName:'',
             tags: [],
-            dueDate:this.endDate === null ? '' : this.endDate,
+            dueDate:(this.endDate === null || this.endDate === '') ? null : (this.tmpDueDate === '' ? null : this.tmpDueDate),
             privilege:0,
             type: '',
             teamId:'',
-            createDate:this.startDate === null ? '' : this.startDate,
+            createDate:(this.startDate === null || this.startDate === '') ? null : (this.tmpcreateDate === '' ? null : this.tmpcreateDate),
             description:'',
             position:''
         },
+      tmpcreateDate:null,
+      tmpDueDate:null,
         //默认的优先级选项
         priorityArray:[
             {label:'极高', value:3},
@@ -278,9 +280,9 @@ export default {
                   Authorization:window.sessionStorage.getItem('token')
                 },
                 data:{
-                    createDate:that.taskForm.createDate,
+                    createDate:(that.taskForm.createDate === '' || that.taskForm.createDate === null)? null :that.taskForm.createDate,
                     description:that.taskForm.description,
-                    dueDate:that.taskForm.dueDate,
+                    dueDate:(that.taskForm.dueDate === '' || that.taskForm.dueDate === null)? null :that.taskForm.dueDate,
                     //fatherTask
                     //members
                     privilege:that.taskForm.privilege,
