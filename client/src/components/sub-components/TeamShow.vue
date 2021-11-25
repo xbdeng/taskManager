@@ -67,7 +67,7 @@
                 </el-col>
                 <!-- 添加管理员的接口 -->
                 <el-col :span="4">
-                  <el-popover placement="top" width="900" trigger="click" title="设置管理员">
+                  <el-popover placement="top" width="900" trigger="click" title="设置管理员" ref="addAdminVisible">
                     <el-row>
                       <el-col>
                         <el-transfer :data="transferData" filterable :button-texts="['取消管理员权限','设置成为管理员']"
@@ -90,7 +90,7 @@
                 </el-col>
                 <!-- 取消管理员的接口 -->
                 <el-col :span="3">
-                  <el-popover placement="top" width="900" trigger="click" title="删除管理员">
+                  <el-popover placement="top" width="900" trigger="click" title="删除管理员" ref="deleteAdminVisible">
                     <el-row>
                       <el-col>
                         <el-transfer :data="adminTransferData" filterable :button-texts="['重新设置成管理员','取消管理员权限']"
@@ -113,7 +113,7 @@
                 </el-col>
                 <!-- 添加成员的接口 -->
                 <el-col :span="4">
-                  <el-popover placement="top" width="900" trigger="click" title="邀请成员">
+                  <el-popover placement="top" width="900" trigger="click" title="邀请成员" ref="invitedMemberVisible">
                     <el-row>
                       <el-col>
 <!--                        好友中不在这个群里的人-->
@@ -396,6 +396,7 @@ export default {
                 that.$emit('postTeamInfoAgain', {})
                 let newToken = response.headers.authorization
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$refs.addAdminVisible.doClose()
               } else {
                 that.$message.error('添加管理员失败')
                 let newToken = response.headers.authorization
@@ -434,6 +435,7 @@ export default {
                   type: 'success'
                 })
                 that.$emit('postTeamInfoAgain', {})
+                that.$refs.invitedMemberVisible.doClose()
                 let newToken = response.headers.authorization
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
               } else {
@@ -584,6 +586,7 @@ export default {
                 that.$emit('postTeamInfoAgain', {})
                 let newToken = response.headers.authorization
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$refs.deleteAdminVisible.doClose()
               } else {
                 that.$message.error('撤销管理员失败')
                 let newToken = response.headers.authorization
