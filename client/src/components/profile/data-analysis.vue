@@ -5,7 +5,7 @@
         <el-col :span="6">
           <div class="grid-content bg-purple">
 
-            <ChartCard title="项目总数" :total="this.totalStart">
+            <ChartCard title="项目总数" :total="this.totalStart.toString()">
               <div class="chart-wrapper" v-if="this.Father_Mount">
                 <line-chart :chart-data="datacollection_A" :options="options" class="chart" :show="true"></line-chart>
               </div>
@@ -18,7 +18,7 @@
         <el-col :span="6">
           <div class="grid-content bg-purple">
 
-            <ChartCard title="项目完成总数" :total="this.totalFinish">
+            <ChartCard title="项目完成总数" :total="this.totalFinish.toString()">
               <div class="chart-wrapper" v-if="this.Father_Mount">
                 <bar-chart :chart-data="datacollection" :options="options_B" class="chart"></bar-chart>
               </div>
@@ -232,7 +232,7 @@ export default {
           }
       ).then(
           function (response) {
-            console.log(response)
+            // console.log(response)
             if (response.data.code === 200) {
               // 饼状图
               that.doughnutdata = {
@@ -380,7 +380,10 @@ export default {
             }
           },
           function (err) {
-
+            that.$notify({
+              message: 'server error',
+              type: 'error'
+            })
           }
       )
     },
