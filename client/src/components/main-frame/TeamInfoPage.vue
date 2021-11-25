@@ -197,15 +197,17 @@ export default {
     },
     // 根据任务数组和子组件的key找到任务对象并返回
     getTaskById(taskList, id) {
-      if (id === '-1') return {
-        taskName: 'Please choose your task'
-      }
-      if (parseInt(id[0]) >= taskList.length) return {
-        taskName: 'Please choose your task'
-      }
-      if (id.length === 1) return taskList[parseInt(id)];
-      return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
-    },
+        if (id === '-1') return {
+          taskName:'Please choose your task'
+        }
+        if (parseInt(id.split('-')[0]) >= taskList.length) {
+          return {
+            taskName: 'Please choose your task'
+          }
+        }
+        if (id.split('-').length === 1) return taskList[parseInt(id)];
+        return this.getTaskById(taskList[parseInt(id.split('-')[0])].subTasks, id.substr(id.indexOf('-') + 1));
+      },
     handleTaskInfoClose() {
       this.taskInfoDrawer = false
     },
