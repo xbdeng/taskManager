@@ -97,7 +97,8 @@
                 <TaskShow
                     :singleTaskData="getTask(chosenTaskId)"
                     v-on:closeTaskDrawer='closeTaskDrawer($event)'
-                    v-on:emitTreeData="emitTreeData($event)"></TaskShow>
+                    v-on:emitTreeData="emitTreeData($event)"
+                    v-on:update="update($event)"></TaskShow>
             </el-drawer>
 
             <el-drawer
@@ -271,6 +272,10 @@ export default {
     handleClose() {
         this.drawer = false
     },
+    update() {
+      this.$forceUpdate()
+      this.$emit('postPersonalTaskAgain',{})
+    },
     handleTreeClose() {
       this.treeDrawer = false
       this.$emit('postPersonalTaskAgain',{})
@@ -422,7 +427,7 @@ export default {
     },
     postTaskDataAgain() {
       this.$emit('postPersonalTaskAgain', {})
-    }
+    },
 
   }
 
