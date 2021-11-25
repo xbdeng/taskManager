@@ -19,7 +19,7 @@ public interface TaskService {
 
     List<TaskDTO> queryTask(QueryTaskDTO filter) throws Exception;
 
-    void editTask(EditTaskDTO params) throws Exception;
+//    void editTask(EditTaskDTO params) throws Exception;
 
     Result assignTask(AssignTaskDTO assignTaskDTO, String username);
 
