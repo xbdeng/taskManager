@@ -529,6 +529,7 @@ export default {
             that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
+          // TODO
           if(tmp.type === 3){
 
           }
@@ -551,10 +552,10 @@ export default {
           if(tmp.type === 6){
             that.$notify.info({
               title: tmp.from,
-              message: '您的入组邀请已被' + tmp.from + ' 接受'
+              message: '您的入组邀请' + tmp.groupName +'已被' + tmp.from + ' 接受'
             });
             that.showMessageNote = 'new'
-            that.pushMessage(tmp.from, '您的入组邀请已被' + tmp.from + ' 接受');
+            that.pushMessage(tmp.from, '您的入组邀请' + tmp.groupName +'已被' + tmp.from + ' 接受');
           }
           if(tmp.type === 7){
             that.$notify.info({
@@ -863,7 +864,6 @@ export default {
           '/task/query',
           {
             // fliter
-            scheduledTask: 0
           },
           {
             headers: {

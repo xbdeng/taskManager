@@ -9,12 +9,27 @@
                 <i class="el-icon-sort" style="font-size: 50px" v-if="data.type === 0"></i>
                 <i class="el-icon-s-check" style="font-size: 50px" v-if="data.type === 1"></i>
                 <i class="el-icon-sort-up" style="font-size: 50px" v-if="data.type === 2"></i>
+                <i class="el-icon-s-promotion" style="font-size: 50px" v-if="data.type === 3"></i>
+                <i class="el-icon-success" style="font-size: 50px" v-if="data.type === 4"></i>
+                <i class="el-icon-error" style="font-size: 50px" v-if="data.type === 5"></i>
+                <i class="el-icon-check" style="font-size: 50px" v-if="data.type === 6"></i>
+                <i class="el-icon-close" style="font-size: 50px" v-if="data.type === 7"></i>
+                <i class="el-icon-circle-check" style="font-size: 50px" v-if="data.type === 8"></i>
+                <i class="el-icon-circle-close" style="font-size: 50px" v-if="data.type === 8"></i>
 <!--                <div class="card__icon"><i class="fas fa-bolt"></i></div>-->
               </el-col>
               <el-col :span="8">
                 <span v-show="data.type === 0" class="card__title">Group Invitation</span>
                 <span v-show="data.type === 1" class="card__title">Friend Request</span>
                 <span v-show="data.type === 2" class="card__title">Group Application</span>
+                <!--TODO -->
+                <span v-show="data.type === 3" class="card__title">Group Application</span>
+                <span v-show="data.type === 4" class="card__title">Friend ACK</span>
+                <span v-show="data.type === 5" class="card__title">Friend NAK</span>
+                <span v-show="data.type === 6" class="card__title">Group Invit ACK</span>
+                <span v-show="data.type === 7" class="card__title">Group Invit NAK</span>
+                <span v-show="data.type === 8" class="card__title">Group Appli ACK</span>
+                <span v-show="data.type === 9" class="card__title">Group Appli NAK</span>
               </el-col>
               <el-col :span=11>
                 <el-button type="success" icon="el-icon-check" circle
@@ -32,6 +47,13 @@
                 <span v-show="data.type === 0" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>想要与你一起组队成为<span class="card__body">{{ data.message }}</span></span>
                 <span v-show="data.type === 1" class=" card__title"><span class="card__body">{{ data.usernameFrom }}</span>想要与你成为好友</span>
                 <span v-show="data.type === 2" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>邀请你加入<span class="card__body">{{ data.message }}</span></span>
+                <!--TODO-->
+                <span v-show="data.type === 4" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的好友请求已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
+                <span v-show="data.type === 5" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的好友请求已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
+                <span v-show="data.type === 6" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组邀请<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
+                <span v-show="data.type === 7" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组邀请<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
+                <span v-show="data.type === 8" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组请求<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
+                <span v-show="data.type === 9" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组请求<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
               </el-col>
             </el-row>
           </div>
