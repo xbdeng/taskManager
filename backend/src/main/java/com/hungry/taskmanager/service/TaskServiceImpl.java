@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class TaskServiceImpl implements TaskService{
+public class TaskServiceImpl implements TaskService {
     @Resource
     private TaskMapper taskMapper;
     @Resource
@@ -42,12 +42,12 @@ public class TaskServiceImpl implements TaskService{
     /**
      * create a new task and insert insert into database
      */
-    public BigInteger addTask(CreateTaskDTO params) throws Exception{
+    public BigInteger addTask(CreateTaskDTO params) throws Exception {
         BigInteger creator = userMapper.getIdByName(params.getUsername());
         // operations according to different types
-            // individual task set type column 0
-            // team task find id of the team set type id of the team
-        if (params.getType() == null){
+        // individual task set type column 0
+        // team task find id of the team set type id of the team
+        if (params.getType() == null) {
             params.setType(0);
         }
         BigInteger type = BigInteger.valueOf(params.getType());
@@ -66,18 +66,18 @@ public class TaskServiceImpl implements TaskService{
         task.updateDate();
         taskMapper.insert(task);
         BigInteger taskId = task.getTaskId();
-        if (params.getType() != null && params.getType() == 1){
-            if (params.getTeamId() != null){
+        if (params.getType() != null && params.getType() == 1) {
+            if (params.getTeamId() != null) {
                 TeamTask teamTask = new TeamTask().setTeamId(params.getTeamId()).setTaskId(taskId);
                 teamTaskMapper.insert(teamTask);
-            }else{
+            } else {
                 throw new Exception("params missing");
             }
         }
         // insert tag
         List<String> tags = params.getTags();
         List<Tag> insertedTags = new ArrayList<>();
-        if (tags != null && tags.size() > 0){
+        if (tags != null && tags.size() > 0) {
             for (String s : tags) {
                 Tag tag = new Tag().setUserId(creator).setTagName(s);
                 tagMapper.insert(tag);
@@ -91,7 +91,7 @@ public class TaskServiceImpl implements TaskService{
         userTaskMapper.insert(ut);
         // insert user task tag relationship
 
-        for(Tag tag : insertedTags){
+        for (Tag tag : insertedTags) {
             UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
             utt.setTagId(tag.getTagId());
             userTaskTagMapper.insert(utt);
@@ -118,33 +118,33 @@ public class TaskServiceImpl implements TaskService{
     public List<Task> queryTask(QueryTaskDTO filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
         // configure range
-        if (filter.getScheduledTask() != null && filter.getScheduledTask() == 1){
-            switch(filter.getTimeRange()){
-                case(0):{
+        if (filter.getScheduledTask() != null && filter.getScheduledTask() == 1) {
+            switch (filter.getTimeRange()) {
+                case (0): {
                     LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
                     LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate(), LocalTime.MIN);
                     filter.setRequiredDate(requiredDate);
                     break;
                 }
-                case(1):{
+                case (1): {
                     LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
-                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(6,ChronoUnit.DAYS), LocalTime.MIN);
+                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(6, ChronoUnit.DAYS), LocalTime.MIN);
                     filter.setRequiredDate(requiredDate);
                     break;
                 }
-                case(2):{
+                case (2): {
                     LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
-                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(7,ChronoUnit.DAYS), LocalTime.MIN);
+                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(7, ChronoUnit.DAYS), LocalTime.MIN);
                     filter.setRequiredDate(requiredDate);
                     break;
                 }
-                default:{
+                default: {
                     throw new Exception("timerange type error");
                 }
             }
         }
         List<Task> tasks = taskMapper.queryTask(filter.setUserId(userId));
-        if (tasks.size() == 0){
+        if (tasks.size() == 0) {
             return new ArrayList<>();
         }
         Map<BigInteger, Task> taskMap = new HashMap<>();
@@ -156,9 +156,9 @@ public class TaskServiceImpl implements TaskService{
             task.updateDate();
         }
         List<HashMap<String, Object>> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
-        for (HashMap<String, Object> map: taskTags){
-            BigInteger taskId  = BigInteger.valueOf((Long)map.get("task_id"));
-            String tagName = ((String)map.get("tag_name"));
+        for (HashMap<String, Object> map : taskTags) {
+            BigInteger taskId = BigInteger.valueOf((Long) map.get("task_id"));
+            String tagName = ((String) map.get("tag_name"));
             taskMap.get(taskId).getTags().add(tagName);
         }
         return tasks;
@@ -166,7 +166,7 @@ public class TaskServiceImpl implements TaskService{
 
 
     /**
-     *  modify status of a task
+     * modify status of a task
      */
     public void editTask(EditTaskDTO params) throws Exception {
         // get userid
@@ -184,14 +184,14 @@ public class TaskServiceImpl implements TaskService{
                 .set("status", params.getStatus());
         //之前的状态 非完成
         int status = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", taskId)).getStatus();
-        if(status!=1 && params.getStatus()!=null && params.getStatus()==1){ //新完成
-            wrapper.set("finish_date",LocalDateTime.now());
+        if (status != 1 && params.getStatus() != null && params.getStatus() == 1) { //新完成
+            wrapper.set("finish_date", LocalDateTime.now());
         }
         taskMapper.update(null, wrapper);
         // tags
         List<String> tags = params.getTags();
         List<Tag> insertedTags = new ArrayList<>();
-        if (tags != null && tags.size() > 0){
+        if (tags != null && tags.size() > 0) {
             for (String s : tags) {
                 Tag tag = new Tag().setUserId(userId).setTagName(s);
                 tagMapper.insert(tag);
@@ -203,15 +203,15 @@ public class TaskServiceImpl implements TaskService{
         UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id", userId).eq("task_id", taskId));
         // get user task tag
         userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", ut.getUtId()));
-        for (Tag tag : insertedTags){
+        for (Tag tag : insertedTags) {
             UserTaskTag utt = new UserTaskTag();
             utt.setUtId(ut.getUtId()).setTagId(tag.getTagId());
             userTaskTagMapper.insert(utt);
         }
         // subtasks
         List<String> subtasks = params.getSubTasks();
-        if (subtasks != null){
-            for (String taskName: subtasks){
+        if (subtasks != null) {
+            for (String taskName : subtasks) {
                 Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0).setFatherTask(taskId);
                 taskMapper.insert(newTask);
                 UserTask newUT = new UserTask().setUserId(userId).setTaskId(newTask.getTaskId());
@@ -224,23 +224,23 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public Result assignTask(AssignTaskDTO assignTaskDTO, String username) {
-        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id",assignTaskDTO.getTaskId()));
-        if(task.getType().intValue() == 0){
-            return Result.fail(201,"个人任务不能分配",null);
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", assignTaskDTO.getTaskId()));
+        if (task.getType().intValue() == 0) {
+            return Result.fail(201, "个人任务不能分配", null);
         }
         //分配者必须有分配权限 todo
 
         //被分配者必须在组内
-        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("user_id",assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
-        BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id",assignTaskDTO.getTaskId()).select("team_id")).getTeamId();
-        for(BigInteger userId : userIds){
-            long c = teamUserMapper.selectCount(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId));
-            if(c==0){
-                return Result.fail(202,"该成员不在组内",null);
+        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("user_id", assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
+        BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id", assignTaskDTO.getTaskId()).select("team_id")).getTeamId();
+        for (BigInteger userId : userIds) {
+            long c = teamUserMapper.selectCount(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId));
+            if (c == 0) {
+                return Result.fail(202, "该成员不在组内", null);
             }
         }
 
-        for(BigInteger userId:userIds){
+        for (BigInteger userId : userIds) {
             userTaskMapper.insert(new UserTask().setUserId(userId).setTaskId(assignTaskDTO.getTaskId()));
         }
         return Result.succ("分配任务成功");
@@ -249,94 +249,121 @@ public class TaskServiceImpl implements TaskService{
     @Override
     public Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editPrivilegeDTO.getTaskId()).set("privilege",editPrivilegeDTO.getPrivilege());
-        taskMapper.update(null,updateWrapper);
+        updateWrapper.eq("task_id", editPrivilegeDTO.getTaskId()).set("privilege", editPrivilegeDTO.getPrivilege());
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
     }
 
     @Override
     public Result editTaskName(EditTaskNameDTO editTaskNameDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editTaskNameDTO.getTaskId()).set("task_name",editTaskNameDTO.getTaskName());
-        taskMapper.update(null,updateWrapper);
+        updateWrapper.eq("task_id", editTaskNameDTO.getTaskId()).set("task_name", editTaskNameDTO.getTaskName());
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
     }
 
     @Override
     public Result editDescription(EditTaskDescription editTaskDescription) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editTaskDescription.getTaskId()).set("description",editTaskDescription.getDescription());
-        taskMapper.update(null,updateWrapper);
+        updateWrapper.eq("task_id", editTaskDescription.getTaskId()).set("description", editTaskDescription.getDescription());
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
     }
 
     @Override
     public Result editStartDate(EditTaskTime editTaskTime) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("create_date",editTaskTime.getDateTime());
-        taskMapper.update(null,updateWrapper);
+        updateWrapper.eq("task_id", editTaskTime.getTaskId()).set("create_date", editTaskTime.getDateTime());
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
     }
 
     @Override
     public Result editDueDate(EditTaskTime editTaskTime) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("due_date",editTaskTime.getDateTime());
-        taskMapper.update(null,updateWrapper);
+        updateWrapper.eq("task_id", editTaskTime.getTaskId()).set("due_date", editTaskTime.getDateTime());
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
     }
 
     @Override
     public Result editTaskRemindDate(EditTaskTime editTaskTime) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("remind_date",editTaskTime.getDateTime());
-        taskMapper.update(null,updateWrapper);
+        updateWrapper.eq("task_id", editTaskTime.getTaskId()).set("remind_date", editTaskTime.getDateTime());
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
     }
 
     @Override
     public Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editTaskLocationDTO.getTaskId()).set("location",editTaskLocationDTO.getLocation());
-        taskMapper.update(null,updateWrapper);
+        updateWrapper.eq("task_id", editTaskLocationDTO.getTaskId()).set("location", editTaskLocationDTO.getLocation());
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result addTaskTag(EditTaskTag editTaskTag, String username) {
+        BigInteger userId = userMapper.getIdByName(username);
+        List<Tag> userTags = tagMapper.selectTagsByUser(userId);
+        BigInteger utId = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id",userId).eq("task_id",editTaskTag.getTaskId()).select("ut_id")).getUtId();
+        for(Tag tag:userTags){
+            if(tag.getTagName().equals(editTaskTag.getTagName())) { //tag已经存在
+                userTaskTagMapper.insert(new UserTaskTag().setTagId(tag.getTagId()).setUtId(utId));
+                return Result.succ("新增tag成功");
+            }
+        }
+        //tag 不存在
+        tagMapper.insert(new Tag().setTagName(editTaskTag.getTagName()).setUserId(userId));
+        BigInteger tagId = tagMapper.selectOne(new QueryWrapper<Tag>().eq("user_id",userId).eq("tag_name",editTaskTag.getTagName()).select("tag_id")).getTagId();
+        userTaskTagMapper.insert(new UserTaskTag().setUtId(utId).setTagId(tagId));
+        return Result.succ("新增tag成功");
+    }
+
+    @Override
+    public Result deleteTaskTag(EditTaskTag editTaskTag, String username) {
+        BigInteger userId = userMapper.getIdByName(username);
+        BigInteger tagId = tagMapper.selectOne(new QueryWrapper<Tag>().eq("tag_name",editTaskTag.getTagName()).eq("user_id",userId).select("tag_id")).getTagId();
+        BigInteger utId = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id",userId).eq("task_id",editTaskTag.getTaskId()).select("ut_id")).getUtId();
+        userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id",utId).eq("tag_id",tagId));
+        return Result.succ("删除标签成功");
     }
 
     @Override
     public Result editStatus(EditStatusDTO editStatusDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("task_id",editStatusDTO.getTaskId());
-        if(editStatusDTO.getDueDate()==null){ //没有截止时间
-            updateWrapper.set("status",editStatusDTO.getStatus());
-        }else{
+        updateWrapper.eq("task_id", editStatusDTO.getTaskId());
+        if (editStatusDTO.getDueDate() == null) { //没有截止时间
+            updateWrapper.set("status", editStatusDTO.getStatus());
+        } else {
             //有截止时间
-            if(editStatusDTO.getStatus() == 1){ //完成
-                updateWrapper.set("status",1);
-            }else if(editStatusDTO.getStatus() == 0){ //未完成
-                if(editStatusDTO.getDueDate().isBefore(LocalDateTime.now())){
+            if (editStatusDTO.getStatus() == 1) { //完成
+                updateWrapper.set("status", 1);
+            } else if (editStatusDTO.getStatus() == 0) { //未完成
+                if (editStatusDTO.getDueDate().isBefore(LocalDateTime.now())) {
                     //过期
-                    updateWrapper.set("status",2);
-                }else{
-                    updateWrapper.set("status",0);
+                    updateWrapper.set("status", 2);
+                } else {
+                    updateWrapper.set("status", 0);
                 }
             }
         }
 
         //已完成
-        if(editStatusDTO.getStatus() == 1){
-            updateWrapper.set("finish_date",LocalDateTime.now());
+        if (editStatusDTO.getStatus() == 1) {
+            updateWrapper.set("finish_date", LocalDateTime.now());
         }
-        taskMapper.update(null,updateWrapper);
+        taskMapper.update(null, updateWrapper);
         return Result.succ("更新成功");
     }
 
-    public void addSubTask(AddSubTaskDTO params){
+    public void addSubTask(AddSubTaskDTO params) {
         taskMapper.update(new Task(), new UpdateWrapper<Task>().eq("task_id", params.getSubTask()).set("father_task", params.getFatherTask()));
     }
 
 
-    private LocalDateTime convertGMT(String date){
-        if (date == null){
+    private LocalDateTime convertGMT(String date) {
+        if (date == null) {
             return null;
         }
         DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");

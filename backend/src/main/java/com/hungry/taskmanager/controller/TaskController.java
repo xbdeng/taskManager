@@ -212,5 +212,31 @@ public class TaskController {
             return Result.fail(500, "服务器错误", null);
         }
     }
+
+    @PostMapping("/edit/addtag")
+    @RequiresAuthentication
+    public Result addTag(@RequestBody EditTaskTag editTaskTag, HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.addTaskTag(editTaskTag, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/edit/deletetag")
+    @RequiresAuthentication
+    public Result deleteTag(@RequestBody EditTaskTag editTaskTag, HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.deleteTaskTag(editTaskTag, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 }
 
