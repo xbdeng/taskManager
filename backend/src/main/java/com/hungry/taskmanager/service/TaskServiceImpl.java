@@ -44,6 +44,8 @@ public class TaskServiceImpl implements TaskService {
     private MessageService messageService;
     @Resource
     private TeamService teamService;
+    @Resource
+    private MailService mailService;
 
     /**
      * create a new task and insert insert into database
@@ -366,6 +368,12 @@ public class TaskServiceImpl implements TaskService {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editTaskTime.getTaskId()).set("remind_date", editTaskTime.getDateTime());
         taskMapper.update(null, updateWrapper);
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
+        if (user.getEmailVerify() == 1){
+            Task task = taskMapper.selectById(editTaskTime.getTaskId());
+            mailService.sendRemindEmail(username, user.getEmail(), task);
+        }
+
         return Result.succ("更新成功");
     }
 
