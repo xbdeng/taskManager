@@ -46,18 +46,24 @@ public class ICal4jUtil {
     private static VEvent TaskToVEvent(Task task) throws SocketException {
         String title = task.getTaskName();
         String description = task.getDescription();
-        Calendar startDate = new GregorianCalendar();
-        startDate.set(task.getCreateDate().getYear(), task.getCreateDate().getMonthValue(),
-                task.getCreateDate().getDayOfMonth(), task.getCreateDate().getHour(), task.getCreateDate().getMinute(),
-                task.getCreateDate().getSecond());
 
-        Calendar endDate = new GregorianCalendar();
-        endDate.set(task.getDueDate().getYear(), task.getDueDate().getMonthValue(), task.getDueDate().getDayOfMonth(),
-                task.getDueDate().getHour(), task.getDueDate().getMinute(), task.getDueDate().getSecond());
+        DateTime startTime = null;
+        if(task.getCreateDate()!=null) {
+            Calendar startDate = new GregorianCalendar();
+            startDate.set(task.getCreateDate().getYear(), task.getCreateDate().getMonthValue(),
+                    task.getCreateDate().getDayOfMonth(), task.getCreateDate().getHour(), task.getCreateDate().getMinute(),
+                    task.getCreateDate().getSecond());
+            startTime = new DateTime(startDate.getTime());
+        }
 
+        DateTime endTime = null;
+        if(task.getDueDate()!=null) {
+            Calendar endDate = new GregorianCalendar();
+            endDate.set(task.getDueDate().getYear(), task.getDueDate().getMonthValue(), task.getDueDate().getDayOfMonth(),
+                    task.getDueDate().getHour(), task.getDueDate().getMinute(), task.getDueDate().getSecond());
+            endTime = new DateTime(endDate.getTime());
+        }
 
-        DateTime startTime = new DateTime(startDate.getTime());
-        DateTime endTime = new DateTime(endDate.getTime());
         VEvent vEvent = new VEvent(startTime, endTime, title);
 
         //生成唯一标识
@@ -75,20 +81,21 @@ public class ICal4jUtil {
         vEvent.getProperties().add(location);
 
         //设置提醒时间
-        Calendar remindDate = new GregorianCalendar();
-        remindDate.set(task.getRemindDate().getYear(),task.getRemindDate().getMonthValue(),
-                task.getRemindDate().getDayOfMonth(),task.getRemindDate().getHour(),
-                task.getRemindDate().getMinute(),task.getRemindDate().getSecond());
-        DateTime remind = new DateTime(remindDate.getTime());
-        VAlarm vAlarm = new VAlarm(remind);
-        Action display = new Action("DISPLAY");
-        vAlarm.getProperties().add(display);
-        Action emailAction = new Action("EMAIL");
-        vAlarm.getProperties().add(emailAction);
-        Action audioAction = new Action("AUDIO");
-        vAlarm.getProperties().add(audioAction);
-        vEvent.getComponents().add(vAlarm);
-
+        if(task.getRemindDate()!=null) {
+            Calendar remindDate = new GregorianCalendar();
+            remindDate.set(task.getRemindDate().getYear(), task.getRemindDate().getMonthValue(),
+                    task.getRemindDate().getDayOfMonth(), task.getRemindDate().getHour(),
+                    task.getRemindDate().getMinute(), task.getRemindDate().getSecond());
+            DateTime remind = new DateTime(remindDate.getTime());
+            VAlarm vAlarm = new VAlarm(remind);
+            Action display = new Action("DISPLAY");
+            vAlarm.getProperties().add(display);
+            Action emailAction = new Action("EMAIL");
+            vAlarm.getProperties().add(emailAction);
+            Action audioAction = new Action("AUDIO");
+            vAlarm.getProperties().add(audioAction);
+            vEvent.getComponents().add(vAlarm);
+        }
         //添加协作者
         //获取队伍信息
         List<BigInteger> usersId = userTaskMapper.selectList(new QueryWrapper<UserTask>().in("task_id", task.getTaskId())).stream().map(UserTask::getUserId).collect(Collectors.toList());
