@@ -5,13 +5,13 @@
       <el-container>
         <!-- 头部栏显示好友名称 -->
           <el-header>
-              {{ friend.username }}
+              用户名: {{ friend.username }}
           </el-header>
           <!-- 主页面显示好友信息-->
           <el-main>
-              <p>{{ friend.email }}</p>
-              <p>{{ friend.phone }}</p>
-              <p>{{ friend.personalSign }}</p>
+              <p>邮箱: {{ friend.email }}</p>
+              <p>电话: {{ friend.phone }}</p>
+              <p>个人签名: {{ friend.personalSign }}</p>
           </el-main>
       </el-container>
     </template>

@@ -229,8 +229,7 @@
                       <el-popover placement="top" width="900" trigger="click" title="邀请成员">
                         <el-row>
                             <el-col>
-<!--                              TODO-->
-                                <el-transfer :data="this.list1" filterable :button-texts="['取消添加','添加任务成员']" v-model="invitedMembers" :titles="['组内成员','分配名单']"></el-transfer>
+                                <el-transfer :data="this.CU(this.list1,this.list2)" filterable :button-texts="['取消添加','添加任务成员']" v-model="invitedMembers" :titles="['组内成员','分配名单']"></el-transfer>
                             </el-col>
                         </el-row>
                         <el-row>
@@ -332,17 +331,17 @@ export default {
       return data
     };
     // 生成某个任务组员的穿梭框信息
-    //TODO:后端实现了任务的组员记得改过来
-    // const generateMemberData = _ => {
-    //   const data = []
-    //   for (let i in this.tempTaskForm.members) {
-    //     data.push({
-    //       key: this.tempTaskForm.members[i],
-    //       label: this.tempTaskForm.members[i]
-    //     });
-    //   }
-    //   return data
-    // };
+    const generateMemberData = _ => {
+      const data = []
+      if(this.tempTaskForm == null) return []
+      for (let i in this.tempTaskForm.members) {
+        data.push({
+          key: this.tempTaskForm.members[i],
+          label: this.tempTaskForm.members[i]
+        });
+      }
+      return data
+    };
     return {
       inputVisible:false,
       addedTag:null,
@@ -363,8 +362,7 @@ export default {
       tempTaskForm:JSON.parse(JSON.stringify(this.singleTaskData)),
       list1:generateTransferData(),
       mousein:null,
-      //TODO:理由同上
-      // list2:generateMemberData(),
+      list2:generateMemberData(),
 
     }
   },
@@ -419,7 +417,40 @@ export default {
       }
     },
     deleteTag(tag) {
-      this.tempTaskForm.tags.splice(this.tempTaskForm.tags.indexOf(tag), 1);
+      // this.tempTaskForm.tags.splice(this.tempTaskForm.tags.indexOf(tag), 1);
+      const that = this
+      //TODO
+      axios.post(
+          '/task/edit/deletetag',
+          {
+            taskId:that.tempTaskForm.taskId,
+            tagName:tag
+          },
+          {
+            headers:{
+              Authorization:window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            if(response.data.code === 200) {
+              that.$message({
+                type:'success',
+                message:'删除成功'
+              })
+              that.$emit('update',{})
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            } else {
+              that.$message.error('删除失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，删除失败')
+          }
+      )
     },
     showInput() {
       this.inputVisible = true;
@@ -438,7 +469,39 @@ export default {
             return 
           }
         }
-        this.tempTaskForm.tags.push(inputValue);
+        // this.tempTaskForm.tags.push(inputValue);
+        const that = this
+        axios.post(
+            '/task/edit/addtag',
+            {
+              taskId:that.tempTaskForm.taskId,
+              tagName:inputValue
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'添加成功'
+                })
+                that.$emit('update',{})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              } else {
+                that.$message.error('添加失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，添加失败')
+            }
+        )
       }
       this.inputVisible = false;
       this.addedTag = null;
@@ -921,11 +984,10 @@ export default {
       let teamId = this.singleTeamData.teamId
       //TODO:后端取消分配的接口
       axios.post(
-          '/team/removemember',
+          '/task/unassigntask',
           {
-            teamId: teamId,
-            //这个是数组，看情况改
-            userName: userName
+            taskId: that.tempTaskForm.taskId,
+            usernames: userName
           },
           {
             headers: {
