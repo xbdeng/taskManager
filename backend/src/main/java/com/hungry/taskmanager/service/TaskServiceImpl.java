@@ -10,6 +10,7 @@ import com.hungry.taskmanager.entity.relation_entity.TeamTask;
 import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import com.hungry.taskmanager.entity.relation_entity.UserTaskTag;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
+import com.hungry.taskmanager.exception.LimitsAuthority;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -41,11 +42,21 @@ public class TaskServiceImpl implements TaskService {
     private TeamUserMapper teamUserMapper;
     @Resource
     private MessageService messageService;
+    @Resource
+    private TeamService teamService;
 
     /**
      * create a new task and insert insert into database
      */
     public BigInteger addTask(CreateTaskDTO params) throws Exception {
+        if(params.getType() == 1){ //组队任务
+            BigInteger teamId = params.getTeamId();
+            String creator = params.getUsername();
+            if(!(teamService.isCreator(creator,teamId) || teamService.isAdmin(creator,teamId))){
+                throw new LimitsAuthority();
+            }
+        }
+
         BigInteger creator = userMapper.getIdByName(params.getUsername());
         // operations according to different types
         // individual task set type column 0
@@ -105,7 +116,15 @@ public class TaskServiceImpl implements TaskService {
     /**
      * delete an existing task
      */
-    public int deleteTask(@NonNull long taskId) throws Exception {
+    public int deleteTask(@NonNull long taskId,String username) throws Exception {
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id",taskId));
+        if(task.getType().intValue() == 1){
+            BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id",taskId)).getTeamId();
+            if(!(teamService.isCreator(username,teamId) || teamService.isAdmin(username,teamId))){
+                throw new LimitsAuthority();
+            }
+        }
+
         BigInteger id = BigInteger.valueOf(taskId);
         UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("task_id", taskId));
         BigInteger utId = ut.getUtId();

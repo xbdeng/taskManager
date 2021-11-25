@@ -106,7 +106,7 @@ export default {
       // console.log(val)
       const that = this
       axios.post(
-          'http://localhost:8081/api/user/edituser',
+          '/user/edituser',
           {
             password: that.$md5(val)
           },

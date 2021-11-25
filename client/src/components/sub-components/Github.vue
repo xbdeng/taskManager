@@ -19,7 +19,7 @@ export default {
     console.log(code)
     const that = this
     axios.post(
-        'http://localhost:8081/api/user/loginbygithub',
+        '/user/loginbygithub',
         {
           code:code
         }

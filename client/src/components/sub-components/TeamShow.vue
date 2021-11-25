@@ -7,24 +7,24 @@
         <el-header>
           <el-row :gutter="10" type="flex" align="middle">
             <el-col :span="4">
-            <el-popover placement="top" width="200" trigger="click" title="修改组名" ref="teamNameVisible">
-              <el-row>
-                <el-col>
-                  <el-input placeholder="请输入修改后的组名..." clearable v-model="editedTeamName"></el-input>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :offset="8">
-                  <el-button type='primary' plain size="small" @click="editTeamName">确定</el-button>
-                </el-col>
-              </el-row>
-              <el-tooltip content="点击可修改组的名称" slot="reference">
-                <el-link>
-                  <span class="title">{{ this.singleTeamData.teamName }}</span>
-                </el-link>
-              </el-tooltip>
-            </el-popover>
-              </el-col>
+              <el-popover placement="top" width="200" trigger="click" title="修改组名" ref="teamNameVisible">
+                <el-row>
+                  <el-col>
+                    <el-input placeholder="请输入修改后的组名..." clearable v-model="editedTeamName"></el-input>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :offset="8">
+                    <el-button type='primary' plain size="small" @click="editTeamName">确定</el-button>
+                  </el-col>
+                </el-row>
+                <el-tooltip content="点击可修改组的名称" slot="reference">
+                  <el-link>
+                    <span class="title">{{ this.singleTeamData.teamName }}</span>
+                  </el-link>
+                </el-tooltip>
+              </el-popover>
+            </el-col>
           </el-row>
         </el-header>
         <el-main>
@@ -112,7 +112,7 @@
                   <el-popover placement="top" width="900" trigger="click" title="邀请成员" ref="invitedMemberVisible">
                     <el-row>
                       <el-col>
-<!--                        好友中不在这个群里的人-->
+                        <!--                        好友中不在这个群里的人-->
                         <el-transfer :data="this.friends" filterable :button-texts="['取消邀请','邀请进组']"
                                      v-model="invitedMembers" :titles="['我的好友','邀请名单']"></el-transfer>
                       </el-col>
@@ -120,8 +120,8 @@
                     <el-row>
                       <el-col :offset="8">
                         <el-button type='primary' @click="editInvitedMembers">确定</el-button>
-<!--                        &lt;!&ndash; TODO:点击取消后的动作 &ndash;&gt;-->
-<!--                        <el-button type="danger">取消</el-button>-->
+                        <!--                        &lt;!&ndash; TODO:点击取消后的动作 &ndash;&gt;-->
+                        <!--                        <el-button type="danger">取消</el-button>-->
                       </el-col>
                     </el-row>
                     <el-tooltip content="点击可邀请成员进组" slot="reference">
@@ -138,48 +138,49 @@
                   <span style="font-weight:bold;font-size: 18px">队伍描述信息：</span>
                 </el-col>
                 <el-col>
-                <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息" ref="teamDescriptionVisible">
-                  <el-row>
-                    <el-col>
-                      <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"
-                                v-model="editedTeamDescription"></el-input>
-                    </el-col>
-                  </el-row>
-                  <el-row>
-                    <el-col :offset="8">
-                      <el-button type='primary' plain size="small" @click="editDescription">确定</el-button>
-                    </el-col>
-                  </el-row>
+                  <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息"
+                              ref="teamDescriptionVisible">
+                    <el-row>
+                      <el-col>
+                        <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"
+                                  v-model="editedTeamDescription"></el-input>
+                      </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :offset="8">
+                        <el-button type='primary' plain size="small" @click="editDescription">确定</el-button>
+                      </el-col>
+                    </el-row>
 
-                  <el-tooltip content="点击可修改组的描述信息" slot="reference">
-                    <el-link>
-                      {{ singleTeamData.description }}
-                    </el-link>
-                  </el-tooltip>
-                </el-popover>
+                    <el-tooltip content="点击可修改组的描述信息" slot="reference">
+                      <el-link>
+                        {{ singleTeamData.description }}
+                      </el-link>
+                    </el-tooltip>
+                  </el-popover>
                 </el-col>
               </el-row>
               <el-row type="flex" justify="start" align="middle" :gutter="20">
-                  <el-col>
-                    <el-card>
-                      <div>
-                        <el-progress type="circle" :percentage="25"></el-progress>
-                      </div>
-                      <div>
-                        team ,,,
-                      </div>
-                    </el-card>
-                  </el-col>
-                  <el-col>
-                    <el-card>
-                      <div>
-                        <el-progress :text-inside="true" :stroke-width="26" :percentage="70"></el-progress>
-                      </div>
-                      <div>
-                        done task
-                      </div>
-                    </el-card>
-                  </el-col>
+                <el-col>
+                  <el-card>
+                    <div>
+                      <el-progress type="circle" :percentage="this.myAnalysis"></el-progress>
+                    </div>
+                    <div>
+                      Team Finished/Team Task
+                    </div>
+                  </el-card>
+                </el-col>
+                <el-col>
+                  <el-card>
+                    <div>
+                      <el-progress :text-inside="true" :stroke-width="26" :percentage="this.teamAnalysis"></el-progress>
+                    </div>
+                    <div>
+                      You done task/Team Task
+                    </div>
+                  </el-card>
+                </el-col>
               </el-row>
               <el-row type="flex" justify="start" align="middle">
                 <el-col>
@@ -210,6 +211,10 @@ export default {
   // 这个组件接收的参数是一个组对象
   props: ['singleTeamData', 'username', 'Friends'],
 
+  mounted() {
+    this.getTeamAnalysis()
+  },
+
   data() {
     // 生成普通成员的穿梭框信息
     const generateTransferData = _ => {
@@ -227,11 +232,11 @@ export default {
       const data = []
       for (let i in this.Friends) {
         let username = this.Friends[i].username
-        if(!(username === this.singleTeamData.creator) && !(this.singleTeamData.admins.indexOf(username) > -1) && !(this.singleTeamData.members.indexOf(username) > -1))
-        data.push({
-          key: this.Friends[i].username,
-          label: this.Friends[i].username
-        });
+        if (!(username === this.singleTeamData.creator) && !(this.singleTeamData.admins.indexOf(username) > -1) && !(this.singleTeamData.members.indexOf(username) > -1))
+          data.push({
+            key: this.Friends[i].username,
+            label: this.Friends[i].username
+          });
       }
       return data
     };
@@ -257,6 +262,8 @@ export default {
       mousein: null,
       editedTeamName: null,
       editedTeamDescription: null,
+      myAnalysis: 0,
+      teamAnalysis: 0
     }
   },
   methods: {
@@ -331,12 +338,12 @@ export default {
       const that = this
       let teamId = this.singleTeamData.teamId
       axios.post(
-    '/team/editteam',
-        {
-          teamName: that.editedTeamName,
-          teamId: teamId,
-          description:that.singleTeamData.description
-        },
+          '/team/editteam',
+          {
+            teamName: that.editedTeamName,
+            teamId: teamId,
+            description: that.singleTeamData.description
+          },
           {
             headers: {
               Authorization: window.sessionStorage.getItem('token')
@@ -455,7 +462,7 @@ export default {
           {
             description: that.editedTeamDescription,
             teamId: teamId,
-            teamName:that.singleTeamData.teamName
+            teamName: that.singleTeamData.teamName
           },
           {
             headers: {
@@ -605,16 +612,41 @@ export default {
       return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日' + date.getHours() + '时' + date.getMinutes() + '分' + date.getSeconds() + '秒'
     },
     CU(list1, list2) {
-      for(let i in list2) {
+      for (let i in list2) {
         let item = list2[i]
         let index = list1.indexOf(item)
-        if(index > -1) {
+        if (index > -1) {
           list1.splice(index, 1)
         }
       }
       return list1
     },
-  }
+    getTeamAnalysis() {
+      const that = this
+      console.log(that.singleTeamData)
+      axios.post(
+          '/team/statistics',
+          {teamId: that.singleTeamData.teamId},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response) {
+            if (response.data.code === 200) {
+              that.myAnalysis = response.data.data.totalYourFinishTeamTaskNumber / response.data.data.totalTeamTaskNumber
+              that.teamAnalysis = response.data.data.totalTeamFinishTaskNumber / response.data.data.totalTeamTaskNumber
+              let newToken = response.headers.authorization
+              if (newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+          },
+          function (err) {
+
+          }
+      )
+    }
+  },
 
 }
 </script>
@@ -622,7 +654,7 @@ export default {
 <style scoped>
 .title {
   font-weight: bold;
-  font-size:30px;
+  font-size: 30px;
 }
 
 .el-row {

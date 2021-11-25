@@ -193,7 +193,7 @@ export default {
           // this.enable[1] = true;
           const that = this
           axios.post(
-              'http://localhost:8081/api/user/checkname',
+              '/user/checkname',
               {
                 username:value
               }

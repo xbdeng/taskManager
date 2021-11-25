@@ -132,24 +132,24 @@ public class TeamServiceImpl implements TeamService {
         return Result.succ("撤销权限成功");
     }
 
-    private boolean isAdmin(String username, BigInteger teamId) {
+    public boolean isAdmin(String username, BigInteger teamId) {
         BigInteger userId = userMapper.getIdByName(username);
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity", "admin"));
         return t != null;
     }
 
-    private boolean isAdmin(BigInteger userId, BigInteger teamId){
+    public boolean isAdmin(BigInteger userId, BigInteger teamId){
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity", "admin"));
         return t != null;
     }
 
-    private boolean isCreator(String username, BigInteger teamId) {
+    public boolean isCreator(String username, BigInteger teamId) {
         BigInteger userId = userMapper.getIdByName(username);
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity","creator"));
         return t != null;
     }
 
-    private boolean isCreator(BigInteger userId, BigInteger teamId){
+    public boolean isCreator(BigInteger userId, BigInteger teamId){
         TeamUser t = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId).eq("identity","creator"));
         return t != null;
     }
@@ -227,14 +227,24 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Result<TeamStatisticsDTO> teamStatistics(BigInteger teamId, String username) {
         TeamStatisticsDTO teamStatisticsDTO = new TeamStatisticsDTO();
-        List<BigInteger> teamTaskIds = teamTaskMapper.selectList(new QueryWrapper<TeamTask>().eq("team_id",teamId)).stream().map(TeamTask::getTeamId).collect(Collectors.toList());
+        List<BigInteger> teamTaskIds = teamTaskMapper.selectList(new QueryWrapper<TeamTask>().eq("team_id",teamId)).stream().map(TeamTask::getTaskId).collect(Collectors.toList());
         teamStatisticsDTO.setTotalTeamTaskNumber(teamTaskIds.size());
 
-        List<BigInteger> finishIds = taskMapper.selectList(new QueryWrapper<Task>().in("task_id",teamTaskIds).eq("status",1).select("task_id")).stream().map(Task::getTaskId).collect(Collectors.toList());
-        teamStatisticsDTO.setTotalTeamFinishTaskNumber(finishIds.size());
+        List<BigInteger> finishIds = new ArrayList<>();
+        if(teamTaskIds.size()!=0) {
+            finishIds = taskMapper.selectList(new QueryWrapper<Task>().in("task_id", teamTaskIds).eq("status", 1).select("task_id")).stream().map(Task::getTaskId).collect(Collectors.toList());
+            teamStatisticsDTO.setTotalTeamFinishTaskNumber(finishIds.size());
+        }else{
+            teamStatisticsDTO.setTotalTeamFinishTaskNumber(0);
+        }
 
-        long yourFinish = userTaskMapper.selectCount(new QueryWrapper<UserTask>().in("task_id",finishIds));
-        teamStatisticsDTO.setTotalYourFinishTeamTaskNumber((int)yourFinish);
+        if(finishIds.size()!=0) {
+            long yourFinish = userTaskMapper.selectCount(new QueryWrapper<UserTask>().in("task_id", finishIds));
+            teamStatisticsDTO.setTotalYourFinishTeamTaskNumber((int)yourFinish);
+        }else{
+            teamStatisticsDTO.setTotalYourFinishTeamTaskNumber(0);
+        }
+
 
         return new Result<>(200,"统计成功",teamStatisticsDTO);
     }
