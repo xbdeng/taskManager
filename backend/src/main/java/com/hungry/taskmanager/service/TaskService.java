@@ -47,5 +47,9 @@ public interface TaskService {
 
     Result deleteTaskTag(EditTaskTag editTaskTag, String username);
 
+
+    void updateDate();
+
     void addSubTask(AddSubTaskDTO params,String username);
+
 }
