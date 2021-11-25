@@ -1,5 +1,6 @@
 package com.hungry.taskmanager.service;
 
+import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.utils.RedisUtil;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
@@ -58,6 +59,11 @@ public class MailServiceImpl implements MailService{
 
         File file = new File(username + "_calendar.ics");
         file.delete();
+    }
+
+    @Override
+    public void sendRemindEmail(String username, String email, Task task) {
+
     }
 
 
