@@ -52,7 +52,7 @@
             </if>
             <if test="scheduledTask != null">
                 <if test="scheduledTask == 0">
-                    AND t.status IN (0, 2)
+                    AND t.status IN (0, 2) AND t.due_date IS NULL
                 </if>
                 <if test="scheduledTask == 1">
                     <if test="timeRange == 0 or timeRange == 1">

@@ -87,16 +87,14 @@ public class TaskServiceImpl implements TaskService{
         }
         // select all related tag ids
         // insert user task relationship if the type is individual
-        if (type.equals(BigInteger.valueOf(0))){
-            UserTask ut = new UserTask().setUserId(creator).setTaskId(taskId);
-            userTaskMapper.insert(ut);
-            // insert user task tag relationship
+        UserTask ut = new UserTask().setUserId(creator).setTaskId(taskId);
+        userTaskMapper.insert(ut);
+        // insert user task tag relationship
 
-            for(Tag tag : insertedTags){
-                UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
-                utt.setTagId(tag.getTagId());
-                userTaskTagMapper.insert(utt);
-            }
+        for(Tag tag : insertedTags){
+            UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
+            utt.setTagId(tag.getTagId());
+            userTaskTagMapper.insert(utt);
         }
         return taskId;
     }
@@ -211,13 +209,17 @@ public class TaskServiceImpl implements TaskService{
             userTaskTagMapper.insert(utt);
         }
         // subtasks
-        for (String taskName: params.getSubTasks()){
-            Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0).setFatherTask(taskId);
-            taskMapper.insert(newTask);
-            UserTask newUT = new UserTask().setUserId(userId).setTaskId(newTask.getTaskId());
-            userTaskMapper.insert(newUT);
+        List<String> subtasks = params.getSubTasks();
+        if (subtasks != null){
+            for (String taskName: subtasks){
+                Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0).setFatherTask(taskId);
+                taskMapper.insert(newTask);
+                UserTask newUT = new UserTask().setUserId(userId).setTaskId(newTask.getTaskId());
+                userTaskMapper.insert(newUT);
 
+            }
         }
+
     }
 
     @Override
@@ -247,8 +249,6 @@ public class TaskServiceImpl implements TaskService{
     public void addSubTask(AddSubTaskDTO params){
         taskMapper.update(new Task(), new UpdateWrapper<Task>().eq("task_id", params.getSubTask()).set("father_task", params.getFatherTask()));
     }
-
-
 
 
     private LocalDateTime convertGMT(String date){
