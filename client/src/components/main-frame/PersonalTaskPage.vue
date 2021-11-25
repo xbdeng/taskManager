@@ -361,10 +361,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '获取标签成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '获取标签成功',
+              //   type: 'success'
+              // })
               that.tagArray = []
               for (let i in response.data.data) {
                 let content = response.data.data[i]
@@ -403,10 +403,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '请求用户创建或管理的组成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '请求用户创建或管理的组成功',
+              //   type: 'success'
+              // })
               that.myTeamInfo = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
