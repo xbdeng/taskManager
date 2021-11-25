@@ -1,5 +1,6 @@
 package com.hungry.taskmanager.dto;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,8 @@ public class WebSocketMessageDTO {
     private String from;
     private Integer type;
     private String groupName;
+
+    public String toJsonString(){
+        return JSON.toJSONString(this);
+    }
 }

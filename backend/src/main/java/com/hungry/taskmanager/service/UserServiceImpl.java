@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
             return new ArrayList<>();
         }
         try {
-            return getTeamDTOsByTeamIds(teamsId);//todo
+            return getTeamDTOsByTeamIds(teamsId, userId);//todo
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
             return new ArrayList<>();
         }
         try {
-            return getTeamDTOsByTeamIds(teamsId);
+            return getTeamDTOsByTeamIds(teamsId, userId);
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private List<TeamDTO> getTeamDTOsByTeamIds(List<BigInteger> teamIds) throws Exception {
+    private List<TeamDTO> getTeamDTOsByTeamIds(List<BigInteger> teamIds, BigInteger userId) throws Exception {
         // get all teams and put them into maps
         List<Team> teams = teamMapper.selectList(new QueryWrapper<Team>().in("team_id", teamIds));
         HashMap<BigInteger, TeamDTO> teamMap = new HashMap<>();
@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
         }
         // get all related task
         for (TeamDTO team : teamMap.values()) {
-            team.setTeamTasks(taskService.queryTask(new QueryTaskDTO().setTeamId(team.getTeamId())));
+            team.setTeamTasks(taskService.queryTask(new QueryTaskDTO().setTeamId(team.getTeamId()).setUserId(userId)));
         }
         return returnList;
 
