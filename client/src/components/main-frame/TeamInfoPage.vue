@@ -284,7 +284,7 @@ export default {
     requestTeam(TeamId) {
       const that = this
       axios.post(
-          'http://localhost:8081/api/message/sendrequest',
+          '/message/sendrequest',
           {
             type: 2,
             teamId: TeamId

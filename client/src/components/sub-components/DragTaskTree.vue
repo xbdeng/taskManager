@@ -9,7 +9,7 @@
         :isdraggable="true"
         height="700">
       <template #selection="{row}">
-        <span style="font-weight: bold">{{ row.name }}</span>
+        <h1 style="font-family: Consolas!important;">{{ row.name }}</h1>
       </template>
       <template #id="{row}">
         {{ row.id }}
