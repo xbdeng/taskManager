@@ -170,7 +170,7 @@ export default {
             tags: [],
             dueDate:'',
             privilege:0,
-            type: 0,
+            type: '',
             teamId:'',
             createDate:'',
             description:'',
@@ -217,7 +217,6 @@ export default {
         //将添加任务表单清空
         for(let i in this.taskForm) {
             this.taskForm[i] = null
-            this.taskForm.type = 0
         }
         //向父组件发送跳转日历界面的消息
         this.$emit('toCalendar',{});
