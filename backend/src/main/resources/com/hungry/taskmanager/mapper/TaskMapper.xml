@@ -66,5 +66,12 @@
         </where>
     </select>
 
+    <select id="getAssignedUsernames" resultType="String">
+        SELECT username
+        FROM user_task AS ut
+        INNER JOIN user ON ut.user_id = user.user_id
+        WHERE ut.task_id = #{taskId}
+    </select>
+
 
 </mapper>
