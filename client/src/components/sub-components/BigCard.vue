@@ -2,7 +2,7 @@
   <div class="bigchart-wrapper">
     <el-tabs v-model="activeName" @tab-click="handleClick">
 
-      <el-tab-pane label="用户管理" name="first">
+      <el-tab-pane label="本周" name="first">
         <el-row :gutter="20">
           <el-col :span="15">
             <div class="chart-wrapper-t">
@@ -14,25 +14,25 @@
             <el-form>
               <el-form-item>
                 <el-row :gutter="10">
-                  <el-col :span="25">
-                    <el-radio-group v-model="radio1">
-                      <el-radio-button label="本周"></el-radio-button>
-                      <el-radio-button label="本月"></el-radio-button>
-                      <el-radio-button label="本年"></el-radio-button>
-                    </el-radio-group>
-                  </el-col>
-                  <el-col :span="5">
-                    <el-date-picker
-                        v-model="value2"
-                        type="daterange"
-                        align="right"
-                        unlink-panels
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        :picker-options="pickerOptions">
-                    </el-date-picker>
-                  </el-col>
+<!--                  <el-col :span="25">-->
+<!--                    <el-radio-group v-model="radio1">-->
+<!--                      <el-radio-button label="本周"></el-radio-button>-->
+<!--                      <el-radio-button label="本月"></el-radio-button>-->
+<!--                      <el-radio-button label="本年"></el-radio-button>-->
+<!--                    </el-radio-group>-->
+<!--                  </el-col>-->
+<!--                  <el-col :span="5">-->
+<!--                    <el-date-picker-->
+<!--                        v-model="value2"-->
+<!--                        type="daterange"-->
+<!--                        align="right"-->
+<!--                        unlink-panels-->
+<!--                        range-separator="至"-->
+<!--                        start-placeholder="开始日期"-->
+<!--                        end-placeholder="结束日期"-->
+<!--                        :picker-options="pickerOptions">-->
+<!--                    </el-date-picker>-->
+<!--                  </el-col>-->
                 </el-row>
               </el-form-item>
 
@@ -46,9 +46,8 @@
         </el-row>
       </el-tab-pane>
 
-      <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
-      <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-      <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+      <el-tab-pane label="本月" name="second">本月</el-tab-pane>
+      <el-tab-pane label="本年" name="third">本年</el-tab-pane>
     </el-tabs>
   </div>
 </template>

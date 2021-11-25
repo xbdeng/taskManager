@@ -62,10 +62,10 @@
 import LineChart from '../sub-components/LineChart.js'
 import ChartCard from '../sub-components/ChartCard'
 import BarChart from '../sub-components/BarChart'
-import BigCard from "../sub-components/BigCard";
 import BigChart from "../sub-components/BigCard";
 import DoughnutChart from "../sub-components/DoughnutChart";
 import DoughnutCard from "../sub-components/DoughnutCard";
+import axios from "axios";
 
 const projectList = [];
 
@@ -81,6 +81,7 @@ export default {
   },
   data() {
     return {
+      progress_rate_A: [],
       doughnutdata: {
         labels: [
           'Red',
@@ -160,8 +161,31 @@ export default {
     }
   },
   mounted() {
+    this.getAnalysisData()
   },
   methods: {
+    getAnalysisData(){
+      const that = this
+      axios.post(
+          '/user/personalstatistics',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response){
+            console.log(response)
+            if(response.data.status === 200){
+              that.progress_rate_A = [response.data.data.totalFinishTaskNumber, response.data.data.totalOverdueTaskNumber, response.data.data.totalTaskNumber - response.data.data.totalOverdueTaskNumber - response.data.data.totalFinishTaskNumber]
+            }
+          },
+          function (err){
+
+          }
+      )
+    },
     fillData() {
       this.datacollection = {
         labels: [this.getRandomInt(), this.getRandomInt()],
