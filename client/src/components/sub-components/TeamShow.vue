@@ -324,13 +324,18 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('删除组员失败')
+              if(response.data.code === 205)
+                that.$message.error('群主不能移除自己')
+              else if(response.data.code === 201)
+                that.$message.error('权限不足')
+              else
+                that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，删除组员失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -362,13 +367,15 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('修改组名失败')
+              if(response.data.code === 201)
+                that.$message.error('权限不足')
+              else that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，修改组名失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -401,13 +408,16 @@ export default {
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.addAdminVisible.doClose()
               } else {
-                that.$message.error('添加管理员失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function (err) {
-              that.$message.error('响应失败，添加管理员失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -444,12 +454,16 @@ export default {
               } else {
                 if (response.data.code === 201)
                   that.$message.error('发送邀请失败')
+                if(response.data.code === 666)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function (err) {
-              that.$message.error('响应失败,发送邀请失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -482,13 +496,15 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('修改队伍描述信息失败')
+              if(response.data.code === 201)
+                that.$message.error('权限不足')
+              else that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，修改队伍描述信息失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -517,13 +533,16 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('解散组失败')
+              if(response.data.code === 201)
+                that.$message.error('权限不足')
+              else
+                that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败,解散该组失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -544,7 +563,7 @@ export default {
           function (response) {
             if (response.data.code === 200) {
               that.$message({
-                message: '退出组成功',
+                message: '退组成功',
                 type: 'success'
               })
               that.closeTeamDrawer()
@@ -552,13 +571,18 @@ export default {
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('退出组失败')
+              if(response.data.code === 301)
+                that.$message.error('群主不能退群')
+              else if(response.data.code === 302)
+                that.$message.error('该成员不在组内')
+              else
+                that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function (err) {
-            that.$message.error('响应失败，退出组失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -591,13 +615,16 @@ export default {
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.deleteAdminVisible.doClose()
               } else {
-                that.$message.error('撤销管理员失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function (err) {
-              that.$message.error('响应失败，撤销管理员失败')
+              that.$message.error('响应失败')
             }
         )
       }
