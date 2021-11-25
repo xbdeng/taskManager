@@ -149,7 +149,7 @@ public class TeamController {
 
     @PostMapping("statistics")
     @RequiresAuthentication
-    public Result teamStatistics(@RequestBody String teamId,HttpServletRequest httpServletRequest) {
+    public Result<TeamStatisticsDTO> teamStatistics(@RequestBody String teamId,HttpServletRequest httpServletRequest) {
         try {
             BigInteger teamId_ = JSONObject.parseObject(teamId).getBigInteger("teamId");
             String token = httpServletRequest.getHeader("Authorization");
