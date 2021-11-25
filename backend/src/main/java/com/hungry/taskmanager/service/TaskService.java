@@ -39,4 +39,8 @@ public interface TaskService {
     Result editTaskRemindDate(EditTaskTime editTaskTime);
 
     Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO);
+
+    Result addTaskTag(EditTaskTag editTaskTag, String username);
+
+    Result deleteTaskTag(EditTaskTag editTaskTag, String username);
 }
