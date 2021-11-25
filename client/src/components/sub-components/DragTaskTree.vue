@@ -245,8 +245,8 @@ export default {
       }
       for(let i in u.subTasks) {
         let subTask = u.subTasks[i]
-        let getPath = this.dfs(subTask, target, path + i.toString())
-        if(!(getPath === '*')) return path + i.toString()
+        let getPath = this.dfs(subTask, target, path + '-' + i.toString())
+        if(!(getPath === '*')) return path + '-' + i.toString()
       }
       return '*'
     },
