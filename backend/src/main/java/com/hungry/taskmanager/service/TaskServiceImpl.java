@@ -87,16 +87,14 @@ public class TaskServiceImpl implements TaskService{
         }
         // select all related tag ids
         // insert user task relationship if the type is individual
-        if (type.equals(BigInteger.valueOf(0))){
-            UserTask ut = new UserTask().setUserId(creator).setTaskId(taskId);
-            userTaskMapper.insert(ut);
-            // insert user task tag relationship
+        UserTask ut = new UserTask().setUserId(creator).setTaskId(taskId);
+        userTaskMapper.insert(ut);
+        // insert user task tag relationship
 
-            for(Tag tag : insertedTags){
-                UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
-                utt.setTagId(tag.getTagId());
-                userTaskTagMapper.insert(utt);
-            }
+        for(Tag tag : insertedTags){
+            UserTaskTag utt = new UserTaskTag().setUtId(ut.getUtId());
+            utt.setTagId(tag.getTagId());
+            userTaskTagMapper.insert(utt);
         }
         return taskId;
     }
