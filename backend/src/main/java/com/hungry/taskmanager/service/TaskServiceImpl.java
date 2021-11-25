@@ -248,8 +248,40 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO) {
-        UpdateWrapper<Task> updateWrapper = new UpdateWrapper();
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id",editPrivilegeDTO.getTaskId()).set("privilege",editPrivilegeDTO.getPrivilege());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editTaskName(EditTaskNameDTO editTaskNameDTO) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskNameDTO.getTaskId()).set("task_name",editTaskNameDTO.getTaskName());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editDescription(EditTaskDescription editTaskDescription) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskDescription.getTaskId()).set("description",editTaskDescription.getDescription());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editStartDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("create_date",editTaskTime.getDateTime());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editDueDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("due_date",editTaskTime.getDateTime());
         taskMapper.update(null,updateWrapper);
         return Result.succ("更新成功");
     }
@@ -272,6 +304,11 @@ public class TaskServiceImpl implements TaskService{
                     updateWrapper.set("status",0);
                 }
             }
+        }
+
+        //已完成
+        if(editStatusDTO.getStatus() == 1){
+            updateWrapper.set("finish_date",LocalDateTime.now());
         }
         taskMapper.update(null,updateWrapper);
         return Result.succ("更新成功");

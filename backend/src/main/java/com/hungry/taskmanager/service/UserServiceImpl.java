@@ -369,7 +369,7 @@ public class UserServiceImpl implements UserService {
             }
 
             //任务截止时间
-            if (task.getFinishDate() != null) {
+            if (task.getDueDate() != null) {
                 //按年分
                 int year = task.getDueDate().getYear();
                 if (year_count_due.get(year) == null) {
