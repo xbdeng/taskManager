@@ -253,13 +253,13 @@ export default {
         if (id === '-1') return {
             taskName:'Please choose your task'
         }
-        if (parseInt(id[0]) >= taskList.length) {
+        if (parseInt(id.split('-')[0]) >= taskList.length) {
           return {
             taskName: 'Please choose your task'
           }
         }
-        if (id.length === 1) return taskList[parseInt(id)];
-        return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
+        if (id.split('-').length === 1) return taskList[parseInt(id)];
+        return this.getTaskById(taskList[parseInt(id.split('-')[0])].subTasks, id.substr(id.indexOf('-') + 1));
     },
     getTask(id) {
         switch(this.Specifier) {

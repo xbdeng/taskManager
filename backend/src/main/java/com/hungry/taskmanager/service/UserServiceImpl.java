@@ -8,6 +8,7 @@ import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.entity.relation_entity.Contact;
 import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
+import com.hungry.taskmanager.utils.RedisUtil;
 import io.swagger.models.auth.In;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
@@ -44,10 +45,16 @@ public class UserServiceImpl implements UserService {
     private TaskService taskService;
 
     @Resource
+    private MailService mailService;
+
+    @Resource
     private UserTaskMapper userTaskMapper;
 
     @Resource
     private TaskMapper taskMapper;
+
+    @Resource
+    private RedisUtil redisUtil;
 
     @Override
     public List<Perms> findPermsByRoleId(String id) {
@@ -433,7 +440,7 @@ public class UserServiceImpl implements UserService {
             int month = entry.getKey().month;
             int day = entry.getKey().day;
             int count = entry.getValue();
-            finishTaskNumbersByDays.add(new Day_count(year,month,day,count));
+            finishTaskNumbersByDays.add(new Day_count(year, month, day, count));
         }
         personalStatisticsDTO.setFinishTaskNumbersByDays(finishTaskNumbersByDays);
 
@@ -462,7 +469,7 @@ public class UserServiceImpl implements UserService {
             int month = entry.getKey().month;
             int day = entry.getKey().day;
             int count = entry.getValue();
-            startTaskNumbersByDays.add(new Day_count(year,month,day,count));
+            startTaskNumbersByDays.add(new Day_count(year, month, day, count));
         }
         personalStatisticsDTO.setStartTaskNumbersByDays(startTaskNumbersByDays);
 
@@ -491,13 +498,33 @@ public class UserServiceImpl implements UserService {
             int month = entry.getKey().month;
             int day = entry.getKey().day;
             int count = entry.getValue();
-            dueTaskNumbersByDays.add(new Day_count(year,month,day,count));
+            dueTaskNumbersByDays.add(new Day_count(year, month, day, count));
         }
         personalStatisticsDTO.setDueTaskNumbersByDays(dueTaskNumbersByDays);
 
-        return new Result<>(200,"统计成功",personalStatisticsDTO);
+        return new Result<>(200, "统计成功", personalStatisticsDTO);
     }
 
+    @Override
+    public Result verifyEmail(String username) {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("username", username));
+        String email = user.getEmail();
+        mailService.sendVerifyEmail(email, username);
+        return Result.succ("验证码发送成功");
+    }
+
+    @Override
+    public boolean verifyCode(String username, String code) {
+        if (redisUtil.hasKey(username + "verifycode")) {
+            if(redisUtil.get(username + "verifycode").equals(code)){
+                UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+                updateWrapper.eq("username",username).set("email_verify",1);
+                userMapper.update(null,updateWrapper);
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 @Data
