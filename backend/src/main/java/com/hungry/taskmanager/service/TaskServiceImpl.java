@@ -287,6 +287,22 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
+    public Result editTaskRemindDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("remind_date",editTaskTime.getDateTime());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskLocationDTO.getTaskId()).set("location",editTaskLocationDTO.getLocation());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
     public Result editStatus(EditStatusDTO editStatusDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id",editStatusDTO.getTaskId());

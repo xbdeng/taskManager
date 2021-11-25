@@ -5,6 +5,7 @@ import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 
 import org.springframework.lang.NonNull;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.math.BigInteger;
@@ -34,4 +35,8 @@ public interface TaskService {
     Result editStartDate(EditTaskTime editTaskTime);
 
     Result editDueDate(EditTaskTime editTaskTime);
+
+    Result editTaskRemindDate(EditTaskTime editTaskTime);
+
+    Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO);
 }
