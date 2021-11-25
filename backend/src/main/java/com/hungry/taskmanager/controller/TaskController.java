@@ -123,5 +123,16 @@ public class TaskController {
             return Result.fail(500, "服务器错误", null);
         }
     }
+
+    @PostMapping("/edit/privilege")
+    @RequiresAuthentication
+    public Result editPrivilege(@RequestBody EditPrivilegeDTO editPrivilegeDTO){
+        try {
+            return taskServiceImpl.editPrivilege(editPrivilegeDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 }
 

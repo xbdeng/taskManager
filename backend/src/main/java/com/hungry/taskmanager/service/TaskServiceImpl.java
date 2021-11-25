@@ -246,6 +246,14 @@ public class TaskServiceImpl implements TaskService{
         return Result.succ("分配任务成功");
     }
 
+    @Override
+    public Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper();
+        updateWrapper.eq("task_id",editPrivilegeDTO.getTaskId()).set("privilege",editPrivilegeDTO.getPrivilege());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
     public void addSubTask(AddSubTaskDTO params){
         taskMapper.update(new Task(), new UpdateWrapper<Task>().eq("task_id", params.getSubTask()).set("father_task", params.getFatherTask()));
     }

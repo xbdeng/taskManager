@@ -1,9 +1,6 @@
 package com.hungry.taskmanager.service;
 
-import com.hungry.taskmanager.dto.AssignTaskDTO;
-import com.hungry.taskmanager.dto.CreateTaskDTO;
-import com.hungry.taskmanager.dto.EditTaskDTO;
-import com.hungry.taskmanager.dto.QueryTaskDTO;
+import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 
@@ -24,4 +21,5 @@ public interface TaskService {
 
     Result assignTask(AssignTaskDTO assignTaskDTO, String username);
 
+    Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO);
 }
