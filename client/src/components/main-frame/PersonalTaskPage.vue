@@ -82,7 +82,7 @@
                     </div>
                   </el-submenu>
                 </el-menu>
-                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
+                  <el-input v-if='this.taskShow' v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-main>
               </el-container>
             </el-main>
