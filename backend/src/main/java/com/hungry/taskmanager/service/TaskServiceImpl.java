@@ -246,7 +246,7 @@ public class TaskServiceImpl implements TaskService {
         //分配者必须有分配权限 todo
 
         //被分配者必须在组内
-        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("user_id", assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
+        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("username", assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
         BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id", assignTaskDTO.getTaskId()).select("team_id")).getTeamId();
         for (BigInteger userId : userIds) {
             long c = teamUserMapper.selectCount(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId));

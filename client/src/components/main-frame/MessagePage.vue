@@ -22,8 +22,7 @@
                 <span v-show="data.type === 0" class="card__title">Group Invitation</span>
                 <span v-show="data.type === 1" class="card__title">Friend Request</span>
                 <span v-show="data.type === 2" class="card__title">Group Application</span>
-                <!--TODO -->
-                <span v-show="data.type === 3" class="card__title">Group Application</span>
+                <span v-show="data.type === 3" class="card__title">Assign Task</span>
                 <span v-show="data.type === 4" class="card__title">Friend ACK</span>
                 <span v-show="data.type === 5" class="card__title">Friend NAK</span>
                 <span v-show="data.type === 6" class="card__title">Group Invit ACK</span>
@@ -47,13 +46,13 @@
                 <span v-show="data.type === 0" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>想要与你一起组队成为<span class="card__body">{{ data.message }}</span></span>
                 <span v-show="data.type === 1" class=" card__title"><span class="card__body">{{ data.usernameFrom }}</span>想要与你成为好友</span>
                 <span v-show="data.type === 2" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>邀请你加入<span class="card__body">{{ data.message }}</span></span>
-                <!--TODO-->
-                <span v-show="data.type === 4" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的好友请求已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
-                <span v-show="data.type === 5" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的好友请求已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
-                <span v-show="data.type === 6" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组邀请<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
-                <span v-show="data.type === 7" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组邀请<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
-                <span v-show="data.type === 8" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组请求<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
-                <span v-show="data.type === 9" class="card__title "><span class="card__body">{{ data.usernameFrom }}</span>您的入组请求<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
+                <span v-show="data.type === 3" class="card__title "><span class="card__body"></span>你收到来自组<span class="card__body">{{ data.message }}</span>由<span class="card__body">{{ data.usernameFrom }}</span>布置的一个新任务</span>
+                <span v-show="data.type === 4" class="card__title "><span class="card__body"></span>您的好友请求已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
+                <span v-show="data.type === 5" class="card__title "><span class="card__body"></span>您的好友请求已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
+                <span v-show="data.type === 6" class="card__title "><span class="card__body"></span>您的入组邀请<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
+                <span v-show="data.type === 7" class="card__title "><span class="card__body"></span>您的入组邀请<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
+                <span v-show="data.type === 8" class="card__title "><span class="card__body"></span>您的入组请求<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>接受</span>
+                <span v-show="data.type === 9" class="card__title "><span class="card__body"></span>您的入组请求<span class="card__body">{{ data.message }}</span>已被<span class="card__body">{{ data.usernameFrom }}</span>拒绝</span>
               </el-col>
             </el-row>
           </div>

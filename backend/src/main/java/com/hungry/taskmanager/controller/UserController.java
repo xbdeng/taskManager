@@ -293,10 +293,10 @@ public class UserController {
             // access jar packages
             ApplicationHome h = new ApplicationHome(getClass());
             File jarF = h.getSource();
-            String path = request.getServletContext().getRealPath("/upload");
+            String path = jarF.getParentFile().toString()+"/upload/";
             File dir = new File(path);
             if (!dir.exists()) {
-                dir.mkdir();
+               dir.mkdirs();
             }
             File filePath = new File(dir, filename);
             System.out.println(filePath);

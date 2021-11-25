@@ -277,6 +277,8 @@ public class MessageServiceImpl implements MessageService{
                 }
                 case(4):{
                     mDTO.setType(3);
+                    String teamName = teamMapper.getTeamNameById(BigInteger.valueOf(Long.parseLong(message.getContent())));
+                    mDTO.setMessage(teamName);
                     message.setIsRead(1);
                     break;
                 }
@@ -292,21 +294,29 @@ public class MessageServiceImpl implements MessageService{
                 }
                 case(7):{
                     mDTO.setType(6);
+                    String teamName = teamMapper.getTeamNameById(BigInteger.valueOf(Long.parseLong(message.getContent())));
+                    mDTO.setMessage(teamName);
                     message.setIsRead(1);
                     break;
                 }
                 case(8):{
                     mDTO.setType(7);
+                    String teamName = teamMapper.getTeamNameById(BigInteger.valueOf(Long.parseLong(message.getContent())));
+                    mDTO.setMessage(teamName);
                     message.setIsRead(1);
                     break;
                 }
                 case(9):{
                     mDTO.setType(8);
+                    String teamName = teamMapper.getTeamNameById(BigInteger.valueOf(Long.parseLong(message.getContent())));
+                    mDTO.setMessage(teamName);
                     message.setIsRead(1);
                     break;
                 }
                 case(10):{
                     mDTO.setType(9);
+                    String teamName = teamMapper.getTeamNameById(BigInteger.valueOf(Long.parseLong(message.getContent())));
+                    mDTO.setMessage(teamName);
                     message.setIsRead(1);
                     break;
                 }
