@@ -180,7 +180,7 @@
               </el-col>
             </el-row>
             <!-- 如果是组队任务，显示这个任务覆盖的组员 -->
-            <el-row v-show="tempTaskForm.type===1 || tempTaskForm.type==='1'" type="flex" justify="start" align="middle">
+            <el-row v-show="(tempTaskForm.type===1 || tempTaskForm.type==='1') && !(this.singleTeamData == null)" type="flex" justify="start" align="middle">
               <!-- 显示组内成员的组件 -->
                   <el-col :span="8">
                       <span style="font-weight:bold;font-size: 18px">任务成员: </span>
@@ -287,11 +287,12 @@ export default {
   watch:{
     'singleTaskData':function() {
       this.tempTaskForm = JSON.parse(JSON.stringify(this.singleTaskData))
-    }
+    },
   },
   data() {
     const generateTransferData = _ => {
       const data = []
+      if(this.singleTeamData == null) return []
       data.push({
           key: this.singleTeamData.creator,
           label: this.singleTeamData.creator
@@ -308,7 +309,6 @@ export default {
           label: this.singleTeamData.members[i]
         });
       }
-      console.log(data)
       return data
     };
     // 生成某个任务组员的穿梭框信息

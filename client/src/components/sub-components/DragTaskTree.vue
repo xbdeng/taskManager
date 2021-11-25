@@ -28,7 +28,7 @@
           <i class="el-icon-s-flag" style="color:#7CFC00;font-size: 20px" v-if="row.priority === 0"></i>
         </el-tooltip>
       </template>
-      <template #status="{row}">;
+      <template #status="{row}">
         <el-tooltip effect="dark" content="任务正在进行中" placement="top-end">
           <i class="iconfont el-icon-githubzhengzaijinhang" style="color:deepskyblue;font-size: 20px" v-if="row.status === 0"></i>
         </el-tooltip>
