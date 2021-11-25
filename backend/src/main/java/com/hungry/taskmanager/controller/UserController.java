@@ -281,24 +281,24 @@ public class UserController {
     @PostMapping("/uploadimage")
     @RequiresAuthentication
     @ApiOperation(value = "upload image")
-    public Result<String> uploadImage(@RequestParam("file")MultipartFile img, HttpServletRequest request, HttpSession session){
-        try{
+    public Result<String> uploadImage(@RequestParam("file") MultipartFile img, HttpServletRequest request, HttpSession session) {
+        try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             String originalFileName = img.getOriginalFilename();
             // todo : validate image type
-            String filename = UUID.randomUUID()+originalFileName;
+            String filename = UUID.randomUUID() + originalFileName;
             String path = request.getServletContext().getRealPath("/upload");
             File dir = new File(path);
-            if(! dir.exists()){
+            if (!dir.exists()) {
                 dir.mkdir();
             }
             File filePath = new File(dir, filename);
             System.out.println(filePath);
             img.transferTo(filePath);
-            userService.uploadImage(username, "/upload/"+filename);
+            userService.uploadImage(username, "/upload/" + filename);
             return new Result<>(200, "successfully upload img", "");
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result<>(500, "server error", "");
         }
@@ -307,13 +307,13 @@ public class UserController {
     @PostMapping("/getimage")
     @RequiresAuthentication
     @ApiOperation(value = "upload image")
-    public Result<String> getImage(HttpServletRequest request){
-        try{
+    public Result<String> getImage(HttpServletRequest request) {
+        try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             String img = userService.getImage(username);
             return new Result<>(200, "successfully get img", img);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Result<>(500, "server error", "");
         }
@@ -324,8 +324,8 @@ public class UserController {
     public Result<List<UserDTO>> searchFriend(@RequestBody String username) {
         try {
             String name = JSONObject.parseObject(username).getString("username");
-            if(name == null || name.trim().equals("")){
-                return Result.fail(203,"用户名为空",null);
+            if (name == null || name.trim().equals("")) {
+                return Result.fail(203, "用户名为空", null);
             }
             return userService.searchFriend(name);
         } catch (Exception e) {
@@ -341,7 +341,37 @@ public class UserController {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return userService.personalStatistics(username);
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/sendverifyemail")
+    @RequiresAuthentication
+    public Result verifyEmail(HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return userService.verifyEmail(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/verifycode")
+    public Result<Integer> verifyCode(@RequestBody String code, HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            String code_ = JSONObject.parseObject(code).getString("code");
+            boolean b = userService.verifyCode(username, code_);
+            if (b) {
+                return new Result<>(200, "验证成功", 1);
+            }
+            return Result.fail(201, "验证码错误或过期", null);
+        } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
