@@ -81,7 +81,7 @@
                     <el-tooltip content="点击可修改任务的地点" slot="reference">
 
                       <el-link>
-                          {{ tempTaskForm.location === '' ||  tempTaskForm.location === null? '未设定地点' : tempTaskForm.location}}
+                          {{ tempTaskForm.location === '' ||  tempTaskForm.location == null? '未设定地点' : tempTaskForm.location}}
                       </el-link>
 
                     </el-tooltip>
@@ -358,6 +358,35 @@ export default {
     postTaskFinished($event) {
       if(document.getElementById('active') != null) {
         this.tempTaskForm.status = 2
+        const that = this
+        axios.post(
+            '/task/edit/status',
+            {
+              dueDate:that.tempTaskForm.dueDate,
+              status:1,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  message:'修改成功',
+                  type:'success'
+                })
+                that.$emit('update',{})
+              }else {
+                that.$message.error('修改失败')
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
       else if(document.getElementById('defined') != null) {
         this.tempTaskForm.status = 0
