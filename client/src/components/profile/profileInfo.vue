@@ -89,7 +89,15 @@
                 <div>
                   email
                   <br>
-                  <el-input placeholder="Put your email address here" v-model="email" @change="handleEmail"></el-input>
+                  <el-row>
+                    <el-col :span="18">
+                      <el-input placeholder="Put your email address here" v-model="email" @change="handleEmail" :disabled="emailbind"></el-input>
+                    </el-col>
+                    <el-col :span="6">
+                      <el-button type="primary" plain @click="bindEmail" v-if="!emailbind">验证邮箱</el-button>
+                      <el-button type="primary" plain @click="unbindEmail" v-if="emailbind">解绑邮箱</el-button>
+                    </el-col>
+                  </el-row>
                 </div>
               </el-col>
 
@@ -183,7 +191,8 @@ export default {
       githubbind: '',
       googlebind: '',
       token_up:'',
-      image_uri:''
+      image_uri:'',
+      emailbind: false
     }
   },
   mounted() {
@@ -249,6 +258,9 @@ export default {
             that.userId = response.data.data.userId
             that.githubbind = response.data.data.githubName
             that.googlebind = response.data.data.googleName
+            if(response.data.data.emailVerify === 1){
+              that.emailbind = true
+            }
             // console.log(response)
           }
       )
@@ -474,6 +486,8 @@ export default {
                     type: 'success'
                   }
               )
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
               location.reload();
             } else {
               that.$message({
@@ -519,6 +533,8 @@ export default {
                     type: 'success'
                   }
               )
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
               location.reload();
             } else {
               that.$message({
@@ -538,6 +554,116 @@ export default {
     },
     handletoken(){
       this.token_up = window.sessionStorage.getItem('token')
+    },
+    bindEmail(){
+      const that = this
+      axios.post(
+          '/user/sendverifyemail',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response){
+            if(response.data.code === 200){
+              that.$message({
+                message: '验证码发送成功，请检查邮箱',
+                type: 'success'
+              })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              that.$prompt('请输入验证码', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                // inputErrorMessage: '邮箱格式不正确'
+              }).then(({ value }) => {
+                const thatthat = that
+                // that.$message({
+                //   type: 'success',
+                //   message: '你的邮箱是: ' + value
+                // });
+                axios.post(
+                    '/user/verifycode',
+                    {code:value},
+                    {
+                      headers: {
+                        Authorization: window.sessionStorage.getItem('token')
+                      }
+                    }
+                ).then(
+                    function (response){
+                      if(response.data.code === 200){
+                        thatthat.$message({
+                          message: 'Unite success',
+                          type: 'success'
+                        })
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                        location.reload();
+                      }
+                      else{
+                        thatthat.$message({
+                          message: 'valid code error',
+                          type: 'error'
+                        })
+                      }
+                    }
+                )
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '取消输入'
+                });
+              });
+            }
+          },
+          function (err){
+            that.$message({
+              message: 'server error',
+              type: 'error'
+            })
+          }
+      )
+    },
+    unbindEmail(){
+      const that = this
+      axios.post(
+          '/user/unbindemail',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response){
+            if(response.data.code === 200){
+              that.$message({
+                message: 'unbind success',
+                type: 'success'
+              })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              that.emailbind = false
+              location.reload();
+            }
+            else {
+              that.$message({
+                message: 'unbind error',
+                type: 'error'
+              })
+            }
+          },
+          function (err){
+            that.$message({
+              message: 'server error',
+              type: 'error'
+            })
+          }
+      )
     }
   }
 }
