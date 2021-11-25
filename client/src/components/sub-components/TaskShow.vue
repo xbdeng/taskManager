@@ -226,7 +226,7 @@
                   </el-col>
                   <!-- 增加成员的接口 -->
                   <el-col :span="3">
-                      <el-popover placement="top" width="900" trigger="click" title="邀请成员">
+                      <el-popover placement="top" width="900" trigger="click" title="邀请成员" ref="inviteMemberVisible">
                         <el-row>
                             <el-col>
                                 <el-transfer :data="this.CU(this.list1,this.list2)" filterable :button-texts="['取消添加','添加任务成员']" v-model="invitedMembers" :titles="['组内成员','分配名单']"></el-transfer>
@@ -737,6 +737,7 @@ export default {
                 })
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$refs.inviteMemberVisible.doClose()
               } else {
                 that.$message.error('分配任务失败')
               }

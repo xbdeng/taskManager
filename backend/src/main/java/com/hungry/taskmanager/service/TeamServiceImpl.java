@@ -2,14 +2,15 @@ package com.hungry.taskmanager.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.hungry.taskmanager.dao.TeamMapper;
-import com.hungry.taskmanager.dao.TeamUserMapper;
-import com.hungry.taskmanager.dao.UserMapper;
+import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
+import com.hungry.taskmanager.entity.Task;
 import com.hungry.taskmanager.entity.Team;
 import com.hungry.taskmanager.entity.User;
+import com.hungry.taskmanager.entity.relation_entity.TeamTask;
 import com.hungry.taskmanager.entity.relation_entity.TeamUser;
+import com.hungry.taskmanager.entity.relation_entity.UserTask;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,6 +31,15 @@ public class TeamServiceImpl implements TeamService {
 
     @Resource
     TeamUserMapper teamUserMapper;
+
+    @Resource
+    TeamTaskMapper teamTaskMapper;
+
+    @Resource
+    TaskMapper taskMapper;
+
+    @Resource
+    UserTaskMapper userTaskMapper;
 
     @Override
     public Result createTeam(CreateTeamDTO createTeamDTO, String creatorName) {
@@ -212,5 +222,20 @@ public class TeamServiceImpl implements TeamService {
         }
         teamUserMapper.delete(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId));
         return Result.succ("退群成功");
+    }
+
+    @Override
+    public Result<TeamStatisticsDTO> teamStatistics(BigInteger teamId, String username) {
+        TeamStatisticsDTO teamStatisticsDTO = new TeamStatisticsDTO();
+        List<BigInteger> teamTaskIds = teamTaskMapper.selectList(new QueryWrapper<TeamTask>().eq("team_id",teamId)).stream().map(TeamTask::getTeamId).collect(Collectors.toList());
+        teamStatisticsDTO.setTotalTeamTaskNumber(teamTaskIds.size());
+
+        List<BigInteger> finishIds = taskMapper.selectList(new QueryWrapper<Task>().in("task_id",teamTaskIds).eq("status",1).select("task_id")).stream().map(Task::getTaskId).collect(Collectors.toList());
+        teamStatisticsDTO.setTotalTeamFinishTaskNumber(finishIds.size());
+
+        long yourFinish = userTaskMapper.selectCount(new QueryWrapper<UserTask>().in("task_id",finishIds));
+        teamStatisticsDTO.setTotalYourFinishTeamTaskNumber((int)yourFinish);
+
+        return new Result<>(200,"统计成功",teamStatisticsDTO);
     }
 }
