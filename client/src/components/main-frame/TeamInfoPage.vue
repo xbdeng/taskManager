@@ -64,7 +64,8 @@
             :singleTaskData="teamInfo.length === 0 ? this.taskSample :getTaskById(teamInfo[this.selectedTeam].teamTasks, chosenTaskId)"
             :singleTeamData="this.teamInfo === 0 ? this.teamSample: teamInfo[selectedTeam]"
             v-on:closeTaskDrawer='closeTaskDrawer($event)'
-            v-on:emitTreeData="emitTreeData($event)"></TaskShow>
+            v-on:emitTreeData="emitTreeData($event)"
+            v-on:update="update($event)"></TaskShow>
       </el-drawer>
 
       <el-drawer
@@ -325,6 +326,10 @@ export default {
     },
     postTeamAgain() {
       this.$emit('postTeamInfoAgain', {})
+    },
+    update() {
+      this.$forceUpdate()
+      this.$emit('postTeamInfoAgain',{})
     }
   }
 

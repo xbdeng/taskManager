@@ -246,7 +246,7 @@
                     </el-row>
                       <el-tooltip content="点击可修改任务的描述信息" slot="reference">
                         <el-link>
-                            {{ tempTaskForm.description === null ? '描述信息为空' : tempTaskForm.description}}
+                            {{ (tempTaskForm.description == null || tempTaskForm.description === '') ? '描述信息为空' : tempTaskForm.description}}
                         </el-link>
                       </el-tooltip>
                   </el-popover>
@@ -409,6 +409,35 @@ export default {
       let value = this.editedPriority
       if(value != null) {
         this.tempTaskForm.privilege = this.editedPriority - 1
+        const that = this
+        axios.post(
+            '/task/edit/privilege',
+            {
+              privilege:that.tempTaskForm.privilege,
+              taskId:this.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$forceUpdate()
+                that.$emit('update',{})
+              } else {
+                that.$message.error('修改任务优先级失败')
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改任务优先级失败')
+            }
+        )
       }
       this.editedPriority = null
     },
