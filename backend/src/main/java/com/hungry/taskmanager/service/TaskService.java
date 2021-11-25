@@ -17,7 +17,7 @@ public interface TaskService {
 
     int deleteTask(@NonNull long taskId) throws Exception;
 
-    List<Task> queryTask(QueryTaskDTO filter) throws Exception;
+    List<TaskDTO> queryTask(QueryTaskDTO filter) throws Exception;
 
     void editTask(EditTaskDTO params) throws Exception;
 

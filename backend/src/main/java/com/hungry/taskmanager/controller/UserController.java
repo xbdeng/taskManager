@@ -288,6 +288,9 @@ public class UserController {
             String originalFileName = img.getOriginalFilename();
             // todo : validate image type
             String filename = UUID.randomUUID() + originalFileName;
+            // access jar packages
+            ApplicationHome h = new ApplicationHome(getClass());
+            File jarF = h.getSource();
             String path = request.getServletContext().getRealPath("/upload");
             File dir = new File(path);
             if (!dir.exists()) {
