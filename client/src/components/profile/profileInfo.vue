@@ -95,6 +95,7 @@
                     </el-col>
                     <el-col :span="6">
                       <el-button type="primary" plain @click="bindEmail" v-if="!emailbind">验证邮箱</el-button>
+                      <el-button type="primary" plain @click="unbindEmail" v-if="emailbind">解绑邮箱</el-button>
                     </el-col>
                   </el-row>
                 </div>
@@ -620,7 +621,47 @@ export default {
             }
           },
           function (err){
-
+            that.$message({
+              message: 'server error',
+              type: 'error'
+            })
+          }
+      )
+    },
+    unbindEmail(){
+      const that = this
+      axios.post(
+          '/user/unbindemail',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function (response){
+            if(response.data.code === 200){
+              that.$message({
+                message: 'unbind success',
+                type: 'success'
+              })
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              that.emailbind = false
+              location.reload();
+            }
+            else {
+              that.$message({
+                message: 'unbind error',
+                type: 'error'
+              })
+            }
+          },
+          function (err){
+            that.$message({
+              message: 'server error',
+              type: 'error'
+            })
           }
       )
     }
