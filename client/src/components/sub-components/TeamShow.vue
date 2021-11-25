@@ -7,7 +7,7 @@
         <el-header>
           <el-row :gutter="10" type="flex" align="middle">
             <el-col :span="4">
-            <el-popover placement="top" width="200" trigger="click" title="修改组名">
+            <el-popover placement="top" width="200" trigger="click" title="修改组名" ref="teamNameVisible">
               <el-row>
                 <el-col>
                   <el-input placeholder="请输入修改后的组名..." clearable v-model="editedTeamName"></el-input>
@@ -141,7 +141,7 @@
                   <span style="font-weight:bold;font-size: 18px">队伍描述信息：</span>
                 </el-col>
                 <el-col>
-                <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息">
+                <el-popover placement="bottom" width="200" trigger="click" title="修改组的描述信息" ref="teamDescriptionVisible">
                   <el-row>
                     <el-col>
                       <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4"
@@ -331,17 +331,19 @@ export default {
     editTeamName() {
       const that = this
       let teamId = this.singleTeamData.teamId
-      axios({
-        methods: 'POST',
-        url: '/team/editteam',
-        data: {
+      axios.post(
+    '/team/editteam',
+        {
           teamName: that.editedTeamName,
-          teamId: teamId
+          teamId: teamId,
+          description:that.singleTeamData.description
         },
-        headers: {
-          Authorization: window.sessionStorage.getItem('token')
-        }
-      }).then(
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
           function (response) {
             if (response.data.code === 200) {
               that.$message({
@@ -349,6 +351,7 @@ export default {
                 type: 'success'
               })
               that.editedTeamName = null
+              that.$refs.teamNameVisible.doClose()
               that.$emit('postTeamInfoAgain', {})
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -450,7 +453,8 @@ export default {
           'team/editteam',
           {
             description: that.editedTeamDescription,
-            teamId: teamId
+            teamId: teamId,
+            teamName:that.singleTeamData.teamName
           },
           {
             headers: {
@@ -466,6 +470,7 @@ export default {
               })
               that.editedDescription = null
               that.$emit('postTeamInfoAgain', {})
+              that.$refs.teamDescriptionVisible.doClose()
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
