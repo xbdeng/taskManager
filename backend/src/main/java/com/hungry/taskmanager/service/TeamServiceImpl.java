@@ -78,7 +78,7 @@ public class TeamServiceImpl implements TeamService {
             try {
                 teamUserMapper.insert(new TeamUser().setTeamId(oppoTeamMemberDTO.getTeamId()).setUserId(userId).setIdentity("member"));
             } catch (Exception e) {
-                return Result.fail(201,"添加成员失败",null);
+                return Result.fail(500,"添加成员失败",null);
             }
         }
         return Result.succ("添加成功");
@@ -102,7 +102,7 @@ public class TeamServiceImpl implements TeamService {
         if(isCreator(operator,oppoTeamMemberDTO.getTeamId())){
             for(BigInteger userId:usersId){
                 if(isCreator(userId,oppoTeamMemberDTO.getTeamId())){
-                    return Result.fail(201,"群主不能移除自己",null);
+                    return Result.fail(205,"群主不能移除自己",null);
                 }
             }
         } else if(isAdmin(operator,oppoTeamMemberDTO.getTeamId())){
@@ -215,10 +215,10 @@ public class TeamServiceImpl implements TeamService {
         BigInteger userId = userMapper.getIdByName(username);
         TeamUser teamUser = teamUserMapper.selectOne(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId));
         if(teamUser == null){
-            return Result.fail(201,"该成员不在组内",null);
+            return Result.fail(302,"该成员不在组内",null);
         }
         if(teamUser.getIdentity().equals("creator")){
-            return Result.fail(201,"群主不能退群",null);
+            return Result.fail(301,"群主不能退群",null);
         }
         teamUserMapper.delete(new QueryWrapper<TeamUser>().eq("team_id",teamId).eq("user_id",userId));
         return Result.succ("退群成功");
