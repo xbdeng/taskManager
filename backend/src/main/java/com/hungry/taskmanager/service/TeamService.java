@@ -7,24 +7,26 @@ import java.math.BigInteger;
 import java.util.List;
 
 public interface TeamService {
-    Result createTeam(CreateTeamDTO createTeamDTO,String creatorName);
+    Result createTeam(CreateTeamDTO createTeamDTO, String creatorName);
 
-    Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
+    Result addMember(OppoTeamMemberDTO oppoTeamMemberDTO, String operator);
 
-    Result setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
+    Result setAdmin(OppoTeamMemberDTO oppoTeamMemberDTO, String operator);
 
-    Result removeMember(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
+    Result removeMember(OppoTeamMemberDTO oppoTeamMemberDTO, String operator);
 
-    Result dismiss(BigInteger teamId,String operator);
+    Result dismiss(BigInteger teamId, String operator);
 
-    Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO,String operator);
+    Result removeAdmin(OppoTeamMemberDTO oppoTeamMemberDTO, String operator);
 
-    Result editTeam(EditTeamDTO params,String operator);
+    Result editTeam(EditTeamDTO params, String operator);
 
     boolean isInTeam(BigInteger userId, BigInteger teamId);
 
     Result<List<QueryTeamDTO>> queryTeam(String teamName, BigInteger teamId);
 
     Result withdraw(BigInteger teamId, String username);
+
+    Result<TeamStatisticsDTO> teamStatistics(BigInteger teamId, String username);
 
 }

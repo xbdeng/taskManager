@@ -147,4 +147,18 @@ public class TeamController {
         }
     }
 
+    @PostMapping("statistics")
+    @RequiresAuthentication
+    public Result teamStatistics(@RequestBody String teamId,HttpServletRequest httpServletRequest) {
+        try {
+            BigInteger teamId_ = JSONObject.parseObject(teamId).getBigInteger("teamId");
+            String token = httpServletRequest.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return teamService.teamStatistics(teamId_, username);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500,"服务器错误",null);
+        }
+    }
+
 }
