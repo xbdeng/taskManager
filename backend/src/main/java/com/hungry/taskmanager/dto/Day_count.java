@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class Day_count {
     int year;
-    int mouth;
+    int month;
     int day;
     int count;
 }
