@@ -580,6 +580,14 @@ export default {
           if (tmp.type === 8) {
             that.$notify.info({
               title: tmp.from,
+              message: '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 接受'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 接受');
+          }
+          if (tmp.type === 9) {
+            that.$notify.info({
+              title: tmp.from,
               message: '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 拒绝'
             });
             that.showMessageNote = 'new'

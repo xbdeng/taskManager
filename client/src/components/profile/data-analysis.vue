@@ -232,7 +232,7 @@ export default {
           }
       ).then(
           function (response) {
-            // console.log(response)
+            console.log(response)
             if (response.data.code === 200) {
               // 饼状图
               that.doughnutdata = {
@@ -326,12 +326,12 @@ export default {
               }
               for (let i in response.data.data.dueTaskNumbersByMonths) {
                 if (response.data.data.dueTaskNumbersByMonths[i].year === date.getFullYear()) {
-                  month_due[date.getMonth()] = response.data.data.dueTaskNumbersByMonths[i].count
+                  month_due[response.data.data.dueTaskNumbersByMonths[i].month] = response.data.data.dueTaskNumbersByMonths[i].count
                 }
               }
               for (let i in response.data.data.dueTaskNumbersByDays) {
                 if (response.data.data.dueTaskNumbersByDays[i].year === date.getFullYear() && response.data.data.dueTaskNumbersByDays[i].month === date.getMonth() + 1) {
-                  day_due[date.getDay()] = response.data.data.dueTaskNumbersByDays[i].count
+                  day_due[response.data.data.dueTaskNumbersByDays[i].day] = response.data.data.dueTaskNumbersByDays[i].count
                 }
               }
 
@@ -343,12 +343,12 @@ export default {
               }
               for (let i in response.data.data.finishTaskNumbersByMonths) {
                 if (response.data.data.finishTaskNumbersByMonths[i].year === date.getFullYear()) {
-                  month_finish[date.getMonth()] = response.data.data.finishTaskNumbersByMonths[i].count
+                  month_finish[response.data.data.finishTaskNumbersByMonths[i].month] = response.data.data.finishTaskNumbersByMonths[i].count
                 }
               }
               for (let i in response.data.data.finishTaskNumbersByDays) {
                 if (response.data.data.finishTaskNumbersByDays[i].year === date.getFullYear() && response.data.data.finishTaskNumbersByDays[i].month === date.getMonth() + 1) {
-                  day_finish[date.getDay()] = response.data.data.finishTaskNumbersByDays[i].count
+                  day_finish[response.data.data.finishTaskNumbersByDays[i].day] = response.data.data.finishTaskNumbersByDays[i].count
                 }
               }
 
@@ -360,12 +360,12 @@ export default {
               }
               for (let i in response.data.data.startTaskNumbersByMonths) {
                 if (response.data.data.startTaskNumbersByMonths[i].year === date.getFullYear()) {
-                  month_start[date.getMonth()] = response.data.data.startTaskNumbersByMonths[i].count
+                  month_start[response.data.data.startTaskNumbersByMonths[i].month] = response.data.data.startTaskNumbersByMonths[i].count
                 }
               }
               for (let i in response.data.data.startTaskNumbersByDays) {
                 if (response.data.data.startTaskNumbersByDays[i].year === date.getFullYear() && response.data.data.startTaskNumbersByDays[i].month === date.getMonth() + 1) {
-                  day_start[date.getDay()] = response.data.data.startTaskNumbersByDays[i].count
+                  day_start[response.data.data.startTaskNumbersByDays[i].day] = response.data.data.startTaskNumbersByDays[i].count
                 }
               }
 
