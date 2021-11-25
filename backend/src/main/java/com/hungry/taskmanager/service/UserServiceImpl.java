@@ -144,7 +144,14 @@ public class UserServiceImpl implements UserService {
         }
         // get all related task
         for (TeamDTO team : teamMap.values()) {
-            team.setTeamTasks(taskService.queryTask(new QueryTaskDTO().setTeamId(team.getTeamId())));
+            List<Task>tasks = taskService.queryTask(new QueryTaskDTO().setTeamId(team.getTeamId()));
+            for(Task task:tasks){
+                BigInteger taskId = task.getTaskId();
+                List<BigInteger> userIds =  userTaskMapper.selectList(new QueryWrapper<UserTask>().eq("task_id",taskId)).stream().map(UserTask::getUserId).collect(Collectors.toList());
+                List<String> users = userMapper.selectList(new QueryWrapper<User>().in("user_id",userIds).select("username")).stream().map(User::getUsername).collect(Collectors.toList());
+                task.setMembers(users);
+            }
+            team.setTeamTasks(tasks);
         }
         return returnList;
 
