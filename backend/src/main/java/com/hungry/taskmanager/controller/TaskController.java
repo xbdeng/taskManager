@@ -125,6 +125,19 @@ public class TaskController {
         }
     }
 
+    @PostMapping("/unassigntask")
+    @RequiresAuthentication
+    public Result unassignTask(@RequestBody AssignTaskDTO assignTaskDTO,HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.unassignTask(assignTaskDTO, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
     @PostMapping("/edit/privilege")
     @RequiresAuthentication
     public Result editPrivilege(@RequestBody EditPrivilegeDTO editPrivilegeDTO) {

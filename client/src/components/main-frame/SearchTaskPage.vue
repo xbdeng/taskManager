@@ -22,7 +22,7 @@
 
             </el-menu>
         </el-main>
-        <el-drawer 
+        <el-drawer
             title="任务过滤器"
             :visible.sync="fliterDrawer"
             direction="ltr"
@@ -43,9 +43,9 @@
                     <el-row type="flex" justify="start" align="middle">
                         <el-col :span="13">
                             <el-tag :key="tag"
-                            v-for="tag in fliterForm.tags" 
-                            closable 
-                            :disable-transitions="false" 
+                            v-for="tag in fliterForm.tags"
+                            closable
+                            :disable-transitions="false"
                             @close= "deleteTag(tag)">
                                 {{ tag }}
                             </el-tag>
@@ -125,7 +125,7 @@
                 </el-col>
             </el-row>
         </el-drawer>
-        <el-drawer 
+        <el-drawer
             title="查看或编辑任务"
             :visible.sync="taskInfoDrawer"
             direction="rtl"
@@ -296,7 +296,7 @@ export default {
                     this.$message.error('添加失败，已有该标签')
                     this.inputVisible = false;
                     this.addedTag = '';
-                    return 
+                    return
                 }
             }
                 this.fliterForm.tags.push(inputValue);

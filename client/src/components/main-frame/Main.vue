@@ -529,6 +529,49 @@ export default {
             that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
+          if(tmp.type === 3){
+
+          }
+          if(tmp.type === 4){
+            that.$notify.info({
+              title: tmp.from,
+              message: '您的好友请求已被' + tmp.from + ' 接受'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的好友请求已被' + tmp.from + ' 接受');
+          }
+          if(tmp.type === 5){
+            that.$notify.info({
+              title: tmp.from,
+              message: '您的好友请求已被' + tmp.from + ' 拒绝'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的好友请求已被' + tmp.from + ' 拒绝');
+          }
+          if(tmp.type === 6){
+            that.$notify.info({
+              title: tmp.from,
+              message: '您的入组邀请已被' + tmp.from + ' 接受'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的入组邀请已被' + tmp.from + ' 接受');
+          }
+          if(tmp.type === 7){
+            that.$notify.info({
+              title: tmp.from,
+              message: '您的入组邀请'+ tmp.groupName +'已被' + tmp.from + ' 拒绝'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的入组邀请'+ tmp.groupName +'已被' + tmp.from + ' 拒绝');
+          }
+          if(tmp.type === 8){
+            that.$notify.info({
+              title: tmp.from,
+              message: '您的入组请求'+ tmp.groupName +'已被' + tmp.from + ' 拒绝'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的入组请求'+ tmp.groupName +'已被' + tmp.from + ' 拒绝');
+          }
         }
       }
     },
