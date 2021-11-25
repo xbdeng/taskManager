@@ -213,13 +213,13 @@
                         </el-button>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item
-                                v-for="member in tempTaskForm.members"
-                                :key="member.name"
-                                @mouseover.native="whenMouseIn(member.name)"
+                                v-for="member in this.tempTaskForm.members"
+                                :key="member"
+                                @mouseover.native="whenMouseIn(member)"
                                 @mouseout.native="whenMouseOut"
-                                @click.native="deleteMember(member.name)">
-                                {{ member.name }}
-                              <i class="el-icon-remove" v-if="member.name===mousein"></i>
+                                @click.native="deleteMember(member)">
+                                {{ member }}
+                              <i class="el-icon-remove" v-if="member===mousein"></i>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
