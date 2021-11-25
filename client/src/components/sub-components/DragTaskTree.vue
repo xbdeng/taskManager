@@ -7,12 +7,13 @@
         resize
         fixed
         :isdraggable="true"
-        height="700">
-      <template #selection="{row}">
-        <h1 style="font-family: Consolas!important;">{{ row.name }}</h1>
-      </template>
+        height
+        border>
       <template #id="{row}">
         {{ row.id }}
+      </template>
+      <template #selection="{row}">
+        <h1>{{ row.name }}</h1>
       </template>
       <template #priority="{row}">
         <el-tooltip effect="dark" content="优先级：很高" placement="top-end">
@@ -64,18 +65,18 @@ export default {
     return {
       colprop:[
         {
+          title: "任务ID",
+          type: "id",
+          width: 100,
+          align: "center"
+        },
+        {
           type: "selection",
           title: "<a>任务名称</a>",
           field: "name",
           width: 200,
           align: "left",
           titleAlign: "left",
-        },
-        {
-          title: "任务ID",
-          type: "id",
-          width: 100,
-          align: "center"
         },
         {
           title:"任务优先级",
