@@ -8,6 +8,7 @@ import com.hungry.taskmanager.entity.*;
 import com.hungry.taskmanager.entity.relation_entity.Contact;
 import com.hungry.taskmanager.entity.relation_entity.TeamUser;
 import com.hungry.taskmanager.entity.relation_entity.UserTask;
+import com.hungry.taskmanager.utils.ICal4jUtil;
 import com.hungry.taskmanager.utils.RedisUtil;
 import io.swagger.models.auth.In;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -15,11 +16,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import net.fortuna.ical4j.data.CalendarOutputter;
+import net.fortuna.ical4j.model.Calendar;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.net.SocketException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -539,6 +547,22 @@ public class UserServiceImpl implements UserService {
         updateWrapper.eq("username",username).set("email_verify",0).set("email",null);
         userMapper.update(null,updateWrapper);
         return Result.succ("解绑成功");
+    }
+
+    @Override
+    public Result exportTask(String username) throws IOException, MessagingException {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("username",username));
+        if(user.getEmailVerify()!=1){
+            return Result.fail(201,"邮箱无效，无法发送",null);
+        }
+        BigInteger userId = user.getUserId();
+        String email = user.getEmail();
+        List<BigInteger> taskIds = userTaskMapper.selectList(new QueryWrapper<UserTask>().eq("user_id",userId).select("task_id")).stream().map(UserTask::getTaskId).collect(Collectors.toList());
+        List<Task> tasks = taskMapper.selectList(new QueryWrapper<Task>().in("task_id",taskIds));
+        Calendar calendar = ICal4jUtil.TasksToCalendar((ArrayList<Task>) tasks);
+        mailService.sendCalendar(username,email,calendar);
+
+        return Result.succ("导出成功");
     }
 }
 
