@@ -26,5 +26,5 @@ public class TeamDTO {
     private List<String> admins;
     private List<String> members;
 
-    private List<Task> teamTasks;
+    private List<TaskDTO> teamTasks;
 }

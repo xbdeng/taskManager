@@ -118,7 +118,7 @@ public class TaskServiceImpl implements TaskService {
     /**
      * query tasks
      */
-    public List<Task> queryTask(QueryTaskDTO filter) throws Exception {
+    public List<TaskDTO> queryTask(QueryTaskDTO filter) throws Exception {
         BigInteger userId = userMapper.getIdByName(filter.getUsername());
         if (userId == null && filter.getUserId()!= null){
             userId = filter.getUserId();
@@ -150,16 +150,25 @@ public class TaskServiceImpl implements TaskService {
             }
         }
         List<Task> tasks = taskMapper.queryTask(filter.setUserId(userId));
+        List<TaskDTO> returnList = new ArrayList<>();
         if (tasks.size() == 0) {
             return new ArrayList<>();
         }
-        Map<BigInteger, Task> taskMap = new HashMap<>();
+        Map<BigInteger, TaskDTO> taskMap = new HashMap<>();
         for (Task task : tasks) {
-            taskMap.put(task.getTaskId(), task);
-            task.setTags(new ArrayList<>());
-            QueryTaskDTO subfilter = new QueryTaskDTO().setFatherTask(task.getTaskId()).setUserId(filter.getUserId()).setQuerySubTasks(true);
-            task.setSubTasks(queryTask(subfilter));
             task.updateDate();
+            // construct new DTO from task
+            String creatorName = userMapper.getUsernameById(task.getCreator());
+            TaskDTO newTaskDTO = new TaskDTO().setTaskId(task.getTaskId()).setCreator(creatorName).setTaskName(task.getTaskName())
+                    .setDescription(task.getDescription()).setLocation(task.getLocation()).setType(task.getType())
+                    .setCreateDate(task.getCreateDate()).setDueDate(task.getDueDate()).setRemindDate(task.getRemindDate())
+                    .setFinishDate(task.getFinishDate()).setStatus(task.getStatus()).setFatherTask(task.getFatherTask())
+                    .setPrivilege(task.getPrivilege());
+            taskMap.put(task.getTaskId(), newTaskDTO);
+            newTaskDTO.setTags(new ArrayList<>());
+            QueryTaskDTO subfilter = new QueryTaskDTO().setFatherTask(task.getTaskId()).setUserId(filter.getUserId()).setQuerySubTasks(true);
+            newTaskDTO.setSubTasks(queryTask(subfilter));
+            returnList.add(newTaskDTO);
         }
         List<HashMap<String, Object>> taskTags = tagMapper.selectTagsByUserTasks(userId, taskMap.keySet());
         for (HashMap<String, Object> map : taskTags) {
@@ -167,7 +176,7 @@ public class TaskServiceImpl implements TaskService {
             String tagName = ((String) map.get("tag_name"));
             taskMap.get(taskId).getTags().add(tagName);
         }
-        return tasks;
+        return returnList;
     }
 
 
