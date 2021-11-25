@@ -232,7 +232,7 @@ export default {
       }
       const that = this
       axios.post(
-          'http://localhost:8081/api/user/removefriend',
+          '/user/removefriend',
           {
             username: friendName
           },

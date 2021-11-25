@@ -106,7 +106,7 @@ export default {
     getMessage() {
       const that = this
       axios.post(
-          'http://localhost:8081/api/message/getmessages',
+          '/message/getmessages',
           {},
           {
             headers: {
@@ -164,7 +164,7 @@ export default {
       }
       const that = this
       axios.post(
-          'http://localhost:8081/api/message/confirm',
+          '/message/confirm',
           {
             messageId: messageId,
             operation: operation

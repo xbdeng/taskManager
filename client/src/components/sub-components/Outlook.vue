@@ -92,7 +92,7 @@ export default {
     // console.log(code)
     const that = this
     axios.post(
-        'http://localhost:8081/api/task/getmicrosofttask',
+        '/task/getmicrosofttask',
         {
           code: code
         },
