@@ -99,30 +99,39 @@
             direction="rtl"
             :before-close="handleFriendClose"
             :modal-append-to-body='false'
-            size="25%">
+            size="30%">
           <div>
             <el-form>
               <el-form-item v-for="(data, index) in searchFriendList" :key="index">
                 <el-card class="box-card">
-                  <el-form-item>
-                    <el-row :gutter="20">
-                      <el-col :span="15">
-                        {{ data.username }}
-                      </el-col>
-                      <el-col :span="9">
-                        <el-button type="primary" plain @click="AddFriendRequest(data.username)">申请添加</el-button>
-                      </el-col>
-                    </el-row>
-                  </el-form-item>
-                  <el-form-item>
-                    first Name:{{ data.firstName }}
-                    <br>
-                    Last Name:{{ data.lastName }}
-                    <br>
-                    email : {{data.email}}
-                    <br>
-                    phone : {{data.phone}}
-                  </el-form-item>
+<!--                  <el-form-item>-->
+<!--                    <el-row :gutter="20">-->
+<!--                      <el-col :span="15">-->
+<!--                        {{ data.username }}-->
+<!--                      </el-col>-->
+<!--                      <el-col :span="9">-->
+<!--                      </el-col>-->
+<!--                    </el-row>-->
+<!--                  </el-form-item>-->
+<!--                  <el-form-item>-->
+<!--                    first Name:{{ data.firstName }}-->
+<!--                    <br>-->
+<!--                    Last Name:{{ data.lastName }}-->
+<!--                    <br>-->
+<!--                    email : {{data.email}}-->
+<!--                    <br>-->
+<!--                    phone : {{data.phone}}-->
+<!--                  </el-form-item>-->
+                  <el-descriptions title="用户信息" :column="2" class="margin-top">
+                    <template slot="extra">
+                      <el-button type="primary" plain @click="AddFriendRequest(data.username)">申请添加</el-button>
+                    </template>
+                    <el-descriptions-item label="Username">{{ data.username }}</el-descriptions-item>
+                    <el-descriptions-item label="First name">{{ data.firstName }}</el-descriptions-item>
+                    <el-descriptions-item label="Last name">{{ data.lastName }}</el-descriptions-item>
+                    <el-descriptions-item label="Email">{{ data.email }}</el-descriptions-item>
+                    <el-descriptions-item label="Phone">{{ data.phone }}</el-descriptions-item>
+                  </el-descriptions>
                 </el-card>
               </el-form-item>
             </el-form>

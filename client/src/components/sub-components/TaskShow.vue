@@ -229,7 +229,6 @@
                       <el-popover placement="top" width="900" trigger="click" title="邀请成员">
                         <el-row>
                             <el-col>
-<!--                              TODO-->
                                 <el-transfer :data="this.CU(this.list1,this.list2)" filterable :button-texts="['取消添加','添加任务成员']" v-model="invitedMembers" :titles="['组内成员','分配名单']"></el-transfer>
                             </el-col>
                         </el-row>
@@ -334,6 +333,7 @@ export default {
     // 生成某个任务组员的穿梭框信息
     const generateMemberData = _ => {
       const data = []
+      if(this.tempTaskForm == null) return []
       for (let i in this.tempTaskForm.members) {
         data.push({
           key: this.tempTaskForm.members[i],
@@ -421,10 +421,10 @@ export default {
       const that = this
       //TODO
       axios.post(
-          '/task/edittag',
+          '/task/edit/deletetag',
           {
             taskId:that.tempTaskForm.taskId,
-            tag:tag
+            tagName:tag
           },
           {
             headers:{
@@ -471,12 +471,11 @@ export default {
         }
         // this.tempTaskForm.tags.push(inputValue);
         const that = this
-        //TODO:
         axios.post(
-            '/task/edit/',
+            '/task/edit/addtag',
             {
               taskId:that.tempTaskForm.taskId,
-              tag:inputValue
+              tagName:inputValue
             },
             {
               headers:{
@@ -985,11 +984,10 @@ export default {
       let teamId = this.singleTeamData.teamId
       //TODO:后端取消分配的接口
       axios.post(
-          '/team/removemember',
+          '/task/unassigntask',
           {
-            teamId: teamId,
-            //这个是数组，看情况改
-            userName: userName
+            taskId: that.tempTaskForm.taskId,
+            usernames: userName
           },
           {
             headers: {

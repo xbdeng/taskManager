@@ -40,9 +40,13 @@
                 </el-menu-item>
                 <el-menu-item index="1-2" @click="handleOutlook">
                   <i class="iconfont el-icon-githubOUTLOOK" style="color:#00a6ff"></i>
-                  <span slot="title">Outlook数据同步</span>
+                  <span slot="title">Outlook数据导入</span>
                 </el-menu-item>
-                <el-menu-item index="1-3" @click="logOut">
+                <el-menu-item index="1-3" @click="exportData">
+                  <i class="el-icon-right" style="color:#00a6ff"></i>
+                  <span slot="title">数据导出</span>
+                </el-menu-item>
+                <el-menu-item index="1-4" @click="logOut">
                   <i class="el-icon-remove-outline" style="color:#00a6ff"></i>
                   <span slot="title">账号登出</span>
                 </el-menu-item>
@@ -1324,7 +1328,34 @@ export default {
       let redirect_uri = 'http://localhost:8080/outlook/login'
       let scope = 'https://graph.microsoft.com/Calendars.ReadWrite'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
-    }
+    },
+    //导出数据
+    exportData() {
+      const that = this
+      axios.post(
+          '/user/exporttask',
+          {},
+          {
+            headers: {
+              Authorization: window.sessionStorage.getItem('token')
+            }
+          }
+      ).then(
+          function(response) {
+            if(response.data.code === 200) {
+              that.$message({
+                message:'导出成功',
+                type:'success'
+              })
+            } else {
+              that.$message.error('导出失败')
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，导出失败')
+          }
+      )
+    },
   }
 }
 </script>
