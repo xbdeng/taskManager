@@ -136,7 +136,8 @@
             <TaskShow
                 :singleTaskData="this.showedTask"
                 v-on:closeTaskDrawer='handleTaskInfoClose($event)'
-                v-on:emitTreeData="emitTreeData($event)"></TaskShow>
+                v-on:emitTreeData="emitTreeData($event)"
+                v-on:update="update($event)"></TaskShow>
         </el-drawer>
 
         <el-drawer
@@ -345,6 +346,10 @@ export default {
       },
       postQueryAgain() {
         this.searchRequest()
+      },
+      update() {
+        this.$forceUpdate()
+        this.searchedResult()
       }
 
   }
