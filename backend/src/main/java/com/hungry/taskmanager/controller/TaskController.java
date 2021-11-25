@@ -57,15 +57,15 @@ public class TaskController {
 
     @PostMapping("/query")
     @RequiresAuthentication
-    public Result<List<Task>> queryTask(@RequestBody QueryTaskDTO filter, HttpServletRequest request) {
-        Result<List<Task>> result = new Result<>();
+    public Result<List<TaskDTO>> queryTask(@RequestBody QueryTaskDTO filter, HttpServletRequest request) {
+        Result<List<TaskDTO>> result = new Result<>();
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return result.setData(taskServiceImpl.queryTask(filter.setUsername(username))).setCode(200).setMsg("query successfully");
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result<List<Task>>(500, "server error", null);
+            return new Result<List<TaskDTO>>(500, "server error", null);
         }
     }
 
