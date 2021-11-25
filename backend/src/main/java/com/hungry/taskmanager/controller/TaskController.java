@@ -134,5 +134,16 @@ public class TaskController {
             return Result.fail(500, "服务器错误", null);
         }
     }
+
+    @PostMapping("/edit/status")
+    @RequiresAuthentication
+    public Result editStatus(@RequestBody EditStatusDTO editStatusDTO){
+        try {
+            return taskServiceImpl.editStatus(editStatusDTO);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
 }
 
