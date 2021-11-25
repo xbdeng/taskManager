@@ -830,10 +830,10 @@ export default {
       ).then(
           function (response) {
             if (response.data.code === 200) {
-              that.$message({
-                message: '获取日历信息',
-                type: 'success'
-              });
+              // that.$message({
+              //   message: '获取日历信息',
+              //   type: 'success'
+              // });
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
@@ -886,10 +886,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '获取标签成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '获取标签成功',
+              //   type: 'success'
+              // })
               that.tagArray = []
               for (let i in response.data.data) {
                 let content = response.data.data[i]
@@ -928,10 +928,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '请求用户创建或管理的组成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '请求用户创建或管理的组成功',
+              //   type: 'success'
+              // })
               that.myTeamInfo = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -971,10 +971,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '请求“任务”数据成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '请求“任务”数据成功',
+              //   type: 'success'
+              // })
               that.taskData = response.data.data
               // that.transferData(that.taskData)
               that.transData = that.transferData(that.taskData)
@@ -1032,10 +1032,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '请求“今天任务”数据成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '请求“今天任务”数据成功',
+              //   type: 'success'
+              // })
               that.todaytaskData = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -1077,10 +1077,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '请求“一周内”数据成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '请求“一周内”数据成功',
+              //   type: 'success'
+              // })
               that.weekTaskData = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -1122,10 +1122,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '请求“稍后”数据成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '请求“稍后”数据成功',
+              //   type: 'success'
+              // })
               that.laterTaskData = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -1155,10 +1155,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '获取组队任务数据成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '获取组队任务数据成功',
+              //   type: 'success'
+              // })
               that.teamInfo = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
@@ -1188,10 +1188,10 @@ export default {
           function (response) {
             //alert(response.data.msg)
             if (response.data.code === 200) {
-              that.$message({
-                message: '获取通讯录数据成功',
-                type: 'success'
-              })
+              // that.$message({
+              //   message: '获取通讯录数据成功',
+              //   type: 'success'
+              // })
               that.Friends = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
