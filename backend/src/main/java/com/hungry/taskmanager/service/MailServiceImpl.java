@@ -35,7 +35,7 @@ public class MailServiceImpl implements MailService{
         message.setFrom("taskmanager@foxmail.com");
         message.setTo(email);
         message.setSubject("【taskmanager】邮箱验证码");
-        message.setText("您的验证码: " + code + "\n10分钟内有效");
+        message.setText("您的验证码: " + code + "\n10分钟内有效\nhungry团队");
         redisUtil.set(username + "verifycode",code,10 * 60);
         mailSender.send(message);
     }
@@ -52,7 +52,7 @@ public class MailServiceImpl implements MailService{
         messageHelper.setFrom("taskmanager@foxmail.com");
         messageHelper.setTo(email);
         messageHelper.setSubject("【taskmanager】用户任务数据导出");
-        messageHelper.setText("亲爱的" + username +":\n\t您的任务数据已经通过邮件附件发送，感谢您选择hungry的产品！");
+        messageHelper.setText("亲爱的" + username +":\n\t您的任务数据已经通过邮件附件发送，感谢您选择hungry团队的产品！");
         messageHelper.addAttachment(username + "_calendar.ics",new File(username + "_calendar.ics"));
         mailSender.send(mimeMessage);
 

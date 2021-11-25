@@ -183,59 +183,59 @@ public class TaskServiceImpl implements TaskService {
     /**
      * modify status of a task
      */
-    public void editTask(EditTaskDTO params) throws Exception {
-        // get userid
-        BigInteger userId = userMapper.getIdByName(params.getUsername());
-        // get task object
-        BigInteger taskId = params.getTaskId();
-        UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", taskId);
-        LocalDateTime createDate = convertGMT(params.getCreateDate());
-        LocalDateTime dueDate = convertGMT(params.getDueDate());
-        // configuration
-        // null check
-        if (params.getPrivilege() == null) params.setPrivilege(0);
-        wrapper.set("task_name", params.getTaskName()).set("description", params.getDescription()).set("privilege", params.getPrivilege())
-                .set("create_date", createDate).set("due_date", dueDate).set("father_task", params.getFatherTask())
-                .set("status", params.getStatus());
-        //之前的状态 非完成
-        int status = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", taskId)).getStatus();
-        if (status != 1 && params.getStatus() != null && params.getStatus() == 1) { //新完成
-            wrapper.set("finish_date", LocalDateTime.now());
-        }
-        taskMapper.update(null, wrapper);
-        // tags
-        List<String> tags = params.getTags();
-        List<Tag> insertedTags = new ArrayList<>();
-        if (tags != null && tags.size() > 0) {
-            for (String s : tags) {
-                Tag tag = new Tag().setUserId(userId).setTagName(s);
-                tagMapper.insert(tag);
-            }
-            QueryWrapper<Tag> tagWrapper = new QueryWrapper<Tag>().eq("user_id", userId).in("tag_name", tags);
-            insertedTags = tagMapper.selectList(tagWrapper);
-        }
-        // get user task tag
-        UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id", userId).eq("task_id", taskId));
-        // get user task tag
-        userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", ut.getUtId()));
-        for (Tag tag : insertedTags) {
-            UserTaskTag utt = new UserTaskTag();
-            utt.setUtId(ut.getUtId()).setTagId(tag.getTagId());
-            userTaskTagMapper.insert(utt);
-        }
-        // subtasks
-        List<String> subtasks = params.getSubTasks();
-        if (subtasks != null) {
-            for (String taskName : subtasks) {
-                Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0).setFatherTask(taskId);
-                taskMapper.insert(newTask);
-                UserTask newUT = new UserTask().setUserId(userId).setTaskId(newTask.getTaskId());
-                userTaskMapper.insert(newUT);
-
-            }
-        }
-
-    }
+//    public void editTask(EditTaskDTO params) throws Exception {
+//        // get userid
+//        BigInteger userId = userMapper.getIdByName(params.getUsername());
+//        // get task object
+//        BigInteger taskId = params.getTaskId();
+//        UpdateWrapper<Task> wrapper = new UpdateWrapper<Task>().eq("task_id", taskId);
+//        LocalDateTime createDate = convertGMT(params.getCreateDate());
+//        LocalDateTime dueDate = convertGMT(params.getDueDate());
+//        // configuration
+//        // null check
+//        if (params.getPrivilege() == null) params.setPrivilege(0);
+//        wrapper.set("task_name", params.getTaskName()).set("description", params.getDescription()).set("privilege", params.getPrivilege())
+//                .set("create_date", createDate).set("due_date", dueDate).set("father_task", params.getFatherTask())
+//                .set("status", params.getStatus());
+//        //之前的状态 非完成
+//        int status = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", taskId)).getStatus();
+//        if (status != 1 && params.getStatus() != null && params.getStatus() == 1) { //新完成
+//            wrapper.set("finish_date", LocalDateTime.now());
+//        }
+//        taskMapper.update(null, wrapper);
+//        // tags
+//        List<String> tags = params.getTags();
+//        List<Tag> insertedTags = new ArrayList<>();
+//        if (tags != null && tags.size() > 0) {
+//            for (String s : tags) {
+//                Tag tag = new Tag().setUserId(userId).setTagName(s);
+//                tagMapper.insert(tag);
+//            }
+//            QueryWrapper<Tag> tagWrapper = new QueryWrapper<Tag>().eq("user_id", userId).in("tag_name", tags);
+//            insertedTags = tagMapper.selectList(tagWrapper);
+//        }
+//        // get user task tag
+//        UserTask ut = userTaskMapper.selectOne(new QueryWrapper<UserTask>().eq("user_id", userId).eq("task_id", taskId));
+//        // get user task tag
+//        userTaskTagMapper.delete(new QueryWrapper<UserTaskTag>().eq("ut_id", ut.getUtId()));
+//        for (Tag tag : insertedTags) {
+//            UserTaskTag utt = new UserTaskTag();
+//            utt.setUtId(ut.getUtId()).setTagId(tag.getTagId());
+//            userTaskTagMapper.insert(utt);
+//        }
+//        // subtasks
+//        List<String> subtasks = params.getSubTasks();
+//        if (subtasks != null) {
+//            for (String taskName : subtasks) {
+//                Task newTask = new Task().setTaskName(taskName).setCreator(userId).setType(BigInteger.valueOf(0)).setStatus(0).setPrivilege(0).setFatherTask(taskId);
+//                taskMapper.insert(newTask);
+//                UserTask newUT = new UserTask().setUserId(userId).setTaskId(newTask.getTaskId());
+//                userTaskMapper.insert(newUT);
+//
+//            }
+//        }
+//
+//    }
 
     @Override
     public Result assignTask(AssignTaskDTO assignTaskDTO, String username) {
@@ -246,7 +246,7 @@ public class TaskServiceImpl implements TaskService {
         //分配者必须有分配权限 todo
 
         //被分配者必须在组内
-        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("user_id", assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
+        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("username", assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
         BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id", assignTaskDTO.getTaskId()).select("team_id")).getTeamId();
         for (BigInteger userId : userIds) {
             long c = teamUserMapper.selectCount(new QueryWrapper<TeamUser>().eq("team_id", teamId).eq("user_id", userId));

@@ -69,20 +69,20 @@ public class TaskController {
         }
     }
 
-    @PostMapping("/edittask")
-    @RequiresAuthentication
-    @ApiOperation(value = "edit a task", notes = "modified information is required only")
-    public Result<String> editTask(@RequestBody EditTaskDTO params, HttpServletRequest request) {
-        try {
-            String token = request.getHeader("Authorization");
-            String username = JWTUtil.getUsername(token);
-            taskServiceImpl.editTask(params.setUsername(username));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result<String>(500, "server error", null);
-        }
-        return new Result<String>(200, "successfully edit a task", null);
-    }
+//    @PostMapping("/edittask")
+//    @RequiresAuthentication
+//    @ApiOperation(value = "edit a task", notes = "modified information is required only")
+//    public Result<String> editTask(@RequestBody EditTaskDTO params, HttpServletRequest request) {
+//        try {
+//            String token = request.getHeader("Authorization");
+//            String username = JWTUtil.getUsername(token);
+//            taskServiceImpl.editTask(params.setUsername(username));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new Result<String>(500, "server error", null);
+//        }
+//        return new Result<String>(200, "successfully edit a task", null);
+//    }
 
     @PostMapping("/addsubtask")
     @RequiresAuthentication
