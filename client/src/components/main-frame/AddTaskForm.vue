@@ -357,14 +357,20 @@ export default {
                         }
                         //添加完任务，直接跳转到日历界面
                         that.toCalendar()
-                    } else {
-                        that.$message.error('新建任务失败')
+                    }
+                    else if(response.data.code === 201) {
+                        that.$message.error('权限不足')
+                        let newToken = response.headers.authorization
+                        if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                    }
+                    else {
+                        that.$message.error('服务器错误')
                         let newToken = response.headers.authorization
                         if(newToken != null) window.sessionStorage.setItem('token', newToken)
                     }
                 },
                 function (err) {
-                    that.$message.error('响应错误，新建任务失败')
+                    that.$message.error('响应错误')
                 }
             )
 

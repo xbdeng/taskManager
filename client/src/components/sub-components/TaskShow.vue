@@ -284,14 +284,14 @@
               </el-col>
             </el-row>
             <!-- 两个按钮，一个是修改完成，一个是删除任务 -->
-            <el-row type="flex" justify="start">
-              <el-col>
-                <el-button type="primary" round @click="postEdit">确认修改</el-button>
-              </el-col>
-              <el-col>
-                <el-button type="danger" round @click="closeDrawer">删除任务</el-button>
-              </el-col>
-            </el-row>
+<!--            <el-row type="flex" justify="start">-->
+<!--              <el-col>-->
+<!--                <el-button type="primary" round @click="postEdit">确认修改</el-button>-->
+<!--              </el-col>-->
+<!--              <el-col>-->
+<!--                <el-button type="danger" round @click="closeDrawer">删除任务</el-button>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
           </el-main>
       </el-container>
     </template>

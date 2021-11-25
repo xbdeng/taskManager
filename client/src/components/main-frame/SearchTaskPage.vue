@@ -237,10 +237,6 @@ export default {
                   //alert(response.data.msg)
                   if(response.data.code === 200) {
                       that.searchedResult = response.data.data
-                      that.$message({
-                          message:'查询成功',
-                          type:'success'
-                      })
                       let newToken = response.headers.authorization
                       if(newToken != null) {
                         window.sessionStorage.setItem('token', newToken)
