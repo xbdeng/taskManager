@@ -572,7 +572,7 @@ export default {
     convertTime(time) {
       if (time === null) return '未设定'
       let date = new Date(time)
-      return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDay() + '日' + date.getHours() + '时' + date.getMinutes() + '分' + date.getSeconds() + '秒'
+      return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日' + date.getHours() + '时' + date.getMinutes() + '分' + date.getSeconds() + '秒'
     },
     // 从list1中踢出去list2的元素返回的元素
     CU(list1, list2) {
