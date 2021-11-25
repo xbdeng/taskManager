@@ -4,6 +4,7 @@ import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
 
+import com.hungry.taskmanager.exception.LimitsAuthority;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,24 +26,26 @@ public interface TaskService {
 
     Result unassignTask(AssignTaskDTO assignTaskDTO, String username);
 
-    Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO);
+    Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO, String username);
 
 
-    Result editStatus(EditStatusDTO editStatusDTO);
+    Result editStatus(EditStatusDTO editStatusDTO,String username);
 
-    Result editTaskName(EditTaskNameDTO editTaskNameDTO);
+    Result editTaskName(EditTaskNameDTO editTaskNameDTO,String username);
 
-    Result editDescription(EditTaskDescription editTaskDescription);
+    Result editDescription(EditTaskDescription editTaskDescription ,String username);
 
-    Result editStartDate(EditTaskTime editTaskTime);
+    Result editStartDate(EditTaskTime editTaskTime ,String username);
 
-    Result editDueDate(EditTaskTime editTaskTime);
+    Result editDueDate(EditTaskTime editTaskTime ,String username);
 
-    Result editTaskRemindDate(EditTaskTime editTaskTime);
+    Result editTaskRemindDate(EditTaskTime editTaskTime ,String username);
 
-    Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO);
+    Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO ,String username);
 
-    Result addTaskTag(EditTaskTag editTaskTag, String username);
+    Result addTaskTag(EditTaskTag editTaskTag, String username );
 
     Result deleteTaskTag(EditTaskTag editTaskTag, String username);
+
+    void addSubTask(AddSubTaskDTO params,String username);
 }

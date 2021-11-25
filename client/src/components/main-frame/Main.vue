@@ -580,6 +580,14 @@ export default {
           if (tmp.type === 8) {
             that.$notify.info({
               title: tmp.from,
+              message: '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 接受'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 接受');
+          }
+          if (tmp.type === 9) {
+            that.$notify.info({
+              title: tmp.from,
               message: '您的入组请求' + tmp.groupName + '已被' + tmp.from + ' 拒绝'
             });
             that.showMessageNote = 'new'
@@ -1395,6 +1403,10 @@ export default {
       ).then(
           function (response) {
             that.image_uri = response.data.data
+            if(that.image_uri === null){
+              that.image_uri = require('../../../build/logo.png')
+              return
+            }
             that.image_uri = "http://localhost:8081" + that.image_uri
             let newToken = response.headers.authorization
             if (newToken != null) window.sessionStorage.setItem('token', newToken)
