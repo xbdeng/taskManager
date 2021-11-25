@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.Result;
 import com.hungry.taskmanager.entity.Task;
+import com.hungry.taskmanager.exception.LimitsAuthority;
 import com.hungry.taskmanager.service.TaskServiceImpl;
 import com.hungry.taskmanager.utils.JWTUtil;
 import com.hungry.taskmanager.utils.MicrosoftUtil;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -33,22 +33,28 @@ public class TaskController {
             String username = JWTUtil.getUsername(token);
             BigInteger result = taskServiceImpl.addTask(params.setUsername(username));
             return new Result<BigInteger>(200, "successfully add a task", result);
+        } catch (LimitsAuthority e) {
+            return Result.fail(201,"权限不足",null);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "server error", null);
         }
-
     }
 
     @PostMapping("/deletetask")
     @RequiresAuthentication
-    public Result<String> deleteTask(@RequestParam("id") long taskId) {
+    public Result<String> deleteTask(@RequestParam("id") long taskId, HttpServletRequest request) {
         try {
-            int result = taskServiceImpl.deleteTask(taskId);
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            int result = taskServiceImpl.deleteTask(taskId,username);
             if (result != 200) {
                 throw new Exception("server error");
             }
-        } catch (Exception e) {
+        }catch (LimitsAuthority e){
+            return Result.fail(201,"权限不足",null);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", "");
         }
@@ -69,20 +75,6 @@ public class TaskController {
         }
     }
 
-//    @PostMapping("/edittask")
-//    @RequiresAuthentication
-//    @ApiOperation(value = "edit a task", notes = "modified information is required only")
-//    public Result<String> editTask(@RequestBody EditTaskDTO params, HttpServletRequest request) {
-//        try {
-//            String token = request.getHeader("Authorization");
-//            String username = JWTUtil.getUsername(token);
-//            taskServiceImpl.editTask(params.setUsername(username));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new Result<String>(500, "server error", null);
-//        }
-//        return new Result<String>(200, "successfully edit a task", null);
-//    }
 
     @PostMapping("/addsubtask")
     @RequiresAuthentication

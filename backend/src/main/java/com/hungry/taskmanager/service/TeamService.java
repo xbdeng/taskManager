@@ -29,4 +29,12 @@ public interface TeamService {
 
     Result<TeamStatisticsDTO> teamStatistics(BigInteger teamId, String username);
 
+    boolean isCreator(BigInteger userId, BigInteger teamId);
+
+    boolean isCreator(String username, BigInteger teamId);
+
+    boolean isAdmin(BigInteger userId, BigInteger teamId);
+
+    boolean isAdmin(String username, BigInteger teamId);
+
 }
