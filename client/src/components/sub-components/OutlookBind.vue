@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>{{ googleUser }}</div>
+    <div>{{ githubUser }}</div>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ import axios from "axios";
 export default {
   data() {
     return {
-      googleUser: "google绑定中..."
+      githubUser: "github绑定中..."
     };
   },
   name: "GithubBind",
@@ -20,7 +20,7 @@ export default {
     console.log(code)
     const that = this
     axios.post(
-        'http://localhost:8081/api/user/bindgoogle',
+        '/user/bindgithub',
         {
           code:code
         },
@@ -33,7 +33,7 @@ export default {
         function (response) {
           if(response.data.code === 200){
             that.$message({
-              message: 'google bind success',
+              message: 'github bind success',
               type: 'success'
             })
             console.log(response)
@@ -45,7 +45,7 @@ export default {
         },
         function (err) {
           that.$message({
-            message: 'google bind failed, please personal info page',
+            message: 'github bind failed, please personal info page',
             type: 'error'
           })
           that.$router.push({name: 'Profile', params: {username: tmpusername}});

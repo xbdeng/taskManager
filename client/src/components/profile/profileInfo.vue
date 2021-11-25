@@ -423,7 +423,7 @@ export default {
       // console.log(val)
       const that = this
       axios.post(
-          'http://localhost:8081/api/user/edituser',
+          '/user/edituser',
           {
             lastName: val
           },
@@ -471,7 +471,7 @@ export default {
     handleGithubUntie(event) {
       const that = this
       axios.post(
-          'http://localhost:8081/api/user/unbundgithub',
+          '/user/unbundgithub',
           {},
           {
             headers: {
@@ -518,7 +518,7 @@ export default {
     handleGoogleUntie(event) {
       const that = this
       axios.post(
-          'http://localhost:8081/api/user/unbundgoogle',
+          '/user/unbundgoogle',
           {},
           {
             headers: {
