@@ -8,7 +8,6 @@
                     <!-- 显示侧边栏中对应的"任务"的数据 -->
                     <el-menu-item index="1" @click="showTask">
                         <template slot="title">
-
                             <span slot="title" class="taskFont">任务</span>
                         </template>
                     </el-menu-item>
@@ -30,16 +29,16 @@
                     <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
                     <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                   </div>
-                <el-menu :default-openeds="['today']" unique-opened>
+                <el-menu unique-opened>
                   <DragTaskTree
                   :taskData="this.taskData"
                   v-on:taskIdChanged="chooseTasks($event)"
                   v-on:postTaskDataAgain="postTaskDataAgain($event)"
                   v-if="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
-                  <el-submenu index='today' v-if="planedTaskShow">
+                  <el-submenu index='today' v-show="planedTaskShow" @click.native="setSpecifier(0)">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjintian"></i>
-                      <span slot="title" @click="setSpecifier(0)" class="taskFont">今天</span>
+                      <span slot="title"  class="taskFont">今天</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.todayTaskData"
@@ -51,10 +50,10 @@
                       <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                     </div>
                   </el-submenu>
-                  <el-submenu index='week' v-if="planedTaskShow">
+                  <el-submenu index='week' v-show="planedTaskShow" @click.native="setSpecifier(1)">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjinyizhou"></i>
-                      <span slot="title" @click="setSpecifier(1)" class="taskFont">一周内</span>
+                      <span slot="title"  class="taskFont">一周内</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.weekTaskData"
@@ -66,10 +65,10 @@
                       <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                     </div>
                   </el-submenu>
-                  <el-submenu index='later' v-if="planedTaskShow">
+                  <el-submenu index='later' v-show="planedTaskShow" @click.native="setSpecifier(2)">
                     <template slot="title">
                       <i class="iconfont el-icon-githubshaohouchuli"></i>
-                      <span slot="title" @click="setSpecifier(2)" class="taskFont">稍后</span>
+                      <span slot="title"  class="taskFont">稍后</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.laterTaskData"
@@ -95,7 +94,7 @@
             :modal-append-to-body='false'
             size='40%'>
                 <TaskShow
-                    :singleTaskData="getTask(chosenTaskId)"
+                    :singleTaskData="getTask(this.chosenTaskId)"
                     v-on:closeTaskDrawer='closeTaskDrawer($event)'
                     v-on:emitTreeData="emitTreeData($event)"
                     v-on:update="update($event)"></TaskShow>
@@ -250,8 +249,10 @@ export default {
         if (id === '-1') return {
             taskName:'Please choose your task'
         }
-        if (parseInt(id[0]) >= taskList.length) return {
-            taskName:'Please choose your task'
+        if (parseInt(id[0]) >= taskList.length) {
+          return {
+            taskName: 'Please choose your task'
+          }
         }
         if (id.length === 1) return taskList[parseInt(id)];
         return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
