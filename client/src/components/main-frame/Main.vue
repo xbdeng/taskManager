@@ -1395,6 +1395,10 @@ export default {
       ).then(
           function (response) {
             that.image_uri = response.data.data
+            if(that.image_uri === null){
+              that.image_uri = require('../../../build/logo.png')
+              return
+            }
             that.image_uri = "http://localhost:8081" + that.image_uri
             let newToken = response.headers.authorization
             if (newToken != null) window.sessionStorage.setItem('token', newToken)
