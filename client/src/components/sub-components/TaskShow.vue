@@ -7,13 +7,15 @@
           <el-header>
             <el-row :gutter="10" type="flex" align="middle">
               <el-col :span="3">
-                <el-tooltip content="完成任务：在已完成和未完成任务之间切换" placement="top-end">
+                <el-tooltip content="完成任务：在已完成和未完成任务之间切换,未完成不能切换" placement="top-end">
                   <i class="el-icon-success"
+                     v-if="this.tempTaskForm.status !== 2"
                      :id="this.tempTaskForm.status === 0 ? 'origin' : (this.tempTaskForm.status === 1 ? 'active' : 'defined') "
                      v-on:mouseover="changeToActive($event)"
                      v-on:mouseout="changeToOrigin($event)"
                      @click="postTaskFinished($event)"
                      style="font-size: 20px"></i>
+                  <i class="el-icon-error" style="color:red;font-size: 20px" v-else></i>
                 </el-tooltip>
               </el-col>
               <el-col :span="15">
@@ -503,6 +505,9 @@ export default {
             }
         )
       }
+      else {
+        that.$message.error('添加标签不能为空')
+      }
       this.inputVisible = false;
       this.addedTag = null;
     },
@@ -546,7 +551,7 @@ export default {
         this.editedTaskName = null
       }
       else {
-        this.$message.error('修改失败，修改后的任务名不能为空')
+        this.$message.error('修改后的任务名不能为空')
       }
     },
     editlocation() {
@@ -586,6 +591,9 @@ export default {
               that.$message.error('响应失败，修改失败')
             }
         )
+      }
+      else {
+        this.$message.error('修改后的地点不能为空')
       }
       this.editedlocation = null
     },
@@ -627,6 +635,9 @@ export default {
               that.$message.error('响应失败，修改失败')
             }
         )
+      }
+      else {
+        this.$message.error('修改的优先级不能为空')
       }
       this.editedPriority = null
     },
@@ -671,10 +682,13 @@ export default {
             }
         )
       }
+      else {
+        this.$message.error('修改后的开始时间不能为空')
+      }
     },
     editDDL() {
       let value = this.editedDDL
-      if(value != null) {
+      if(value != null && value !== '') {
         this.tempTaskForm.dueDate = value
         const that = this
         axios.post(
@@ -712,6 +726,10 @@ export default {
             }
         )
       }
+      else {
+        this.$message.error('修改后的任务截止时间不能为空')
+      }
+
     },
     editInvitedMembers() {
       let value = this.invitedMembers
@@ -746,6 +764,9 @@ export default {
               that.$message.error('响应失败，分配任务失败')
             }
         )
+      }
+      else {
+        this.$message.error('邀请的成员列表不能为空')
       }
       this.invitedMembers = null
     },
@@ -788,6 +809,9 @@ export default {
             }
         )
       }
+      else {
+        this.$message.error('修改后的任务描述信息不能为空')
+      }
       this.editedDescription = null
     },
     editRemindDate() {
@@ -829,6 +853,9 @@ export default {
               that.$message.error('响应失败，修改失败')
             }
         )
+      }
+      else {
+        this.$message.error('修改后的提醒时间不能为空')
       }
     },
     addSubTask() {
