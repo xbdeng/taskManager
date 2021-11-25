@@ -533,9 +533,13 @@ export default {
             that.showMessageNote = 'new'
             that.pushMessage(tmp.from, '邀请你加入' + tmp.groupName);
           }
-          // TODO
           if (tmp.type === 3) {
-
+            that.$notify.info({
+              title: tmp.from,
+              message: tmp.groupName + '收到一个新任务'
+            });
+            that.showMessageNote = 'new'
+            that.pushMessage(tmp.from, tmp.groupName + '收到一个新任务');
           }
           if (tmp.type === 4) {
             that.$notify.info({
