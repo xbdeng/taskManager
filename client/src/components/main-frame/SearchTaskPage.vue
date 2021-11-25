@@ -243,13 +243,13 @@ export default {
                       }
                       that.handleFliterClose()
                   } else {
-                      that.$message.error('查询失败')
+                      that.$message.error('响应失败')
                       let newToken = response.headers.authorization
                       if(newToken != null) window.sessionStorage.setItem('token', newToken)
                   }
               },
               function(err) {
-                  that.$message.error('响应失败,查询失败')
+                  that.$message.error('响应失败')
               }
           )
       },

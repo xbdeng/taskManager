@@ -161,6 +161,15 @@ export default {
         }
         callback()
     };
+    var checkRemindDate = (rule, value, callback)=> {
+      if(value === '') {
+        callback()
+      }
+      if(new Date(value) <= new Date()) {
+        return callback(new Error('任务提醒时间不能在当前时间之前'));
+      }
+      callback()
+    }
     return {
         // 用户添加的自定义的标签
         addedTag:'',
@@ -195,6 +204,7 @@ export default {
             // createDate:[{validator:checkTaskStartTime, trigger:'blur'}],
             // description:[{validator:checkTaskDescription, trigger:'blur'}],
             teamId:[{validator:checkTeams, trigger:'blur'}],
+            remindDate:[{validator:checkRemindDate, trigger:'blur'}]
 
         }
     }
@@ -267,13 +277,16 @@ export default {
                   let newToken = response.headers.authorization
                   if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 } else {
-                    that.$message.error('添加标签失败')
+                  if(response.data.code === 202)
+                      that.$message.error('未被分配该任务')
+                  else
+                    that.$message.error('响应失败')
                     let newToken = response.headers.authorization
                     if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 }
             },
             function(err) {
-                that.$message.error('响应失败，添加标签失败')
+                that.$message.error('响应失败')
             }
         )
     },
@@ -346,12 +359,15 @@ export default {
                                     type:'success'
                                   })
                                   that.$emit('postTree',{})
-                                } else {
-                                  there.$message.error('添加子任务失败')
+                                } else if(response.data.code === 201) {
+                                  that.$message.error('权限不足')
+                                }
+                                else {
+                                  that.$message.error('响应失败')
                                 }
                               },
                               function(err) {
-                                there.$message.error('响应失败，添加子任务失败')
+                                there.$message.error('响应失败')
                               }
                           )
                         }

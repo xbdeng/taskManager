@@ -105,13 +105,21 @@ export default {
         function (response) {
           if (response.data.code === 200) {
             that.listtmp = response.data.data
+            that.$message({
+              message:'导入成功',
+              type:'success'
+            })
+            that.username = response.data.msg
           }
           // console.log(response)
-          that.username = response.data.msg
+          else {
+            that.$message.error('导入失败')
+          }
           let newToken = response.headers.authorization
           if (newToken != null) window.sessionStorage.setItem('token', newToken)
         },
         function (err) {
+          that.$message.error('导入失败')
         }
     )
   },

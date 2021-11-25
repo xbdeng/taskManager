@@ -278,11 +278,11 @@
               <el-button type="primary" @click="emitTreeData" icon="iconfont el-icon-githubDirectory-tree">查看树形图</el-button>
             </el-row>
             <!-- 输入框，可以输入子任务的名称，输入后摁下回车可以创建子任务，之后可以通过本界面进行修改 -->
-            <el-row type="flex" justify="start">
-              <el-col>
-                <el-input v-model="subTaskName" placeholder="请输入子任务的名称" @keyup.enter.native="addSubTask"></el-input>
-              </el-col>
-            </el-row>
+<!--            <el-row type="flex" justify="start">-->
+<!--              <el-col>-->
+<!--                <el-input v-model="subTaskName" placeholder="请输入子任务的名称" @keyup.enter.native="addSubTask"></el-input>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
             <!-- 两个按钮，一个是修改完成，一个是删除任务 -->
 <!--            <el-row type="flex" justify="start">-->
 <!--              <el-col>-->
@@ -404,13 +404,16 @@ export default {
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }else {
-                that.$message.error('修改失败')
+                if(response.data.code === 202)
+                  that.$message.error('未被分配该任务')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -444,13 +447,16 @@ export default {
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {
-              that.$message.error('删除失败')
+              if(response.data.code === 202)
+                that.$message.error('未被分配该任务')
+              else
+                that.$message.error('响应失败')
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
             }
           },
           function(err) {
-            that.$message.error('响应失败，删除失败')
+            that.$message.error('响应失败')
           }
       )
     },
@@ -495,13 +501,16 @@ export default {
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               } else {
-                that.$message.error('添加失败')
+                if(response.data.code === 202)
+                  that.$message.error('未被分配该任务')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，添加失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -539,13 +548,15 @@ export default {
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.taskNameVisible.doClose();
               } else {
-                that.$message.error('修改失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改失败')
+              that.$message.error('响应失败')
             }
         )
         this.editedTaskName = null
@@ -582,13 +593,16 @@ export default {
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.taskLocationVisible.doClose()
               } else {
-                that.$message.error('修改失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -626,13 +640,16 @@ export default {
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.taskPriorityVisible.doClose()
               } else {
-                that.$message.error('修改失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -672,13 +689,16 @@ export default {
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.editedStartTime = null
               } else {
-                that.$message.error('修改失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
             },
             function(err) {
-              that.$message.error('响应失败，修改失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -716,7 +736,10 @@ export default {
                 that.$emit('closeIfNecessary',{})
                 that.$refs.taskEndVisible.doClose()
               } else {
-                that.$message.error('修改失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
@@ -756,12 +779,18 @@ export default {
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.inviteMemberVisible.doClose()
-              } else {
-                that.$message.error('分配任务失败')
+              }
+              else if(response.data.code === 201) {
+                that.$message.error('权限不足')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+              else {
+                that.$message.error('响应失败')
               }
             },
             function(err) {
-              that.$message.error('响应失败，分配任务失败')
+              that.$message.error('响应失败')
             }
         )
       }
@@ -799,7 +828,10 @@ export default {
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               } else {
-                that.$message.error('修改失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
@@ -844,7 +876,10 @@ export default {
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.editedStartTime = null
               } else {
-                that.$message.error('修改失败')
+                if(response.data.code === 201)
+                  that.$message.error('权限不足')
+                else
+                  that.$message.error('响应失败')
                 let newToken = response.headers.authorization
                 if(newToken != null) window.sessionStorage.setItem('token', newToken)
               }
@@ -863,6 +898,7 @@ export default {
       let value = this.subTaskName
       if(value != null && !(value === '')) {
         this.subTasksList.push(value)
+
       } else {
         that.$message.error('要添加的子任务名不能为空')
       }
@@ -938,7 +974,13 @@ export default {
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
             //  重置数据
               that.clearTaskForm()
-            } else {
+            }
+            else if(response.data.code === 201) {
+              that.$message.error('权限不足')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+            else {
               that.$message.error('删除任务失败')
               let newToken = response.headers.authorization
               if(newToken != null) window.sessionStorage.setItem('token', newToken)
