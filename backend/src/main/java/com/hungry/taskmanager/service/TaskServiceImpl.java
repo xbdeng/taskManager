@@ -70,6 +70,7 @@ public class TaskServiceImpl implements TaskService {
         // set date
         LocalDateTime createDate = convertGMT(params.getCreateDate());
         LocalDateTime dueDate = convertGMT(params.getDueDate());
+        LocalDateTime remindDate = convertGMT(params.getRemindDate());
         // set status
         Integer status = 0;
         // set father task
@@ -77,7 +78,8 @@ public class TaskServiceImpl implements TaskService {
         // create new task
         Task task = new Task().setCreator(creator).setTaskName(params.getTaskName())
                 .setDescription(params.getDescription()).setType(type).setCreateDate(createDate).setDueDate(dueDate)
-                .setStatus(status).setFatherTask(fatherTask).setPrivilege(params.getPrivilege());
+                .setStatus(status).setFatherTask(fatherTask).setPrivilege(params.getPrivilege()).setRemindDate(remindDate)
+                .setLocation(params.getLocation());
         // insert task into database
         taskMapper.insert(task);
         BigInteger taskId = task.getTaskId();
