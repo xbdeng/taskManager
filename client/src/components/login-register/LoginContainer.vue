@@ -138,7 +138,7 @@ export default {
       //github中获取
       let client_id = 'Iv1.187f346cb4978b94'
       //授权回调地址
-      let redirect_uri = 'http://localhost:8080/oauth/redirect'
+      let redirect_uri = 'http://101.34.188.131:8080/oauth/redirect'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}`
     }
   }

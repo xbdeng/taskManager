@@ -1386,7 +1386,7 @@ export default {
       //github中获取
       let client_id = '70f26831-fd49-4b56-a707-3a1ba1ae66d6'
       //授权回调地址
-      let redirect_uri = 'http://localhost:8080/outlook/login'
+      let redirect_uri = 'http://101.34.188.131:8080/outlook/login'
       let scope = 'https://graph.microsoft.com/Calendars.ReadWrite'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
     },
@@ -1407,7 +1407,7 @@ export default {
               that.image_uri = require('../../../build/logo.png')
               return
             }
-            that.image_uri = "http://localhost:8081" + that.image_uri
+            that.image_uri = "http://101.34.188.131:8081" + that.image_uri
             let newToken = response.headers.authorization
             if (newToken != null) window.sessionStorage.setItem('token', newToken)
           },
