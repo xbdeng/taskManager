@@ -26,7 +26,7 @@
               <el-container>
                 <el-main>
 <!--                  <div class="test-div">-->
-                <el-menu :default-openeds="['today']">
+                <el-menu :default-openeds="['today']" unique-opened>
                   <DragTaskTree
                   :taskData="this.taskData"
                   v-on:taskIdChanged="chooseTasks($event)"
@@ -81,10 +81,13 @@
                       <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                     </div>
                   </el-submenu>
+
                 </el-menu>
 <!--                  </div>-->
-                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-main>
+                <el-footer>
+                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
+                </el-footer>
               </el-container>
             </el-main>
             <!-- 显示任务信息 -->
