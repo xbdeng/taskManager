@@ -2,6 +2,7 @@ package com.hungry.taskmanager.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.hungry.taskmanager.component.WebSocketServer;
 import com.hungry.taskmanager.dao.*;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.*;
@@ -38,6 +39,8 @@ public class TaskServiceImpl implements TaskService{
     private TeamTaskMapper teamTaskMapper;
     @Resource
     private TeamUserMapper teamUserMapper;
+    @Resource
+    private MessageService messageService;
 
     /**
      * create a new task and insert insert into database
@@ -246,6 +249,17 @@ public class TaskServiceImpl implements TaskService{
         for(BigInteger userId:userIds){
             userTaskMapper.insert(new UserTask().setUserId(userId).setTaskId(assignTaskDTO.getTaskId()));
         }
+        List<User> users = userMapper.selectBatchIds(userIds);
+        List<String> usernames = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
+        BigInteger userId = userMapper.getIdByName(username);
+        for (User user: users){
+            usernames.add(user.getUsername());
+            messages.add(new Message().setType(BigInteger.valueOf(4)).setContent(teamId.toString()).setSender(userId).setReceiver(user.getUserId()));
+        }
+        String teamName = teamMapper.getTeamNameById(teamId);
+        WebSocketMessageDTO wsm = new WebSocketMessageDTO().setFrom(username).setType(3).setGroupName(teamName);
+        messageService.sendMessages(wsm,usernames, messages);
         return Result.succ("分配任务成功");
     }
 
