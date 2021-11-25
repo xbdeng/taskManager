@@ -1,6 +1,5 @@
 package com.hungry.taskmanager.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
@@ -14,12 +13,9 @@ import java.math.BigInteger;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message {
+public class MessageType {
     @TableId(type= IdType.AUTO)
-    private BigInteger messageId;
-    private BigInteger sender;
-    private BigInteger receiver;
-    private String content;
-    private BigInteger type;
-    private Integer isRead;
+    BigInteger mtId;
+    String typeName;
+    String typeDescription;
 }
