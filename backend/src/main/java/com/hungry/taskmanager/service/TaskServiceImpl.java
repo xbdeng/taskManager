@@ -249,6 +249,90 @@ public class TaskServiceImpl implements TaskService{
         return Result.succ("分配任务成功");
     }
 
+    @Override
+    public Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editPrivilegeDTO.getTaskId()).set("privilege",editPrivilegeDTO.getPrivilege());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editTaskName(EditTaskNameDTO editTaskNameDTO) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskNameDTO.getTaskId()).set("task_name",editTaskNameDTO.getTaskName());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editDescription(EditTaskDescription editTaskDescription) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskDescription.getTaskId()).set("description",editTaskDescription.getDescription());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editStartDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("create_date",editTaskTime.getDateTime());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editDueDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("due_date",editTaskTime.getDateTime());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editTaskRemindDate(EditTaskTime editTaskTime) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskTime.getTaskId()).set("remind_date",editTaskTime.getDateTime());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editTaskLocationDTO.getTaskId()).set("location",editTaskLocationDTO.getLocation());
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
+    @Override
+    public Result editStatus(EditStatusDTO editStatusDTO) {
+        UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("task_id",editStatusDTO.getTaskId());
+        if(editStatusDTO.getDueDate()==null){ //没有截止时间
+            updateWrapper.set("status",editStatusDTO.getStatus());
+        }else{
+            //有截止时间
+            if(editStatusDTO.getStatus() == 1){ //完成
+                updateWrapper.set("status",1);
+            }else if(editStatusDTO.getStatus() == 0){ //未完成
+                if(editStatusDTO.getDueDate().isBefore(LocalDateTime.now())){
+                    //过期
+                    updateWrapper.set("status",2);
+                }else{
+                    updateWrapper.set("status",0);
+                }
+            }
+        }
+
+        //已完成
+        if(editStatusDTO.getStatus() == 1){
+            updateWrapper.set("finish_date",LocalDateTime.now());
+        }
+        taskMapper.update(null,updateWrapper);
+        return Result.succ("更新成功");
+    }
+
     public void addSubTask(AddSubTaskDTO params){
         taskMapper.update(new Task(), new UpdateWrapper<Task>().eq("task_id", params.getSubTask()).set("father_task", params.getFatherTask()));
     }

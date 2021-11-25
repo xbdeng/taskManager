@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
-    @TableId(type= IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     private BigInteger userId;
     private String username;
     private String password;
@@ -30,6 +30,7 @@ public class User implements Serializable {
     private String phone;
     private String githubName;
     private String img;
+    private int emailVerify;
     //定义角色集合
     @TableField(exist = false)
     private List<Role> roles;
@@ -41,7 +42,7 @@ public class User implements Serializable {
     private List<Task> tasks;
 
     public UserDTO toUserDTO() {
-        return new UserDTO(userId, username, firstName, lastName, email, phone, githubName);
+        return new UserDTO(userId, username, firstName, lastName, email, phone, githubName, emailVerify);
     }
 
 

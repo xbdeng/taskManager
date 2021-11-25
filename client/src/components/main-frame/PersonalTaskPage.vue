@@ -8,7 +8,6 @@
                     <!-- 显示侧边栏中对应的"任务"的数据 -->
                     <el-menu-item index="1" @click="showTask">
                         <template slot="title">
-
                             <span slot="title" class="taskFont">任务</span>
                         </template>
                     </el-menu-item>
@@ -26,20 +25,20 @@
               <el-container>
                 <el-main>
 <!--                  <div class="test-div">-->
-                <el-menu :default-openeds="['today']">
-                  <DragTaskTree
-                  :taskData="this.taskData"
-                  v-on:taskIdChanged="chooseTasks($event)"
-                  v-on:postTaskDataAgain="postTaskDataAgain($event)"
-                  v-show="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
                   <div v-show="this.taskShow && (this.taskData.length === 0)">
                     <p><img src="../../assets/notfound.svg" height="300" width="300"/></p>
                     <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                   </div>
-                  <el-submenu index='today' v-show="planedTaskShow">
+                <el-menu unique-opened>
+                  <DragTaskTree
+                  :taskData="this.taskData"
+                  v-on:taskIdChanged="chooseTasks($event)"
+                  v-on:postTaskDataAgain="postTaskDataAgain($event)"
+                  v-if="this.taskShow && !(this.taskData.length === 0)"></DragTaskTree>
+                  <el-submenu index='today' v-show="planedTaskShow" @click.native="setSpecifier(0)">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjintian"></i>
-                      <span slot="title" @click="setSpecifier(0)" class="taskFont">今天</span>
+                      <span slot="title"  class="taskFont">今天</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.todayTaskData"
@@ -51,10 +50,10 @@
                       <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                     </div>
                   </el-submenu>
-                  <el-submenu index='week' v-show="planedTaskShow">
+                  <el-submenu index='week' v-show="planedTaskShow" @click.native="setSpecifier(1)">
                     <template slot="title">
                       <i class="iconfont el-icon-githubjinyizhou"></i>
-                      <span slot="title" @click="setSpecifier(1)" class="taskFont">一周内</span>
+                      <span slot="title"  class="taskFont">一周内</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.weekTaskData"
@@ -66,10 +65,10 @@
                       <p style="font-weight: bold;font-size: 40px">暂无任务</p>
                     </div>
                   </el-submenu>
-                  <el-submenu index='later' v-show="planedTaskShow">
+                  <el-submenu index='later' v-show="planedTaskShow" @click.native="setSpecifier(2)">
                     <template slot="title">
                       <i class="iconfont el-icon-githubshaohouchuli"></i>
-                      <span slot="title" @click="setSpecifier(2)" class="taskFont">稍后</span>
+                      <span slot="title"  class="taskFont">稍后</span>
                     </template>
                     <DragTaskTree
                     :taskData="this.laterTaskData"
@@ -82,8 +81,7 @@
                     </div>
                   </el-submenu>
                 </el-menu>
-<!--                  </div>-->
-                  <el-input v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
+                  <el-input v-if='this.taskShow' v-model="addedTaskName" placeholder="请输入要添加的任务的名称" @keyup.enter.native="addTask"></el-input>
                 </el-main>
               </el-container>
             </el-main>
@@ -96,9 +94,11 @@
             :modal-append-to-body='false'
             size='40%'>
                 <TaskShow
-                    :singleTaskData="getTask(chosenTaskId)"
+                    :singleTaskData="getTask(this.chosenTaskId)"
                     v-on:closeTaskDrawer='closeTaskDrawer($event)'
-                    v-on:emitTreeData="emitTreeData($event)"></TaskShow>
+                    v-on:emitTreeData="emitTreeData($event)"
+                    v-on:update="update($event)"
+                    v-on:closeIfNecessary="closeIfNecessary($event)"></TaskShow>
             </el-drawer>
 
             <el-drawer
@@ -190,6 +190,9 @@ export default {
     onTreeDataChange(list) {
       console.log(this.findNewEdge(this.transData,list))
     },
+    closeIfNecessary() {
+      this.drawer = false
+    },
     getEdgeSet(father) {
       if(father.lists.length === 0) {
         return []
@@ -250,11 +253,13 @@ export default {
         if (id === '-1') return {
             taskName:'Please choose your task'
         }
-        if (parseInt(id[0]) >= taskList.length) return {
-            taskName:'Please choose your task'
+        if (parseInt(id.split('-')[0]) >= taskList.length) {
+          return {
+            taskName: 'Please choose your task'
+          }
         }
-        if (id.length === 1) return taskList[parseInt(id)];
-        return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
+        if (id.split('-').length === 1) return taskList[parseInt(id)];
+        return this.getTaskById(taskList[parseInt(id.split('-')[0])].subTasks, id.substr(id.indexOf('-') + 1));
     },
     getTask(id) {
         switch(this.Specifier) {
@@ -271,6 +276,10 @@ export default {
     },
     handleClose() {
         this.drawer = false
+    },
+    update() {
+      this.$forceUpdate()
+      this.$emit('postPersonalTaskAgain',{})
     },
     handleTreeClose() {
       this.treeDrawer = false
@@ -423,7 +432,7 @@ export default {
     },
     postTaskDataAgain() {
       this.$emit('postPersonalTaskAgain', {})
-    }
+    },
 
   }
 

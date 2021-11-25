@@ -5,13 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.math.BigInteger;
+
 @Data
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Day_count {
-    int year;
-    int month;
-    int day;
-    int count;
+public class EditTaskDescription {
+    BigInteger taskId;
+    String description;
 }

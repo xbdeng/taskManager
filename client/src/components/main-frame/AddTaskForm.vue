@@ -35,16 +35,20 @@
                                             <el-button type='primary' plain size="small" @click="addTag">确定</el-button>
                                         </el-col>
                                     </el-row>
-                                    <el-button type='primary' icon='el-icon-plus' circle slot="reference"></el-button>
+                                    <el-button type='primary'
+                                               icon='el-icon-plus'
+                                               circle
+                                               slot="reference"
+                                                size="small"></el-button>
                                 </el-popover>
                             </el-col>
                         </el-row>
                     </el-form-item>
                   <!--任务地点-->
-                    <el-form-item label="任务地点:" prop="position">
+                    <el-form-item label="任务地点:" prop="location">
                       <el-row>
-                        <el-col :span="14">
-                          <el-input placeholder='请输入任务地点...' clearable v-model='taskForm.position'></el-input>
+                        <el-col :span="13">
+                          <el-input placeholder='请输入任务地点...' clearable v-model='taskForm.location'></el-input>
                         </el-col>
                       </el-row>
                     </el-form-item>
@@ -52,10 +56,18 @@
                     <el-form-item label='任务截止时间:' prop='dueDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='datetime' placeholder="请选择任务的截止时间" v-model="this.tmpDueDate"></el-date-picker>
+                                <el-date-picker type='datetime' placeholder="请选择任务的截止时间" v-model="taskForm.dueDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
+                    <!--Task Remind-->
+                    <el-form-item label='任务提醒时间:' prop='remindDate'>
+                          <el-row>
+                              <el-col :span='8'>
+                                  <el-date-picker type='datetime' placeholder="请选择任务的提醒时间" v-model="taskForm.remindDate"></el-date-picker>
+                              </el-col>
+                          </el-row>
+                      </el-form-item>
                     <!--Task Priority-->
                     <el-form-item label='任务优先级：' prop='privilege'>
                         <el-row>
@@ -78,7 +90,7 @@
                         </el-row>
                     </el-form-item>
                     <!-- 如果选择了组队任务，会多出一个多选框，选择给哪个队伍分配任务 -->
-                    <el-form-item label='分配组别:' prop='teams' v-if="taskForm.type === '1'">
+                    <el-form-item label='分配组别:' prop='teamId' v-if="taskForm.type === '1'">
                         <el-col :span='10'>
                             <!-- 单选 -->
                             <el-select placeholder='请选择任务分配的组别' v-model='taskForm.teamId'>
@@ -91,7 +103,7 @@
                     <el-form-item label='开始时间:' prop='createDate'>
                         <el-row>
                             <el-col :span='8'>
-                                <el-date-picker type='datetime' placeholder="请选择任务的开始时间" v-model="this.tmpcreateDate"></el-date-picker>
+                                <el-date-picker type='datetime' placeholder="请选择任务的开始时间" v-model="taskForm.createDate"></el-date-picker>
                             </el-col>
                         </el-row>
                     </el-form-item>
@@ -156,13 +168,14 @@ export default {
         taskForm:{
             taskName:'',
             tags: [],
-            dueDate:(this.endDate === null || this.endDate === '') ? null : (this.tmpDueDate === '' ? null : this.tmpDueDate),
+            dueDate:'',
             privilege:0,
             type: '',
             teamId:'',
-            createDate:(this.startDate === null || this.startDate === '') ? null : (this.tmpcreateDate === '' ? null : this.tmpcreateDate),
+            createDate:'',
             description:'',
-            position:''
+            location:'',
+            remindDate:'',
         },
       tmpcreateDate:null,
       tmpDueDate:null,
@@ -181,7 +194,7 @@ export default {
             type:[{validator:checkTaskType, trigger:'blur'}],
             // createDate:[{validator:checkTaskStartTime, trigger:'blur'}],
             // description:[{validator:checkTaskDescription, trigger:'blur'}],
-            teams:[{validator:checkTeams, trigger:'blur'}],
+            teamId:[{validator:checkTeams, trigger:'blur'}],
 
         }
     }
@@ -280,9 +293,9 @@ export default {
                   Authorization:window.sessionStorage.getItem('token')
                 },
                 data:{
-                    createDate:(that.taskForm.createDate === '' || that.taskForm.createDate === null)? null :that.taskForm.createDate,
+                    createDate:(that.startDate == null || that.startDate === '') ? (that.taskForm.createDate == null || that.taskForm.createDate === '' ? null : that.taskForm.createDate) : that.startDate,
                     description:that.taskForm.description,
-                    dueDate:(that.taskForm.dueDate === '' || that.taskForm.dueDate === null)? null :that.taskForm.dueDate,
+                    dueDate:(that.endDate == null || that.endDate === '') ? (that.taskForm.dueDate == null || that.taskForm.dueDate === '' ? null : that.taskForm.dueDate) : that.endDate,
                     //fatherTask
                     //members
                     privilege:that.taskForm.privilege,

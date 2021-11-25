@@ -136,7 +136,8 @@
             <TaskShow
                 :singleTaskData="this.showedTask"
                 v-on:closeTaskDrawer='handleTaskInfoClose($event)'
-                v-on:emitTreeData="emitTreeData($event)"></TaskShow>
+                v-on:emitTreeData="emitTreeData($event)"
+                v-on:update="update($event)"></TaskShow>
         </el-drawer>
 
         <el-drawer
@@ -218,7 +219,7 @@ export default {
               {
                 createDate:that.fliterForm.createDate,
                 dueDate:that.fliterForm.dueDate,
-                privilege:that.fliterForm === null ? null : (that.fliterForm === 0 ? null : that.fliterForm - 1),
+                privilege:that.fliterForm.privilege === null ? null : (that.fliterForm.privilege === 0 ? null : that.fliterForm.privilege - 1),
                 status:that.generateStatusList(),
                 tags:that.fliterForm.tags,
                 taskName:that.fliterForm.taskName,
@@ -263,12 +264,16 @@ export default {
           this.taskInfoDrawer = true
       },
       getTaskById(taskList, id) {
-          if (id === '-1') return {
-              taskName:'Please choose your task'
+        if (id === '-1') return {
+                    taskName:'Please choose your task'
+                }
+        if (parseInt(id.split('-')[0]) >= taskList.length) {
+          return {
+            taskName: 'Please choose your task'
+          }
         }
-          if (id.length === 1) return taskList[parseInt(id)];
-
-          return this.getTaskById(taskList[parseInt(id[0])].subTasks, id.substr(1));
+        if (id.split('-').length === 1) return taskList[parseInt(id)];
+        return this.getTaskById(taskList[parseInt(id.split('-')[0])].subTasks, id.substr(id.indexOf('-') + 1));
       },
       openFliter() {
           this.fliterDrawer = true
@@ -345,6 +350,10 @@ export default {
       },
       postQueryAgain() {
         this.searchRequest()
+      },
+      update() {
+        this.$forceUpdate()
+        this.searchedResult()
       }
 
   }

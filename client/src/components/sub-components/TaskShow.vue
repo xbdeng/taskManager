@@ -17,7 +17,7 @@
                 </el-tooltip>
               </el-col>
               <el-col :span="15">
-              <el-popover placement="top" width="200" trigger="click" title="修改任务名">
+              <el-popover placement="top" width="200" trigger="click" title="修改任务名" ref="taskNameVisible">
                   <el-row>
                       <el-col>
                           <el-input placeholder="请输入修改后的任务名..." clearable v-model="editedTaskName"></el-input>
@@ -30,9 +30,7 @@
                   </el-row>
                     <el-tooltip content="点击可修改任务名称" slot="reference">
                       <el-link>
-
                           <span class="title">{{ tempTaskForm.taskName }}</span>
-
                       </el-link>
                     </el-tooltip>
                 </el-popover>
@@ -66,7 +64,7 @@
                 <span style="font-weight:bold;font-size: 18px">任务地点: </span>
               </el-col>
             <el-col :span="18" align="middle">
-              <el-popover placement="bottom" width="200" trigger="click" title="修改任务的地点" >
+              <el-popover placement="bottom" width="200" trigger="click" title="修改任务的地点" ref="taskLocationVisible">
                   <el-row>
                       <el-col>
                           <el-input placeholder="请输入修改后的任务地点..." v-model="editedlocation"></el-input>
@@ -77,13 +75,10 @@
                           <el-button type='primary' plain size="small" @click="editlocation">确定</el-button>
                       </el-col>
                   </el-row>
-
                     <el-tooltip content="点击可修改任务的地点" slot="reference">
-
                       <el-link>
-                          {{ tempTaskForm.location === '' ||  tempTaskForm.location === null? '未设定地点' : tempTaskForm.location}}
+                          {{ tempTaskForm.location === '' ||  tempTaskForm.location == null? '未设定地点' : tempTaskForm.location}}
                       </el-link>
-
                     </el-tooltip>
                 </el-popover>
               </el-col>
@@ -95,7 +90,7 @@
               </el-col>
               <!-- 修改任务优先级的接口 -->
               <el-col :span="5">
-                <el-popover placement="top" width="200" trigger="click" title="修改任务优先级">
+                <el-popover placement="top" width="200" trigger="click" title="修改任务优先级" ref="taskPriorityVisible">
                   <el-row>
                       <el-col>
                           <el-rate :texts="this.texts" show-text :max="4" v-model="editedPriority"></el-rate>
@@ -134,7 +129,7 @@
                 <span style="font-weight:bold;font-size: 18px">开始时间：</span>
               </el-col>
               <el-col :span="18">
-                  <el-popover placement="top" width="200" trigger="click" title="修改任务开始时间">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务开始时间" ref="taskStartVisible">
                     <el-row type="flex" justify="start">
                         <el-col>
                             <el-date-picker v-model="editedStartTime" type="datetime" placeholder="请选择任务的开始时间"></el-date-picker>
@@ -160,7 +155,7 @@
                 <span style="font-weight:bold;font-size: 18px">结束时间: </span>
               </el-col>
               <el-col :span="17">
-                  <el-popover placement="top" width="200" trigger="click" title="修改任务结束时间">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务结束时间" ref="taskEndVisible">
                     <el-row type="flex" justify="start">
                         <el-col>
                             <el-date-picker v-model="editedDDL" type="datetime" placeholder="请选择任务的结束时间"></el-date-picker>
@@ -174,6 +169,31 @@
                     <el-tooltip content="点击可修改任务的结束时间" slot="reference">
                       <el-link>
                           {{ this.convertTime(tempTaskForm.dueDate) }}
+                      </el-link>
+                    </el-tooltip>
+                </el-popover>
+              </el-col>
+            </el-row>
+            <!--任务的提醒时间-->
+            <el-row type="flex" justify="start" align="middle">
+              <el-col :span="8">
+                <span style="font-weight:bold;font-size: 18px">提醒时间: </span>
+              </el-col>
+              <el-col :span="17">
+                  <el-popover placement="top" width="200" trigger="click" title="修改任务提醒时间" ref="taskRemindVisible">
+                    <el-row type="flex" justify="start">
+                        <el-col>
+                            <el-date-picker v-model="editedRemindDate" type="datetime" placeholder="请选择任务的提醒时间"></el-date-picker>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                      <el-col :offset="8">
+                          <el-button type='primary' plain size="small" @click="editRemindDate">确定</el-button>
+                      </el-col>
+                    </el-row>
+                    <el-tooltip content="点击可修改任务的提醒时间" slot="reference">
+                      <el-link>
+                          {{ this.convertTime(tempTaskForm.remindDate) }}
                       </el-link>
                     </el-tooltip>
                 </el-popover>
@@ -233,7 +253,7 @@
                 <span style="font-weight:bold;font-size: 18px">任务描述：</span>
               </el-col>
               <el-col :span="15">
-                <el-popover placement="bottom" width="200" trigger="click" title="修改任务的描述信息" >
+                <el-popover placement="bottom" width="200" trigger="click" title="修改任务的描述信息" ref="taskDescriptionVisible">
                     <el-row>
                         <el-col>
                             <el-input placeholder="请输入修改后的描述信息..." type="textarea" :rows="4" v-model="editedDescription"></el-input>
@@ -246,7 +266,7 @@
                     </el-row>
                       <el-tooltip content="点击可修改任务的描述信息" slot="reference">
                         <el-link>
-                            {{ tempTaskForm.description === null ? '描述信息为空' : tempTaskForm.description}}
+                            {{ (tempTaskForm.description == null || tempTaskForm.description === '') ? '描述信息为空' : tempTaskForm.description}}
                         </el-link>
                       </el-tooltip>
                   </el-popover>
@@ -336,6 +356,7 @@ export default {
       editedTaskName:null,
       editedDescription:'',
       editedlocation:null,
+      editedRemindDate:null,
       // 用于存储要新添加的任务，是字符串类型的数组
       subTasksList:[],
       memberList:[],
@@ -344,6 +365,7 @@ export default {
       mousein:null,
       //TODO:理由同上
       // list2:generateMemberData(),
+
     }
   },
   methods:{
@@ -358,6 +380,39 @@ export default {
     postTaskFinished($event) {
       if(document.getElementById('active') != null) {
         this.tempTaskForm.status = 2
+        const that = this
+        axios.post(
+            '/task/edit/status',
+            {
+              dueDate:that.tempTaskForm.dueDate,
+              status:1,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  message:'修改成功',
+                  type:'success'
+                })
+                that.$emit('update',{})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
       else if(document.getElementById('defined') != null) {
         this.tempTaskForm.status = 0
@@ -392,6 +447,39 @@ export default {
       let value = this.editedTaskName
       if(value != null) {
         this.tempTaskForm.taskName = value
+        const that = this
+        axios.post(
+            '/task/edit/taskname',
+            {
+              taskId:that.tempTaskForm.taskId,
+              taskName:that.tempTaskForm.taskName
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$emit('update',{})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$refs.taskNameVisible.doClose();
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
         this.editedTaskName = null
       }
       else {
@@ -402,6 +490,39 @@ export default {
       let value = this.editedlocation
       if(value != null) {
         this.tempTaskForm.location = value
+        const that = this
+        axios.post(
+            '/task/edit/location',
+            {
+              taskId:that.tempTaskForm.taskId,
+              location:that.tempTaskForm.location
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$emit('update',{})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$refs.taskLocationVisible.doClose()
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
       this.editedlocation = null
     },
@@ -409,6 +530,40 @@ export default {
       let value = this.editedPriority
       if(value != null) {
         this.tempTaskForm.privilege = this.editedPriority - 1
+        const that = this
+        axios.post(
+            '/task/edit/privilege',
+            {
+              privilege:that.tempTaskForm.privilege,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$forceUpdate()
+                that.$emit('update',{})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$refs.taskPriorityVisible.doClose()
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
       this.editedPriority = null
     },
@@ -416,15 +571,84 @@ export default {
       let value = this.editedStartTime
       if(value != null) {
         this.tempTaskForm.createDate = value
+        const that = this
+        that.taskStartVisible = false
+        axios.post(
+            '/task/edit/startdate',
+            {
+              dateTime:that.tempTaskForm.createDate,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$forceUpdate()
+                that.$emit('update',{})
+                that.$refs.taskStartVisible.doClose()
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.editedStartTime = null
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
-      this.editedStartTime = null
     },
     editDDL() {
       let value = this.editedDDL
       if(value != null) {
         this.tempTaskForm.dueDate = value
+        const that = this
+        axios.post(
+            '/task/edit/duedate',
+            {
+              dateTime:that.tempTaskForm.dueDate,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$forceUpdate()
+                that.$emit('update',{})
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.$emit('closeIfNecessary',{})
+                that.$refs.taskEndVisible.doClose()
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
-      this.editedDDL = null
     },
     editInvitedMembers() {
       let value = this.invitedMembers
@@ -465,8 +689,83 @@ export default {
       let value = this.editedDescription
       if(value != null) {
         this.tempTaskForm.description = this.editedDescription
+        const that = this
+        axios.post(
+            '/task/edit/description',
+            {
+              description:that.tempTaskForm.description,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$forceUpdate()
+                that.$emit('update',{})
+                that.$refs.taskDescriptionVisible.doClose()
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
       }
       this.editedDescription = null
+    },
+    editRemindDate() {
+      let value = this.editedRemindDate
+      if(value != null) {
+        this.tempTaskForm.remindDate = value
+        const that = this
+        axios.post(
+            '/task/edit/reminddate',
+            {
+              dateTime:that.tempTaskForm.remindDate,
+              taskId:that.tempTaskForm.taskId
+            },
+            {
+              headers:{
+                Authorization:window.sessionStorage.getItem('token')
+              }
+            }
+        ).then(
+            function(response) {
+              if(response.data.code === 200) {
+                that.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+                that.$forceUpdate()
+                that.$emit('update',{})
+                that.$refs.taskRemindVisible.doClose()
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+                that.editedStartTime = null
+              } else {
+                that.$message.error('修改失败')
+                let newToken = response.headers.authorization
+                if(newToken != null) window.sessionStorage.setItem('token', newToken)
+              }
+            },
+            function(err) {
+              that.$message.error('响应失败，修改失败')
+            }
+        )
+      }
     },
     addSubTask() {
       const that = this

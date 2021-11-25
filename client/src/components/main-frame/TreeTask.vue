@@ -60,7 +60,8 @@
           :fatherTaskId="this.fatherTaskId"
           :tagArray="this.tagArray"
           :myTeamInfo="this.myTeamInfo"
-      v-on:postTree="closeTreeDrawer"></add-task-form>
+      v-on:postTree="closeTreeDrawer"
+      v-on:toCalendar="toCalendar"></add-task-form>
     </el-dialog>
 
   </div>
@@ -182,6 +183,9 @@ export default {
     },
     postTree() {
       this.$emit('postTree')
+    },
+    toCalendar() {
+      this.dialogVisible = false
     }
   }
 }
@@ -192,7 +196,7 @@ export default {
   padding: 0;
 }
 .treeclass {
-  height: 870px;
+  height: 710px;
 }
 >>> .treeclass .nodetree text {
   font:18px Consolas !important;

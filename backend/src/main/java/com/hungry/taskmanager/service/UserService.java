@@ -4,6 +4,7 @@ package com.hungry.taskmanager.service;
 import com.hungry.taskmanager.dto.*;
 import com.hungry.taskmanager.entity.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -67,4 +68,9 @@ public interface UserService {
 
     //统计个人任务完成情况
     Result<PersonalStatisticsDTO> personalStatistics(String username);
+
+    //验证邮箱
+    Result verifyEmail(String username);
+
+    boolean verifyCode(String username, String code);
 }
