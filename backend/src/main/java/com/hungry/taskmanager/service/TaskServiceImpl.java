@@ -250,6 +250,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Result unassignTask(AssignTaskDTO assignTaskDTO, String username) {
+        List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("user_id",assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
+        userTaskMapper.delete(new QueryWrapper<UserTask>().in("user_id",userIds).eq("task_id",assignTaskDTO.getTaskId()));
+        return Result.succ("取消分配成功");
+    }
+
+    @Override
     public Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO) {
         UpdateWrapper<Task> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("task_id", editPrivilegeDTO.getTaskId()).set("privilege", editPrivilegeDTO.getPrivilege());
