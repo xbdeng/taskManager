@@ -257,13 +257,14 @@ public class TaskServiceImpl implements TaskService {
 //    }
 
     @Override
-    public Result assignTask(AssignTaskDTO assignTaskDTO, String username) {
+    public Result assignTask(AssignTaskDTO assignTaskDTO, String username) throws LimitsAuthority {
         Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id", assignTaskDTO.getTaskId()));
         if (task.getType().intValue() == 0) {
             return Result.fail(201, "个人任务不能分配", null);
         }
-        //分配者必须有分配权限 todo
-
+        if(!isSuper(username,assignTaskDTO.getTaskId())){
+            throw new LimitsAuthority();
+        }
         //被分配者必须在组内
         List<BigInteger> userIds = userMapper.selectList(new QueryWrapper<User>().in("username", assignTaskDTO.getUsernames()).select("user_id")).stream().map(User::getUserId).collect(Collectors.toList());
         BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id", assignTaskDTO.getTaskId()).select("team_id")).getTeamId();
@@ -409,8 +410,23 @@ public class TaskServiceImpl implements TaskService {
         return Result.succ("更新成功");
     }
 
-    public void addSubTask(AddSubTaskDTO params) {
+    public void addSubTask(AddSubTaskDTO params,String username) throws LimitsAuthority {
+        BigInteger fatherId = params.getFatherTask();
+        if(!isSuper(username,fatherId)){
+            throw new LimitsAuthority();
+        }
         taskMapper.update(new Task(), new UpdateWrapper<Task>().eq("task_id", params.getSubTask()).set("father_task", params.getFatherTask()));
+    }
+
+    private boolean isSuper(String username, BigInteger taskId){
+        BigInteger userId = userMapper.getIdByName(username);
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("task_id",taskId));
+        if(task.getType().intValue() == 0){
+            return true;
+        }else{
+            BigInteger teamId = teamTaskMapper.selectOne(new QueryWrapper<TeamTask>().eq("task_id",taskId)).getTeamId();
+            return teamService.isAdmin(userId,teamId) || teamService.isCreator(userId,teamId);
+        }
     }
 
 

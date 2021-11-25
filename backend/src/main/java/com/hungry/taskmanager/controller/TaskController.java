@@ -79,10 +79,16 @@ public class TaskController {
     @PostMapping("/addsubtask")
     @RequiresAuthentication
     @ApiOperation(value = "edit a task", notes = "modified information is required only")
-    public Result<String> setSubTask(@RequestBody AddSubTaskDTO params) {
+    public Result<String> setSubTask(@RequestBody AddSubTaskDTO params, HttpServletRequest request) {
         try {
-            taskServiceImpl.addSubTask(params);
-        } catch (Exception e) {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            taskServiceImpl.addSubTask(params, username);
+        }catch (LimitsAuthority e){
+            e.printStackTrace();
+            return Result.fail(201,"权限不足",null);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new Result<String>(500, "server error", null);
         }
@@ -105,13 +111,17 @@ public class TaskController {
     }
 
     @PostMapping("/assigntask")
-    @RequiresAuthentication //todo 分配者权限未验证
+    @RequiresAuthentication
     public Result assignTask(@RequestBody AssignTaskDTO assignTaskDTO, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization");
             String username = JWTUtil.getUsername(token);
             return taskServiceImpl.assignTask(assignTaskDTO, username);
-        } catch (Exception e) {
+        }catch (LimitsAuthority e) {
+            e.printStackTrace();
+            return Result.fail(201,"权限不足",null);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);
         }
