@@ -272,6 +272,9 @@ import websocket, {heartCheck} from "../sub-components/WebSocket";
 import Push from 'push.js'
 import {removeRequest} from "../sub-components/cache";
 import {Notification} from "_element-ui@2.15.6@element-ui";
+// import 'bootstrap/dist/css/bootstrap.css';
+// import '@fortawesome/fontawesome-free/css/all.css'; // needs additional webpack config!
+// import bootstrapPlugin from '@fullcalendar/bootstrap';
 
 axios.defaults.baseURL = process.env.API_ROOT
 export default {
@@ -377,7 +380,8 @@ export default {
           dayGridPlugin,
           timeGridPlugin,
           interactionPlugin,
-          listMonth// needed for dateClick
+          listMonth,
+          // bootstrapPlugin// needed for dateClick
         ],
         headerToolbar: {
           left: 'prev,next today',
@@ -394,7 +398,8 @@ export default {
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
         eventsSet: this.handleEvents,
-        eventChange: this.handleEventChange
+        eventChange: this.handleEventChange,
+        timeZone: 'local'
         /* you can update a remote database when these fire:
         eventAdd:
         eventChange:
@@ -722,8 +727,12 @@ export default {
       //   calendarApi.addEvent({
       //     id: createEventId(),
       //     title,
-      this.cstart = selectInfo.startStr
-      this.cend = selectInfo.endStr
+      this.cstart = selectInfo.start
+      this.cend = selectInfo.end
+      // console.log(this.cstart)
+      // console.log(this.cend)
+      this.cstart = (new Date(this.cstart)).toISOString()
+      this.cend = (new Date(this.cend)).toISOString()
       // console.log(this.cstart)
       // console.log(this.cend)
       //     allDay: selectInfo.allDay
