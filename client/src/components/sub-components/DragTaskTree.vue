@@ -41,7 +41,12 @@
         </el-tooltip>
       </template>
       <template #action="{row}">
-        <a class="action-item" @click.stop.prevent="emitTaskId(row)">详细信息</a>
+        <a class="action-item" @click.stop.prevent="emitTaskId(row)">
+          <el-button type="primary">详细信息</el-button>
+        </a>
+        <a class="action-item" @click.stop.prevent="deleteTask(row)">
+          <el-button type="danger">删除任务</el-button>
+        </a>
       </template>
     </dragTreeTable>
   </div>
@@ -192,6 +197,40 @@ export default {
     emitTaskId(row) {
       this.$emit('taskIdChanged', this.getIdByRow(row.id))
     },
+    deleteTask(row) {
+      let taskId = row.id
+      const that = this
+      axios({
+        method:'POST',
+        url:'/task/deletetask',
+        params:{id:taskId},
+        headers:{
+          Authorization:window.sessionStorage.getItem('token')
+        }
+      }).then(
+          function(response) {
+            //alert(response.data.msg)
+            if(response.data.code === 200) {
+              that.$message({
+                message:'删除任务成功',
+                type:'success'
+              })
+              that.$emit('postTaskDataAgain',{})
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            //  重置数据
+              that.clearTaskForm()
+            } else {
+              that.$message.error('删除任务失败')
+              let newToken = response.headers.authorization
+              if(newToken != null) window.sessionStorage.setItem('token', newToken)
+            }
+          },
+          function(err) {
+            that.$message.error('响应失败，删除任务失败')
+          }
+      )
+    },
     getIdByRow(rowId) {
       for(let i in this.taskData) {
         let task = this.taskData[i]
@@ -206,8 +245,8 @@ export default {
       }
       for(let i in u.subTasks) {
         let subTask = u.subTasks[i]
-        let getPath = this.dfs(subTask, target, path + i.toString())
-        if(!(getPath === '*')) return path + i.toString()
+        let getPath = this.dfs(subTask, target, path + '-' + i.toString())
+        if(!(getPath === '*')) return path + '-' + i.toString()
       }
       return '*'
     },

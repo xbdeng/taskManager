@@ -116,6 +116,7 @@
                   <el-popover placement="top" width="900" trigger="click" title="邀请成员">
                     <el-row>
                       <el-col>
+<!--                        好友中不在这个群里的人-->
                         <el-transfer :data="this.friends" filterable :button-texts="['取消邀请','邀请进组']"
                                      v-model="invitedMembers" :titles="['我的好友','邀请名单']"></el-transfer>
                       </el-col>
@@ -229,6 +230,8 @@ export default {
     const generateFriendData = _ => {
       const data = []
       for (let i in this.Friends) {
+        let username = this.Friends[i].username
+        if(!(username === this.singleTeamData.creator) && !(this.singleTeamData.admins.indexOf(username) > -1) && !(this.singleTeamData.members.indexOf(username) > -1))
         data.push({
           key: this.Friends[i].username,
           label: this.Friends[i].username
@@ -601,6 +604,16 @@ export default {
       if (time === null) return '未设定'
       let date = new Date(time)
       return date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日' + date.getHours() + '时' + date.getMinutes() + '分' + date.getSeconds() + '秒'
+    },
+    CU(list1, list2) {
+      for(let i in list2) {
+        let item = list2[i]
+        let index = list1.indexOf(item)
+        if(index > -1) {
+          list1.splice(index, 1)
+        }
+      }
+      return list1
     },
   }
 

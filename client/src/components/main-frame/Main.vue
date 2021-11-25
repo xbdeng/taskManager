@@ -156,35 +156,35 @@
                            :Friends="this.Friends" v-on:updateAddressBook="postAddressBook"></AddressBookPage>
           <!-- 日历视图 -->
           <div class='demo-app' v-show="calendarShow">
-            <div class='demo-app-sidebar'>
-              <div class='demo-app-sidebar-section'>
-                <h2 class="demo-h2">Instructions</h2>
-                <ul class="demo-ul">
-                  <li class="demo-li">Select dates and you will be prompted to create a new event</li>
-                  <li class="demo-li">Drag, drop, and resize events</li>
-                  <li class="demo-li">Click an event to get detailed information</li>
-                </ul>
-              </div>
-              <div class='demo-app-sidebar-section'>
-                <label>
-                  <input
-                      type='checkbox'
-                      :checked='calendarOptions.weekends'
-                      @change='handleWeekendsToggle'
-                  />
-                  toggle weekends
-                </label>
-              </div>
-              <div class='demo-app-sidebar-section'>
-                <h2 class="demo-h2">All Events ({{ currentEvents.length }})</h2>
-                <ul class="demo-ul">
-                  <li class="demo-li" v-for='event in currentEvents' :key='event.id'>
-                    <b class="demo-b">{{ event.startStr }}</b>
-                    <i>{{ event.title }}</i>
-                  </li>
-                </ul>
-              </div>
-            </div>
+<!--            <div class='demo-app-sidebar'>-->
+<!--              <div class='demo-app-sidebar-section'>-->
+<!--                <h2 class="demo-h2">Instructions</h2>-->
+<!--                <ul class="demo-ul">-->
+<!--                  <li class="demo-li">Select dates and you will be prompted to create a new event</li>-->
+<!--                  <li class="demo-li">Drag, drop, and resize events</li>-->
+<!--                  <li class="demo-li">Click an event to get detailed information</li>-->
+<!--                </ul>-->
+<!--              </div>-->
+<!--              <div class='demo-app-sidebar-section'>-->
+<!--                <label>-->
+<!--                  <input-->
+<!--                      type='checkbox'-->
+<!--                      :checked='calendarOptions.weekends'-->
+<!--                      @change='handleWeekendsToggle'-->
+<!--                  />-->
+<!--                  toggle weekends-->
+<!--                </label>-->
+<!--              </div>-->
+<!--              <div class='demo-app-sidebar-section'>-->
+<!--                <h2 class="demo-h2">All Events ({{ currentEvents.length }})</h2>-->
+<!--                <ul class="demo-ul">-->
+<!--                  <li class="demo-li" v-for='event in currentEvents' :key='event.id'>-->
+<!--                    <b class="demo-b">{{ event.startStr }}</b>-->
+<!--                    <i>{{ event.title }}</i>-->
+<!--                  </li>-->
+<!--                </ul>-->
+<!--              </div>-->
+<!--            </div>-->
             <div class='demo-app-main'>
               <FullCalendar ref="fullCalendar"
                             class='demo-app-calendar'

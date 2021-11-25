@@ -54,7 +54,7 @@
         <div>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
-              <span>{{ data.taskName }}}</span>
+              <span>{{ data.taskName }}</span>
               <el-button style="float: right; padding: 3px 0" type="text" @click="handleAddTask(data.taskName, data.description, data.location, data.createDate, data.dueDate, data.remindDate)">添加</el-button>
             </div>
             <div>
