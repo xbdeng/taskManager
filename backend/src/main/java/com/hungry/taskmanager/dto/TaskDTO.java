@@ -1,9 +1,10 @@
-package com.hungry.taskmanager.entity;
+package com.hungry.taskmanager.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hungry.taskmanager.entity.Task;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,17 +14,14 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// todo 把task和dto分离出来
-
 @Data
-@Accessors(chain = true)
-@AllArgsConstructor
+@Accessors(chain=true)
 @NoArgsConstructor
-public class Task {
+@AllArgsConstructor
+public class TaskDTO {
     // attributes necessary for inserting a task
-    @TableId(type= IdType.AUTO)
     private BigInteger taskId;
-    private BigInteger creator;
+    private String creator;
     private String taskName;
     private String description;
     private String location;
@@ -41,15 +39,9 @@ public class Task {
     private Integer privilege;
     // other attributes
     @TableField(exist=false)
-    private List<Task> subTasks;
+    private List<TaskDTO> subTasks;
     @TableField(exist=false)
     private List<String> tags;
     @TableField(exist = false)
     private List<String> members;
-
-    public void updateDate(){
-        if (dueDate != null && LocalDateTime.now().isAfter(dueDate)){
-            status = 2;
-        }
-    }
 }
