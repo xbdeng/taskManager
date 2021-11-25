@@ -125,6 +125,19 @@ public class TaskController {
         }
     }
 
+    @PostMapping("/unassigntask")
+    @RequiresAuthentication
+    public Result unassignTask(@RequestBody AssignTaskDTO assignTaskDTO,HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.unassignTask(assignTaskDTO, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
     @PostMapping("/edit/privilege")
     @RequiresAuthentication
     public Result editPrivilege(@RequestBody EditPrivilegeDTO editPrivilegeDTO) {
@@ -207,6 +220,32 @@ public class TaskController {
     public Result editTaskLocation(@RequestBody EditTaskLocationDTO editTaskLocationDTO) {
         try {
             return taskServiceImpl.editTaskLocation(editTaskLocationDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/edit/addtag")
+    @RequiresAuthentication
+    public Result addTag(@RequestBody EditTaskTag editTaskTag, HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.addTaskTag(editTaskTag, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
+    @PostMapping("/edit/deletetag")
+    @RequiresAuthentication
+    public Result deleteTag(@RequestBody EditTaskTag editTaskTag, HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return taskServiceImpl.deleteTaskTag(editTaskTag, username);
         } catch (Exception e) {
             e.printStackTrace();
             return Result.fail(500, "服务器错误", null);

@@ -361,6 +361,7 @@ public class UserController {
     }
 
     @PostMapping("/verifycode")
+    @RequiresAuthentication
     public Result<Integer> verifyCode(@RequestBody String code, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization");
@@ -376,5 +377,19 @@ public class UserController {
             return Result.fail(500, "服务器错误", null);
         }
     }
+
+    @PostMapping("/unbindemail")
+    @RequiresAuthentication
+    public Result unbindEmail(HttpServletRequest request) {
+        try {
+            String token = request.getHeader("Authorization");
+            String username = JWTUtil.getUsername(token);
+            return userService.unbindEmail(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.fail(500, "服务器错误", null);
+        }
+    }
+
 
 }

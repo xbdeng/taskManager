@@ -74,5 +74,6 @@ public interface UserService {
 
     boolean verifyCode(String username, String code);
 
-
+    //解绑邮箱
+    Result unbindEmail(String username);
 }

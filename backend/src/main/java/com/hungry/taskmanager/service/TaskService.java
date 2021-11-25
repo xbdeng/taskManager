@@ -23,6 +23,8 @@ public interface TaskService {
 
     Result assignTask(AssignTaskDTO assignTaskDTO, String username);
 
+    Result unassignTask(AssignTaskDTO assignTaskDTO, String username);
+
     Result editPrivilege(EditPrivilegeDTO editPrivilegeDTO);
 
 
@@ -39,4 +41,8 @@ public interface TaskService {
     Result editTaskRemindDate(EditTaskTime editTaskTime);
 
     Result editTaskLocation(EditTaskLocationDTO editTaskLocationDTO);
+
+    Result addTaskTag(EditTaskTag editTaskTag, String username);
+
+    Result deleteTaskTag(EditTaskTag editTaskTag, String username);
 }
