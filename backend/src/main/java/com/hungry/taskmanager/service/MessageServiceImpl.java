@@ -170,7 +170,7 @@ public class MessageServiceImpl implements MessageService{
                     BigInteger teamId = BigInteger.valueOf(Long.parseLong(message.getContent()));
                     // add memebers
                     OppoTeamMemberDTO otm = new OppoTeamMemberDTO().setTeamId(teamId).setUserName(username);
-                    teamService.addMember(otm, operator.getUsername());
+
                     Message backMessage = new Message().setSender(message.getReceiver()).setReceiver(operator.getUserId()).setContent(teamId.toString());
                     backMessages.add(backMessage);
                     usernames.add(operator.getUsername());
@@ -179,6 +179,7 @@ public class MessageServiceImpl implements MessageService{
                     wsm.setFrom(confirmDTO.getFrom()).setGroupName(team.getTeamName());
                     // set type according to operation
                     if (operation == 0){
+                        teamService.addMember(otm, operator.getUsername());
                         backTypeName = "g_invitation_accept";
                         wsm.setType(6);
                     }else{
@@ -188,7 +189,7 @@ public class MessageServiceImpl implements MessageService{
                     break;
                 }
                 case("f_invitation"):{
-                    userService.addFriend(message.getSender(), message.getReceiver());
+
                     // construct message
                     Message backMessage = new Message().setReceiver(message.getSender()).setSender(message.getReceiver());
                     // add backMessage to backMessages
@@ -199,6 +200,7 @@ public class MessageServiceImpl implements MessageService{
                     // set wsm information
                     wsm.setFrom(confirmDTO.getFrom());
                     if (operation == 0){
+                        userService.addFriend(message.getSender(), message.getReceiver());
                         backTypeName = "f_invitation_accept";
                         wsm.setType(4);
                     }else{
@@ -215,7 +217,6 @@ public class MessageServiceImpl implements MessageService{
                     username.add(member.getUsername());
                     BigInteger teamId = BigInteger.valueOf(Long.parseLong(message.getContent()));
                     OppoTeamMemberDTO otm = new OppoTeamMemberDTO().setTeamId(teamId).setUserName(username);
-                    teamService.addMember(otm, confirmDTO.getFrom());
                     // find all creator and administrator
                     List<User> acs = teamMapper.getTeamCreatorAndAdministrators(teamId);
                     for(User ac: acs){
@@ -230,6 +231,7 @@ public class MessageServiceImpl implements MessageService{
                     // set type
                     wsm.setFrom(confirmDTO.getFrom()).setGroupName(teamName);
                     if (operation == 0){
+                        teamService.addMember(otm, confirmDTO.getFrom());
                         backTypeName = "g_application_accept";
                         wsm.setType(8);
                     }else{
