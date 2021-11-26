@@ -214,7 +214,22 @@ export default {
   mounted() {
     this.getTeamAnalysis()
   },
-
+watch:{
+  //   'transferData':function() {
+  //     this.transferData = this.WgenerateTransferData()
+  //   },
+  // 'adminTransferData':function() {
+  //     this.adminTransferData = this.WgenerateAdminData()
+  // },
+  // 'friends':function() {
+  //     this.friends = this.WgenerateFriendData()
+  // }
+  'singleTeamData':function() {
+    this.transferData = this.WgenerateTransferData()
+    this.adminTransferData = this.WgenerateAdminData()
+    this.friends = this.WgenerateFriendData()
+  }
+},
   data() {
     // 生成普通成员的穿梭框信息
     const generateTransferData = _ => {
@@ -267,6 +282,38 @@ export default {
     }
   },
   methods: {
+    WgenerateTransferData() {
+      const data = []
+      for (let i in this.singleTeamData.members) {
+        data.push({
+          key: this.singleTeamData.members[i],
+          label: this.singleTeamData.members[i]
+        });
+      }
+      return data
+    },
+    WgenerateFriendData() {
+      const data = []
+      for (let i in this.Friends) {
+        let username = this.Friends[i].username
+        if (!(username === this.singleTeamData.creator) && !(this.singleTeamData.admins.indexOf(username) > -1) && !(this.singleTeamData.members.indexOf(username) > -1))
+          data.push({
+            key: this.Friends[i].username,
+            label: this.Friends[i].username
+          });
+      }
+      return data
+    },
+    WgenerateAdminData() {
+      const data = []
+      for (let i in this.singleTeamData.admins) {
+        data.push({
+          key: this.singleTeamData.admins[i],
+          label: this.singleTeamData.admins[i]
+        });
+      }
+      return data
+    },
     getMemberList() {
       let members = [];
       // 创建者
@@ -404,6 +451,7 @@ export default {
                 })
                 that.editedAdmins = []
                 that.$emit('postTeamInfoAgain', {})
+                that.$forceUpdate()
                 let newToken = response.headers.authorization
                 if (newToken != null) window.sessionStorage.setItem('token', newToken)
                 that.$refs.addAdminVisible.doClose()

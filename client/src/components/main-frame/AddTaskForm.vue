@@ -318,7 +318,7 @@ export default {
                     taskName:that.taskForm.taskName,
                     teamId:that.taskForm.teamId,
                     type:parseInt(that.taskForm.type),
-                    remindDate:that.taskForm.remindDate
+                    remindDate:(that.taskForm.remindDate == null || that.taskForm.remindDate === '') ? null : that.taskForm.remindDate
                     // username
                 }
               }).then(
