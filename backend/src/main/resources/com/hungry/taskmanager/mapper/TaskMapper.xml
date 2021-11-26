@@ -58,6 +58,9 @@
                     <if test="timeRange == 0 or timeRange == 1">
                         AND t.due_date &lt;= #{requiredDate}
                     </if>
+                    <if test="timeRange == 1">
+                        AND t.due_date >= #{requiredDateMin}
+                    </if>
                     <if test="timeRange == 2">
                         AND t.due_date &gt;= #{requiredDate}
                     </if>

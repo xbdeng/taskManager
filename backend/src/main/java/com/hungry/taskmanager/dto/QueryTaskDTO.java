@@ -38,4 +38,6 @@ public class QueryTaskDTO {
     private LocalDateTime requiredDate;
     @ApiModelProperty(hidden = true)
     private Boolean querySubTasks;
+    @ApiModelProperty(hidden = true)
+    private LocalDateTime requiredDateMin;
 }
