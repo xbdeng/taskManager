@@ -67,7 +67,7 @@ public class MailServiceImpl implements MailService{
         fout.close();
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true);
         messageHelper.setFrom("taskmanager@foxmail.com");
         messageHelper.setTo(email);
         messageHelper.setSubject("【taskmanager】用户任务数据导出");
