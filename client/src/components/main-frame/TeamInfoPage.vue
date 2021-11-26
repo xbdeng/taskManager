@@ -97,7 +97,7 @@
                   <el-input v-model="teamSearchName" @keyup.enter.native="searchTeamB"></el-input>
                 </el-col>
                 <el-col :span="9">
-                  <el-button type="success" @click="searchTeamB">搜索群组消息</el-button>
+                  <el-button type="success" @click="searchTeamB">搜索群组</el-button>
                 </el-col>
               </el-row>
             </el-form-item>

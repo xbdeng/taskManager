@@ -313,7 +313,7 @@ export default {
   data() {
     const generateTransferData = _ => {
       const data = []
-      if(this.singleTeamData == null) return []
+      // if(this.singleTeamData == null) return []
       data.push({
           key: this.singleTeamData.creator,
           label: this.singleTeamData.creator
