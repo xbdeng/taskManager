@@ -613,7 +613,7 @@ export default {
     },
     editPriority() {
       let value = this.editedPriority
-      if(value != null && value !== '') {
+      if(value != null && value !== '' && value != 0) {
         this.tempTaskForm.privilege = this.editedPriority - 1
         const that = this
         axios.post(
@@ -849,6 +849,11 @@ export default {
     editRemindDate() {
       let value = this.editedRemindDate
       if(value != null) {
+        if(new Date(value) >= new Date(this.tempTaskForm.dueDate))
+        {
+          this.$message.error('提醒时间不能晚于任务截止时间')
+          return ;
+        }
         this.tempTaskForm.remindDate = value
         const that = this
         axios.post(
