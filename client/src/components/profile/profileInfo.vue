@@ -469,7 +469,7 @@ export default {
       //github中获取
       let client_id = 'Iv1.187f346cb4978b94'
       //授权回调地址
-      let redirect_uri = 'http://localhost:8080/oauth/bind'
+      let redirect_uri = 'http://101.34.188.131:8080/oauth/bind'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}`
     },
     handleGithubUntie(event) {
@@ -515,7 +515,7 @@ export default {
       //github中获取
       let client_id = '1015615497271-q5t9cf1h77n27f641i3n5pucunv9n95c.apps.googleusercontent.com'
       //授权回调地址
-      let redirect_uri = 'http://localhost:8080/google/bind'
+      let redirect_uri = 'http://101.34.188.131:8080/google/bind'
       let scope = 'https://www.googleapis.com/auth/calendar'
       window.location.href = `${oauth_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&response_type=code`
     },
