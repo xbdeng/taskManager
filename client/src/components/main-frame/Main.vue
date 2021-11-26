@@ -1144,7 +1144,8 @@ export default {
               //   message: '请求“今天任务”数据成功',
               //   type: 'success'
               // })
-              that.todaytaskData = response.data.data
+
+              that.todayTaskData = response.data.data
               let newToken = response.headers.authorization
               if (newToken != null) window.sessionStorage.setItem('token', newToken)
             } else {

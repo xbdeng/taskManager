@@ -148,14 +148,16 @@ public class TaskServiceImpl implements TaskService {
             switch (filter.getTimeRange()) {
                 case (0): {
                     LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
-                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate(), LocalTime.MIN);
+                    LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(1, ChronoUnit.DAYS), LocalTime.MAX);
                     filter.setRequiredDate(requiredDate);
                     break;
                 }
                 case (1): {
                     LocalDateTime currentDate = convertGMT(filter.getCurrentDate());
+                    LocalDateTime requiredDateMin = LocalDateTime.of(currentDate.toLocalDate().plus(1, ChronoUnit.DAYS), LocalTime.MIN);
                     LocalDateTime requiredDate = LocalDateTime.of(currentDate.toLocalDate().plus(6, ChronoUnit.DAYS), LocalTime.MIN);
                     filter.setRequiredDate(requiredDate);
+                    filter.setRequiredDateMin(requiredDateMin);
                     break;
                 }
                 case (2): {
